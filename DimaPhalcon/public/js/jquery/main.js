@@ -76,7 +76,7 @@ $( document ).ready( function ()
     /* add rows to table */
     $('body').on('click', '#addNewRow', function(){
         var numbersOfRows = $('#duration' ).val();
-        var tableContent = [];
+        var tableContent = {};
         if (0 === $('#sortable li').size()) {
             for (var i = 0; i < numbersOfRows; i++) {
                 var temp = new RowTemplate();
@@ -94,7 +94,7 @@ $( document ).ready( function ()
             var max = 0;
             (0 !== arr.length) ? max = Math.max.apply(Math, arr) : 0;
 
-            tableContent = product.getTableContent('#sortable li');console.log(tableContent);
+            tableContent = product.getTableContent(product.sortable + ' li');
             for (var i = 0; i < numbersOfRows; i++) {
                 var temp = new RowTemplate();
                 temp.temp['%ROW_NUMBER%'] = 'A' + (max+1);
@@ -102,13 +102,24 @@ $( document ).ready( function ()
                 tableContent[max] = temp.temp;
                 max++;
             }
+            console.log(tableContent);
             var alwaysInTable = product.getTableContent(product.alw + ' li');
             product.createTable(tabs.productId, tableContent, alwaysInTable);
         }
     });
 
-    /* SAVE CHANGES IN TABLE */
+    /* remove tr */
+    $('body').on('click', '.removeRow', function(){
+        var rowName = $(this ).parent().find('.rowValueInput' ).attr('data-cell');
+        var checkBinding = $('.list-group-item').find('.glyphicon:contains(' + rowName + ')');
+        checkBinding.length ? checkBinding.remove() : 0 ;
+        $(this ).parent().hide('drop' );
+        $(this ).parent().find('.rowNumber' ).text('');
+        $(this ).parent().find('.rowValueInput' ).attr('data-cell', '');
+        setTimeout(function() { $(this ).parent().remove() }, 500);
+    });
 
+    /* SAVE CHANGES IN TABLE */
     $('body').on('mousewheel', '.rowValueInput', function(e) {
         var thisVal = Number($(this ).val());
         if (1 === e.deltaY) {
@@ -181,7 +192,6 @@ $( document ).ready( function ()
      $('body').on('change, keyup', '.nameOfProduct', function(){
          $(tabs.curTabName).text($(this ).val());
          ('' == $(this ).val()) ? $(tabs.curTabName).text('Новое изделие') : 0;
-
      });
 
     $('body').on('click', '#editCategoriesListContent', function(){
@@ -195,7 +205,7 @@ $( document ).ready( function ()
         var categoryId = $('.listOfCategories option:selected' ).attr('name');
         if ('' === prName) {
             prName = 'Новое изделие';
-            $('a[href="#' + tabs.curTabId + '"] .tabName').text('Новое изделие');
+            $(tabs.curTabName).text('Новое изделие');
         }
         tabs.changeTabName(tabs.productId, prName, categoryId);
     });
@@ -219,17 +229,6 @@ $( document ).ready( function ()
         });
         $(product.sortable).sortable('disable');
     })
-
-    /* remove tr */
-    $('body').on('click', '.removeRow', function(){
-        var rowName = $(this ).parent().find('.rowValueInput' ).attr('data-cell');
-        var checkBinding = $('.list-group-item').find('.glyphicon:contains(' + rowName + ')');
-        (checkBinding.length) ? checkBinding.remove() : 0 ;
-       //$(this ).parent().hide('drop' );
-        $(this ).parent().find('.rowNumber' ).text('');
-        $(this ).parent().find('.rowValueInput' ).attr('data-cell', '');
-        $(this ).parent().remove();
-    });
 
     /* create formula */
     var currentCaretPos = 0;

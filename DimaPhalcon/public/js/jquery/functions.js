@@ -51,13 +51,11 @@ var product = {
         })
     },
     getTableContent : function (dom) {
-        var tableContent = [];
+        var tableContent = {};
         var i = 0;
         $.each($(dom), function(key, val) {
             var temp = new RowTemplate();
-            if ('' === $('.rowNumber', val ).text()) {
-
-            } else {
+            if ('' !== $('.rowNumber', val ).text()) {
                 temp.temp['%ROW_NUMBER%'] = $('.rowNumber', val ).text();
                 temp.temp['%ROW_NAME%'] = $('.rowNameInput', val ).val();
                 temp.temp['%DATA_CELL%'] = $('.rowValueInput', val ).attr('data-cell');
@@ -66,8 +64,8 @@ var product = {
                 tableContent[i] = temp.temp;
                 i++;
             }
-
         });
+
         return tableContent;
     },
     saveTable : function (prId) {

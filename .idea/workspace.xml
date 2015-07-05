@@ -24,7 +24,7 @@
     <favorites_list name="DimaPhalcon" />
   </component>
   <component name="FileEditorManager">
-    <splitter split-orientation="horizontal" split-proportion="0.5175944">
+    <splitter split-orientation="horizontal" split-proportion="0.6455534">
       <split-first>
         <leaf>
           <file leaf-file-name="TabsController.php" pinned="false" current-in-tab="false">
@@ -76,8 +76,8 @@
           <file leaf-file-name="main.js" pinned="false" current-in-tab="true">
             <entry file="file://$PROJECT_DIR$/DimaPhalcon/public/js/jquery/main.js">
               <provider selected="true" editor-type-id="text-editor">
-                <state vertical-scroll-proportion="0.4661017" vertical-offset="4532" max-vertical-offset="8866">
-                  <caret line="230" column="34" selection-start-line="230" selection-start-column="34" selection-end-line="230" selection-end-column="34" />
+                <state vertical-scroll-proportion="0.21643835" vertical-offset="4748" max-vertical-offset="8844">
+                  <caret line="232" column="24" selection-start-line="232" selection-start-column="24" selection-end-line="232" selection-end-column="24" />
                   <folding>
                     <element signature="e#240#615#0" expanded="false" />
                   </folding>
@@ -112,10 +112,10 @@
           <file leaf-file-name="functions.js" pinned="false" current-in-tab="true">
             <entry file="file://$PROJECT_DIR$/DimaPhalcon/public/js/jquery/functions.js">
               <provider selected="true" editor-type-id="text-editor">
-                <state vertical-scroll-proportion="0.48219177" vertical-offset="1122" max-vertical-offset="4708">
-                  <caret line="67" column="13" selection-start-line="67" selection-start-column="13" selection-end-line="67" selection-end-column="13" />
+                <state vertical-scroll-proportion="1.9590396" vertical-offset="43" max-vertical-offset="4664">
+                  <caret line="65" column="13" selection-start-line="65" selection-start-column="13" selection-end-line="65" selection-end-column="13" />
                   <folding>
-                    <marker date="1436131379528" expanded="true" signature="88:1036" placeholder="{&quot;curTabId&quot;: ''...}" />
+                    <marker date="1436133929854" expanded="true" signature="88:1036" placeholder="{&quot;curTabId&quot;: ''...}" />
                   </folding>
                 </state>
               </provider>
@@ -1083,16 +1083,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/DimaPhalcon/public/js/jquery/functions.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.48219177" vertical-offset="1122" max-vertical-offset="4708">
-          <caret line="67" column="13" selection-start-line="67" selection-start-column="13" selection-end-line="67" selection-end-column="13" />
-          <folding>
-            <marker date="1436131379528" expanded="true" signature="88:1036" placeholder="{&quot;curTabId&quot;: ''...}" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="jar://$APPLICATION_HOME_DIR$/plugins/JavaScriptLanguage/lib/JavaScriptLanguage.jar!/com/intellij/lang/javascript/index/predefined/HTML5.js">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.33333334" vertical-offset="3438" max-vertical-offset="48114">
@@ -1101,10 +1091,20 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/DimaPhalcon/public/js/jquery/functions.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="1.9590396" vertical-offset="43" max-vertical-offset="4664">
+          <caret line="65" column="13" selection-start-line="65" selection-start-column="13" selection-end-line="65" selection-end-column="13" />
+          <folding>
+            <marker date="1436133929854" expanded="true" signature="88:1036" placeholder="{&quot;curTabId&quot;: ''...}" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/DimaPhalcon/public/js/jquery/main.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.4661017" vertical-offset="4532" max-vertical-offset="8866">
-          <caret line="230" column="34" selection-start-line="230" selection-start-column="34" selection-end-line="230" selection-end-column="34" />
+        <state vertical-scroll-proportion="0.21643835" vertical-offset="4748" max-vertical-offset="8844">
+          <caret line="232" column="24" selection-start-line="232" selection-start-column="24" selection-end-line="232" selection-end-column="24" />
           <folding>
             <element signature="e#240#615#0" expanded="false" />
           </folding>
