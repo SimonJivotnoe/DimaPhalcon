@@ -21,6 +21,16 @@ var tabs = {
             method: 'POST',
             data: {'id': id, 'tabId': tabId}
         } )
+    },
+    changeTabName : function (prId, prName, categoryId) {
+        $.ajax( {
+            url   : 'http://DimaPhalcon/DimaPhalcon/tabs/changeTabName',
+            method: 'POST',
+            data: {'prId': prId, 'prName' : prName, 'categoryId' : categoryId}
+        } ).then( function ( data )
+        {
+            console.log(data);
+        })
     }
 };
 

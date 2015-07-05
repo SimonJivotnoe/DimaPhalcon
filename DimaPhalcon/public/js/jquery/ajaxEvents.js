@@ -76,19 +76,6 @@ function closeTab(idDb, currentID) {
     })
 }
 
-function changeTabName(prId, prName, categoryId) {
-    console.log(prId);
-    console.log(prName);
-    $.ajax( {
-        url   : 'http://DimaPhalcon/DimaPhalcon/tabs/changeTabName',
-        method: 'POST',
-        data: {'prId': prId, 'prName' : prName, 'categoryId' : categoryId}
-    } ).then( function ( data )
-    {
-        console.log(data);
-    })
-}
-
 function addBtnToFormulasHelper(newFl) {
     $.ajax( {
         url   : 'http://DimaPhalcon/DimaPhalcon/tabs/addBtnToFormulasHelper',

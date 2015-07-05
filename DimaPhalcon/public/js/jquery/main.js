@@ -197,7 +197,7 @@ $( document ).ready( function ()
             prName = 'Новое изделие';
             $('a[href="#' + tabs.curTabId + '"] .tabName').text('Новое изделие');
         }
-        changeTabName(tabs.productId, prName, categoryId);
+        tabs.changeTabName(tabs.productId, prName, categoryId);
     });
 
     /* edit & save TableContent */
