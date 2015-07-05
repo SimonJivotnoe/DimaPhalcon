@@ -94,7 +94,7 @@ $( document ).ready( function ()
             var max = 0;
             (0 !== arr.length) ? max = Math.max.apply(Math, arr) : 0;
 
-            tableContent = product.getTableContent('#sortable li');
+            tableContent = product.getTableContent('#sortable li');console.log(tableContent);
             for (var i = 0; i < numbersOfRows; i++) {
                 var temp = new RowTemplate();
                 temp.temp['%ROW_NUMBER%'] = 'A' + (max+1);
@@ -204,33 +204,31 @@ $( document ).ready( function ()
     $('body').on('click', '#editTableContent', function(){
         $(this ).attr('class', 'glyphicon glyphicon-floppy-disk' ).attr('id', 'saveTableContent');
         $('.removeRow' ).show();
-        $( "#sortable" ).sortable({
+        $( product.sortable ).sortable({
             revert: true
         });
-        $( "#sortable" ).sortable("enable");
+        $( product.sortable ).sortable("enable");
         //$( "ul, li" ).disableSelection();
     })
     $('body').on('click', '#saveTableContent', function(){
         $(this ).attr('class', 'glyphicon glyphicon-pencil').attr('id', 'editTableContent');
         $('.removeRow' ).hide();
-        addNewFormula($.trim($('#formulasList').html()), tabs.productId);
-        $( "#sortable" ).sortable({
+        product.saveTable(tabs.productId);
+        $( product.sortable ).sortable({
             revert: false
         });
-        $('#sortable').sortable('disable');
+        $(product.sortable).sortable('disable');
     })
 
     /* remove tr */
     $('body').on('click', '.removeRow', function(){
         var rowName = $(this ).parent().find('.rowValueInput' ).attr('data-cell');
         var checkBinding = $('.list-group-item').find('.glyphicon:contains(' + rowName + ')');
-        if (checkBinding.length) {
-            checkBinding.remove();
-        }
-       $(this ).parent().hide('drop' );
+        (checkBinding.length) ? checkBinding.remove() : 0 ;
+       //$(this ).parent().hide('drop' );
         $(this ).parent().find('.rowNumber' ).text('');
         $(this ).parent().find('.rowValueInput' ).attr('data-cell', '');
-        setTimeout(function() { $(this ).parent().remove() }, 500);
+        $(this ).parent().remove();
     });
 
     /* create formula */

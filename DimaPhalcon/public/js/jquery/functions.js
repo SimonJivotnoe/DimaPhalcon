@@ -45,7 +45,6 @@ var product = {
             data: {'prId' : prId, 'tableContent' : JSON.stringify(tableContent), 'alwaysInTable' : JSON.stringify(alwaysInTable)}
         } ).then( function ( data )
         {
-            console.log(data);
             $('#sortable' ).html(data[0]);
             $('#alwaysInTable' ).html(data[1]);
             $('.removeRow' ).hide();
@@ -56,14 +55,19 @@ var product = {
         var i = 0;
         $.each($(dom), function(key, val) {
             var temp = new RowTemplate();
-            temp.temp['%ROW_NUMBER%'] = $('.rowNumber', val ).text();
-            temp.temp['%ROW_NAME%'] = $('.rowNameInput', val ).val();
-            temp.temp['%DATA_CELL%'] = $('.rowValueInput', val ).attr('data-cell');
-            temp.temp['%DATA_FORMULA%'] = $('.rowValueInput', val ).attr('data-formula');
-            temp.temp['%INPUT_VALUE%'] = $('.rowValueInput', val ).val();
-            tableContent[i] = temp.temp;
-            i++;
-        })
+            if ('' === $('.rowNumber', val ).text()) {
+
+            } else {
+                temp.temp['%ROW_NUMBER%'] = $('.rowNumber', val ).text();
+                temp.temp['%ROW_NAME%'] = $('.rowNameInput', val ).val();
+                temp.temp['%DATA_CELL%'] = $('.rowValueInput', val ).attr('data-cell');
+                temp.temp['%DATA_FORMULA%'] = $('.rowValueInput', val ).attr('data-formula');
+                temp.temp['%INPUT_VALUE%'] = $('.rowValueInput', val ).val();
+                tableContent[i] = temp.temp;
+                i++;
+            }
+
+        });
         return tableContent;
     },
     saveTable : function (prId) {
