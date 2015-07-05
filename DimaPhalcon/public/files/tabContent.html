@@ -1,0 +1,83 @@
+<div class="col-md-12 created">
+Создано: %CREATED%
+</div>
+<div class="col-md-8 col-md-offset-0 blockNameAndCat">
+    <input class="col-md-5 nameOfProduct" type="text" value="%PRODUCT_NAME%"
+           placeholder="Название изделия" disabled="">
+
+    <div class="col-md-5" id="categoriesListContent">
+        <select class="form-control input-sm listOfCategories" disabled>
+            %CATEGORIES%
+        </select>
+    </div>
+    <div class="col-md-2">
+        <span class="glyphicon glyphicon-pencil" id="editCategoriesListContent" aria-hidden="true"></span>
+    </div>
+</div>
+<div class="col-md-4">
+ &nbsp
+</div>
+<div class="col-md-12">
+    <hr />
+</div>
+<div class="col-md-12 createTableDiv">
+    Количество строк: <input id="duration" value="1" type="number" min="1" name="duration" maxlength="1" style = " width: 4em">
+        <button type="button" class="btn custom-addRowsToTable btn-sm" id="addNewRow" >Создать</button>
+</div>
+<!--<form id="calx" class="col-md-4">
+    <table class="table table-bordered">
+        <tbody>
+        <tr>
+            <th>№</th>
+            <th>A</th>
+            <th>Значение</th>
+        </tr>
+        </tbody>
+    </table>
+</form>-->
+
+<div class="col-md-8 tableContent" >
+    <div class="col-md-10">
+        <form id="calx">
+            <div class="col-md-12">
+                <ul id="sortable">
+                    %TABLE_CONTENT%
+                </ul>
+            </div>
+            <div class="col-md-12">
+                <ul id="alwaysInTable">
+                    %ALWAYS_IN_TABLE%
+                </ul>
+            </div>
+        </form>
+    </div>
+    <div class="col-md-2">
+        <span class="glyphicon glyphicon-pencil" id="editTableContent" aria-hidden="true"></span>
+    </div>
+</div>
+
+<div class="col-md-12">
+    <div class="col-md-6 col-md-offset-4 formulaBtnGroupPr">
+        <button type="button" class="btn custom-cancelInputFormula btn-sm" id="cancelFormulaBtnPr">Отмена</button>
+        <button type="button" class="btn btn-info btn-sm" id="addFormulaBtnPr">Добавить</button>
+    </div>
+    <input type="text" class="col-md-12" id="addFormulaInputPr" placeholder="Введите формулу">
+   <div class="col-md-12" id="formulasHelper">
+       %FORMULAS_HELPER%
+       <span id="addNewBtnSpan">
+         <input type="text" id="addNewFhBtnInput"/>
+       <button type="button" class="btn btn-success btn-xs addNewFhBtn"><span class="glyphicon glyphicon-plus-sign"></span> New</button>
+       </span>
+   </div>
+</div>
+<div class="col-md-10 list-group">
+    <ul name="" id="formulasList">
+        %FORMULAS%
+    </ul>
+</div>
+
+<!--<li class="list-group-item">2*A4+A2*TAN(RADIANS(A5/2))+A3/TAN(RADIANS(A5))</li>
+<li class="list-group-item">
+    2*A6*1.05*((0.01+2*A4+A2*TAN(RADIANS(A5/2))+A3/TAN(RADIANS(A5)))*(0.01+A2+A3)+(0.01+2*A4+A2*TAN(RADIANS(A5/2))+A3/SIN(RADIANS(A5)))*(A1+0.06))
+</li>
+<li class="list-group-item">PRODUCT(A7;A9)</li>-->

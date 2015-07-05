@@ -1,0 +1,12 @@
+{{ tabs }}
+
+
+{% for value in array %}
+    {% if loop.first %}
+{% endif %}
+    {{ value }}
+{% endfor %}
+
+{% for value in category %}
+    {{ value.getName() }}
+{% endfor %}

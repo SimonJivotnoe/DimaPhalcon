@@ -1,0 +1,30 @@
+[
+    {
+        "%ROW_NUMBER%": "KIM1",
+        "%ROW_NAME%": "КИМ",
+        "%DATA_CELL%": "KIM1",
+        "%DATA_FORMULA%": "",
+        "%INPUT_VALUE%": ""
+    },
+    {
+        "%ROW_NUMBER%": "S1",
+        "%ROW_NAME%": "Площадь, м2",
+        "%DATA_CELL%": "S1",
+        "%DATA_FORMULA%": "",
+        "%INPUT_VALUE%": ""
+    },
+    {
+        "%ROW_NUMBER%": "PR1",
+        "%ROW_NAME%": "Цена за м2, грн",
+        "%DATA_CELL%": "PR1",
+        "%DATA_FORMULA%": "",
+        "%INPUT_VALUE%": ""
+    },
+    {
+        "%ROW_NUMBER%": "SUM1",
+        "%ROW_NAME%": "Сумма, грн",
+        "%DATA_CELL%": "SUM1",
+        "%DATA_FORMULA%": "",
+        "%INPUT_VALUE%": ""
+    }
+]

@@ -1,0 +1,254 @@
+body {
+    display: none;
+}
+
+html, body {
+    height: 100%;
+    min-height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+.split-pane-divider {
+    background: #aaa;
+}
+
+#left-component {
+    width: 60em;
+}
+
+#divider {
+    left: 60em; /* same as left component width */
+    width: 5px;
+}
+
+#right-component {
+    left: 60em;
+    margin-left: 5px; /* same as divider width */
+}
+
+#addNewTab {
+    cursor: pointer;
+}
+
+.closeTab {
+    margin-left: 20px;
+    margin-right: -5px;
+    font-size: 10px;
+}
+
+.closeTab:hover {
+    border-radius: 20px;
+    font-size: 12px;
+    cursor: pointer;
+}
+
+/*input[type=number] {
+    width: 50px;
+}*/
+
+.bg-danger {
+    display: none;
+}
+
+#categoriesListTable {
+    width: 250px;
+    height: 200px;
+    overflow: auto;
+
+}
+
+#categoriesListTable:hover {
+    /*box-shadow: 5px 5px 10px #888888;*/
+}
+
+#categoriesListContent {
+    verflow: auto;
+}
+
+th {
+    text-align: center !important;
+    background-color: rgba(43, 41, 51, 0.100);
+    color: black;
+}
+
+#addFormulaBtn {
+    margin-left: 44%;
+}
+
+h4 {
+    text-align: center;
+}
+
+#sortable {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+}
+#alwaysInTable {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    margin-bottom: 10px;
+    font-weight: bold;
+}
+#alwaysInTable .rowName {
+    margin-right: -4px;
+}
+#alwaysInTable li {
+    background-color: hsl(193, 46%, 41%);
+    background-repeat: repeat-x;
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#57aac1", endColorstr="#388398");
+    background-image: linear-gradient(#57aac1, #388398) !important;
+    border-color: #388398 #388398 hsl(193, 46%, 37.5%);
+    color: #fff !important;
+    text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.23);
+    -webkit-font-smoothing: antialiased;
+}
+#alwaysInTable .rowValue {
+    margin-left: 5px;
+    color: #1c94c4;
+}
+#alwaysInTable .rowName {
+    color: #1c94c4;
+}
+.ui-state-default {
+    margin: 1px;
+}
+
+.blockNameAndCat, .tableContent {
+    border: 1px white solid;
+    padding: 15px 0;
+}
+
+.blockNameAndCat:hover, .tableContent:hover {
+    border: 1px rgba(149, 171, 153, 0.5) solid;
+}
+
+.glyphicon-pencil {
+    margin-left: 20px;
+    display: none !important;
+    opacity: 0.5;
+}
+.glyphicon-floppy-disk {
+    margin-left: 20px;
+    opacity: 0.5;
+}
+.glyphicon-floppy-disk:hover {
+    cursor: pointer;
+    font-size: 18px;
+    color: green;
+    opacity: 0.9;
+}
+div.blockNameAndCat:hover span.glyphicon-pencil {
+    display: block !important;
+}
+div.tableContent:hover span.glyphicon-pencil {
+    display: block !important;
+}
+.glyphicon-pencil:hover {
+    cursor: pointer;
+    font-size: 18px;
+    opacity: 0.9;
+    color: blue;
+}
+.created {
+    margin: 20px 0;
+}
+.createTableDiv {
+    margin-bottom: 20px;
+}
+
+ol li {
+    cursor: pointer;
+}
+ol li:hover {
+    border: 1px green solid
+}
+.formulaBtnGroup {
+    margin: 15px 0;
+}
+.removeRow {
+    opacity: 0.5;
+    padding-left: 8px;
+    font-size: 12px;
+}
+.removeRow:hover {
+    cursor: pointer;
+    font-size: 15px;
+    opacity: 0.9;
+    color: red;
+}
+#formulasList {
+    list-style: none;
+    cursor: pointer;
+}
+#formulasHelper {
+    display: none;
+    background-color: hsl(60, 2%, 58%);
+    background-repeat: repeat-x;
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#d7d7d5", endColorstr="#969691");
+    background-image: linear-gradient(#d7d7d5, #969691) !important;
+    border-color: #969691 #969691 hsl(60, 2%, 51.5%);
+    color: #333 !important;
+    text-shadow: 0 1px 1px rgba(255, 255, 255, 0.42);
+    -webkit-font-smoothing: antialiased;
+}
+.fhBtn {
+    margin: 0 2px;
+    color: #000000 !important;
+    font-weight: bold !important;
+}
+.glyphicon-retweet {
+    color: #31708f;
+    margin: 0 10px;
+}
+.addNewFhBtn {
+    margin-left: -5px;
+}
+#addNewFhBtnInput {
+    width: 50px;
+    height: 22px;
+}
+.justCreated {
+    display: none;
+}
+.removeFhBtn {
+   font-size: 10px;
+    margin-left: 5px;
+}
+.removeFhBtn:hover {
+    font-size: 12px;
+}
+.glyphicon-resize-full {
+    color: #31708f;
+    margin: 0 10px;
+    color: red;
+}
+
+/* CUSTOM BUTTONS*/
+.btn:hover {
+    background-position: 0 -15px;
+    color: #333;
+    text-decoration: none;
+}
+.custom-addRowsToTable {
+    background-color: hsl(70, 11%, 23%);
+    background-repeat: repeat-x;
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#7b7f66", endColorstr="#3e4134");
+    background-image: linear-gradient(#7b7f66, #3e4134) !important;
+    border-color: #3e4134 #3e4134 hsl(70, 11%, 17.5%);
+    color: #fff !important;
+    text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.36);
+    -webkit-font-smoothing: antialiased;
+}
+.custom-cancelInputFormula {
+    background-color: hsl(0, 69%, 22%);
+    background-repeat: repeat-x;
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#b42121", endColorstr="#5e1111");
+    background-image: linear-gradient(#b42121, #5e1111) !important;
+    border-color: #5e1111 #5e1111 hsl(0, 69%, 17%);
+    color: #fff !important;
+    text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.33);
+    -webkit-font-smoothing: antialiased;
+}
