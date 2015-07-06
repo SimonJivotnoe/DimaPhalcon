@@ -43,8 +43,10 @@ $( document ).ready( function ()
         if (selectedTabId !== 'preferences1' && tabs.curTabId !== selectedTabId && undefined !== selectedTabId) {
             var tabId = $(this ).find('.glyphicon-remove' ).attr('name');
             var prodId = $(this ).attr('name');
+            tabs.tabsList[tabs.curTabId].active = '0';
+            tabs.tabsList[selectedTabId].active = '1';
             tabs.changeActiveTab(tabId, selectedTabId);
-            getTabContent(prodId, selectedTabId, 0);
+            getTabContent(prodId, selectedTabId, 0);            
         }
     });
     /*----CURRENT TAB END----*/
@@ -114,38 +116,38 @@ $( document ).ready( function ()
             $(this ).val((thisVal - 0.01).toFixed(2) ).attr('value', (thisVal - 0.01).toFixed(2));
         }
         $( '#calx' ).calx();
-        product.saveTable(tabs.productId);
+        product.saveTable();
     });
 
     $('body').on('keyup', '.rowNameInput', function(){
         $(this ).attr('value', $(this ).val());
-        product.saveTable(tabs.productId);
+        product.saveTable();
     });
     
     $('body').on('keydown', '.rowValueInput', function(e){
            switch (e.keyCode) {
                case 38: // UP
-                catchKey(this, '+', 1);
+                product.catchKey(this, '+', 1);
                 e.preventDefault();
                 break; 
                case 40: // DOWN
-                catchKey(this, '-', 1);
+                product.catchKey(this, '-', 1);
                 e.preventDefault();
                 break;
                case 191: // /
-                catchKey(this, '+', 10);
+                product.catchKey(this, '+', 10);
                 e.preventDefault();
                 break;
                case 17: // Ctrl
-                catchKey(this, '-', 10);
+                product.catchKey(this, '-', 10);
                 e.preventDefault();
                 break;
                case 190: // >
-                catchKey(this, '+', 100);              
+                product.catchKey(this, '+', 100);              
                 e.preventDefault();
                 break;
                case 18: // Alt
-                catchKey(this, '-', 100);
+                product.catchKey(this, '-', 100);
                 e.preventDefault();
                 break;
                case 32: // Space
@@ -154,7 +156,7 @@ $( document ).ready( function ()
            } 
     });
 
-    $('body').on('keyup', '.rowValueInput', function(e){
+    $('body').on('keyup', '.rowValueInput', function(e){console.log(e.keyCode);
         var notToReact = [17,18,32,37,38,39,40,110,188,190,191];
         var text = $(this ).val();
         if(text.indexOf(',') !== -1) {
@@ -164,11 +166,16 @@ $( document ).ready( function ()
         $(this).attr('value', text);
          if (-1 === $.inArray(e.keyCode, notToReact)){
             var caretPos = this.selectionStart;
-            $( '#calx' ).calx();
+            if (96 === e.keyCode && '.' === text.charAt((text.length - 2))) {
+                
+            } else {
+                $( '#calx' ).calx();
             text = '' + $(this ).val();
             $(this ).caret(caretPos);
             ('.' === text.charAt((text.length - 2))) ? $(this ).caret((text.length - 1)) : 0;
-             product.saveTable(tabs.productId);
+             product.saveTable();
+            }
+            
         }
     });
     /* SAVE CHANGES IN TABLE END*/
@@ -177,7 +184,7 @@ $( document ).ready( function ()
     // set tab name
      $('body').on('change, keyup', '.nameOfProduct', function(){
          $(tabs.curTabName).text($(this ).val());
-         ('' == $(this ).val()) ? $(tabs.curTabName).text('Новое изделие') : 0;
+         ('' === $(this ).val()) ? $(tabs.curTabName).text('Новое изделие') : 0;
      });
 
     $('body').on('click', '#editCategoriesListContent', function(){
@@ -205,16 +212,16 @@ $( document ).ready( function ()
         });
         $( product.sortable ).sortable("enable");
         //$( "ul, li" ).disableSelection();
-    })
+    });
     $('body').on('click', '#saveTableContent', function(){
         $(this ).attr('class', 'glyphicon glyphicon-pencil').attr('id', 'editTableContent');
         $('.removeRow' ).hide();
-        product.saveTable(tabs.productId);
+        product.saveTable();
         $( product.sortable ).sortable({
             revert: false
         });
         $(product.sortable).sortable('disable');
-    })
+    });
 
     /* create formula */
     var currentCaretPos = 0;
@@ -354,9 +361,10 @@ $( document ).ready( function ()
                 self = undefined;
                 prId = $('a[href="#' + $('.currentTab').attr('id') + '"]').attr('name');
                 addNewFormula($.trim($('#formulasList').html()), prId);
+                product.saveTable();
             }
         });
-    })
+    });
 
     $('body').on('mouseover', '.glyphicon-retweet', function(){
         $(this ).removeClass('glyphicon glyphicon-retweet' ).addClass('glyphicon glyphicon-resize-full');
@@ -368,15 +376,23 @@ $( document ).ready( function ()
         e.stopPropagation();
         e.preventDefault();
         var bindCell = $(this ).text();
-        $('.rowValueInput[data-cell=' +bindCell + ']' ).removeAttr('data-formula color' ).val('' ).attr('value', '').css('color', '' );
+        $('.rowValueInput[data-cell=' +bindCell + ']' )
+                .removeAttr('color' ).val('' )
+                .attr('value', '')
+                .attr('data-formula', '')
+                .css('color', '' );
         $('.rowValueInput[data-cell=' +bindCell + ']' ).parent().parent().find('.rowNameInput').css('color', '' );
         $('.rowValueInput[data-cell=' +bindCell + ']' ).parent().parent().css({'background' : '', 'color' : ''});
         $(this ).parent().removeClass('list-group-item-info');
         $(this ).remove();
+        $( '#calx' ).calx();
         var tableContent = $.trim($('#sortable').html());
         var prId = $('a[href="#' + $('.currentTab').attr('id') + '"]').attr('name');
         addNewFormula($.trim($('#formulasList').html()), prId);
-    })
+        var tableContent = product.getTableContent(product.sortable + ' li');
+        var alwaysInTable = product.getTableContent(product.alw + ' li');
+        product.createTable(tabs.productId, tableContent, alwaysInTable);
+    });
 } );
 
 /*function activeTabInputVal(id, activeTabName) {
