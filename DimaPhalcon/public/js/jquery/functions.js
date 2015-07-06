@@ -6,6 +6,7 @@ var tabs = {
     curTabId : '',
     productId : '',
     curTabName : '',
+    tabsList : '',
     addTab : function (id) {
         $.ajax( {
             url   : 'http://DimaPhalcon/DimaPhalcon/tabs/addNewTab/' + id,
@@ -38,6 +39,15 @@ var product = {
     self : this,
     sortable : '#sortable',
     alw : '#alwaysInTable',
+    temp : function () {
+        return {
+        "%ROW_NUMBER%": "",
+        "%ROW_NAME%": "",
+        "%DATA_CELL%": "",
+        "%DATA_FORMULA%": "",
+        "%INPUT_VALUE%": ""
+        };
+    },
     createTable : function(prId, tableContent, alwaysInTable) {
         $.ajax( {
             url   : 'http://DimaPhalcon/DimaPhalcon/products/createTable',
@@ -48,7 +58,7 @@ var product = {
             $('#sortable' ).html(data[0]);
             $('#alwaysInTable' ).html(data[1]);
             $('.removeRow' ).hide();
-        })
+        });
     },
     getTableContent : function (dom) {
         var tableContent = {};
@@ -69,20 +79,20 @@ var product = {
         return tableContent;
     },
     saveTable : function (prId) {
-    $.ajax( {
-        url   : 'http://DimaPhalcon/DimaPhalcon/products/changeTableContent',
-        method: 'POST',
-        data: {
-            'prId' : prId,
-            'tableContent' : JSON.stringify(this.getTableContent(this.sortable + ' li')),
-            'alwaysInTable' : JSON.stringify(this.getTableContent(this.alw + ' li'))
-        }
-    } ).then( function ( data )
-    {
-        console.log(data);
-    })
-}
-}
+        $.ajax( {
+            url   : 'http://DimaPhalcon/DimaPhalcon/products/changeTableContent',
+            method: 'POST',
+            data: {
+                'prId' : prId,
+                'tableContent' : JSON.stringify(this.getTableContent(this.sortable + ' li')),
+                'alwaysInTable' : JSON.stringify(this.getTableContent(this.alw + ' li'))
+            }
+        } ).then( function ( data )
+        {
+            console.log(data);
+        });
+    }
+};
 
 function RowTemplate() {
     this.temp = {
@@ -91,7 +101,7 @@ function RowTemplate() {
         "%DATA_CELL%": "",
         "%DATA_FORMULA%": "",
         "%INPUT_VALUE%": ""
-    }
+    };
 }
 
 function showPreferences(){
@@ -112,32 +122,6 @@ function catchKey(el, mathAction, step) {
     $( '#calx' ).calx();
     product.saveTable(tabs.productId);
 }
-function checkActiveStatusOnDelete(deleteTabID) {
-    var isActive = $('#' + deleteTabID).hasClass('active');
-    if (isActive) {
-       var nextActive = $('.active').next();
-        if (nextActive.find('a').hasAttr('aria-controls')) {
-            removeTabFromDOM(deleteTabID);
-            return correctReturnOnCloseTab(nextActive);
-        } else {console.log('prev');
-            var prevActive = $('.active').prev();console.log(prevActive.find('a').hasAttr('aria-controls'));
-            if (prevActive.find('a').hasAttr('aria-controls')) {
-                removeTabFromDOM(deleteTabID);console.log(prevActive.find('a' ).attr('aria-controls'));
-                return correctReturnOnCloseTab(prevActive);
-            } else {
-                removeTabFromDOM(deleteTabID);
-                return 'preferences1';
-            }
-        }
-    } else {
-        removeTabFromDOM(deleteTabID);
-        if ($('.currentTab').hasClass('active')) {
-            return $('.currentTab').attr('id');
-        } else {
-            return 'preferences1';
-        }
-    }
-}
 
 function cancelInputFotmula() {
     $('#addFormulaInputPr' ).css('border-color', '' ).val('');
@@ -151,16 +135,6 @@ function cancelInputFotmula() {
         }
     });
     $('#formulasHelper' ).hide('slide');
-}
-
-function removeTabFromDOM(id) {
-    $('[aria-controls=' + id + ']' ).removeAttr( 'role' );
-    $('[aria-controls=' + id + ']').hide('highlight');
-    $('[aria-controls=' + id + ']' ).removeAttr( 'aria-controls' ).removeAttr( 'role' );
-    setTimeout(function() {
-        $('[aria-controls=' + id + ']' ).parent().remove();
-    }, 700);
-    return true;
 }
 
 function addWhereCaret(caretPos, what) {console.log(caretPos);
@@ -185,16 +159,7 @@ function caretAfterBlur() {
         } else {
             console.log(caret);
         }       
-    };  
-    
-}
-
-function correctReturnOnCloseTab(tab) {
-    if (undefined === tab.find('a' ).attr('aria-controls')) {
-        return 'preferences1';
-    } else {
-    return tab.find('a' ).attr('aria-controls');
-    }
+    };     
 }
 
 function removeChar(string, index){

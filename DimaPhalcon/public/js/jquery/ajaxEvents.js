@@ -5,6 +5,7 @@ function getTabs(param) {
     } ).then( function ( data )
     {
         if(0 !== data.length && 'all' === param){
+            tabs.tabsList = data[3];
             if ('' !== data[0]) {
                 $(data[0]).insertBefore( '#addNewTab' );
                 if (!data[1]) {
@@ -22,7 +23,7 @@ function getTabs(param) {
         } else {
             showPreferences();
         }
-    } )
+    });
 }
 
 function getTabContent(productId, tabId, body) {
@@ -42,26 +43,45 @@ function getTabContent(productId, tabId, body) {
         tabs.tableContent = $.trim($('#sortable').html());
         $(function() {
             $('#calx').calx();
-        })
+        });
         if (body) {
             $('body' ).fadeIn(350);
         }
-    })
+    });
 }
 
 function closeTab(idDb, currentID) {
-    var nextActiveTab = checkActiveStatusOnDelete(currentID);
-    var tabName = '';
+    var nextActiveTab = tabs.curTabId;
+    var productId = tabs.productId;
+    var elemInObj = Object.keys(tabs.tabsList);    
+    if (1 === elemInObj.length) {
+        nextActiveTab = 'preferences1';
+    } else {
+        var ifActive = tabs.tabsList[currentID].active;
+        if ('1' === ifActive) {            
+            var index = elemInObj.indexOf(currentID);
+            if (index === elemInObj.length - 1) {
+                nextActiveTab = Object.keys(tabs.tabsList)[elemInObj.length - 2];                
+            } else {
+                nextActiveTab = Object.keys(tabs.tabsList)[index + 1];
+            }
+            productId = tabs.tabsList[nextActiveTab].productId;  console.log(productId);
+            tabs.tabsList[nextActiveTab].active = '1';
+        }             
+    }    
+    delete tabs.tabsList[currentID];
+    $('[aria-controls=' + currentID + ']').hide('highlight');
+    setTimeout(function() {
+        $('[aria-controls=' + currentID + ']' ).parent().remove();
+    }, 700);
     if ('preferences1' === nextActiveTab || undefined === nextActiveTab) {
         $('.currentTab').removeClass('active');
         $('#preferences, #preferences1').addClass('active');
         $('.bg-danger' ).fadeOut(10);
         $('#addCategoryInput' ).val('');
         getCategoriesList();
-
     } else {
         $('[aria-controls=' + nextActiveTab +']').parent().addClass('active');
-        tabName = $('[aria-controls=' + nextActiveTab +']' ).attr('name');
     }
 
     $.ajax( {
@@ -71,9 +91,9 @@ function closeTab(idDb, currentID) {
     } ).then( function (  )
     {
         if ('preferences1' !== nextActiveTab) {
-            getTabContent(tabName, nextActiveTab, 0);
+            getTabContent(productId, nextActiveTab, 0);
         }
-    })
+    });
 }
 
 function addBtnToFormulasHelper(newFl) {

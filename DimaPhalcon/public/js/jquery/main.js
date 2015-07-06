@@ -8,46 +8,33 @@ $( document ).ready( function ()
     getTabs('all');
     /*----RECEIVE TABS LIST END----*/
 
-   // activeTabInputVal(false, '');
-
-  /*  var formula = $('option:selected').text();
-    $('#calx').calx();
-    $('#calx').calx('getCell', 'A77777').setFormula(formula);
-     $('#calx').calx('calculate');
-
-    $('#formulasList').on('change', function(){
-        formula = $('option:selected').text();
-        $('#calx').calx('getCell', 'A77777').setFormula(formula);
-        $('#calx').calx('calculate');
-    })*/
-
     /*----PREFERENCES_START----*/
     // cog spin on
     $('body').on('mouseover', '#preferences', function(){
         $(this ).find('.fa-cog').addClass('fa-spin');
-    })
+    });
     // cog spin off
     $('body').on('mouseleave', '#preferences', function(){
         $(this ).find('.fa-cog').removeClass('fa-spin');
-    })
+    });
     $('#preferences').on('click', function(){
         $('.bg-danger' ).fadeOut(10);
         $('#addCategoryInput' ).val('');
         getCategoriesList();
         tabs.changeActiveTab('', '');
-    })
+    });
     // add new category
     $('#addCategoryBtn').on('click', function(){
         var newCategoryName = $('#addCategoryInput' ).val();
         ('' !== newCategoryName) ? addCategory(newCategoryName) : 0;
-    })
+    });
     /*----PREFERENCES_END----*/
 
     /*----NEW_TAB_START----*/
     /* creating new tab clicking on + */
     $('#addNewTab').on('click', function(){
         getTabs('last');
-    })
+    });
     /*----NEW_TAB_END----*/
     
     /*----CURRENT TAB START----*/
@@ -59,14 +46,14 @@ $( document ).ready( function ()
             tabs.changeActiveTab(tabId, selectedTabId);
             getTabContent(prodId, selectedTabId, 0);
         }
-    })
+    });
     /*----CURRENT TAB END----*/
 
     /*----CLOSING TAB START----*/
     $('body').on('click', '.closeTab', function (e){
         e.stopPropagation();
         var currentID = $(this).parent().attr('aria-controls');
-        var idDb = $(this ).attr('name');
+        var idDb = $(this ).attr('name');        
         $(this ).attr('class', 'glyphicon glyphicon-remove');
         closeTab(idDb, currentID);
     });
@@ -79,7 +66,7 @@ $( document ).ready( function ()
         var tableContent = {};
         if (0 === $('#sortable li').size()) {
             for (var i = 0; i < numbersOfRows; i++) {
-                var temp = new RowTemplate();
+                temp = new RowTemplate();
                 temp.temp['%ROW_NUMBER%'] = 'A' + (i+1);
                 temp.temp['%DATA_CELL%'] = 'A' + (i+1);
                 tableContent[i] = temp.temp;
@@ -102,7 +89,6 @@ $( document ).ready( function ()
                 tableContent[max] = temp.temp;
                 max++;
             }
-            console.log(tableContent);
             var alwaysInTable = product.getTableContent(product.alw + ' li');
             product.createTable(tabs.productId, tableContent, alwaysInTable);
         }

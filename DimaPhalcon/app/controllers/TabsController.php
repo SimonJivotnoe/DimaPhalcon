@@ -3,48 +3,7 @@ use Phalcon\Db\RawValue;
 class TabsController extends \Phalcon\Mvc\Controller
 {
 
-   /* public function getTabsListAction($tabId)
-    {
-        if ($this->request->isAjax() && $this->request->isGet()) {
-            if ('all' === $tabId) {
-                $tabs = Tabs::find();
-                if ($tabs == false) {
-                    echo "Мы не можем сохранить робота прямо сейчас: \n";
-                    foreach ($tabs->getMessages() as $message) {
-                        echo $message, "\n";
-                    }
-                } else {
-                    $tabsList = array();
-                    foreach ($tabs as $val) {
-                        $tabsList[ ] = array(
-                            'active' => $val->getActive(),
-                            'id' => $val->getId(),
-                            'tabId' => $val->getTabId(),
-                            'productId' => $val->getProductId()
-                        );
-                    }
-                    $this->response->setContentType('application/json', 'UTF-8');
-                    $this->response->setJsonContent($tabsList);
-
-                    return $this->response;
-                }
-            } else {
-                $tabs = Tabs::maximum(array("column" => "id"));
-                if(!empty($tabs)){
-                    $this->response->setContentType('application/json', 'UTF-8');
-                    $this->response->setJsonContent($tabs);
-                } else {
-                    $this->response->setContentType('application/json', 'UTF-8');
-                    $this->response->setJsonContent(array());
-                }
-                return $this->response;
-            }
-        }  else {
-            $this->response->redirect('');
-        }
-    }*/
-
-    public function getTabsListAction($tabId)
+   public function getTabsListAction($tabId)
     {
         if ($this->request->isAjax() && $this->request->isGet()) {
             if ('all' === $tabId) {
@@ -60,6 +19,7 @@ class TabsController extends \Phalcon\Mvc\Controller
                         $tabsLi = '';
                         $active = 0;
                         $prodId = 0;
+                        $tabArr = [];
                         foreach ($tabs as $val) {
                             $tabsList = array();
                             if ($val->getActive()) {
@@ -75,9 +35,14 @@ class TabsController extends \Phalcon\Mvc\Controller
                             $product = Products::findFirst($val->getProductId());
                             $tabsList[ '%PRODUCT_NAME%' ] = $product->getProductName();
                             $tabsLi .= $substObj->subHTMLReplace('tab_li.html', $tabsList);
+                            
+                            $tabArr[$val->getTabId()] = (object)[
+                                'active' => $val->getActive(),
+                                'productId' => $val->getProductId()];
                         }
+                        $tabObj = (object)$tabArr;
                         $this->response->setContentType('application/json', 'UTF-8');
-                        $this->response->setJsonContent(array($tabsLi, $active, $prodId));
+                        $this->response->setJsonContent(array($tabsLi, $active, $prodId, $tabObj));
 
                         return $this->response;
                     } else {
@@ -170,7 +135,6 @@ class TabsController extends \Phalcon\Mvc\Controller
                     '%FORMULAS_HELPER%' => $formHelpArr,
                     '%FORMULAS%' => $product->getFormulas()
                 );
-                $category = Categories::find();
                 $tabContent .= $substObj->subHTMLReplace('tabContent.html', $productDetails);
                 $this->response->setContentType('application/json', 'UTF-8');
                 $this->response->setJsonContent($tabContent);
