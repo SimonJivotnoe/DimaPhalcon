@@ -111,7 +111,7 @@ function addBtnToFormulasHelper(newFl) {
             $('#addNewFhBtnInput' ).val('');
         }
 
-    })
+    });
 }
 
 function removeFormulasHelper(self, fhText) {
@@ -123,21 +123,7 @@ function removeFormulasHelper(self, fhText) {
     {
         $(self ).parent().fadeOut('slow');
 
-    })
-}
-
-function addNewFormula(formulas, prId) {
-    $.ajax( {
-        url   : 'http://DimaPhalcon/DimaPhalcon/tabs/addNewFormula',
-        method: 'POST',
-        data: {'formulas': formulas, 'prId' : prId}
-    } ).then( function ( data )
-    {
-        if (true === data) {
-            var tableContent = $.trim($('#sortable').html());
-            cancelInputFotmula();
-        }
-    })
+    });
 }
 
 /* PREFERENCES */

@@ -276,11 +276,11 @@ $( document ).ready( function ()
     /* show remove formulas helper */
     $('body').on('mouseover', '.fhBtn', function() {
         $( '.removeFhBtn', this).show('fast');
-    })
+    });
     /* hide remove formulas helper */
     $('body').on('mouseleave', '.fhBtn', function() {
         $( '.removeFhBtn', this).hide('fast');
-    })
+    });
     /* remove formulas helper*/
     $('body').on('click', '.removeFhBtn', function(e) {
         e.stopPropagation();
@@ -288,62 +288,62 @@ $( document ).ready( function ()
         var fhText = $(this ).parent().text();
         removeFormulasHelper(this, fhText);
         $(this ).parent().fadeOut('slow');
-    })
+    });
     $('body').on('click', '#cancelFormulaBtnPr', function(){
         cancelInputFotmula();
-    })
-    $('body').on('click', '#addFormulaBtnPr', function(){
-        if ('' !== $('#addFormulaInputPr').val()) {
+    });
+    $('body').on('click', product.addFormulaBtnPr, function(){
+        if ('' !== product.formulaInputValue) {
             $('#formulasList' ).append('<li class="list-group-item"><span class="formulaValue">' + $('#addFormulaInputPr').val() + '</span></li>');
             cancelInputFotmula();
-            $('#addFormulaInputPr').val('')
-            var prId = $('a[href="#' + $('.currentTab').attr('id') + '"]').attr('name');
-            addNewFormula($.trim($('#formulasList').html()), prId);
+            $('#addFormulaInputPr').val('');
+            product.addNewFormula($.trim($('#formulasList').html()));
         }
-    })
+    });
     $('body').on('click', '.addNewFhBtn', function(){
         $('body').css('cursor', 'pointer');
         var newFl = $('#addNewFhBtnInput' ).val();
         addBtnToFormulasHelper(newFl);
-    })
+    });
     $('body').on('click', '#addNewFhBtnInput', function(){
         $('#addFormulaInputPr, .rowNumber').off('click');
         $('body').off('keypress');
         $('body').off('click', '.rowNumber');
         $('body').css('cursor', 'auto');
-    })
+    });
 
     $('body').on('mouseover', '.list-group-item', function(){
         $(this ).addClass('list-group-item-info');
-    })
+    });
     $('body').on('mouseleave', '.list-group-item', function(){
         $(this ).removeClass('list-group-item-info');
-    })
+    });
     $(function(){
         var self;
         var formula;
         var cell;
-        var tableContent;
-        var prId;
         $('body').on('click', '.list-group-item', function(){
             $('#formulasList li' ).removeClass('list-group-item-success');
             cancelInputFotmula();
             self = this;
             formula = $('.formulaValue', self ).text();
             $(self ).toggleClass('list-group-item-success');
+            //$('.rowValueInput').prop('disabled', true);
         });
         $('body').on('mouseover', '.rowValue', function() {
             if (undefined !== self) {
                 if ( -1 === formula.search($( '.rowValueInput', this ).attr( 'data-cell' ))) {
-                    $('.rowValueInput', this).css('background', '#419641');
-                } else if(-1 !== formula.search($( '.rowValueInput', this ).attr( 'data-cell' ))){
+                    product.checkInputOnFormula(formula, $( '.rowValueInput', this ).attr( 'data-cell' ));
+                    //$('.rowValueInput', this).css('background', '#419641');
+                } /*else if(-1 !== formula.search($( '.rowValueInput', this ).attr( 'data-cell' ))){
                     $('.rowValueInput', this ).prop('disabled', true);
-                }
+                }*/
             }
-        })
+            
+        });
         $('body').on('mouseleave', '.rowValue', function() {
-            $('.rowValueInput', this).css('background', '').prop('disabled', false);;
-        })
+            //$('.rowValueInput', this).css('background', '').prop('disabled', false);;
+        });
 
         $('body').on('click', '.rowValueInput', function(){
             if (undefined !== self && false === $(this ).prop('disabled'))
@@ -359,8 +359,7 @@ $( document ).ready( function ()
                 $( self ).removeClass( 'list-group-item-success' );
                 $(this).css('background', '');
                 self = undefined;
-                prId = $('a[href="#' + $('.currentTab').attr('id') + '"]').attr('name');
-                addNewFormula($.trim($('#formulasList').html()), prId);
+                product.addNewFormula($.trim($('#formulasList').html()));
                 product.saveTable();
             }
         });
@@ -368,10 +367,10 @@ $( document ).ready( function ()
 
     $('body').on('mouseover', '.glyphicon-retweet', function(){
         $(this ).removeClass('glyphicon glyphicon-retweet' ).addClass('glyphicon glyphicon-resize-full');
-    })
+    });
     $('body').on('mouseleave', '.glyphicon-resize-full', function(){
         $(this ).removeClass('glyphicon glyphicon-resize-full' ).addClass('glyphicon glyphicon-retweet');
-    })
+    });
     $('body').on('click', '.glyphicon-resize-full', function(e){
         e.stopPropagation();
         e.preventDefault();
@@ -388,7 +387,7 @@ $( document ).ready( function ()
         $( '#calx' ).calx();
         var tableContent = $.trim($('#sortable').html());
         var prId = $('a[href="#' + $('.currentTab').attr('id') + '"]').attr('name');
-        addNewFormula($.trim($('#formulasList').html()), prId);
+        product.addNewFormula($.trim($('#formulasList').html()), prId);
         var tableContent = product.getTableContent(product.sortable + ' li');
         var alwaysInTable = product.getTableContent(product.alw + ' li');
         product.createTable(tabs.productId, tableContent, alwaysInTable);

@@ -3,11 +3,11 @@ $.fn.hasAttr = function(name) {
 };
 
 var tabs = {
-    curTabId : '',
-    productId : '',
-    curTabName : '',
-    tabsList : '',
-    addTab : function (id) {
+    curTabId: '',
+    productId: '',
+    curTabName: '',
+    tabsList: '',
+    addTab: function (id) {
         $.ajax( {
             url   : 'http://DimaPhalcon/DimaPhalcon/tabs/addNewTab/' + id,
             method: 'POST'
@@ -16,18 +16,25 @@ var tabs = {
             window.location.href = 'http://DimaPhalcon/DimaPhalcon/';
         });
     },
-    changeActiveTab : function (id, tabId) {
+    changeActiveTab: function (id, tabId) {
         $.ajax( {
             url   : 'http://DimaPhalcon/DimaPhalcon/tabs/changeActiveTab' ,
             method: 'POST',
-            data: {'id': id, 'tabId': tabId}
+            data: {
+                id: id,
+                tabId: tabId
+            }
         });
     },
-    changeTabName : function (prId, prName, categoryId) {
+    changeTabName: function (prId, prName, categoryId) {
         $.ajax( {
             url   : 'http://DimaPhalcon/DimaPhalcon/tabs/changeTabName',
             method: 'POST',
-            data: {'prId': prId, 'prName' : prName, 'categoryId' : categoryId}
+            data: {
+                prId: prId,
+                prName : prName,
+                categoryId : categoryId
+            }
         } ).then( function ( data )
         {
             console.log(data);
@@ -36,10 +43,10 @@ var tabs = {
 };
 
 var product = {
-    self : this,
-    sortable : '#sortable',
-    alw : '#alwaysInTable',
-    createTable : function(prId, tableContent, alwaysInTable) {
+    self: this,
+    sortable: '#sortable',
+    alw: '#alwaysInTable',
+    createTable: function(prId, tableContent, alwaysInTable) {
         $.ajax( {
             url   : 'http://DimaPhalcon/DimaPhalcon/products/createTable',
             method: 'POST',
@@ -55,7 +62,7 @@ var product = {
             $('.removeRow' ).hide();
         });
     },
-    getTableContent : function (dom) {
+    getTableContent: function (dom) {
         var tableContent = {};
         var i = 0;
         $.each($(dom), function(key, val) {
@@ -70,24 +77,24 @@ var product = {
                 i++;
             }
         });
-        console.log(tableContent);
+
         return tableContent;
     },
-    saveTable : function () {
+    saveTable: function () {
         $.ajax( {
             url   : 'http://DimaPhalcon/DimaPhalcon/products/changeTableContent',
             method: 'POST',
             data: {
-                'prId' : tabs.productId,
-                'tableContent' : JSON.stringify(this.getTableContent(this.sortable + ' li')),
-                'alwaysInTable' : JSON.stringify(this.getTableContent(this.alw + ' li'))
+                prId: tabs.productId,
+                tableContent: JSON.stringify(this.getTableContent(this.sortable + ' li')),
+                alwaysInTable: JSON.stringify(this.getTableContent(this.alw + ' li'))
             }
         } ).then( function ( data )
         {
             console.log(data);
         });
     },
-    catchKey : function (el, mathAction, step) {
+    catchKey: function (el, mathAction, step) {
         var thisVal = Number($( el ).val());
         if ('+' === mathAction) {
             $(el ).val((thisVal + step).toFixed(2)).attr('value', (thisVal + step).toFixed(2));
@@ -96,6 +103,50 @@ var product = {
         }
         $( '#calx' ).calx();
         this.saveTable(tabs.productId);
+    },
+    addFormulaBtnPr: '#addFormulaBtnPr',
+    formulaInputValue: function() {
+        return $('#addFormulaInputPr').val();
+    },
+    addNewFormula: function (formulas) {
+        $.ajax( {
+            url   : 'http://DimaPhalcon/DimaPhalcon/tabs/addNewFormula',
+            method: 'POST',
+            data: {
+                formulas: formulas,
+                prId : tabs.productId
+            }
+        } ).then( function ( data )
+        {
+            if (true === data) {
+
+            }
+        });
+    },
+    checkInputOnFormula: function(formula, cell) {
+        var tableContent = this.getTableContent(this.sortable + ' li');
+        var alwaysInTable = this.getTableContent(this.alw + ' li');
+        var cellsArr = {};
+        var cellsInFormula = [];
+        $.each(tableContent, function (key, val) {
+            cellsArr[val['%DATA_CELL%']] = val['%DATA_FORMULA%'];
+        });
+        $.each(alwaysInTable, function (key, val) {
+            cellsArr[val['%DATA_CELL%']] = val['%DATA_FORMULA%'];
+        });
+        $.each(cellsArr, function (key) {
+            (-1 !== formula.search(key)) ? cellsInFormula.push(key) : 0;
+        });
+       /* $.each(cellsInFormula, function (key, val) {
+            $.each(cellsArr, function (k, v) {
+                if (-1 !== v['%DATA_FORMULA%'].search(val)) {
+                    
+                }
+            (-1 !== v['%DATA_FORMULA%'].search(val)) ? cellsInFormula.push(key) : 0;
+        });
+        });*/
+
+        console.log(cellsInFormula);
     }
 };
 
