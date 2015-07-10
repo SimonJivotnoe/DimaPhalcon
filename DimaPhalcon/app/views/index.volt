@@ -85,6 +85,6 @@
 <script src="js/jquery/jquery.caret.js"></script>
 <script src="js/jquery/split-pane.js"></script>
 <script src="js/jquery/jquery.mousewheel.js"></script>
-
+<script src="js/jquery/typeahead.bundle.js"></script>
 </body>
 </html>

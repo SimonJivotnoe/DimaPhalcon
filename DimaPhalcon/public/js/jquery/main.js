@@ -328,39 +328,47 @@ $( document ).ready( function ()
             self = this;
             formula = $('.formulaValue', self ).text();
             $(self ).toggleClass('list-group-item-success');
-            //$('.rowValueInput').prop('disabled', true);
         });
         $('body').on('mouseover', '.rowValue', function() {
             if (undefined !== self) {
                 if ( -1 === formula.search($( '.rowValueInput', this ).attr( 'data-cell' ))) {
-                    product.checkInputOnFormula(formula, $( '.rowValueInput', this ).attr( 'data-cell' ));
-                    //$('.rowValueInput', this).css('background', '#419641');
-                } /*else if(-1 !== formula.search($( '.rowValueInput', this ).attr( 'data-cell' ))){
-                    $('.rowValueInput', this ).prop('disabled', true);
-                }*/
+                    if (product.checkInputOnFormula(formula, $( '.rowValueInput', this ).attr( 'data-cell' ))) {
+                        $('.rowValueInput', this).css(
+                                {
+                                    'background': 'hsl(145, 38%, 53%)',
+                                    'cursor': 'pointer'
+                                });
+                    } else {
+                        $('.rowValueInput', this).prop('disabled', true);
+                    }                   
+                } else {
+                    $('.rowValueInput', this).prop('disabled', true);
+                }
             }
             
         });
         $('body').on('mouseleave', '.rowValue', function() {
-            //$('.rowValueInput', this).css('background', '').prop('disabled', false);;
+            $('.rowValueInput', this).css('background', '').prop('disabled', false);
         });
 
         $('body').on('click', '.rowValueInput', function(){
             if (undefined !== self && false === $(this ).prop('disabled'))
             {
-                $( this ).attr( 'data-formula', formula );
-                cell = $( this ).attr( 'data-cell' );
-                $( '#calx' ).calx();
-                $(this ).css('color', '#419641');
-                $(this ).parent().parent().find('.rowNameInput').css('color', '#419641');
-                $(this ).parent().parent().css({'background' : '#419641', 'color' : '#fff'});
-                $( self ).find('.glyphicon-retweet' ).remove();
-                $( self ).append( '<span class="glyphicon glyphicon-retweet" aria-hidden="true"> ' + cell + '</span>' );
-                $( self ).removeClass( 'list-group-item-success' );
-                $(this).css('background', '');
-                self = undefined;
-                product.addNewFormula($.trim($('#formulasList').html()));
-                product.saveTable();
+                if (product.checkInputOnFormula(formula, $( this ).attr( 'data-cell' ))) {
+                   $( this ).attr( 'data-formula', formula ).blur();
+                    cell = $( this ).attr( 'data-cell' );
+                    $( '#calx' ).calx();
+                    /*$(this ).css('color', '#419641');
+                    $(this ).parent().parent().find('.rowNameInput').css('color', '#419641');
+                    $(this ).parent().parent().css({'background' : '#419641', 'color' : '#fff'});*/
+                    $( self ).find('.glyphicon-retweet' ).remove();
+                    $( self ).append( '<span class="glyphicon glyphicon-retweet" aria-hidden="true"> ' + cell + '</span>' );
+                    $( self ).removeClass( 'list-group-item-success' );
+                    $(this).css('background', '');
+                    self = undefined;
+                    product.addNewFormula($.trim($('#formulasList').html()));
+                    product.saveTable(); 
+                }                
             }
         });
     });

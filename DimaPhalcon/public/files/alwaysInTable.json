@@ -24,7 +24,7 @@
         "%ROW_NUMBER%": "SUM1",
         "%ROW_NAME%": "Сумма, грн",
         "%DATA_CELL%": "SUM1",
-        "%DATA_FORMULA%": "",
+        "%DATA_FORMULA%": "PRODUCT(S1,PR1)",
         "%INPUT_VALUE%": ""
     }
 ]

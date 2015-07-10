@@ -124,10 +124,11 @@ var product = {
         });
     },
     checkInputOnFormula: function(formula, cell) {
-        var tableContent = this.getTableContent(this.sortable + ' li');
-        var alwaysInTable = this.getTableContent(this.alw + ' li');
-        var cellsArr = {};
-        var cellsInFormula = [];
+        var tableContent = this.getTableContent(this.sortable + ' li'),
+            alwaysInTable = this.getTableContent(this.alw + ' li'),
+            cellsArr = {},
+            cellsInFormula = [],
+            res = true;
         $.each(tableContent, function (key, val) {
             cellsArr[val['%DATA_CELL%']] = val['%DATA_FORMULA%'];
         });
@@ -137,16 +138,11 @@ var product = {
         $.each(cellsArr, function (key) {
             (-1 !== formula.search(key)) ? cellsInFormula.push(key) : 0;
         });
-       /* $.each(cellsInFormula, function (key, val) {
-            $.each(cellsArr, function (k, v) {
-                if (-1 !== v['%DATA_FORMULA%'].search(val)) {
-                    
-                }
-            (-1 !== v['%DATA_FORMULA%'].search(val)) ? cellsInFormula.push(key) : 0;
+        $.each(cellsInFormula, function (key, val) {
+            (-1 !== cellsArr[val].search(cell)) ? res = false : 0;               
+           
         });
-        });*/
-
-        console.log(cellsInFormula);
+        return res;
     }
 };
 
