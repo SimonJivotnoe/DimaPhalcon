@@ -1,51 +1,228 @@
 $.fn.hasAttr = function(name) {
     return this.attr(name) !== undefined;
 };
+var app = {
+    tabs: {
+        URL: 'http://DimaPhalcon/DimaPhalcon/tabs/',
+        dom: {
+            closeTab: '.closeTab',
+            addCategoryInput: '#addCategoryInput',
+            curTabId: '',
+            productId: '',
+            curTabName: '',
+            tabsList: ''
+        },        
+        addTab: function (id) {
+            var self = this;
+            $.ajax( {
+                url   : self.URL + 'addNewTab/' + id,
+                method: 'POST'
+            } ).then( function ( data )
+            {
+                window.location.href = 'http://DimaPhalcon/DimaPhalcon/';
+            });
+        },
+        changeActiveTab: function (id, tabId) {
+            var self = this;
+            $.ajax( {
+                url   : self.URL + 'changeActiveTab' ,
+                method: 'POST',
+                data: {
+                    id: id,
+                    tabId: tabId
+                }
+            });
+        },
+        closeTabMethod: function (idDb, currentID) {
+            var self = this,
+                nextActiveTab = self.dom.curTabId,
+                productId = self.dom.productId,
+                elemInObj = Object.keys(self.dom.tabsList);    
+            if (1 === elemInObj.length) {
+                nextActiveTab = 'preferences1';
+            } else {
+                var ifActive = self.dom.tabsList[currentID].active;
+                if ('1' === ifActive) {            
+                    var index = elemInObj.indexOf(currentID);
+                    if (index === elemInObj.length - 1) {
+                        nextActiveTab = Object.keys(self.dom.tabsList)[elemInObj.length - 2];                
+                    } else {
+                        nextActiveTab = Object.keys(self.dom.tabsList)[index + 1];
+                    }
+                    productId = self.dom.tabsList[nextActiveTab].productId;
+                    self.dom.tabsList[nextActiveTab].active = '1';
+                }             
+            }    
+            delete self.dom.tabsList[currentID];
+            $('[aria-controls=' + currentID + ']').hide('highlight');
+            setTimeout(function() {
+                $('[aria-controls=' + currentID + ']' ).parent().remove();
+            }, 700);
+            if ('preferences1' === nextActiveTab || undefined === nextActiveTab) {
+                $('.currentTab').removeClass('active');
+                $('#preferences, #preferences1').addClass('active');
+                $('.bg-danger' ).fadeOut(10);
+                $(self.dom.addCategoryInput ).val('');
+                getCategoriesList();
+            } else {
+                $('[aria-controls=' + nextActiveTab +']').parent().addClass('active');
+            }
 
-var tabs = {
-    curTabId: '',
-    productId: '',
-    curTabName: '',
-    tabsList: '',
-    addTab: function (id) {
-        $.ajax( {
-            url   : 'http://DimaPhalcon/DimaPhalcon/tabs/addNewTab/' + id,
-            method: 'POST'
-        } ).then( function ( data )
-        {console.log(data);
-            window.location.href = 'http://DimaPhalcon/DimaPhalcon/';
-        });
+            $.ajax( {
+                url   : self.URL + 'closeTab',
+                method: 'POST',
+                data: {
+                    id: idDb,
+                    tabId: currentID,
+                    nextActiveTab: nextActiveTab
+                }
+            } ).then( function (  )
+            {
+                if ('preferences1' !== nextActiveTab) {
+                    getTabContent(productId, nextActiveTab, 0);
+                }
+            });
+        },
+        changeTabName: function (prId, prName, categoryId) {
+            var self = this;
+            $.ajax( {
+                url   : self.URL + 'changeTabName',
+                method: 'POST',
+                data: {
+                    prId: prId,
+                    prName : prName,
+                    categoryId : categoryId
+                }
+            } ).then( function ( data )
+            {
+                console.log(data);
+            });
+        }
     },
-    changeActiveTab: function (id, tabId) {
-        $.ajax( {
-            url   : 'http://DimaPhalcon/DimaPhalcon/tabs/changeActiveTab' ,
-            method: 'POST',
-            data: {
-                id: id,
-                tabId: tabId
+    product: {
+        dom: {
+           sortable: '#sortable',
+           alw: '#alwaysInTable',
+           rowNumber: '.rowNumber',
+           removeRow: '.removeRow' 
+        },
+        temp: {
+            "%ROW_NUMBER%": "",
+            "%ROW_NAME%": "",
+            "%DATA_CELL%": "",
+            "%DATA_FORMULA%": "",
+            "%INPUT_VALUE%": ""
+        },  
+        createTable: function(prId, tableContent, alwaysInTable) {
+            var self = this;
+            $.ajax( {
+                url   : 'http://DimaPhalcon/DimaPhalcon/products/createTable',
+                method: 'POST',
+                data: {
+                    prId: app.tabs.productId,
+                    tableContent: JSON.stringify(tableContent),
+                    alwaysInTable: JSON.stringify(alwaysInTable)
+                }
+            } ).then( function ( data )
+            {
+                $(self.dom.sortable ).html(data[0]);
+                $(self.dom.alw ).html(data[1]);
+                $(self.dom.removeRow ).hide();
+            });
+        },
+        getTableContent: function (dom) {
+            var self = this,
+                tableContent = {},
+                i = 0,
+                temp;
+            $.each($(dom), function(key, val) {
+                temp = _.clone(self.temp);
+                if ('' !== $('.rowNumber', val ).text()) {
+                    temp['%ROW_NUMBER%'] = $('.rowNumber', val ).text();
+                    temp['%ROW_NAME%'] = $('.rowNameInput', val ).val();
+                    temp['%DATA_CELL%'] = $('.rowValueInput', val ).attr('data-cell');
+                    temp['%DATA_FORMULA%'] = $('.rowValueInput', val ).attr('data-formula');
+                    temp['%INPUT_VALUE%'] = $('.rowValueInput', val ).val();
+                    tableContent[i] = temp;
+                    i++;
+                }
+            });
+
+            return tableContent;
+        },
+        saveTable: function () {
+            var self = this;
+            $.ajax( {
+                url   : 'http://DimaPhalcon/DimaPhalcon/products/changeTableContent',
+                method: 'POST',
+                data: {
+                    prId: app.tabs.dom.productId,
+                    tableContent: JSON.stringify(self.getTableContent(self.dom.sortable + ' li')),
+                    alwaysInTable: JSON.stringify(self.getTableContent(self.dom.alw + ' li'))
+                }
+            } ).then( function ( data )
+            {
+                console.log(data);
+            });
+        },
+        catchKey: function (el, mathAction, step) {
+            var thisVal = Number($( el ).val());
+            if ('+' === mathAction) {
+                $(el ).val((thisVal + step).toFixed(2)).attr('value', (thisVal + step).toFixed(2));
+            } else {
+                $(el ).val((thisVal - step).toFixed(2)).attr('value', (thisVal - step).toFixed(2));
             }
-        });
-    },
-    changeTabName: function (prId, prName, categoryId) {
-        $.ajax( {
-            url   : 'http://DimaPhalcon/DimaPhalcon/tabs/changeTabName',
-            method: 'POST',
-            data: {
-                prId: prId,
-                prName : prName,
-                categoryId : categoryId
-            }
-        } ).then( function ( data )
-        {
-            console.log(data);
-        });
+            $( '#calx' ).calx();
+            this.saveTable(self.tabs.productId);
+        },
+        addFormulaBtnPr: '#addFormulaBtnPr',
+        formulaInputValue: function() {
+            return $('#addFormulaInputPr').val();
+        },
+        addNewFormula: function (formulas) {
+            $.ajax( {
+                url   : 'http://DimaPhalcon/DimaPhalcon/tabs/addNewFormula',
+                method: 'POST',
+                data: {
+                    formulas: formulas,
+                    prId : self.tabs.productId
+                }
+            } ).then( function ( data )
+            {
+                if (true === data) {
+
+                }
+            });
+        },
+        checkInputOnFormula: function(formula, cell) {
+            var tableContent = this.getTableContent(this.dom.sortable + ' li'),
+                alwaysInTable = this.getTableContent(this.dom.alw + ' li'),
+                cellsArr = {},
+                cellsInFormula = [],
+                res = true;
+            $.each(tableContent, function (key, val) {
+                cellsArr[val['%DATA_CELL%']] = val['%DATA_FORMULA%'];
+            });
+            $.each(alwaysInTable, function (key, val) {
+                cellsArr[val['%DATA_CELL%']] = val['%DATA_FORMULA%'];
+            });
+            $.each(cellsArr, function (key) {
+                (-1 !== formula.search(key)) ? cellsInFormula.push(key) : 0;
+            });
+            $.each(cellsInFormula, function (key, val) {
+                (-1 !== cellsArr[val].search(cell)) ? res = false : 0;               
+
+            });
+            return res;
+        }
     }
 };
 
-var product = {
+/*var product = {
     self: this,
     sortable: '#sortable',
     alw: '#alwaysInTable',
+    rowNumber: '.rowNumber',
     createTable: function(prId, tableContent, alwaysInTable) {
         $.ajax( {
             url   : 'http://DimaPhalcon/DimaPhalcon/products/createTable',
@@ -63,6 +240,7 @@ var product = {
         });
     },
     getTableContent: function (dom) {
+        console.log(this.rowNumber);
         var tableContent = {};
         var i = 0;
         $.each($(dom), function(key, val) {
@@ -144,7 +322,7 @@ var product = {
         });
         return res;
     }
-};
+};*/
 
 function RowTemplate() {
     this.temp = {

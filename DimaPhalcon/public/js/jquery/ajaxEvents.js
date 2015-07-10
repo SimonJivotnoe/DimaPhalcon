@@ -4,8 +4,8 @@ function getTabs(param) {
         method: 'GET'
     } ).then( function ( data )
     {
-        if(0 !== data.length && 'all' === param){
-            tabs.tabsList = data[3];
+        app.tabs.dom.tabsList = data[3];
+        if(0 !== data.length && 'all' === param){            
             if ('' !== data[0]) {
                 $(data[0]).insertBefore( '#addNewTab' );
                 if (!data[1]) {
@@ -17,9 +17,9 @@ function getTabs(param) {
                 showPreferences();
             }
         } else if(0 === data.length && 'last' === param){
-            tabs.addTab(1);
+            app.tabs.addTab(1);
         } else if(0 !== data.length && 'last' === param){
-            tabs.addTab(parseInt(data) +1);
+            app.tabs.addTab(parseInt(data) +1);
         } else {
             showPreferences();
         }
@@ -37,61 +37,15 @@ function getTabContent(productId, tabId, body) {
         $('.currentTab').attr('class', 'tab-pane active currentTab');
         $('.currentTab' ).html(data);
         $('.removeRow' ).hide();
-        tabs.curTabId = $('.currentTab').attr('id');
-        tabs.curTabName = 'a[href="#' + tabs.curTabId + '"] .tabName';
-        tabs.productId = productId;
-        tabs.tableContent = $.trim($('#sortable').html());
+        app.tabs.dom.curTabId = $('.currentTab').attr('id');
+        app.tabs.dom.curTabName = 'a[href="#' + app.tabs.dom.curTabId + '"] .tabName';
+        app.tabs.dom.productId = productId;
+        //app.tabs.dom.tableContent = $.trim($('#sortable').html());
         $(function() {
             $('#calx').calx();
         });
         if (body) {
             $('body' ).fadeIn(350);
-        }
-    });
-}
-
-function closeTab(idDb, currentID) {
-    var nextActiveTab = tabs.curTabId;
-    var productId = tabs.productId;
-    var elemInObj = Object.keys(tabs.tabsList);    
-    if (1 === elemInObj.length) {
-        nextActiveTab = 'preferences1';
-    } else {
-        var ifActive = tabs.tabsList[currentID].active;
-        if ('1' === ifActive) {            
-            var index = elemInObj.indexOf(currentID);
-            if (index === elemInObj.length - 1) {
-                nextActiveTab = Object.keys(tabs.tabsList)[elemInObj.length - 2];                
-            } else {
-                nextActiveTab = Object.keys(tabs.tabsList)[index + 1];
-            }
-            productId = tabs.tabsList[nextActiveTab].productId;  console.log(productId);
-            tabs.tabsList[nextActiveTab].active = '1';
-        }             
-    }    
-    delete tabs.tabsList[currentID];
-    $('[aria-controls=' + currentID + ']').hide('highlight');
-    setTimeout(function() {
-        $('[aria-controls=' + currentID + ']' ).parent().remove();
-    }, 700);
-    if ('preferences1' === nextActiveTab || undefined === nextActiveTab) {
-        $('.currentTab').removeClass('active');
-        $('#preferences, #preferences1').addClass('active');
-        $('.bg-danger' ).fadeOut(10);
-        $('#addCategoryInput' ).val('');
-        getCategoriesList();
-    } else {
-        $('[aria-controls=' + nextActiveTab +']').parent().addClass('active');
-    }
-
-    $.ajax( {
-        url   : 'http://DimaPhalcon/DimaPhalcon/tabs/closeTab',
-        method: 'POST',
-        data: {'id' : idDb, 'tabId' : currentID, 'nextActiveTab' : nextActiveTab}
-    } ).then( function (  )
-    {
-        if ('preferences1' !== nextActiveTab) {
-            getTabContent(productId, nextActiveTab, 0);
         }
     });
 }

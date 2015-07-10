@@ -21,7 +21,7 @@ $( document ).ready( function ()
         $('.bg-danger' ).fadeOut(10);
         $('#addCategoryInput' ).val('');
         getCategoriesList();
-        tabs.changeActiveTab('', '');
+        app.tabs.changeActiveTab('', '');
     });
     // add new category
     $('#addCategoryBtn').on('click', function(){
@@ -40,59 +40,62 @@ $( document ).ready( function ()
     /*----CURRENT TAB START----*/
     $('body').on('click', '[role=tab]', function() {
         var selectedTabId = $(this ).attr('aria-controls');
-        if (selectedTabId !== 'preferences1' && tabs.curTabId !== selectedTabId && undefined !== selectedTabId) {
+        if (selectedTabId !== 'preferences1' && app.tabs.dom.curTabId !== selectedTabId && undefined !== selectedTabId) {
             var tabId = $(this ).find('.glyphicon-remove' ).attr('name');
             var prodId = $(this ).attr('name');
-            tabs.tabsList[tabs.curTabId].active = '0';
-            tabs.tabsList[selectedTabId].active = '1';
-            tabs.changeActiveTab(tabId, selectedTabId);
+            '' !== app.tabs.dom.curTabId ? app.tabs.dom.tabsList[app.tabs.dom.curTabId].active = '0' : 0;
+            app.tabs.dom.tabsList[selectedTabId].active = '1';
+            app.tabs.changeActiveTab(tabId, selectedTabId);
             getTabContent(prodId, selectedTabId, 0);            
         }
     });
     /*----CURRENT TAB END----*/
 
     /*----CLOSING TAB START----*/
-    $('body').on('click', '.closeTab', function (e){
+    $('body').on('click', app.tabs.dom.closeTab, function (e){
         e.stopPropagation();
         var currentID = $(this).parent().attr('aria-controls');
         var idDb = $(this ).attr('name');        
         $(this ).attr('class', 'glyphicon glyphicon-remove');
-        closeTab(idDb, currentID);
+       app.tabs.closeTabMethod(idDb, currentID);
     });
     /*----CLOSING TAB END----*/
 
     /*----INSIDE TAB START----*/
     /* add rows to table */
     $('body').on('click', '#addNewRow', function(){
-        var numbersOfRows = $('#duration' ).val();
-        var tableContent = {};
+        var numbersOfRows = $('#duration' ).val(),
+            tableContent = {},
+            temp,
+            alwaysInTable,
+            arr = [],
+            max = 0,
+            i;
         if (0 === $('#sortable li').size()) {
-            for (var i = 0; i < numbersOfRows; i++) {
-                temp = new RowTemplate();
-                temp.temp['%ROW_NUMBER%'] = 'A' + (i+1);
-                temp.temp['%DATA_CELL%'] = 'A' + (i+1);
-                tableContent[i] = temp.temp;
+            for (i = 0; i < numbersOfRows; i++) {
+                temp = _.clone(app.product.temp);
+                temp['%ROW_NUMBER%'] = 'A' + (i+1);
+                temp['%DATA_CELL%'] = 'A' + (i+1);
+                tableContent[i] = temp;
             }
-            var alwaysInTable = product.getTableContent(product.alw + ' li');
-            product.createTable(tabs.productId, tableContent, alwaysInTable);
+            alwaysInTable = app.product.getTableContent(app.product.dom.alw + ' li');
+            app.product.createTable(app.tabs.dom.productId, tableContent, alwaysInTable);
         } else {
-            var arr = [];
             $.each($('#sortable .rowNumber'), function(key, val) {
                 ('' !== $(val).text()) ? arr.push(parseInt($(val).text().substring(1))) : 0;
             });
-            var max = 0;
             (0 !== arr.length) ? max = Math.max.apply(Math, arr) : 0;
 
-            tableContent = product.getTableContent(product.sortable + ' li');
+            tableContent = app.product.getTableContent(app.product.dom.sortable + ' li');
             for (var i = 0; i < numbersOfRows; i++) {
-                var temp = new RowTemplate();
-                temp.temp['%ROW_NUMBER%'] = 'A' + (max+1);
-                temp.temp['%DATA_CELL%'] = 'A' + (max+1);
-                tableContent[max] = temp.temp;
+                temp = _.clone(app.product.temp);
+                temp['%ROW_NUMBER%'] = 'A' + (max+1);
+                temp['%DATA_CELL%'] = 'A' + (max+1);
+                tableContent[max] = temp;
                 max++;
             }
-            var alwaysInTable = product.getTableContent(product.alw + ' li');
-            product.createTable(tabs.productId, tableContent, alwaysInTable);
+            alwaysInTable = app.product.getTableContent(app.product.dom.alw + ' li');
+            app.product.createTable(app.tabs.dom.productId, tableContent, alwaysInTable);
         }
     });
 
@@ -116,38 +119,38 @@ $( document ).ready( function ()
             $(this ).val((thisVal - 0.01).toFixed(2) ).attr('value', (thisVal - 0.01).toFixed(2));
         }
         $( '#calx' ).calx();
-        product.saveTable();
+        app.product.saveTable();
     });
 
     $('body').on('keyup', '.rowNameInput', function(){
         $(this ).attr('value', $(this ).val());
-        product.saveTable();
+        app.product.saveTable();
     });
     
     $('body').on('keydown', '.rowValueInput', function(e){
            switch (e.keyCode) {
                case 38: // UP
-                product.catchKey(this, '+', 1);
+                app.product.catchKey(this, '+', 1);
                 e.preventDefault();
                 break; 
                case 40: // DOWN
-                product.catchKey(this, '-', 1);
+                app.product.catchKey(this, '-', 1);
                 e.preventDefault();
                 break;
                case 191: // /
-                product.catchKey(this, '+', 10);
+                app.product.catchKey(this, '+', 10);
                 e.preventDefault();
                 break;
                case 17: // Ctrl
-                product.catchKey(this, '-', 10);
+                app.product.catchKey(this, '-', 10);
                 e.preventDefault();
                 break;
                case 190: // >
-                product.catchKey(this, '+', 100);              
+                app.product.catchKey(this, '+', 100);              
                 e.preventDefault();
                 break;
                case 18: // Alt
-                product.catchKey(this, '-', 100);
+                app.product.catchKey(this, '-', 100);
                 e.preventDefault();
                 break;
                case 32: // Space
@@ -173,7 +176,7 @@ $( document ).ready( function ()
             text = '' + $(this ).val();
             $(this ).caret(caretPos);
             ('.' === text.charAt((text.length - 2))) ? $(this ).caret((text.length - 1)) : 0;
-             product.saveTable();
+             app.product.saveTable();
             }
             
         }
@@ -183,8 +186,8 @@ $( document ).ready( function ()
     /* EDIT & SAVE CATEGORIES LIST CONTENT */
     // set tab name
      $('body').on('change, keyup', '.nameOfProduct', function(){
-         $(tabs.curTabName).text($(this ).val());
-         ('' === $(this ).val()) ? $(tabs.curTabName).text('Новое изделие') : 0;
+         $(app.tabs.curTabName).text($(this ).val());
+         ('' === $(this ).val()) ? $(app.tabs.curTabName).text('Новое изделие') : 0;
      });
 
     $('body').on('click', '#editCategoriesListContent', function(){
@@ -198,29 +201,29 @@ $( document ).ready( function ()
         var categoryId = $('.listOfCategories option:selected' ).attr('name');
         if ('' === prName) {
             prName = 'Новое изделие';
-            $(tabs.curTabName).text('Новое изделие');
+            $(app.tabs.curTabName).text('Новое изделие');
         }
-        tabs.changeTabName(tabs.productId, prName, categoryId);
+        app.tabs.changeTabName(app.tabs.productId, prName, categoryId);
     });
 
     /* edit & save TableContent */
     $('body').on('click', '#editTableContent', function(){
         $(this ).attr('class', 'glyphicon glyphicon-floppy-disk' ).attr('id', 'saveTableContent');
         $('.removeRow' ).show();
-        $( product.sortable ).sortable({
+        $( app.product.sortable ).sortable({
             revert: true
         });
-        $( product.sortable ).sortable("enable");
+        $( app.product.sortable ).sortable("enable");
         //$( "ul, li" ).disableSelection();
     });
     $('body').on('click', '#saveTableContent', function(){
         $(this ).attr('class', 'glyphicon glyphicon-pencil').attr('id', 'editTableContent');
         $('.removeRow' ).hide();
-        product.saveTable();
-        $( product.sortable ).sortable({
+        app.product.saveTable();
+        $( app.product.sortable ).sortable({
             revert: false
         });
-        $(product.sortable).sortable('disable');
+        $(app.product.sortable).sortable('disable');
     });
 
     /* create formula */
@@ -292,12 +295,12 @@ $( document ).ready( function ()
     $('body').on('click', '#cancelFormulaBtnPr', function(){
         cancelInputFotmula();
     });
-    $('body').on('click', product.addFormulaBtnPr, function(){
-        if ('' !== product.formulaInputValue) {
+    $('body').on('click', app.product.addFormulaBtnPr, function(){
+        if ('' !== app.product.formulaInputValue) {
             $('#formulasList' ).append('<li class="list-group-item"><span class="formulaValue">' + $('#addFormulaInputPr').val() + '</span></li>');
             cancelInputFotmula();
             $('#addFormulaInputPr').val('');
-            product.addNewFormula($.trim($('#formulasList').html()));
+            app.product.addNewFormula($.trim($('#formulasList').html()));
         }
     });
     $('body').on('click', '.addNewFhBtn', function(){
@@ -332,7 +335,7 @@ $( document ).ready( function ()
         $('body').on('mouseover', '.rowValue', function() {
             if (undefined !== self) {
                 if ( -1 === formula.search($( '.rowValueInput', this ).attr( 'data-cell' ))) {
-                    if (product.checkInputOnFormula(formula, $( '.rowValueInput', this ).attr( 'data-cell' ))) {
+                    if (app.product.checkInputOnFormula(formula, $( '.rowValueInput', this ).attr( 'data-cell' ))) {
                         $('.rowValueInput', this).css(
                                 {
                                     'background': 'hsl(145, 38%, 53%)',
@@ -354,20 +357,17 @@ $( document ).ready( function ()
         $('body').on('click', '.rowValueInput', function(){
             if (undefined !== self && false === $(this ).prop('disabled'))
             {
-                if (product.checkInputOnFormula(formula, $( this ).attr( 'data-cell' ))) {
+                if (app.product.checkInputOnFormula(formula, $( this ).attr( 'data-cell' ))) {
                    $( this ).attr( 'data-formula', formula ).blur();
                     cell = $( this ).attr( 'data-cell' );
                     $( '#calx' ).calx();
-                    /*$(this ).css('color', '#419641');
-                    $(this ).parent().parent().find('.rowNameInput').css('color', '#419641');
-                    $(this ).parent().parent().css({'background' : '#419641', 'color' : '#fff'});*/
                     $( self ).find('.glyphicon-retweet' ).remove();
                     $( self ).append( '<span class="glyphicon glyphicon-retweet" aria-hidden="true"> ' + cell + '</span>' );
                     $( self ).removeClass( 'list-group-item-success' );
                     $(this).css('background', '');
                     self = undefined;
-                    product.addNewFormula($.trim($('#formulasList').html()));
-                    product.saveTable(); 
+                    app.product.addNewFormula($.trim($('#formulasList').html()));
+                    app.product.saveTable(); 
                 }                
             }
         });
@@ -395,20 +395,9 @@ $( document ).ready( function ()
         $( '#calx' ).calx();
         var tableContent = $.trim($('#sortable').html());
         var prId = $('a[href="#' + $('.currentTab').attr('id') + '"]').attr('name');
-        product.addNewFormula($.trim($('#formulasList').html()), prId);
-        var tableContent = product.getTableContent(product.sortable + ' li');
-        var alwaysInTable = product.getTableContent(product.alw + ' li');
-        product.createTable(tabs.productId, tableContent, alwaysInTable);
+        app.product.addNewFormula($.trim($('#formulasList').html()), prId);
+        var tableContent = app.product.getTableContent(app.product.sortable + ' li');
+        var alwaysInTable = app.product.getTableContent(app.product.alw + ' li');
+        app.product.createTable(app.tabs.productId, tableContent, alwaysInTable);
     });
 } );
-
-/*function activeTabInputVal(id, activeTabName) {
-    if (false === id) {
-        var id = $('ul .active a').attr('name');
-        var activeTabName = $('ul .active .tabName').text();
-        if ('New' == activeTabName) {
-            activeTabName = '';
-        }
-    }
-    $('body' ).find(id + ' .nameOfProduct' ).val(activeTabName);
-}*/
