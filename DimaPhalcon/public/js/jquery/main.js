@@ -63,15 +63,15 @@ $( document ).ready( function ()
 
     /*----INSIDE TAB START----*/
     /* add rows to table */
-    $('body').on('click', '#addNewRow', function(){
-        var numbersOfRows = $('#duration' ).val(),
+    $('body').on('click', app.product.dom.addNewRow, function(){
+        var numbersOfRows = $( app.product.dom.duration ).val(),
             tableContent = {},
             temp,
             alwaysInTable,
             arr = [],
             max = 0,
             i;
-        if (0 === $('#sortable li').size()) {
+        if (0 === $(app.product.dom.sortable + ' li').size()) {
             for (i = 0; i < numbersOfRows; i++) {
                 temp = _.clone(app.product.temp);
                 temp['%ROW_NUMBER%'] = 'A' + (i+1);
@@ -79,9 +79,9 @@ $( document ).ready( function ()
                 tableContent[i] = temp;
             }
             alwaysInTable = app.product.getTableContent(app.product.dom.alw + ' li');
-            app.product.createTable(app.tabs.dom.productId, tableContent, alwaysInTable);
+            app.product.createTable(tableContent, alwaysInTable);
         } else {
-            $.each($('#sortable .rowNumber'), function(key, val) {
+            $.each($(app.product.dom.sortable + ' .rowNumber'), function(key, val) {
                 ('' !== $(val).text()) ? arr.push(parseInt($(val).text().substring(1))) : 0;
             });
             (0 !== arr.length) ? max = Math.max.apply(Math, arr) : 0;
@@ -95,13 +95,13 @@ $( document ).ready( function ()
                 max++;
             }
             alwaysInTable = app.product.getTableContent(app.product.dom.alw + ' li');
-            app.product.createTable(app.tabs.dom.productId, tableContent, alwaysInTable);
+            app.product.createTable(tableContent, alwaysInTable);
         }
     });
 
     /* remove tr */
-    $('body').on('click', '.removeRow', function(){
-        var rowName = $(this ).parent().find('.rowValueInput' ).attr('data-cell');
+    $('body').on('click', app.product.dom.removeRow, function(){
+        var rowName = $(this ).parent().find(app.product.dom.rowValueInput ).attr('data-cell');
         var checkBinding = $('.list-group-item').find('.glyphicon:contains(' + rowName + ')');
         checkBinding.length ? checkBinding.remove() : 0 ;
         $(this ).parent().hide('drop' );
@@ -285,28 +285,30 @@ $( document ).ready( function ()
         $( '.removeFhBtn', this).hide('fast');
     });
     /* remove formulas helper*/
-    $('body').on('click', '.removeFhBtn', function(e) {
+    $('body').on('click', app.product.dom.removeFhBtn, function(e) {
         e.stopPropagation();
         e.preventDefault();
         var fhText = $(this ).parent().text();
-        removeFormulasHelper(this, fhText);
+        app.product.removeFormulasHelper(this, fhText);
         $(this ).parent().fadeOut('slow');
     });
     $('body').on('click', '#cancelFormulaBtnPr', function(){
         cancelInputFotmula();
     });
-    $('body').on('click', app.product.addFormulaBtnPr, function(){
+    $('body').on('click', app.product.dom.addFormulaBtnPr, function(){
         if ('' !== app.product.formulaInputValue) {
-            $('#formulasList' ).append('<li class="list-group-item"><span class="formulaValue">' + $('#addFormulaInputPr').val() + '</span></li>');
+            $( app.product.dom.formulasList )
+                    .append('<li class="list-group-item"><span class="formulaValue">' 
+                    + $( app.product.dom.addFormulaInputPr ).val() + '</span></li>');
             cancelInputFotmula();
-            $('#addFormulaInputPr').val('');
-            app.product.addNewFormula($.trim($('#formulasList').html()));
+            $( app.product.dom.addFormulaInputPr ).val('');
+            app.product.addNewFormula($.trim($(app.product.dom.formulasList).html()));
         }
     });
     $('body').on('click', '.addNewFhBtn', function(){
         $('body').css('cursor', 'pointer');
         var newFl = $('#addNewFhBtnInput' ).val();
-        addBtnToFormulasHelper(newFl);
+        app.product.addBtnToFormulasHelper(newFl);
     });
     $('body').on('click', '#addNewFhBtnInput', function(){
         $('#addFormulaInputPr, .rowNumber').off('click');
@@ -398,6 +400,6 @@ $( document ).ready( function ()
         app.product.addNewFormula($.trim($('#formulasList').html()), prId);
         var tableContent = app.product.getTableContent(app.product.sortable + ' li');
         var alwaysInTable = app.product.getTableContent(app.product.alw + ' li');
-        app.product.createTable(app.tabs.productId, tableContent, alwaysInTable);
+        app.product.createTable(tableContent, alwaysInTable);
     });
 } );

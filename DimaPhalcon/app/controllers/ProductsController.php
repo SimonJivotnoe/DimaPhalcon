@@ -72,6 +72,60 @@ class ProductsController extends \Phalcon\Mvc\Controller
             $this->response->redirect('');
         }
     }
+    
+    public function addBtnToFormulasHelperAction(){
+        if ($this->request->isAjax() && $this->request->isPost()) {
+            $newFl = $this->request->getPost('newFl');
+            $fh = new FormulasHelper();
+            $fh->setName($newFl);
+            if ($fh->save() == false) {
+                $this->response->setContentType('application/json', 'UTF-8');
+                $this->response->setJsonContent('already');
+            } else {
+                $this->response->setContentType('application/json', 'UTF-8');
+                $this->response->setJsonContent(true);
+            }
+            return $this->response;
+        } else {
+            $this->response->redirect('');
+        }
+    }
+
+    public function removeBtnFromFormulasHelperAction(){
+        if ($this->request->isAjax() && $this->request->isPost()) {
+            $fhText = $this->request->getPost('fhText');
+            $fh = FormulasHelper::findFirst(array("name = '$fhText'"));
+            if ($fh->delete() == false) {
+                $this->response->setContentType('application/json', 'UTF-8');
+                $this->response->setJsonContent('already');
+            } else {
+                $this->response->setContentType('application/json', 'UTF-8');
+                $this->response->setJsonContent(true);
+            }
+            return $this->response;
+        } else {
+            $this->response->redirect('');
+        }
+    }
+
+    public function addNewFormulaAction(){
+        if ($this->request->isAjax() && $this->request->isPost()) {
+            $formulas = $this->request->getPost('formulas');
+            $prId = $this->request->getPost('prId');
+            $pr = Products::findFirst(array("product_id = '$prId'"));
+            $pr->setFormulas($formulas);
+            if ($pr->save() == false) {
+                $this->response->setContentType('application/json', 'UTF-8');
+                $this->response->setJsonContent('already');
+            } else {
+                $this->response->setContentType('application/json', 'UTF-8');
+                $this->response->setJsonContent(true);
+            }
+            return $this->response;
+        } else {
+            $this->response->redirect('');
+        }
+    }
 
 }
 

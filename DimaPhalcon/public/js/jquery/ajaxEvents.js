@@ -50,35 +50,7 @@ function getTabContent(productId, tabId, body) {
     });
 }
 
-function addBtnToFormulasHelper(newFl) {
-    $.ajax( {
-        url   : 'http://DimaPhalcon/DimaPhalcon/tabs/addBtnToFormulasHelper',
-        method: 'POST',
-        data: {'newFl': newFl}
-    } ).then( function ( data )
-    {
-        if (true === data) {
-            $('<span class="justCreated"><button type="button" class="btn btn-warning btn-xs fhBtn">' + newFl + '' +
-            '<span class="glyphicon glyphicon-remove removeFhBtn" aria-hidden="true"></span></button></span>').insertBefore('#addNewBtnSpan');
-            $('.justCreated' ).find('.removeFhBtn').hide('fast');
-            $('.justCreated' ).show('slow' ).removeClass('.justCreated');
-            $('#addNewFhBtnInput' ).val('');
-        }
 
-    });
-}
-
-function removeFormulasHelper(self, fhText) {
-    $.ajax( {
-        url   : 'http://DimaPhalcon/DimaPhalcon/tabs/removeBtnFromFormulasHelper',
-        method: 'POST',
-        data: {'fhText': fhText}
-    } ).then( function ( data )
-    {
-        $(self ).parent().fadeOut('slow');
-
-    });
-}
 
 /* PREFERENCES */
 function addCategory(categoryName) {

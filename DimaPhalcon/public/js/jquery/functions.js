@@ -2,8 +2,9 @@ $.fn.hasAttr = function(name) {
     return this.attr(name) !== undefined;
 };
 var app = {
+    BASE_URL: 'http://DimaPhalcon/DimaPhalcon/',
     tabs: {
-        URL: 'http://DimaPhalcon/DimaPhalcon/tabs/',
+        URL: 'tabs/',
         dom: {
             closeTab: '.closeTab',
             addCategoryInput: '#addCategoryInput',
@@ -15,7 +16,7 @@ var app = {
         addTab: function (id) {
             var self = this;
             $.ajax( {
-                url   : self.URL + 'addNewTab/' + id,
+                url   : app.BASE_URL + self.URL + 'addNewTab/' + id,
                 method: 'POST'
             } ).then( function ( data )
             {
@@ -25,7 +26,7 @@ var app = {
         changeActiveTab: function (id, tabId) {
             var self = this;
             $.ajax( {
-                url   : self.URL + 'changeActiveTab' ,
+                url   : app.BASE_URL + self.URL + 'changeActiveTab' ,
                 method: 'POST',
                 data: {
                     id: id,
@@ -69,7 +70,7 @@ var app = {
             }
 
             $.ajax( {
-                url   : self.URL + 'closeTab',
+                url   : app.BASE_URL + self.URL + 'closeTab',
                 method: 'POST',
                 data: {
                     id: idDb,
@@ -86,7 +87,7 @@ var app = {
         changeTabName: function (prId, prName, categoryId) {
             var self = this;
             $.ajax( {
-                url   : self.URL + 'changeTabName',
+                url   : app.BASE_URL + self.URL + 'changeTabName',
                 method: 'POST',
                 data: {
                     prId: prId,
@@ -100,11 +101,19 @@ var app = {
         }
     },
     product: {
+        URL: 'products/',
         dom: {
            sortable: '#sortable',
            alw: '#alwaysInTable',
+           addNewRow: '#addNewRow',
+           duration: '#duration',
            rowNumber: '.rowNumber',
-           removeRow: '.removeRow' 
+           removeRow: '.removeRow',
+           rowValueInput: '.rowValueInput',
+           addFormulaBtnPr: '#addFormulaBtnPr',
+           formulasList: '#formulasList',
+           addFormulaInputPr: '#addFormulaInputPr',
+           removeFhBtn: '.removeFhBtn'
         },
         temp: {
             "%ROW_NUMBER%": "",
@@ -113,10 +122,10 @@ var app = {
             "%DATA_FORMULA%": "",
             "%INPUT_VALUE%": ""
         },  
-        createTable: function(prId, tableContent, alwaysInTable) {
+        createTable: function(tableContent, alwaysInTable) {
             var self = this;
             $.ajax( {
-                url   : 'http://DimaPhalcon/DimaPhalcon/products/createTable',
+                url   : app.BASE_URL + self.URL + 'createTable',
                 method: 'POST',
                 data: {
                     prId: app.tabs.productId,
@@ -153,7 +162,7 @@ var app = {
         saveTable: function () {
             var self = this;
             $.ajax( {
-                url   : 'http://DimaPhalcon/DimaPhalcon/products/changeTableContent',
+                url   : app.BASE_URL + self.URL + 'changeTableContent',
                 method: 'POST',
                 data: {
                     prId: app.tabs.dom.productId,
@@ -174,10 +183,39 @@ var app = {
             }
             $( '#calx' ).calx();
             this.saveTable(self.tabs.productId);
-        },
-        addFormulaBtnPr: '#addFormulaBtnPr',
+        },        
         formulaInputValue: function() {
             return $('#addFormulaInputPr').val();
+        },
+        addBtnToFormulasHelper: function (newFl) {
+            var self = this;
+            $.ajax( {
+                url   : app.BASE_URL + self.URL + 'addBtnToFormulasHelper',
+                method: 'POST',
+                data: {'newFl': newFl}
+            } ).then( function ( data )
+            {console.log(data);
+                if (true === data) {
+                    $('<span class="justCreated"><button type="button" class="btn custom-addRowsToTable btn-xs fhBtn">' + newFl + '' +
+                    '<span class="glyphicon glyphicon-remove removeFhBtn" aria-hidden="true"></span></button></span>').insertBefore('#addNewBtnSpan');
+                    $('.justCreated' ).find('.removeFhBtn').hide('fast');
+                    $('.justCreated' ).show('slow' ).removeClass('.justCreated');
+                    $('#addNewFhBtnInput' ).val('');
+                }
+
+            });
+        },
+        removeFormulasHelper: function(dom, fhText) {
+            var self = this;
+            $.ajax( {
+                url   : app.BASE_URL + self.URL + 'removeBtnFromFormulasHelper',
+                method: 'POST',
+                data: {'fhText': fhText}
+            } ).then( function ( data )
+            {
+                $(dom ).parent().fadeOut('slow');
+
+            });
         },
         addNewFormula: function (formulas) {
             $.ajax( {
