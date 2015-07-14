@@ -126,6 +126,22 @@ class TabsController extends \Phalcon\Mvc\Controller
                 if ('Новое изделие' === $prName) {
                     $prName = '';
                 }
+                $formulasRes = '';
+                $formulas = json_decode($product->getFormulas());
+                foreach ($formulas as $key => $val) {
+                    foreach ($val as $k => $v) {
+                        if ('formula' === $k) {
+                            $formulasRes .= '<li class="list-group-item formula"><span class="formulaValue" contenteditable="true">'.$v.'</span>';
+                        }
+                        if ('cell' === $k) {
+                            if ('' !== $v) {
+                                $formulasRes .= '<span class="glyphicon glyphicon-retweet cellBind" aria-hidden="true"> '.$v.'</span></li>';
+                            } else {
+                                $formulasRes .= '</li>';
+                            }
+                        }
+                    }
+                }
                 $productDetails = array(
                     '%PRODUCT_NAME%' => $prName,
                     '%CATEGORIES%' => $categoriesList,
@@ -133,7 +149,7 @@ class TabsController extends \Phalcon\Mvc\Controller
                     '%TABLE_CONTENT%' => $tableRes,
                     '%ALWAYS_IN_TABLE%' => $alwRes,
                     '%FORMULAS_HELPER%' => $formHelpArr,
-                    '%FORMULAS%' => $product->getFormulas()
+                    '%FORMULAS%' => $formulasRes
                 );
                 $tabContent .= $substObj->subHTMLReplace('tabContent.html', $productDetails);
                 $this->response->setContentType('application/json', 'UTF-8');

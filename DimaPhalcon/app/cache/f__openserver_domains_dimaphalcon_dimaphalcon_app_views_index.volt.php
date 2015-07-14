@@ -57,6 +57,7 @@
 <script src="js/jquery/jquery-1.11.2.min.js"></script>
 <script src="js/jquery/jquery-ui.js"></script>
 <script src="js/jquery/underscore.js"></script>
+<script src="js/jquery/less.min.js"></script>
 <!-- Latest compiled and minified CSS -->
 <!--<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">-->
 <link rel="stylesheet" href="css/bootstrap/bootstrap.min.css">
@@ -85,6 +86,6 @@
 <script src="js/jquery/jquery.caret.js"></script>
 <script src="js/jquery/split-pane.js"></script>
 <script src="js/jquery/jquery.mousewheel.js"></script>
-
+<script src="js/jquery/typeahead.bundle.js"></script>
 </body>
 </html>

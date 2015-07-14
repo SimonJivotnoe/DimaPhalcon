@@ -128,7 +128,7 @@ var app = {
                 url   : app.BASE_URL + self.URL + 'createTable',
                 method: 'POST',
                 data: {
-                    prId: app.tabs.productId,
+                    prId: app.tabs.dom.productId,
                     tableContent: JSON.stringify(tableContent),
                     alwaysInTable: JSON.stringify(alwaysInTable)
                 }
@@ -218,15 +218,16 @@ var app = {
             });
         },
         addNewFormula: function (formulas) {
+            var self = this;
             $.ajax( {
-                url   : 'http://DimaPhalcon/DimaPhalcon/tabs/addNewFormula',
+                url   : app.BASE_URL + self.URL + 'addNewFormula',
                 method: 'POST',
                 data: {
                     formulas: formulas,
-                    prId : self.tabs.productId
+                    prId : app.tabs.dom.productId
                 }
             } ).then( function ( data )
-            {
+            {console.log(data);
                 if (true === data) {
 
                 }
@@ -252,6 +253,20 @@ var app = {
 
             });
             return res;
+        },
+        getFormulasList: function() {
+            var formulasList = {},
+                formula,
+                cell;
+            $.each($('.formula'), function(key, val) {
+                formula = $('.formulaValue', val ).text();
+                cell = $.trim($('.cellBind', val ).text());
+                formulasList[key] = {
+                    formula: formula,
+                    cell: cell
+                };
+            })
+            return JSON.stringify(formulasList);
         }
     }
 };

@@ -186,8 +186,8 @@ $( document ).ready( function ()
     /* EDIT & SAVE CATEGORIES LIST CONTENT */
     // set tab name
      $('body').on('change, keyup', '.nameOfProduct', function(){
-         $(app.tabs.curTabName).text($(this ).val());
-         ('' === $(this ).val()) ? $(app.tabs.curTabName).text('Новое изделие') : 0;
+         $(app.tabs.dom.curTabName).text($(this ).val());
+         ('' === $(this ).val()) ? $(app.tabs.dom.curTabName).text('Новое изделие') : 0;
      });
 
     $('body').on('click', '#editCategoriesListContent', function(){
@@ -298,11 +298,11 @@ $( document ).ready( function ()
     $('body').on('click', app.product.dom.addFormulaBtnPr, function(){
         if ('' !== app.product.formulaInputValue) {
             $( app.product.dom.formulasList )
-                    .append('<li class="list-group-item"><span class="formulaValue">' 
+                    .append('<li class="list-group-item formula"><span class="formulaValue">'
                     + $( app.product.dom.addFormulaInputPr ).val() + '</span></li>');
             cancelInputFotmula();
             $( app.product.dom.addFormulaInputPr ).val('');
-            app.product.addNewFormula($.trim($(app.product.dom.formulasList).html()));
+            app.product.addNewFormula(app.product.getFormulasList);
         }
     });
     $('body').on('click', '.addNewFhBtn', function(){
@@ -364,11 +364,11 @@ $( document ).ready( function ()
                     cell = $( this ).attr( 'data-cell' );
                     $( '#calx' ).calx();
                     $( self ).find('.glyphicon-retweet' ).remove();
-                    $( self ).append( '<span class="glyphicon glyphicon-retweet" aria-hidden="true"> ' + cell + '</span>' );
+                    $( self ).append( '<span class="glyphicon glyphicon-retweet cellBind" aria-hidden="true"> ' + cell + '</span>' );
                     $( self ).removeClass( 'list-group-item-success' );
                     $(this).css('background', '');
                     self = undefined;
-                    app.product.addNewFormula($.trim($('#formulasList').html()));
+                    app.product.addNewFormula(app.product.getFormulasList);
                     app.product.saveTable(); 
                 }                
             }
@@ -395,11 +395,9 @@ $( document ).ready( function ()
         $(this ).parent().removeClass('list-group-item-info');
         $(this ).remove();
         $( '#calx' ).calx();
-        var tableContent = $.trim($('#sortable').html());
-        var prId = $('a[href="#' + $('.currentTab').attr('id') + '"]').attr('name');
-        app.product.addNewFormula($.trim($('#formulasList').html()), prId);
-        var tableContent = app.product.getTableContent(app.product.sortable + ' li');
-        var alwaysInTable = app.product.getTableContent(app.product.alw + ' li');
+        app.product.addNewFormula(app.product.getFormulasList);
+        var tableContent = app.product.getTableContent(app.product.dom.sortable + ' li');
+        var alwaysInTable = app.product.getTableContent(app.product.dom.alw + ' li');
         app.product.createTable(tableContent, alwaysInTable);
     });
 } );
