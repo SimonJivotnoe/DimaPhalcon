@@ -14,16 +14,16 @@ html, body {
 }
 
 #left-component {
-    width: 60em;
+    //width: 60em;
 }
 
 #divider {
-    left: 60em; /* same as left component width */
+    //left: 60em; /* same as left component width */
     width: 5px;
 }
 
 #right-component {
-    left: 60em;
+    //left: 60em;
     margin-left: 5px; /* same as divider width */
 }
 

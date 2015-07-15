@@ -2,8 +2,16 @@
 $( document ).ready( function ()
 {
     // split monitor
+    if (undefined === localStorage.split) {
+        localStorage.split = '60em';
+    }
+    $('#left-component').css('width', localStorage.split);
+    $('#divider, #right-component').css('left', localStorage.split);
     $('div.split-pane').splitPane();
-
+    $('#divider').on('mouseleave', function(){
+        localStorage.split = $('#divider').css('left');
+    });
+        
     /*----RECEIVE TABS LIST----*/
     getTabs('all');
     /*----RECEIVE TABS LIST END----*/
@@ -368,8 +376,7 @@ $( document ).ready( function ()
                     $( self ).removeClass( 'list-group-item-success' );
                     $(this).css('background', '');
                     self = undefined;
-                    app.product.addNewFormula(app.product.getFormulasList);
-                    app.product.saveTable(); 
+                    app.product.addNewFormula(app.product.getFormulasList, true);
                 }                
             }
         });
@@ -395,7 +402,7 @@ $( document ).ready( function ()
         $(this ).parent().removeClass('list-group-item-info');
         $(this ).remove();
         $( '#calx' ).calx();
-        app.product.addNewFormula(app.product.getFormulasList);
+        app.product.addNewFormula(app.product.getFormulasList, false);
         var tableContent = app.product.getTableContent(app.product.dom.sortable + ' li');
         var alwaysInTable = app.product.getTableContent(app.product.dom.alw + ' li');
         app.product.createTable(tableContent, alwaysInTable);

@@ -217,7 +217,7 @@ var app = {
 
             });
         },
-        addNewFormula: function (formulas) {
+        addNewFormula: function (formulas, binding) {
             var self = this;
             $.ajax( {
                 url   : app.BASE_URL + self.URL + 'addNewFormula',
@@ -228,8 +228,8 @@ var app = {
                 }
             } ).then( function ( data )
             {console.log(data);
-                if (true === data) {
-
+                if (true === binding) {
+                   self.saveTable();         
                 }
             });
         },
