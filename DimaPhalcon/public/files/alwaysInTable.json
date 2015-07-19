@@ -4,7 +4,7 @@
         "%ROW_NAME%": "КИМ",
         "%DATA_CELL%": "KIM1",
         "%DATA_FORMULA%": "",
-        "%INPUT_VALUE%": ""
+        "%INPUT_VALUE%": "0.1"
     },
     {
         "%ROW_NUMBER%": "S1",

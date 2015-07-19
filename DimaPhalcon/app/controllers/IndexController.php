@@ -31,8 +31,12 @@ class IndexController extends ControllerBase
             }*/
         }
 
-        $value = file_get_contents('../public/files/tabs.volt');
-        $this->view->setVar('tabs', $value);
+        $left = file_get_contents('../public/files/tabs.volt');
+        $right = file_get_contents('../public/files/tabsRight.volt');
+        $this->view->setVars(array(
+            'tabs' => $left,
+            'tabsRight' => $right
+        ));
     }
 
     public function getTabsAction(){

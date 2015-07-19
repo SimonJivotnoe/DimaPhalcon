@@ -268,124 +268,41 @@ var app = {
             })
             return JSON.stringify(formulasList);
         }
+    },
+    kim: {
+        URL: 'kim/',
+        tableContent: '',
+        addKIMtoTable: function(kim, kimPrice) {
+            var self = this;
+            $.ajax( {
+                url   : app.BASE_URL + self.URL + 'addKIMtoTable',
+                method: 'POST',
+                data: {
+                    kim: kim,
+                    kimPrice : kimPrice
+                }
+            } ).then( function ( data )
+            {
+                if ('ok' === data) {
+                    self.getKIMTable();
+                } else {
+
+                }
+            });
+        },
+        getKIMTable: function() {
+            var self = this;
+            $.ajax( {
+                url   : app.BASE_URL + self.URL + 'getKIMTable',
+                method: 'GET'
+            } ).then( function ( data )
+            {
+                self.tableContent = data[1];
+                $('#tbodyKIM' ).html(data[0]);
+            });
+        }
     }
 };
-
-/*var product = {
-    self: this,
-    sortable: '#sortable',
-    alw: '#alwaysInTable',
-    rowNumber: '.rowNumber',
-    createTable: function(prId, tableContent, alwaysInTable) {
-        $.ajax( {
-            url   : 'http://DimaPhalcon/DimaPhalcon/products/createTable',
-            method: 'POST',
-            data: {
-                'prId' : tabs.productId,
-                'tableContent' : JSON.stringify(tableContent),
-                'alwaysInTable' : JSON.stringify(alwaysInTable)
-            }
-        } ).then( function ( data )
-        {
-            $(self.sortable ).html(data[0]);
-            $(self.alw ).html(data[1]);
-            $('.removeRow' ).hide();
-        });
-    },
-    getTableContent: function (dom) {
-        console.log(this.rowNumber);
-        var tableContent = {};
-        var i = 0;
-        $.each($(dom), function(key, val) {
-            var temp = new RowTemplate();
-            if ('' !== $('.rowNumber', val ).text()) {
-                temp.temp['%ROW_NUMBER%'] = $('.rowNumber', val ).text();
-                temp.temp['%ROW_NAME%'] = $('.rowNameInput', val ).val();
-                temp.temp['%DATA_CELL%'] = $('.rowValueInput', val ).attr('data-cell');
-                temp.temp['%DATA_FORMULA%'] = $('.rowValueInput', val ).attr('data-formula');
-                temp.temp['%INPUT_VALUE%'] = $('.rowValueInput', val ).val();
-                tableContent[i] = temp.temp;
-                i++;
-            }
-        });
-
-        return tableContent;
-    },
-    saveTable: function () {
-        $.ajax( {
-            url   : 'http://DimaPhalcon/DimaPhalcon/products/changeTableContent',
-            method: 'POST',
-            data: {
-                prId: tabs.productId,
-                tableContent: JSON.stringify(this.getTableContent(this.sortable + ' li')),
-                alwaysInTable: JSON.stringify(this.getTableContent(this.alw + ' li'))
-            }
-        } ).then( function ( data )
-        {
-            console.log(data);
-        });
-    },
-    catchKey: function (el, mathAction, step) {
-        var thisVal = Number($( el ).val());
-        if ('+' === mathAction) {
-            $(el ).val((thisVal + step).toFixed(2)).attr('value', (thisVal + step).toFixed(2));
-        } else {
-            $(el ).val((thisVal - step).toFixed(2)).attr('value', (thisVal - step).toFixed(2));
-        }
-        $( '#calx' ).calx();
-        this.saveTable(tabs.productId);
-    },
-    addFormulaBtnPr: '#addFormulaBtnPr',
-    formulaInputValue: function() {
-        return $('#addFormulaInputPr').val();
-    },
-    addNewFormula: function (formulas) {
-        $.ajax( {
-            url   : 'http://DimaPhalcon/DimaPhalcon/tabs/addNewFormula',
-            method: 'POST',
-            data: {
-                formulas: formulas,
-                prId : tabs.productId
-            }
-        } ).then( function ( data )
-        {
-            if (true === data) {
-
-            }
-        });
-    },
-    checkInputOnFormula: function(formula, cell) {
-        var tableContent = this.getTableContent(this.sortable + ' li'),
-            alwaysInTable = this.getTableContent(this.alw + ' li'),
-            cellsArr = {},
-            cellsInFormula = [],
-            res = true;
-        $.each(tableContent, function (key, val) {
-            cellsArr[val['%DATA_CELL%']] = val['%DATA_FORMULA%'];
-        });
-        $.each(alwaysInTable, function (key, val) {
-            cellsArr[val['%DATA_CELL%']] = val['%DATA_FORMULA%'];
-        });
-        $.each(cellsArr, function (key) {
-            (-1 !== formula.search(key)) ? cellsInFormula.push(key) : 0;
-        });
-        $.each(cellsInFormula, function (key, val) {
-            (-1 !== cellsArr[val].search(cell)) ? res = false : 0;               
-           
-        });
-        return res;
-    }
-};*/
-
-function RowTemplate() {
-    this.temp = {
-        "%ROW_NUMBER%": "",
-        "%ROW_NAME%": "",
-        "%DATA_CELL%": "",
-        "%DATA_FORMULA%": "",
-        "%INPUT_VALUE%": ""
-    };
-}
 
 function showPreferences(){
     $('#preferences, #preferences1').addClass('active');

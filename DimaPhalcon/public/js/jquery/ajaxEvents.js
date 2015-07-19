@@ -5,7 +5,8 @@ function getTabs(param) {
     } ).then( function ( data )
     {
         app.tabs.dom.tabsList = data[3];
-        if(0 !== data.length && 'all' === param){            
+        app.kim.tableContent = data[4];
+        if(0 !== data.length && 'all' === param){
             if ('' !== data[0]) {
                 $(data[0]).insertBefore( '#addNewTab' );
                 if (!data[1]) {
@@ -40,13 +41,12 @@ function getTabContent(productId, tabId, body) {
         app.tabs.dom.curTabId = $('.currentTab').attr('id');
         app.tabs.dom.curTabName = 'a[href="#' + app.tabs.dom.curTabId + '"] .tabName';
         app.tabs.dom.productId = productId;
-        //app.tabs.dom.tableContent = $.trim($('#sortable').html());
-        $(function() {
-            $('#calx').calx();
-        });
-        if (body) {
-            $('body' ).fadeIn(350);
-        }
+        var kim = $('[data-cell="KIM1"]').val();
+        (0 === parseInt(kim[kim.length - 1])) ? kim = kim.substring(0, kim.length - 1) : 0;
+        $('[data-cell="PR1"]').val(app.kim.tableContent[kim]);
+        $('#calx').calx();
+        (body) ? $('body' ).fadeIn(350) : 0;
+
     });
 }
 

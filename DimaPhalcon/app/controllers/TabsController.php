@@ -41,8 +41,13 @@ class TabsController extends \Phalcon\Mvc\Controller
                                 'productId' => $val->getProductId()];
                         }
                         $tabObj = (object)$tabArr;
+                        $kim = Kim::find();
+                        $resObj = [];
+                        foreach ($kim as $val) {
+                            $resObj[$val->getKim()] = $val->getKimPrice();
+                        }
                         $this->response->setContentType('application/json', 'UTF-8');
-                        $this->response->setJsonContent(array($tabsLi, $active, $prodId, $tabObj));
+                        $this->response->setJsonContent(array($tabsLi, $active, $prodId, $tabObj, (object)$resObj));
 
                         return $this->response;
                     } else {

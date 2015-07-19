@@ -46,7 +46,7 @@ $( document ).ready( function ()
     /*----NEW_TAB_END----*/
     
     /*----CURRENT TAB START----*/
-    $('body').on('click', '[role=tab]', function() {
+    $('body').on('click', '#myTab [role=tab]', function() {
         var selectedTabId = $(this ).attr('aria-controls');
         if (selectedTabId !== 'preferences1' && app.tabs.dom.curTabId !== selectedTabId && undefined !== selectedTabId) {
             var tabId = $(this ).find('.glyphicon-remove' ).attr('name');
@@ -211,27 +211,27 @@ $( document ).ready( function ()
             prName = 'Новое изделие';
             $(app.tabs.curTabName).text('Новое изделие');
         }
-        app.tabs.changeTabName(app.tabs.productId, prName, categoryId);
+        app.tabs.changeTabName(app.tabs.dom.productId, prName, categoryId);
     });
 
     /* edit & save TableContent */
     $('body').on('click', '#editTableContent', function(){
         $(this ).attr('class', 'glyphicon glyphicon-floppy-disk' ).attr('id', 'saveTableContent');
         $('.removeRow' ).show();
-        $( app.product.sortable ).sortable({
+        $( app.product.dom.sortable ).sortable({
             revert: true
         });
-        $( app.product.sortable ).sortable("enable");
+        $( app.product.dom.sortable ).sortable("enable");
         //$( "ul, li" ).disableSelection();
     });
     $('body').on('click', '#saveTableContent', function(){
         $(this ).attr('class', 'glyphicon glyphicon-pencil').attr('id', 'editTableContent');
         $('.removeRow' ).hide();
         app.product.saveTable();
-        $( app.product.sortable ).sortable({
+        $( app.product.dom.sortable ).sortable({
             revert: false
         });
-        $(app.product.sortable).sortable('disable');
+        $(app.product.dom.sortable).sortable('disable');
     });
 
     /* create formula */
@@ -406,5 +406,16 @@ $( document ).ready( function ()
         var tableContent = app.product.getTableContent(app.product.dom.sortable + ' li');
         var alwaysInTable = app.product.getTableContent(app.product.dom.alw + ' li');
         app.product.createTable(tableContent, alwaysInTable);
+    });
+
+    //RIGHT PART
+    $('#kim').on('click', function(){
+        app.kim.getKIMTable();
+    });
+
+    $('body').on('click', '#addKIM', function(){
+        var kim = $('#kimInput' ).val();
+        var kimPrice = $('#kimPriceInput' ).val();
+        app.kim.addKIMtoTable(kim, kimPrice);
     });
 } );

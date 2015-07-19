@@ -1,7 +1,6 @@
 <?php
 use Phalcon\Mvc\Model,
     Phalcon\Validation,
-    Phalcon\Mvc\Model\Validator\Email,
     Phalcon\Mvc\Model\Validator\Uniqueness;
 
 class Categories extends Model
