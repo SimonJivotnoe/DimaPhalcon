@@ -7,10 +7,10 @@ class KimController extends \Phalcon\Mvc\Controller
     {
         if ($this->request->isAjax() && $this->request->isPost()) {
             $kimK = $this->request->getPost('kim');
-            $kimPrice = $this->request->getPost('kimPrice');
+            $kimHard = $this->request->getPost('kimHard');
             $kim = new Kim;
             $kim->setKim($kimK)
-                ->setKimPrice($kimPrice)
+                ->setKimHard($kimHard)
                 ->save();
             $this->response->setContentType('application/json', 'UTF-8');
             $this->response->setJsonContent('ok');
@@ -23,15 +23,16 @@ class KimController extends \Phalcon\Mvc\Controller
 
     public function getKIMTableAction(){
         if ($this->request->isAjax() && $this->request->isGet()) {
-            $kim = Kim::find();
-            $res = '<tr><th>КИМ</th><th>Цена за м2,грн</th></tr>';
+            $kim = Kim::find(array(
+                "order" => "kim ASC"));
+            $res = '<tr><th>Сложность изделия</th><th>КИМ</th></tr>';
             $resObj = [];
             foreach ($kim as $val) {
                 $res .= '<tr>
-                            <td>'. $val->getKim() . '</td>
-                            <td><span contenteditable="true">' . $val->getKimPrice() . '</span></td>
+                            <td><span contenteditable="true">' . $val->getKimHard() . '</span></td>
+                            <td><span contenteditable="true">'. $val->getKim() . '</span></td>
                         </tr>';
-                $resObj[$val->getKim()] = $val->getKimPrice();
+                $resObj[$val->getKim()] = $val->getKimHard();
             }
 
             $this->response->setContentType('application/json', 'UTF-8');

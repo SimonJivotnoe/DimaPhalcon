@@ -41,9 +41,6 @@ function getTabContent(productId, tabId, body) {
         app.tabs.dom.curTabId = $('.currentTab').attr('id');
         app.tabs.dom.curTabName = 'a[href="#' + app.tabs.dom.curTabId + '"] .tabName';
         app.tabs.dom.productId = productId;
-        var kim = $('[data-cell="KIM1"]').val();
-        (0 === parseInt(kim[kim.length - 1])) ? kim = kim.substring(0, kim.length - 1) : 0;
-        $('[data-cell="PR1"]').val(app.kim.tableContent[kim]);
         $('#calx').calx();
         (body) ? $('body' ).fadeIn(350) : 0;
 

@@ -272,14 +272,14 @@ var app = {
     kim: {
         URL: 'kim/',
         tableContent: '',
-        addKIMtoTable: function(kim, kimPrice) {
+        addKIMtoTable: function(kim, kimHard) {
             var self = this;
             $.ajax( {
                 url   : app.BASE_URL + self.URL + 'addKIMtoTable',
                 method: 'POST',
                 data: {
                     kim: kim,
-                    kimPrice : kimPrice
+                    kimHard : kimHard
                 }
             } ).then( function ( data )
             {

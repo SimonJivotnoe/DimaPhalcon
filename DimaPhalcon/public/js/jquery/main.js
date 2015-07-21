@@ -168,15 +168,16 @@ $( document ).ready( function ()
     });
 
     $('body').on('keyup', '.rowValueInput', function(e){console.log(e.keyCode);
-        var notToReact = [17,18,32,37,38,39,40,110,188,190,191];
-        var text = $(this ).val();
+        var notToReact = [17,18,32,37,38,39,40,110,188,190,191 ],
+            text = $(this ).val(),
+            caretPos;
         if(text.indexOf(',') !== -1) {
            text = text.replace(',','.');
            $(this ).val(text);
         }        
         $(this).attr('value', text);
          if (-1 === $.inArray(e.keyCode, notToReact)){
-            var caretPos = this.selectionStart;
+            caretPos = this.selectionStart;
             if (96 === e.keyCode && '.' === text.charAt((text.length - 2))) {
                 
             } else {
@@ -415,7 +416,7 @@ $( document ).ready( function ()
 
     $('body').on('click', '#addKIM', function(){
         var kim = $('#kimInput' ).val();
-        var kimPrice = $('#kimPriceInput' ).val();
-        app.kim.addKIMtoTable(kim, kimPrice);
+        var kimHardInput = $('#kimHardInput' ).val();
+        app.kim.addKIMtoTable(kim, kimHardInput);
     });
 } );

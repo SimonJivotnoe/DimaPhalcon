@@ -23,6 +23,18 @@ class Products extends \Phalcon\Mvc\Model
 
     /**
      *
+     * @var integer
+     */
+    protected $kim;
+
+    /**
+     *
+     * @var integer
+     */
+    protected $metall;
+
+    /**
+     *
      * @var string
      */
     protected $table_content;
@@ -80,6 +92,32 @@ class Products extends \Phalcon\Mvc\Model
     public function setCategoryId($category_id)
     {
         $this->category_id = $category_id;
+
+        return $this;
+    }
+
+    /**
+     * Method to set the value of field kim
+     *
+     * @param integer $kim
+     * @return $this
+     */
+    public function setKim($kim)
+    {
+        $this->kim = $kim;
+
+        return $this;
+    }
+
+    /**
+     * Method to set the value of field metall
+     *
+     * @param integer $metall
+     * @return $this
+     */
+    public function setMetall($metall)
+    {
+        $this->metall = $metall;
 
         return $this;
     }
@@ -167,6 +205,26 @@ class Products extends \Phalcon\Mvc\Model
     }
 
     /**
+     * Returns the value of field kim
+     *
+     * @return integer
+     */
+    public function getKim()
+    {
+        return $this->kim;
+    }
+
+    /**
+     * Returns the value of field metall
+     *
+     * @return integer
+     */
+    public function getMetall()
+    {
+        return $this->metall;
+    }
+
+    /**
      * Returns the value of field table_content
      *
      * @return string
@@ -212,7 +270,9 @@ class Products extends \Phalcon\Mvc\Model
     public function initialize()
     {
         $this->hasMany('product_id', '\Tabs', 'product_id', array('alias' => 'Tabs'));
+        $this->belongsTo('metall', '\Metalls', 'id', array('alias' => 'Metalls'));
         $this->belongsTo('category_id', '\Categories', 'category_id', array('alias' => 'Categories'));
+        $this->belongsTo('kim', '\Kim', 'kim_id', array('alias' => 'Kim'));
     }
 
 }

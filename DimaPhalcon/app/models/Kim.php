@@ -16,13 +16,13 @@ class Kim extends Model
      *
      * @var string
      */
-    protected $kim;
+    protected $kim_hard;
 
     /**
      *
-     * @var double
+     * @var string
      */
-    protected $kim_price;
+    protected $kim;
 
     /**
      * Method to set the value of field kim_id
@@ -38,27 +38,27 @@ class Kim extends Model
     }
 
     /**
-     * Method to set the value of field kim
+     * Method to set the value of field kim_hard
      *
-     * @param double $kim
+     * @param string $kim_hard
      * @return $this
      */
-    public function setKim($kim)
+    public function setKimHard($kim_hard)
     {
-        $this->kim = $kim;
+        $this->kim_hard = $kim_hard;
 
         return $this;
     }
 
     /**
-     * Method to set the value of field kim_price
+     * Method to set the value of field kim
      *
-     * @param double $kim_price
+     * @param string $kim
      * @return $this
      */
-    public function setKimPrice($kim_price)
+    public function setKim($kim)
     {
-        $this->kim_price = $kim_price;
+        $this->kim = $kim;
 
         return $this;
     }
@@ -74,23 +74,23 @@ class Kim extends Model
     }
 
     /**
+     * Returns the value of field kim_hard
+     *
+     * @return string
+     */
+    public function getKimHard()
+    {
+        return $this->kim_hard;
+    }
+
+    /**
      * Returns the value of field kim
      *
-     * @return double
+     * @return string
      */
     public function getKim()
     {
         return $this->kim;
-    }
-
-    /**
-     * Returns the value of field kim_price
-     *
-     * @return double
-     */
-    public function getKimPrice()
-    {
-        return $this->kim_price;
     }
 
     /**
@@ -101,9 +101,19 @@ class Kim extends Model
         $this->validate(
             new Uniqueness(
                 array(
+                    "field"   => "kim_hard",
                     "field"   => "kim",
                     "message" => "This name already exists"
                 )));
         return $this->validationHasFailed() != true;
     }
+
+    /**
+     * Initialize method for model.
+     */
+    public function initialize()
+    {
+        $this->hasMany('kim_id', '\Products', 'kim', array('alias' => 'Products'));
+    }
+
 }

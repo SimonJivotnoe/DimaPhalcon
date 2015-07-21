@@ -10,8 +10,8 @@
 <div class="tab-content">
     <div role="rightTabs" class="tab-pane active" id="kim">
         <div class="col-md-8">
+            <input type="text" id="kimHardInput" placeholder="Сложность изделия"/>
             <input type="number" id="kimInput" step="0.1" placeholder="КИМ"/>
-            <input type="number" id="kimPriceInput" step="10" placeholder="Цена за м2,грн"/>
             <button class="btn btn-default btn-sm" id="addKIM">Добавить</button>
             <table class="table table-bordered">
                 <tbody id="tbodyKIM">
@@ -21,7 +21,7 @@
     </div>
 </div>
 
-<!--<div class="col-md-8">
+<div class="col-md-8">
     <table class="table table-bordered">
         <tbody>
         <tr>
@@ -51,4 +51,4 @@
         </tr>
         </tbody>
     </table>
-</div>-->
+</div>
