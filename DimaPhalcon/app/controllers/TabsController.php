@@ -207,6 +207,20 @@ class TabsController extends \Phalcon\Mvc\Controller
                 $category->save();
                 $categoryId = Categories::minimum(array("column" => "category_id"));
             }
+            $kim = Kim::minimum(array("column" => "kim_id"));
+            if(empty($categoryId)){
+                $category = new Categories();
+                $category->setCategoryName('Нераспределенное');
+                $category->save();
+                $categoryId = Categories::minimum(array("column" => "category_id"));
+            }
+            $metall = Metalls::minimum(array("column" => "id"));
+            if(empty($categoryId)){
+                $category = new Categories();
+                $category->setCategoryName('Нераспределенное');
+                $category->save();
+                $categoryId = Categories::minimum(array("column" => "category_id"));
+            }
             $productId = '';
             $alwaysInTable = file_get_contents('files/alwaysInTable.json');
             $product = new Products();

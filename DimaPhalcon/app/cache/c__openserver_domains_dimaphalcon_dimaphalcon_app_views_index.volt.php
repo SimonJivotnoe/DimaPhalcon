@@ -19,39 +19,7 @@
     </div>
     <div class="split-pane-divider" id="divider"></div>
     <div class="split-pane-component" id="right-component">
-        This is the right component
-        <div class="col-md-8">
-            <table class="table table-bordered">
-                <tbody>
-                <tr>
-                    <th>№</th>
-                    <th>Артикул</th>
-                    <th>Наименование</th>
-                    <th>Ед. измерения</th>
-                    <th>Кол-во</th>
-                    <th>Цена входящая</th>
-                    <th>Сумма входящая</th>
-                    <th>Цена</th>
-                    <th>Сумма</th>
-                </tr>
-                <tr>
-                    <th colspan="9" id="colspan">Раздел 1</th>
-                </tr>
-                <tr>
-                    <td>1</td>
-                    <td>В-ОЦ-У-0001</td>
-                    <td>Утка из оц. Стали 0.55 300х200 h=100 a=100</td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                </tr>
-                </tbody>
-            </table>
-        </div>
-
+    <div id="tabsRight"><?php echo $tabsRight; ?></div>
     </div>
 </div>
 <script src="js/jquery/jquery-1.11.2.min.js"></script>
