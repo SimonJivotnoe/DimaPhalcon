@@ -198,21 +198,27 @@ $( document ).ready( function ()
          $(app.tabs.dom.curTabName).text($(this ).val());
          ('' === $(this ).val()) ? $(app.tabs.dom.curTabName).text('Новое изделие') : 0;
      });
-
+    $('body').on('change', '.listOfKim', function(){
+        var kim = $('option:selected', this ).attr('kim');
+        $('[data-cell="KIM1"]' ).val(kim);
+    });
     $('body').on('click', '#editCategoriesListContent', function(){
         $(this ).attr('class', 'glyphicon glyphicon-floppy-disk' ).attr('id', 'saveCategoriesListContent');
-        $('.nameOfProduct, .listOfCategories' ).prop('disabled', false );
+        $('.nameOfProduct, .listOfCategories, .listOfKim, .listOfMetalls' ).prop('disabled', false );
     });
     $('body').on('click', '#saveCategoriesListContent', function(){
         $(this ).attr('class', 'glyphicon glyphicon-pencil').attr('id', 'editCategoriesListContent');
-        $('.nameOfProduct, .listOfCategories' ).prop('disabled', true );
-        var prName = $('.nameOfProduct' ).val();
-        var categoryId = $('.listOfCategories option:selected' ).attr('name');
+        $('.nameOfProduct, .listOfCategories, .listOfKim, .listOfMetalls' ).prop('disabled', true );
+        var prName = $('.nameOfProduct' ).val(),
+            categoryId = $('.listOfCategories option:selected' ).attr('name' ),
+            kimId = $('.listOfCategories option:selected' ).attr('name' ),
+            metallId = $('.listOfCategories option:selected' ).attr('name');
         if ('' === prName) {
             prName = 'Новое изделие';
             $(app.tabs.curTabName).text('Новое изделие');
         }
         app.tabs.changeTabName(app.tabs.dom.productId, prName, categoryId);
+        app.product.saveTable();
     });
 
     /* edit & save TableContent */
@@ -419,4 +425,7 @@ $( document ).ready( function ()
         var kimHardInput = $('#kimHardInput' ).val();
         app.kim.addKIMtoTable(kim, kimHardInput);
     });
+    $('body').on('keyup', '.kimHardName', function() {
+        console.log('ok');
+    })
 } );

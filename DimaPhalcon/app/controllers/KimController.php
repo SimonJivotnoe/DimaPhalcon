@@ -29,7 +29,7 @@ class KimController extends \Phalcon\Mvc\Controller
             $resObj = [];
             foreach ($kim as $val) {
                 $res .= '<tr>
-                            <td><span contenteditable="true">' . $val->getKimHard() . '</span></td>
+                            <td><span class="kimHardName" contenteditable="true">' . $val->getKimHard() . '</span></td>
                             <td><span contenteditable="true">'. $val->getKim() . '</span></td>
                         </tr>';
                 $resObj[$val->getKim()] = $val->getKimHard();

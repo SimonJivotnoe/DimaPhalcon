@@ -13,6 +13,19 @@
     <div class="col-md-2">
         <span class="glyphicon glyphicon-pencil" id="editCategoriesListContent" aria-hidden="true"></span>
     </div>
+    <div class="col-md-12">
+
+    </div>
+    <div class="col-md-5" id="kimList">
+        <select class="form-control input-sm listOfKim" disabled>
+            %KIM_LIST%
+        </select>
+    </div>
+    <div class="col-md-5" id="metallList">
+        <select class="form-control input-sm listOfMetalls" disabled>
+            %METALL_LIST%
+        </select>
+    </div>
 </div>
 <div class="col-md-4">
  &nbsp
@@ -22,7 +35,7 @@
 </div>
 <div class="col-md-12 createTableDiv">
     Количество строк: <input id="duration" value="1" type="number" min="1" name="duration" maxlength="1" style = " width: 4em">
-        <button type="button" class="btn custom-addRowsToTable btn-sm" id="addNewRow" >Создать</button>
+        <button type="button" class="btn btn-info btn-sm" id="addNewRow" >Создать</button>
 </div>
 <div class="col-md-8 tableContent" >
     <div class="col-md-10">
@@ -48,7 +61,7 @@
 <div class="col-md-12">
     <div class="col-md-6 col-md-offset-4 formulaBtnGroupPr">
         <button type="button" class="btn custom-cancelInputFormula btn-sm" id="cancelFormulaBtnPr">Отмена</button>
-        <button type="button" class="btn custom-addFormula btn-sm" id="addFormulaBtnPr">Добавить</button>
+        <button type="button" class="btn btn-info btn-sm" id="addFormulaBtnPr">Добавить</button>
     </div>
     <input type="text" class="col-md-12" id="addFormulaInputPr" placeholder="Введите формулу">
    <div class="col-md-12" id="formulasHelper">

@@ -84,6 +84,8 @@ class TabsController extends \Phalcon\Mvc\Controller
                 $substObj = new Substitution();
                 $tabContent = '';
                 $productCatId = $product->getCategoryId();
+                $productKim = $product->getKim();
+                $productMetall = $product->getMetall();
                 $category = Categories::find();
                 $categoriesList = '';
                 if ($category == false) {
@@ -147,9 +149,35 @@ class TabsController extends \Phalcon\Mvc\Controller
                         }
                     }
                 }
+                $kimList = '';
+                $kim = Kim::find(array(
+                    "order" => "kim ASC"));
+                foreach ($kim as $val) {
+                    if ($productKim === $val->getKimId()) {
+                        $kimList .= '<option selected="selected" name="'.$val->getKimId().'" kim="'.$val->getKim().'">'.
+                            $val->getKimHard().': '.$val->getKim().' </option>';
+                    } else {
+                        $kimList .= '<option name="'.$val->getKimId().'" kim="'.$val->getKim().'">'.
+                            $val->getKimHard().': '.$val->getKim().' </option>';
+                    }
+                }
+                $metallList = '';
+                $metall = Metalls::find(array(
+                    "order" => "price ASC"));
+                foreach ($metall as $val) {
+                    if ($productMetall === $val->getId()) {
+                        $metallList .= '<option selected="selected" name="'.$val->getId().'" metall="'.$val->getPrice().'">'.
+                            $val->getName().': '.$val->getPrice().' грн</option>';
+                    } else {
+                        $metallList .= '<option name="'.$val->getId().'" metall="'.$val->getPrice().'">'.
+                            $val->getName().': '.$val->getPrice().' грн</option>';
+                    }
+                }
                 $productDetails = array(
                     '%PRODUCT_NAME%' => $prName,
                     '%CATEGORIES%' => $categoriesList,
+                    '%KIM_LIST%' => $kimList,
+                    '%METALL_LIST%' => $metallList,
                     '%CREATED%' => $product->getCreated(),
                     '%TABLE_CONTENT%' => $tableRes,
                     '%ALWAYS_IN_TABLE%' => $alwRes,
@@ -207,25 +235,31 @@ class TabsController extends \Phalcon\Mvc\Controller
                 $category->save();
                 $categoryId = Categories::minimum(array("column" => "category_id"));
             }
-            $kim = Kim::minimum(array("column" => "kim_id"));
-            if(empty($categoryId)){
-                $category = new Categories();
-                $category->setCategoryName('Нераспределенное');
-                $category->save();
-                $categoryId = Categories::minimum(array("column" => "category_id"));
+            $kimId = Kim::minimum(array("column" => "kim_id"));
+            if(empty($kim)){
+                $kim = new Kim();
+                $kim->setKimHard('Прямой участок')
+                    ->setKim('1.1')
+                    ->save();
+                $kimId = Kim::minimum(array("column" => "kim_id"));
             }
-            $metall = Metalls::minimum(array("column" => "id"));
-            if(empty($categoryId)){
-                $category = new Categories();
-                $category->setCategoryName('Нераспределенное');
-                $category->save();
-                $categoryId = Categories::minimum(array("column" => "category_id"));
+            $metallId = Metalls::minimum(array("column" => "id"));
+            if(empty($metallId)){
+                $metall = new Metalls();
+                $metall->setName('металл оц. 0.55')
+                       ->setPrice('185')
+                       ->setMass('8.5')
+                       ->setOutPrice('245')
+                       ->save();
+                $metallId = Metalls::minimum(array("column" => "id"));
             }
             $productId = '';
             $alwaysInTable = file_get_contents('files/alwaysInTable.json');
             $product = new Products();
             $product->setProductName('Новое изделие')
                     ->setCategoryId($categoryId)
+                    ->setKim($kimId)
+                    ->setMetall($metallId)
                     ->setAlwaysintable($alwaysInTable)
                     ->setCreated(new RawValue('default'));
             //$product->setTableContent(new RawValue('default'));
