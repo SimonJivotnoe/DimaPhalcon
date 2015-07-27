@@ -57,7 +57,11 @@ html, body {
     overflow: auto;
 
 }
-
+#kimListWrapper {
+    max-height: 300px;
+    overflow: auto;
+    margin-top: 15px;
+}
 #categoriesListTable:hover {
     /*box-shadow: 5px 5px 10px #888888;*/
 }
@@ -126,9 +130,15 @@ h4 {
     border: 1px rgba(149, 171, 153, 0.5) solid;
 }
 
-.glyphicon-pencil {
-    margin-left: 20px;
+/* EDIT & SAVE CATEGORIES LIST CONTENT */
+#editCategoriesListContent, #editTableContent{
+    display: none;
+}
+.triggerKimPencil, .triggerRemoveKim, .triggerMetallPencil, .triggerRemoveMetall {
     display: none !important;
+}
+.leftTable {
+    margin-left: 20px;
     opacity: 0.5;
 }
 .glyphicon-floppy-disk {
@@ -141,17 +151,14 @@ h4 {
     color: green;
     opacity: 0.9;
 }
-div.blockNameAndCat:hover span.glyphicon-pencil {
-    display: block !important;
-}
-div.tableContent:hover span.glyphicon-pencil {
-    display: block !important;
-}
 .glyphicon-pencil:hover {
     cursor: pointer;
     font-size: 18px;
     opacity: 0.9;
     color: blue;
+}
+.editKimPencil {
+    opacity: 0.5;
 }
 .created {
     margin: 20px 0;
@@ -169,12 +176,12 @@ ol li:hover {
 .formulaBtnGroup {
     margin: 15px 0;
 }
-.removeRow {
+.removeRow, .removeKim {
     opacity: 0.5;
     padding-left: 8px;
     font-size: 12px;
 }
-.removeRow:hover {
+.removeRow:hover, .removeKim:hover {
     cursor: pointer;
     font-size: 15px;
     opacity: 0.9;
@@ -262,4 +269,14 @@ ol li:hover {
   color: #fff !important;
   text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.56);
   -webkit-font-smoothing: antialiased;
+}
+.editKimTable {
+    border: none !important;
+    background-color: white;
+    width: 60px;
+}
+.editMetallTable {
+    border: none !important;
+    background-color: white;
+    width: 60px;
 }

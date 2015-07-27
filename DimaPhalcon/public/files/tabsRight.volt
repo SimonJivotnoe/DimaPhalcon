@@ -10,13 +10,34 @@
 <div class="tab-content">
     <div role="rightTabs" class="tab-pane active" id="kim">
         <div class="col-md-8">
+            <h4>КИМ</h4>
             <input type="text" id="kimHardInput" placeholder="Сложность изделия"/>
-            <input type="number" id="kimInput" step="0.1" placeholder="КИМ"/>
-            <button class="btn btn-default btn-sm" id="addKIM">Добавить</button>
-            <table class="table table-bordered">
-                <tbody id="tbodyKIM">
-                </tbody>
-            </table>
+            <input type="number" id="kimInput" step="0.1" min="0.1" placeholder="КИМ"/>
+            <button class="btn btn-info btn-sm" id="addKIM">Добавить</button>
+            <div class="col-md-12" id="kimListWrapper">
+                <table class="table table-bordered">
+                    <tbody id="tbodyKIM">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="col-md-10">
+            <h4>Металлы</h4>
+            <div class="col-md-12">
+                <input type="text" id="" placeholder="Металл"/>
+                <input type="number" id="" step="10" placeholder="Цена"/>
+            </div>
+            <div class="col-md-12">
+                <input type="number" id="" step="0.1" min="0.1" placeholder="Масса"/>
+                <input type="number" id="" step="10" placeholder="Исходящая цена"/>
+                <button class="btn btn-info btn-sm" id="">Добавить</button>
+            </div>
+            <div class="col-md-12" id="">
+                <table class="table table-bordered">
+                    <tbody id="tbodyMetalls">
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 </div>

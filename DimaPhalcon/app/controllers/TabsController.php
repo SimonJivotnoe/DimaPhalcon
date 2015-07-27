@@ -319,6 +319,8 @@ class TabsController extends \Phalcon\Mvc\Controller
             $prId = $this->request->getPost('prId');
             $prName= $this->request->getPost('prName');
             $catId= $this->request->getPost('categoryId');
+            $kimId= $this->request->getPost('kimId');
+            $metallId= $this->request->getPost('metallId');
             $product = Products::findFirst(array("product_id = '$prId'"));
             if ($product == false) {
                 echo "Мы не можем сохранить робота прямо сейчас: \n";
@@ -328,6 +330,8 @@ class TabsController extends \Phalcon\Mvc\Controller
             } else {
                 $product->setProductName($prName)
                         ->setCategoryId($catId)
+                        ->setKim($kimId)
+                        ->setMetall($metallId)
                         ->save();
                 $this->response->setContentType('application/json', 'UTF-8');
                 $this->response->setJsonContent('ok');

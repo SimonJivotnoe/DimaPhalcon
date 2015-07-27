@@ -1,7 +1,6 @@
 'use strict';
 $( document ).ready( function ()
-{
-    // split monitor
+{    // split monitor
     if (undefined === localStorage.split) {
         localStorage.split = '60em';
     }
@@ -193,6 +192,18 @@ $( document ).ready( function ()
     /* SAVE CHANGES IN TABLE END*/
 
     /* EDIT & SAVE CATEGORIES LIST CONTENT */
+    $('body').on('mouseover', '.blockNameAndCat', function(){
+        $('#editCategoriesListContent' ).show();
+    })
+    $('body').on('mouseleave', '.blockNameAndCat', function(){
+        $('#editCategoriesListContent' ).css('display', 'none');
+    })
+    $('body').on('mouseover', '.tableContent', function(){
+        $('#editTableContent' ).show();
+    })
+    $('body').on('mouseleave', '.tableContent', function(){
+        $('#editTableContent' ).css('display', 'none');
+    })
     // set tab name
      $('body').on('change, keyup', '.nameOfProduct', function(){
          $(app.tabs.dom.curTabName).text($(this ).val());
@@ -201,23 +212,29 @@ $( document ).ready( function ()
     $('body').on('change', '.listOfKim', function(){
         var kim = $('option:selected', this ).attr('kim');
         $('[data-cell="KIM1"]' ).val(kim);
+        $( '#calx' ).calx();
+    });
+    $('body').on('change', '.listOfMetalls', function(){
+        var metall = $('option:selected', this ).attr('metall');
+        $('[data-cell="PR1"]' ).val(metall);
+        $( '#calx' ).calx();
     });
     $('body').on('click', '#editCategoriesListContent', function(){
         $(this ).attr('class', 'glyphicon glyphicon-floppy-disk' ).attr('id', 'saveCategoriesListContent');
         $('.nameOfProduct, .listOfCategories, .listOfKim, .listOfMetalls' ).prop('disabled', false );
     });
     $('body').on('click', '#saveCategoriesListContent', function(){
-        $(this ).attr('class', 'glyphicon glyphicon-pencil').attr('id', 'editCategoriesListContent');
+        $(this ).attr('class', 'glyphicon glyphicon-pencil leftTable').attr('id', 'editCategoriesListContent');
         $('.nameOfProduct, .listOfCategories, .listOfKim, .listOfMetalls' ).prop('disabled', true );
         var prName = $('.nameOfProduct' ).val(),
             categoryId = $('.listOfCategories option:selected' ).attr('name' ),
-            kimId = $('.listOfCategories option:selected' ).attr('name' ),
-            metallId = $('.listOfCategories option:selected' ).attr('name');
+            kimId = $('.listOfKim option:selected' ).attr('name' ),
+            metallId = $('.listOfMetalls option:selected' ).attr('name');
         if ('' === prName) {
             prName = 'Новое изделие';
             $(app.tabs.curTabName).text('Новое изделие');
         }
-        app.tabs.changeTabName(app.tabs.dom.productId, prName, categoryId);
+        app.tabs.changeTabName(prName, categoryId, kimId, metallId);
         app.product.saveTable();
     });
 
@@ -232,7 +249,7 @@ $( document ).ready( function ()
         //$( "ul, li" ).disableSelection();
     });
     $('body').on('click', '#saveTableContent', function(){
-        $(this ).attr('class', 'glyphicon glyphicon-pencil').attr('id', 'editTableContent');
+        $(this ).attr('class', 'glyphicon glyphicon-pencil leftTable').attr('id', 'editTableContent');
         $('.removeRow' ).hide();
         app.product.saveTable();
         $( app.product.dom.sortable ).sortable({
@@ -418,14 +435,57 @@ $( document ).ready( function ()
     //RIGHT PART
     $('#kim').on('click', function(){
         app.kim.getKIMTable();
+        app.metalls.getMetallsTable();
     });
 
     $('body').on('click', '#addKIM', function(){
-        var kim = $('#kimInput' ).val();
-        var kimHardInput = $('#kimHardInput' ).val();
+        var kim = $('#kimInput' ).val(),
+            kimHardInput = $('#kimHardInput' ).val();
+        kim = app.kim.validation(kim);
         app.kim.addKIMtoTable(kim, kimHardInput);
     });
-    $('body').on('keyup', '.kimHardName', function() {
-        console.log('ok');
+    $('body').on('mouseover', '#tbodyKIM tr', function() {
+        $('.glyphicon-pencil', this)
+            .removeClass('triggerKimPencil')
+            .addClass('editKimPencil');
+        $('.glyphicon-remove', this)
+            .removeClass('triggerRemoveKim')
+            .addClass('removeKim');
+       // $('[data-toggle="confirmation"]').confirmation();
+    });
+    $('body').on('mouseleave', '#tbodyKIM tr', function() {
+        $('.glyphicon-pencil', this)
+            .removeClass('editKimPencil')
+            .addClass('triggerKimPencil');
+        $('.glyphicon-remove', this)
+            .removeClass('removeKim')
+            .addClass('triggerRemoveKim');
+    });
+    $('body').on('click', '.editKimPencil', function(){
+        $(this )
+            .attr('class', 'glyphicon glyphicon-floppy-disk saveEditKim' )
+            .css('margin-left', '0');
+        $(this )
+            .parent()
+            .parent()
+            .find('.kimHardName, .kimName')
+            .attr('contenteditable', 'true')
+            .css({
+                'border': '1px solid hsl(195, 79%, 43%)',
+                'border-radius': '2px'
+            });
+    });
+    $('body').on('click', '.saveEditKim', function(){
+        var kimId = $(this ).attr('name'),
+            kim = $(this ).parent().parent().find('.kimName' ).text(),
+            kimHard = $(this ).parent().parent().find('.kimHardName' ).text(),
+            self = this;
+        kim = app.kim.validation(kim);
+        app.kim.editKim(kimId, kim, kimHard, self);
     })
+    $('body').on('click', '.removeKim', function(){
+        var kimId = $(this ).attr('name');
+        app.kim.removeKim(kimId);
+    });
+
 } );

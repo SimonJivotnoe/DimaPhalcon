@@ -84,15 +84,17 @@ var app = {
                 }
             });
         },
-        changeTabName: function (prId, prName, categoryId) {
+        changeTabName: function (prName, categoryId, kimId, metallId) {
             var self = this;
             $.ajax( {
                 url   : app.BASE_URL + self.URL + 'changeTabName',
                 method: 'POST',
                 data: {
-                    prId: prId,
+                    prId: self.dom.productId,
                     prName : prName,
-                    categoryId : categoryId
+                    categoryId : categoryId,
+                    kimId: kimId,
+                    metallId: metallId
                 }
             } ).then( function ( data )
             {
@@ -285,6 +287,8 @@ var app = {
             {
                 if ('ok' === data) {
                     self.getKIMTable();
+                    $('#kimInput, #kimHardInput' ).val('');
+                    self.getKimList();
                 } else {
 
                 }
@@ -299,6 +303,82 @@ var app = {
             {
                 self.tableContent = data[1];
                 $('#tbodyKIM' ).html(data[0]);
+            });
+        },
+        validation: function(val) {
+            var res;
+            res = val.replace(/[A-Za-z]+/g, '' ).replace(/,/g, '.');
+            return res;
+        },
+        editKim: function (kimId, kim, kimHard, save) {
+            var self = this;
+            $.ajax( {
+                url   : app.BASE_URL + self.URL + 'editKim',
+                method: 'POST',
+                data: {
+                    kimId: kimId,
+                    kim: kim,
+                    kimHard : kimHard
+                }
+            } ).then( function ( data )
+            {console.log(data);
+                if (true === data) {
+                    self.getKIMTable();
+                    self.getKimList();
+                } else {
+                    $(save )
+                        .parent()
+                        .parent()
+                        .find('.kimHardName, .kimName')
+                        .css({
+                            'border': '3px solid hsl(0, 69%, 22%)',
+                            'border-radius': '2px'
+                        });
+                }
+            });
+        },
+        getKimList: function() {
+            var self = this;
+            $.ajax( {
+                url   : app.BASE_URL + self.URL + 'getKimList',
+                method: 'GET',
+                data: {
+                    prId: app.tabs.dom.productId
+                }
+            } ).then( function ( data ) {
+                $('.listOfKim' ).html(data);
+                var kim = $('.listOfKim option:selected' ).attr('kim');
+                $('[data-cell="KIM1"]' ).val(kim);
+                $('#calx').calx();
+            })
+        },
+        removeKim: function (kimId) {
+            var self = this;
+            $.ajax( {
+                url   : app.BASE_URL + self.URL + 'removeKim',
+                method: 'POST',
+                data: {
+                    kimId: kimId
+                }
+            } ).then( function ( data ) {
+                console.log(data);
+                if (true === data) {
+                    self.getKIMTable();
+                    self.getKimList();
+                }
+            })
+        }
+    },
+    metalls: {
+        URL: 'metalls/',
+        getMetallsTable: function() {
+            var self = this;
+            $.ajax( {
+                url   : app.BASE_URL + self.URL + 'getMetallsTable',
+                method: 'GET'
+            } ).then( function ( data )
+            {
+                $('#tbodyMetalls' ).html(data);
             });
         }
     }

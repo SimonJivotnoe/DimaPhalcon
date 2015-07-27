@@ -101,13 +101,11 @@ class Kim extends Model
         $this->validate(
             new Uniqueness(
                 array(
-                    "field"   => "kim_hard",
-                    "field"   => "kim",
-                    "message" => "This name already exists"
+                    'field'  => 'kim',
+                    'message' => 'This name already exists'
                 )));
         return $this->validationHasFailed() != true;
     }
-
     /**
      * Initialize method for model.
      */

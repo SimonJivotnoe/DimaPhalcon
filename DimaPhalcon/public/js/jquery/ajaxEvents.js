@@ -33,6 +33,7 @@ function getTabContent(productId, tabId, body) {
         method: 'GET'
     } ).then( function ( data )
     {
+        var kim, metall;
         $('#preferences1').attr('class', 'tab-pane');
         $('.currentTab' ).attr('id', tabId);
         $('.currentTab').attr('class', 'tab-pane active currentTab');
@@ -41,8 +42,10 @@ function getTabContent(productId, tabId, body) {
         app.tabs.dom.curTabId = $('.currentTab').attr('id');
         app.tabs.dom.curTabName = 'a[href="#' + app.tabs.dom.curTabId + '"] .tabName';
         app.tabs.dom.productId = productId;
-        var kim = $('.listOfKim option:selected' ).attr('kim');
+        kim = $('.listOfKim option:selected' ).attr('kim');
+        metall = $('.listOfMetalls option:selected' ).attr('metall');
         $('[data-cell="KIM1"]' ).val(kim);
+        $('[data-cell="PR1"]' ).val(metall);
         $('#calx').calx();
         (body) ? $('body' ).fadeIn(350) : 0;
 
