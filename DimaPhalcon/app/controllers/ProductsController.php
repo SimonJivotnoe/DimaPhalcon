@@ -127,5 +127,19 @@ class ProductsController extends \Phalcon\Mvc\Controller
         }
     }
 
+    public function createTableRes($table, $template){
+        $substObj = new Substitution();
+        $tabContArr = [];
+        $tableRes = '';
+        foreach ($table as $key => $val) {
+            foreach ($val as $k => $v) {
+                $tabContArr[$k] = $v;
+            }
+            $tableRes .= $substObj->subHTMLReplace($template, $tabContArr);
+            $tabContArr = [];
+        }
+
+        return $tableRes;
+    }
 }
 

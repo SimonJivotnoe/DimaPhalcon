@@ -83,106 +83,36 @@ class TabsController extends \Phalcon\Mvc\Controller
             } else {
                 $substObj = new Substitution();
                 $tabContent = '';
+
                 $productCatId = $product->getCategoryId();
                 $productKim = $product->getKim();
                 $productMetall = $product->getMetall();
-                $category = Categories::find();
-                $categoriesList = '';
-                if ($category == false) {
-                    echo "Мы не можем сохранить робота прямо сейчас: \n";
-                    foreach ($category->getMessages() as $message) {
-                        echo $message, "\n";
-                    }
-                } else {
-                    foreach ($category as $val) {
-                        if ($val->getCategoryId() === $productCatId) {
-                            $categoriesList .= '<option selected="selected" name="'.$val->getCategoryId().'">'.$val->getCategoryName().'</option>';
-                        } else {
-                            $categoriesList .= '<option name="'.$val->getCategoryId().'">'.$val->getCategoryName().'</option>';
-                        }
-
-                    }
-                }
-                $formHelpArr = '';
-                $formulasHelper = FormulasHelper::find();
-                foreach ( $formulasHelper as $val) {
-                    $formHelpArr .= '<span><button type="button" class="btn custom-addRowsToTable btn-xs fhBtn">'. $val->getName().
-                        '<span class="glyphicon glyphicon-remove removeFhBtn" aria-hidden="true"></span></button></span>';
-                }
-                $tabContArr = [];
-                $tableRes = '';
                 $table = json_decode($product->getTableContent());
-                foreach ($table as $key => $val) {
-                    foreach ($val as $k => $v) {
-                        $tabContArr[$k] = $v;
-                    }
-                    $tableRes .= $substObj->subHTMLReplace('tableContent.html', $tabContArr);
-                    $tabContArr = [];
-                }
-                $alwArr = [];
-                $alwRes = '';
                 $alwaysInTable = json_decode($product->getAlwaysintable());
-                foreach ($alwaysInTable as $key => $val) {
-                    foreach ($val as $k => $v) {
-                        $alwArr[$k] = $v;
-                    }
-                    $alwRes .= $substObj->subHTMLReplace('alwaysInTable.html', $alwArr);
-                    $alwArr = [];
-                }
+
+                $productObj = new ProductsController;
+                $categoryObj = new CategoriesController;
+                $kimObj = new KimController;
+                $metallsObj = new MetallsController;
+                $formulaHelperObj = new FormulasController;
+
                 $prName = $product->getProductName();
                 if ('Новое изделие' === $prName) {
                     $prName = '';
                 }
-                $formulasRes = '';
+
                 $formulas = json_decode($product->getFormulas());
-                foreach ($formulas as $key => $val) {
-                    foreach ($val as $k => $v) {
-                        if ('formula' === $k) {
-                            $formulasRes .= '<li class="list-group-item formula"><span class="formulaValue" contenteditable="true">'.$v.'</span>';
-                        }
-                        if ('cell' === $k) {
-                            if ('' !== $v) {
-                                $formulasRes .= '<span class="glyphicon glyphicon-retweet cellBind" aria-hidden="true"> '.$v.'</span></li>';
-                            } else {
-                                $formulasRes .= '</li>';
-                            }
-                        }
-                    }
-                }
-                $kimList = '';
-                $kim = Kim::find(array(
-                    "order" => "kim ASC"));
-                foreach ($kim as $val) {
-                    if ($productKim === $val->getKimId()) {
-                        $kimList .= '<option selected="selected" name="'.$val->getKimId().'" kim="'.$val->getKim().'">'.
-                            $val->getKimHard().': '.$val->getKim().' </option>';
-                    } else {
-                        $kimList .= '<option name="'.$val->getKimId().'" kim="'.$val->getKim().'">'.
-                            $val->getKimHard().': '.$val->getKim().' </option>';
-                    }
-                }
-                $metallList = '';
-                $metall = Metalls::find(array(
-                    "order" => "price ASC"));
-                foreach ($metall as $val) {
-                    if ($productMetall === $val->getId()) {
-                        $metallList .= '<option selected="selected" name="'.$val->getId().'" metall="'.$val->getPrice().'">'.
-                            $val->getName().': '.$val->getPrice().' грн</option>';
-                    } else {
-                        $metallList .= '<option name="'.$val->getId().'" metall="'.$val->getPrice().'">'.
-                            $val->getName().': '.$val->getPrice().' грн</option>';
-                    }
-                }
+
                 $productDetails = array(
                     '%PRODUCT_NAME%' => $prName,
-                    '%CATEGORIES%' => $categoriesList,
-                    '%KIM_LIST%' => $kimList,
-                    '%METALL_LIST%' => $metallList,
+                    '%CATEGORIES%' => $categoriesList = $categoryObj->createCategoriesList($productCatId),
+                    '%KIM_LIST%' => $kimList = $kimObj->createKimList($productKim),
+                    '%METALL_LIST%' => $metallList = $metallsObj->createMetallsList ($productMetall),
                     '%CREATED%' => $product->getCreated(),
-                    '%TABLE_CONTENT%' => $tableRes,
-                    '%ALWAYS_IN_TABLE%' => $alwRes,
-                    '%FORMULAS_HELPER%' => $formHelpArr,
-                    '%FORMULAS%' => $formulasRes
+                    '%TABLE_CONTENT%' => $tableRes = $productObj->createTableRes($table, 'tableContent.html'),
+                    '%ALWAYS_IN_TABLE%' => $alwRes = $productObj->createTableRes($alwaysInTable, 'alwaysInTable.html'),
+                    '%FORMULAS_HELPER%' => $formHelpList = $formulaHelperObj->createFormulaHelperList(),
+                    '%FORMULAS%' => $formulasRes = $formulaHelperObj->createFormulasList($formulas)
                 );
                 $tabContent .= $substObj->subHTMLReplace('tabContent.html', $productDetails);
                 $this->response->setContentType('application/json', 'UTF-8');
@@ -235,8 +165,8 @@ class TabsController extends \Phalcon\Mvc\Controller
                 $category->save();
                 $categoryId = Categories::minimum(array("column" => "category_id"));
             }
-            $kimId = Kim::minimum(array("column" => "kim_id"));
-            if(empty($kim)){
+            $kimId = Kim::minimum(array("column" => "kim_id"));var_dump($kimId);
+            if(empty($kimId)){
                 $kim = new Kim();
                 $kim->setKimHard('Прямой участок')
                     ->setKim('1.1')

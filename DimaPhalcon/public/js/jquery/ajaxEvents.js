@@ -12,7 +12,7 @@ function getTabs(param) {
                 if (!data[1]) {
                     showPreferences();
                 } else {
-                    getTabContent(data[2], data[1], 1);
+                    app.tabs.getTabContent(data[2], data[1], 1);
                 }
             } else {
                 showPreferences();
@@ -27,7 +27,7 @@ function getTabs(param) {
     });
 }
 
-function getTabContent(productId, tabId, body) {
+/*function getTabContent(productId, tabId, body) {
     $.ajax( {
         url   : 'http://DimaPhalcon/DimaPhalcon/tabs/getTabContent/' + productId,
         method: 'GET'
@@ -50,7 +50,7 @@ function getTabContent(productId, tabId, body) {
         (body) ? $('body' ).fadeIn(350) : 0;
 
     });
-}
+}*/
 
 
 

@@ -17,35 +17,35 @@ $( document ).ready( function ()
 
     /*----PREFERENCES_START----*/
     // cog spin on
-    $('body').on('mouseover', '#preferences', function(){
+    /*$('body').on('mouseover', '#preferences', function(){
         $(this ).find('.fa-cog').addClass('fa-spin');
-    });
+    });*/
     // cog spin off
-    $('body').on('mouseleave', '#preferences', function(){
+   /* $('body').on('mouseleave', '#preferences', function(){
         $(this ).find('.fa-cog').removeClass('fa-spin');
-    });
-    $('#preferences').on('click', function(){
+    });*/
+    /*$('#preferences').on('click', function(){
         $('.bg-danger' ).fadeOut(10);
         $('#addCategoryInput' ).val('');
         getCategoriesList();
         app.tabs.changeActiveTab('', '');
-    });
+    });*/
     // add new category
-    $('#addCategoryBtn').on('click', function(){
+    /*$('#addCategoryBtn').on('click', function(){
         var newCategoryName = $('#addCategoryInput' ).val();
         ('' !== newCategoryName) ? addCategory(newCategoryName) : 0;
-    });
+    });*/
     /*----PREFERENCES_END----*/
 
     /*----NEW_TAB_START----*/
     /* creating new tab clicking on + */
-    $('#addNewTab').on('click', function(){
+    /*$('#addNewTab').on('click', function(){
         getTabs('last');
-    });
+    });*/
     /*----NEW_TAB_END----*/
     
     /*----CURRENT TAB START----*/
-    $('body').on('click', '#myTab [role=tab]', function() {
+    /*$('body').on('click', '#myTab [role=tab]', function() {
         var selectedTabId = $(this ).attr('aria-controls');
         if (selectedTabId !== 'preferences1' && app.tabs.dom.curTabId !== selectedTabId && undefined !== selectedTabId) {
             var tabId = $(this ).find('.glyphicon-remove' ).attr('name');
@@ -53,19 +53,19 @@ $( document ).ready( function ()
             '' !== app.tabs.dom.curTabId ? app.tabs.dom.tabsList[app.tabs.dom.curTabId].active = '0' : 0;
             app.tabs.dom.tabsList[selectedTabId].active = '1';
             app.tabs.changeActiveTab(tabId, selectedTabId);
-            getTabContent(prodId, selectedTabId, 0);            
+            app.tabs.getTabContent(prodId, selectedTabId, 0);
         }
-    });
+    });*/
     /*----CURRENT TAB END----*/
 
     /*----CLOSING TAB START----*/
-    $('body').on('click', app.tabs.dom.closeTab, function (e){
+    /*$('body').on('click', app.tabs.dom.closeTab, function (e){
         e.stopPropagation();
         var currentID = $(this).parent().attr('aria-controls');
         var idDb = $(this ).attr('name');        
         $(this ).attr('class', 'glyphicon glyphicon-remove');
        app.tabs.closeTabMethod(idDb, currentID);
-    });
+    });*/
     /*----CLOSING TAB END----*/
 
     /*----INSIDE TAB START----*/
@@ -444,30 +444,12 @@ $( document ).ready( function ()
         kim = app.kim.validation(kim);
         app.kim.addKIMtoTable(kim, kimHardInput);
     });
-    $('body').on('mouseover', '#tbodyKIM tr', function() {
-        $('.glyphicon-pencil', this)
-            .removeClass('triggerKimPencil')
-            .addClass('editKimPencil');
-        $('.glyphicon-remove', this)
-            .removeClass('triggerRemoveKim')
-            .addClass('removeKim');
-       // $('[data-toggle="confirmation"]').confirmation();
-    });
-    $('body').on('mouseleave', '#tbodyKIM tr', function() {
-        $('.glyphicon-pencil', this)
-            .removeClass('editKimPencil')
-            .addClass('triggerKimPencil');
-        $('.glyphicon-remove', this)
-            .removeClass('removeKim')
-            .addClass('triggerRemoveKim');
-    });
     $('body').on('click', '.editKimPencil', function(){
         $(this )
             .attr('class', 'glyphicon glyphicon-floppy-disk saveEditKim' )
             .css('margin-left', '0');
         $(this )
-            .parent()
-            .parent()
+            .parents('tr')
             .find('.kimHardName, .kimName')
             .attr('contenteditable', 'true')
             .css({
@@ -477,12 +459,12 @@ $( document ).ready( function ()
     });
     $('body').on('click', '.saveEditKim', function(){
         var kimId = $(this ).attr('name'),
-            kim = $(this ).parent().parent().find('.kimName' ).text(),
-            kimHard = $(this ).parent().parent().find('.kimHardName' ).text(),
+            kim = app.fn.inputValidator($(this ).parents('tr').find('.kimName' ).text()),
+            kimHard = $(this ).parents('tr').find('.kimHardName' ).text(),
             self = this;
-        kim = app.kim.validation(kim);
         app.kim.editKim(kimId, kim, kimHard, self);
-    })
+    });
+
     $('body').on('click', '.removeKim', function(){
         var kimId = $(this ).attr('name');
         app.kim.removeKim(kimId);

@@ -57,7 +57,7 @@ html, body {
     overflow: auto;
 
 }
-#kimListWrapper {
+#kimListWrapper, #metallListWrapper {
     max-height: 300px;
     overflow: auto;
     margin-top: 15px;
@@ -157,7 +157,7 @@ h4 {
     opacity: 0.9;
     color: blue;
 }
-.editKimPencil {
+.editKimPencil, .editMetallPencil {
     opacity: 0.5;
 }
 .created {
@@ -176,12 +176,12 @@ ol li:hover {
 .formulaBtnGroup {
     margin: 15px 0;
 }
-.removeRow, .removeKim {
+.removeRow, .removeKim, .removeMetall {
     opacity: 0.5;
     padding-left: 8px;
     font-size: 12px;
 }
-.removeRow:hover, .removeKim:hover {
+.removeRow:hover, .removeKim:hover, .removeMetall:hover {
     cursor: pointer;
     font-size: 15px;
     opacity: 0.9;

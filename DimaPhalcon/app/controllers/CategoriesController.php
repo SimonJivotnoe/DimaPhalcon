@@ -55,5 +55,25 @@ class CategoriesController extends ControllerBase
             echo "Отлично, новый робот был успешно сохранен!";
         }
     }
+
+    public function createCategoriesList($productCatId){
+        $category = Categories::find();
+        $categoriesList = '';
+        if ($category == false) {
+            echo "Мы не можем сохранить робота прямо сейчас: \n";
+            foreach ($category->getMessages() as $message) {
+                echo $message, "\n";
+            }
+        } else {
+            foreach ($category as $val) {
+                if ($val->getCategoryId() === $productCatId) {
+                    $categoriesList .= '<option selected="selected" name="'.$val->getCategoryId().'">'.$val->getCategoryName().'</option>';
+                } else {
+                    $categoriesList .= '<option name="'.$val->getCategoryId().'">'.$val->getCategoryName().'</option>';
+                }
+            }
+            return $categoriesList;
+        }
+    }
 }
 

@@ -80,7 +80,7 @@ var app = {
             } ).then( function (  )
             {
                 if ('preferences1' !== nextActiveTab) {
-                    getTabContent(productId, nextActiveTab, 0);
+                    app.tabs.getTabContent(productId, nextActiveTab, 0);
                 }
             });
         },
@@ -99,6 +99,88 @@ var app = {
             } ).then( function ( data )
             {
                 console.log(data);
+            });
+        },
+        getTabContent: function(productId, tabId, body) {
+            var self = this;
+            $.ajax( {
+                url   : app.BASE_URL + self.URL + 'getTabContent/' + productId,
+                method: 'GET'
+            } ).then( function ( data )
+            {
+                var kim, metall;
+                $('#preferences1').attr('class', 'tab-pane');
+                $('.currentTab' ).attr('id', tabId);
+                $('.currentTab').attr('class', 'tab-pane active currentTab');
+                $('.currentTab' ).html(data);
+                $('.removeRow' ).hide();
+                self.dom.curTabId = $('.currentTab').attr('id');
+                self.dom.curTabName = 'a[href="#' + self.dom.curTabId + '"] .tabName';
+                self.dom.productId = productId;
+                kim = $('.listOfKim option:selected' ).attr('kim');
+                metall = $('.listOfMetalls option:selected' ).attr('metall');
+                $('[data-cell="KIM1"]' ).val(kim);
+                $('[data-cell="PR1"]' ).val(metall);
+                $('#calx').calx();
+                if (body) {
+                    /*----PREFERENCES_START----*/
+                    // cog spin on
+                    $('#preferences').on('mouseover', function(){
+                        $('.fa-cog').addClass('fa-spin');
+                    });
+                    // cog spin off
+                    $('#preferences').on('mouseleave', function(){
+                        $('.fa-cog').removeClass('fa-spin');
+                    });
+                    $('#preferences').on('click', function(){
+                        $('.bg-danger' ).fadeOut(10);
+                        $('#addCategoryInput' ).val('');
+                        getCategoriesList();
+                        self.changeActiveTab('', '');
+                    });
+                    // add new category
+                    $('#addCategoryBtn').on('click', function(){
+                        var newCategoryName = $('#addCategoryInput' ).val();
+                        ('' !== newCategoryName) ? addCategory(newCategoryName) : 0;
+                    });
+                    /*----PREFERENCES_END----*/
+
+                    /*----NEW_TAB_START----*/
+                    /* creating new tab clicking on + */
+                    $('#addNewTab').on('click', function(){
+                        getTabs('last');
+                    });
+                    /*----NEW_TAB_END----*/
+
+                    /*----CURRENT TAB START----*/
+                    $('#myTab [role=tab]').on('click', function() {
+                        var selectedTabId = $(this ).attr('aria-controls');
+                        if (selectedTabId !== 'preferences1' && self.dom.curTabId !== selectedTabId && undefined !== selectedTabId) {
+                            var tabId = $(this ).find('.glyphicon-remove' ).attr('name' ),
+                                prodId = $(this ).attr('name');
+                            '' !== self.dom.curTabId ? self.dom.tabsList[self.dom.curTabId].active = '0' : 0;
+                            self.dom.tabsList[selectedTabId].active = '1';
+                            self.changeActiveTab(tabId, selectedTabId);
+                            self.getTabContent(prodId, selectedTabId, 0);
+                        }
+                    });
+                    /*----CURRENT TAB END----*/
+
+                    /*----CLOSING TAB START----*/
+                    $(self.dom.closeTab).on('click', function (e){
+                        e.stopPropagation();
+                        var currentID = $(this).parent().attr('aria-controls' ),
+                            idDb = $(this ).attr('name');
+                        $(this ).attr('class', 'glyphicon glyphicon-remove');
+                        self.closeTabMethod(idDb, currentID);
+                    });
+                    /*----CLOSING TAB END----*/
+
+                    //RIGHT PART
+
+                    $('body' ).fadeIn(350);
+                }
+
             });
         }
     },
@@ -285,9 +367,9 @@ var app = {
                 }
             } ).then( function ( data )
             {
-                if ('ok' === data) {
-                    self.getKIMTable();
+                if (true === data) {
                     $('#kimInput, #kimHardInput' ).val('');
+                    self.getKIMTable();
                     self.getKimList();
                 } else {
 
@@ -303,6 +385,27 @@ var app = {
             {
                 self.tableContent = data[1];
                 $('#tbodyKIM' ).html(data[0]);
+
+                //kim
+                $('#tbodyKIM tr').on('mouseover', function() {
+                    var obj = {
+                        pencilRemove: 'triggerKimPencil',
+                        pencilAdd:'editKimPencil',
+                        removeRemove: 'triggerRemoveKim',
+                        removeAdd: 'removeKim'
+                    };
+                    app.fn.kimEditOver(obj, this);
+                });
+
+                $('#tbodyKIM tr').on('mouseleave', function() {
+                    var obj = {
+                        pencilRemove: 'editKimPencil',
+                        pencilAdd:'triggerKimPencil',
+                        removeRemove: 'removeKim',
+                        removeAdd: 'triggerRemoveKim'
+                    };
+                    app.fn.kimEditOver(obj, this);
+                });
             });
         },
         validation: function(val) {
@@ -321,7 +424,7 @@ var app = {
                     kimHard : kimHard
                 }
             } ).then( function ( data )
-            {console.log(data);
+            {
                 if (true === data) {
                     self.getKIMTable();
                     self.getKimList();
@@ -379,7 +482,134 @@ var app = {
             } ).then( function ( data )
             {
                 $('#tbodyMetalls' ).html(data);
+
+                //METALLS
+                //add metall
+                $('#addMetall').on('click', function(){
+                    var data = {
+                        metall: $('#metallName' ).val(),
+                        price: app.fn.inputValidator($('#metallPrice' ).val()),
+                        mass: app.fn.inputValidator($('#metallMass' ).val()),
+                        outPrice: app.fn.inputValidator($('#metallOutPrice' ).val())
+                    };
+                    app.metalls.addMetallToTable(data);
+                });
+
+                $('#tbodyMetalls tr').on('mouseover', function() {
+                    var obj = {
+                        pencilRemove: 'triggerMetallPencil',
+                        pencilAdd:'editMetallPencil',
+                        removeRemove: 'triggerRemoveMetall',
+                        removeAdd: 'removeMetall'
+                    };
+                    app.fn.kimEditOver(obj, this);
+                });
+
+                $('#tbodyMetalls tr').on('mouseleave', function() {
+                    var obj = {
+                        pencilRemove: 'editMetallPencil',
+                        pencilAdd:'triggerMetallPencil',
+                        removeRemove: 'removeMetall',
+                        removeAdd: 'triggerRemoveMetall'
+                    };
+                    app.fn.kimEditOver(obj, this);
+                });
+
+                $('body').on('click', '.editMetallPencil', function(){
+                    $(this )
+                        .attr('class', 'glyphicon glyphicon-floppy-disk saveEditMetall' )
+                        .css('margin-left', '0');
+                    $(this )
+                        .parents('tr')
+                        .find('.metallName, .metallPrice, .metallMass, .metallOutPrice')
+                        .attr('contenteditable', 'true')
+                        .css({
+                            'border': '1px solid hsl(195, 79%, 43%)',
+                            'border-radius': '2px'
+                        });
+                });
+
+                $('body').on('click', '.saveEditMetall', function(){
+                    var metallId = $(this ).attr('name'),
+                        metallName = $(this ).parents('tr').find('.metallName' ).text(),
+                        metallPrice = app.fn.inputValidator($(this ).parents('tr').find('.metallPrice' ).text()),
+                        metallMass = app.fn.inputValidator($(this ).parents('tr').find('.metallMass' ).text()),
+                        metallOutPrice = app.fn.inputValidator($(this ).parents('tr').find('.metallOutPrice' ).text()),
+                        self = this;
+                   // app.kim.editKim(kimId, kim, kimHard, self);
+                });
+
+                $('body').on('click', '.removeMetall', function(){
+                    var metallId = $(this ).attr('name');
+                    self.removeMetall(metallId);
+                });
+
             });
+        },
+        addMetallToTable: function (dates) {
+            var self = this;
+            $.ajax( {
+                url   : app.BASE_URL + self.URL + 'addMetallToTable',
+                method: 'POST',
+                data: dates
+            } ).then( function ( data )
+            {
+                if (true === data) {
+                    $('#metallName, #metallPrice, #metallMass, #metallOutPrice').val('');
+                    self.getMetallsTable();
+                    self.getMetallsList();
+                }
+            });
+        },
+        getMetallsList: function() {
+            var self = this;
+            $.ajax( {
+                url   : app.BASE_URL + self.URL + 'getMetallsList',
+                method: 'GET',
+                data: {
+                    prId: app.tabs.dom.productId
+                }
+            } ).then( function ( data ) {
+                console.log(data);
+                $('.listOfMetalls' ).html(data);
+                var metall = $('.listOfMetalls option:selected' ).attr('metall');
+                $('[data-cell="PR1"]' ).val(metall);
+                $('#calx').calx();
+            })
+        },
+        removeMetall: function(metallId) {
+            var self = this;
+            $.ajax( {
+                url   : app.BASE_URL + self.URL + 'removeMetall',
+                method: 'POST',
+                data: {
+                    metallId: metallId
+                }
+            } ).then( function ( data ) {
+                console.log(data);
+                if (true === data) {
+                    self.getMetallsTable();
+                    self.getMetallsList();
+                }
+            })
+        }
+    },
+    fn: {
+        kimEditOver: function(obj, scope) {
+            $('.glyphicon-pencil', scope)
+                .removeClass(obj.pencilRemove)
+                .addClass(obj.pencilAdd);
+            $('.glyphicon-remove', scope)
+                .removeClass(obj.removeRemove)
+                .addClass(obj.removeAdd);
+        },
+        kimEditLeave: function () {
+
+        },
+        inputValidator: function(val) {
+            var res;
+            res = val.replace(/[A-Za-z]+/g, '' ).replace(/,/g, '.');
+            return res;
         }
     }
 };

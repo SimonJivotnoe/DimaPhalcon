@@ -1,6 +1,8 @@
 <?php
-
-class Metalls extends \Phalcon\Mvc\Model
+use Phalcon\Mvc\Model,
+    Phalcon\Validation,
+    Phalcon\Mvc\Model\Validator\Uniqueness;
+class Metalls extends Model
 {
 
     /**
@@ -148,6 +150,19 @@ class Metalls extends \Phalcon\Mvc\Model
         return $this->out_price;
     }
 
+    /**
+     * Validations and business logic
+     */
+    public function validation()
+    {
+        $this->validate(
+            new Uniqueness(
+                array(
+                    'field'  => 'name',
+                    'message' => 'This name already exists'
+                )));
+        return $this->validationHasFailed() != true;
+    }
     /**
      * Initialize method for model.
      */

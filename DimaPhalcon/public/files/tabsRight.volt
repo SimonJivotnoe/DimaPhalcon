@@ -24,15 +24,15 @@
         <div class="col-md-10">
             <h4>Металлы</h4>
             <div class="col-md-12">
-                <input type="text" id="" placeholder="Металл"/>
-                <input type="number" id="" step="10" placeholder="Цена"/>
+                <input type="text" id="metallName" placeholder="Металл"/>
+                <input type="number" id="metallPrice" step="10" placeholder="Цена"/>
             </div>
             <div class="col-md-12">
-                <input type="number" id="" step="0.1" min="0.1" placeholder="Масса"/>
-                <input type="number" id="" step="10" placeholder="Исходящая цена"/>
-                <button class="btn btn-info btn-sm" id="">Добавить</button>
+                <input type="number" id="metallMass" step="0.1" min="0.1" placeholder="Масса"/>
+                <input type="number" id="metallOutPrice" step="10" placeholder="Исходящая цена"/>
+                <button class="btn btn-info btn-sm" id="addMetall">Добавить</button>
             </div>
-            <div class="col-md-12" id="">
+            <div class="col-md-12" id="metallListWrapper">
                 <table class="table table-bordered">
                     <tbody id="tbodyMetalls">
                     </tbody>
