@@ -349,7 +349,7 @@ var app = {
                     formula: formula,
                     cell: cell
                 };
-            })
+            });
             return JSON.stringify(formulasList);
         }
     },
@@ -430,8 +430,7 @@ var app = {
                     self.getKimList();
                 } else {
                     $(save )
-                        .parent()
-                        .parent()
+                        .parents('tr')
                         .find('.kimHardName, .kimName')
                         .css({
                             'border': '3px solid hsl(0, 69%, 22%)',
@@ -453,7 +452,7 @@ var app = {
                 var kim = $('.listOfKim option:selected' ).attr('kim');
                 $('[data-cell="KIM1"]' ).val(kim);
                 $('#calx').calx();
-            })
+            });
         },
         removeKim: function (kimId) {
             var self = this;
@@ -469,7 +468,7 @@ var app = {
                     self.getKIMTable();
                     self.getKimList();
                 }
-            })
+            });
         }
     },
     metalls: {
@@ -530,13 +529,15 @@ var app = {
                 });
 
                 $('body').on('click', '.saveEditMetall', function(){
-                    var metallId = $(this ).attr('name'),
-                        metallName = $(this ).parents('tr').find('.metallName' ).text(),
-                        metallPrice = app.fn.inputValidator($(this ).parents('tr').find('.metallPrice' ).text()),
-                        metallMass = app.fn.inputValidator($(this ).parents('tr').find('.metallMass' ).text()),
-                        metallOutPrice = app.fn.inputValidator($(this ).parents('tr').find('.metallOutPrice' ).text()),
-                        self = this;
-                   // app.kim.editKim(kimId, kim, kimHard, self);
+                    var obj = {
+                        metallId: $(this ).attr('name'),
+                        metallName: $(this ).parents('tr').find('.metallName' ).text(),
+                        metallPrice: app.fn.inputValidator($(this ).parents('tr').find('.metallPrice' ).text()),
+                        metallMass: app.fn.inputValidator($(this ).parents('tr').find('.metallMass' ).text()),
+                        metallOutPrice: app.fn.inputValidator($(this ).parents('tr').find('.metallOutPrice' ).text())
+                    };
+                    var self = this;
+                    app.metalls.editMetall(obj, self);
                 });
 
                 $('body').on('click', '.removeMetall', function(){
@@ -544,6 +545,22 @@ var app = {
                     self.removeMetall(metallId);
                 });
 
+            });
+        },        
+        getMetallsList: function() {
+            var self = this;
+            $.ajax( {
+                url   : app.BASE_URL + self.URL + 'getMetallsList',
+                method: 'GET',
+                data: {
+                    prId: app.tabs.dom.productId
+                }
+            } ).then( function ( data ) {
+                console.log(data);
+                $('.listOfMetalls' ).html(data);
+                var metall = $('.listOfMetalls option:selected' ).attr('metall');
+                $('[data-cell="PR1"]' ).val(metall);
+                $('#calx').calx();
             });
         },
         addMetallToTable: function (dates) {
@@ -561,21 +578,27 @@ var app = {
                 }
             });
         },
-        getMetallsList: function() {
+        editMetall: function(obj, scope) {
             var self = this;
             $.ajax( {
-                url   : app.BASE_URL + self.URL + 'getMetallsList',
-                method: 'GET',
-                data: {
-                    prId: app.tabs.dom.productId
+                url   : app.BASE_URL + self.URL + 'editMetall',
+                method: 'POST',
+                data: obj
+            } ).then( function ( data )
+            {
+               if (true === data) {
+                    self.getMetallsTable();
+                    self.getMetallsList();
+                } else {
+                    $(scope)
+                        .parents('tr')
+                        .find('.metallName, .metallPrice, .metallMass, .metallOutPrice')
+                        .css({
+                            'border': '3px solid hsl(0, 69%, 22%)',
+                            'border-radius': '2px'
+                        });
                 }
-            } ).then( function ( data ) {
-                console.log(data);
-                $('.listOfMetalls' ).html(data);
-                var metall = $('.listOfMetalls option:selected' ).attr('metall');
-                $('[data-cell="PR1"]' ).val(metall);
-                $('#calx').calx();
-            })
+            });
         },
         removeMetall: function(metallId) {
             var self = this;
@@ -591,7 +614,7 @@ var app = {
                     self.getMetallsTable();
                     self.getMetallsList();
                 }
-            })
+            });
         }
     },
     fn: {

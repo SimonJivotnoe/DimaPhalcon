@@ -50,10 +50,9 @@
 <script src="js/jquery/main.js"></script>
 <script src="js/jquery/ajaxEvents.js"></script>
 <script src="js/jquery/functions.js"></script>
-<script src="js/jquery/jquery.tabletojson.js"></script>
 <script src="js/jquery/jquery.caret.js"></script>
 <script src="js/jquery/split-pane.js"></script>
 <script src="js/jquery/jquery.mousewheel.js"></script>
-<script src="js/jquery/typeahead.bundle.js"></script>
+<script src="js/jquery/bootstrap-confirmation.js"></script>
 </body>
 </html>

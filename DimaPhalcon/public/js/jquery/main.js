@@ -194,16 +194,16 @@ $( document ).ready( function ()
     /* EDIT & SAVE CATEGORIES LIST CONTENT */
     $('body').on('mouseover', '.blockNameAndCat', function(){
         $('#editCategoriesListContent' ).show();
-    })
+    });
     $('body').on('mouseleave', '.blockNameAndCat', function(){
         $('#editCategoriesListContent' ).css('display', 'none');
-    })
+    });
     $('body').on('mouseover', '.tableContent', function(){
         $('#editTableContent' ).show();
-    })
+    });
     $('body').on('mouseleave', '.tableContent', function(){
         $('#editTableContent' ).css('display', 'none');
-    })
+    });
     // set tab name
      $('body').on('change, keyup', '.nameOfProduct', function(){
          $(app.tabs.dom.curTabName).text($(this ).val());

@@ -58,6 +58,38 @@ class MetallsController extends \Phalcon\Mvc\Controller
             $this->response->redirect('');
         }
     }
+    
+    public function editMetallAction() {
+        if ($this->request->isAjax() && $this->request->isPost()) {
+            $metallId = $this->request->getPost('metallId');
+            $metallName = $this->request->getPost('metallName');
+            $metallPrice = $this->request->getPost('metallPrice');
+            $metallMass = $this->request->getPost('metallMass');
+            $metallOutPrice = $this->request->getPost('metallOutPrice');
+            $metallQ = Metalls::findFirst($metallId);
+            if ($metallQ == false) {
+                echo "Мы не можем сохранить робота прямо сейчас: \n";
+                foreach ($metallQ->getMessages() as $message) {
+                    echo $message, "\n";
+                }
+            } else {
+                $metallQ->setName($metallName)
+                         ->setPrice($metallPrice)
+                         ->setMass($metallMass)
+                         ->setOutPrice($metallOutPrice);
+                $this->response->setContentType('application/json', 'UTF-8');
+                if ($metallQ->save() == false) {
+                    $this->response->setJsonContent('already');
+                } else {
+                    $this->response->setJsonContent(true);
+                }
+
+                return $this->response;
+            }
+        } else {
+            $this->response->redirect('');
+        }
+    }
 
     public function getMetallsListAction() {
         if ($this->request->isAjax() && $this->request->isGet()) {
