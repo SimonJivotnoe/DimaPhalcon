@@ -191,7 +191,9 @@ class TabsController extends \Phalcon\Mvc\Controller
                     ->setKim($kimId)
                     ->setMetall($metallId)
                     ->setAlwaysintable($alwaysInTable)
-                    ->setCreated(new RawValue('default'));
+                    ->setCreated(new RawValue('default'))
+                    ->setStatus(new RawValue('default'))
+                    ->setTemplate(new RawValue('default'));
             //$product->setTableContent(new RawValue('default'));
             if ($product->save() == false)
             {

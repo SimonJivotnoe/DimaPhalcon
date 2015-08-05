@@ -58,6 +58,18 @@ class Products extends \Phalcon\Mvc\Model
     protected $created;
 
     /**
+     *
+     * @var string
+     */
+    protected $status;
+
+    /**
+     *
+     * @var string
+     */
+    protected $template;
+
+    /**
      * Method to set the value of field product_id
      *
      * @param integer $product_id
@@ -175,6 +187,32 @@ class Products extends \Phalcon\Mvc\Model
     }
 
     /**
+     * Method to set the value of field status
+     *
+     * @param string $status
+     * @return $this
+     */
+    public function setStatus($status)
+    {
+        $this->status = $status;
+
+        return $this;
+    }
+
+    /**
+     * Method to set the value of field template
+     *
+     * @param string $template
+     * @return $this
+     */
+    public function setTemplate($template)
+    {
+        $this->template = $template;
+
+        return $this;
+    }
+
+    /**
      * Returns the value of field product_id
      *
      * @return integer
@@ -265,14 +303,34 @@ class Products extends \Phalcon\Mvc\Model
     }
 
     /**
+     * Returns the value of field status
+     *
+     * @return string
+     */
+    public function getStatus()
+    {
+        return $this->status;
+    }
+
+    /**
+     * Returns the value of field template
+     *
+     * @return string
+     */
+    public function getTemplate()
+    {
+        return $this->template;
+    }
+
+    /**
      * Initialize method for model.
      */
     public function initialize()
     {
         $this->hasMany('product_id', '\Tabs', 'product_id', array('alias' => 'Tabs'));
-        $this->belongsTo('metall', '\Metalls', 'id', array('alias' => 'Metalls'));
         $this->belongsTo('category_id', '\Categories', 'category_id', array('alias' => 'Categories'));
         $this->belongsTo('kim', '\Kim', 'kim_id', array('alias' => 'Kim'));
+        $this->belongsTo('metall', '\Metalls', 'id', array('alias' => 'Metalls'));
     }
 
 }
