@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Хост: 127.0.0.1:3306
--- Время создания: Июл 27 2015 г., 11:15
+-- Время создания: Авг 06 2015 г., 11:13
 -- Версия сервера: 5.5.41-log
 -- Версия PHP: 5.6.3
 
@@ -99,7 +99,7 @@ INSERT INTO `kim` (`kim_id`, `kim_hard`, `kim`) VALUES
 (17, 'Прямой участок', '1.21'),
 (18, 'Фасонный участок', '1.19'),
 (19, 'Утка', '1.2'),
-(20, 'Коллектор', '1.15');
+(20, 'Коллектор', '1.16');
 
 -- --------------------------------------------------------
 
@@ -127,6 +127,36 @@ INSERT INTO `metalls` (`id`, `name`, `price`, `mass`, `out_price`) VALUES
 -- --------------------------------------------------------
 
 --
+-- Структура таблицы `orders`
+--
+
+CREATE TABLE IF NOT EXISTS `orders` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `article` varchar(255) NOT NULL,
+  `discount` varchar(255) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `id` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
+-- --------------------------------------------------------
+
+--
+-- Структура таблицы `productInOrder`
+--
+
+CREATE TABLE IF NOT EXISTS `productInOrder` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `orderId` int(11) NOT NULL,
+  `productId` int(11) NOT NULL,
+  `quantity` int(11) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `orderId` (`orderId`,`productId`),
+  KEY `productId` (`productId`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
+-- --------------------------------------------------------
+
+--
 -- Структура таблицы `products`
 --
 
@@ -140,19 +170,22 @@ CREATE TABLE IF NOT EXISTS `products` (
   `alwaysInTable` text,
   `formulas` text,
   `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `status` varchar(255) NOT NULL DEFAULT 'draft',
+  `template` varchar(255) NOT NULL DEFAULT '1',
   PRIMARY KEY (`product_id`),
   KEY `category_id` (`category_id`),
   KEY `kim` (`kim`),
   KEY `metall` (`metall`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=188 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=193 ;
 
 --
 -- Дамп данных таблицы `products`
 --
 
-INSERT INTO `products` (`product_id`, `product_name`, `category_id`, `kim`, `metall`, `table_content`, `alwaysInTable`, `formulas`, `created`) VALUES
-(185, 'Утка', 12, 20, 2, '{"0":{"%ROW_NUMBER%":"A1","%ROW_NAME%":"","%DATA_CELL%":"A1","%DATA_FORMULA%":"","%INPUT_VALUE%":"-67.93"},"1":{"%ROW_NUMBER%":"A2","%ROW_NAME%":"","%DATA_CELL%":"A2","%DATA_FORMULA%":"","%INPUT_VALUE%":"-50.97"},"2":{"%ROW_NUMBER%":"A3","%ROW_NAME%":"","%DATA_CELL%":"A3","%DATA_FORMULA%":"A1*A2","%INPUT_VALUE%":"3462.39"},"3":{"%ROW_NUMBER%":"A4","%ROW_NAME%":"","%DATA_CELL%":"A4","%DATA_FORMULA%":"","%INPUT_VALUE%":""}}', '{"0":{"%ROW_NUMBER%":"KIM1","%ROW_NAME%":"КИМ","%DATA_CELL%":"KIM1","%DATA_FORMULA%":"","%INPUT_VALUE%":"0.30"},"1":{"%ROW_NUMBER%":"S1","%ROW_NAME%":"Площадь, м2","%DATA_CELL%":"S1","%DATA_FORMULA%":"","%INPUT_VALUE%":""},"2":{"%ROW_NUMBER%":"PR1","%ROW_NAME%":"Цена за м2, грн","%DATA_CELL%":"PR1","%DATA_FORMULA%":"","%INPUT_VALUE%":""},"3":{"%ROW_NUMBER%":"SUM1","%ROW_NAME%":"Сумма, грн","%DATA_CELL%":"SUM1","%DATA_FORMULA%":"PRODUCT(S1,PR1)","%INPUT_VALUE%":"0"}}', '{"0":{"formula":"A1*A2","cell":"A3"}}', '2015-07-19 21:44:20'),
-(187, 'Прямоугольный (скругленный) го', 13, 19, 2, '{"0":{"%ROW_NUMBER%":"A1","%ROW_NAME%":"Высота H,м","%DATA_CELL%":"A1","%DATA_FORMULA%":"","%INPUT_VALUE%":"0.17"},"1":{"%ROW_NUMBER%":"A2","%ROW_NAME%":"Ширина L,м","%DATA_CELL%":"A2","%DATA_FORMULA%":"","%INPUT_VALUE%":"0.20"}}', '{"0":{"%ROW_NUMBER%":"KIM1","%ROW_NAME%":"КИМ","%DATA_CELL%":"KIM1","%DATA_FORMULA%":"","%INPUT_VALUE%":"1.20"},"1":{"%ROW_NUMBER%":"S1","%ROW_NAME%":"Площадь, м2","%DATA_CELL%":"S1","%DATA_FORMULA%":"KIM1*(2*(A1+0.11)*(A1+0.11)+(0.21+3.14*A1/4)*(A2+0.08)+0.21*(A2+0.08))","%INPUT_VALUE%":"0.37"},"2":{"%ROW_NUMBER%":"PR1","%ROW_NAME%":"Цена за м2, грн","%DATA_CELL%":"PR1","%DATA_FORMULA%":"","%INPUT_VALUE%":"185"},"3":{"%ROW_NUMBER%":"SUM1","%ROW_NAME%":"Сумма, грн","%DATA_CELL%":"SUM1","%DATA_FORMULA%":"PRODUCT(S1,PR1)","%INPUT_VALUE%":"69.21"}}', '{"0":{"formula":"KIM1*(2*(A1+0.11)*(A1+0.11)+(0.21+3.14*A1/4)*(A2+0.08)+0.21*(A2+0.08))","cell":"S1"}}', '2015-07-20 22:10:00');
+INSERT INTO `products` (`product_id`, `product_name`, `category_id`, `kim`, `metall`, `table_content`, `alwaysInTable`, `formulas`, `created`, `status`, `template`) VALUES
+(185, 'Утка', 12, 20, 2, '{"0":{"%ROW_NUMBER%":"A1","%ROW_NAME%":"аваисиса","%DATA_CELL%":"A1","%DATA_FORMULA%":"","%INPUT_VALUE%":"-67.93"}}', '{"0":{"%ROW_NUMBER%":"KIM1","%ROW_NAME%":"КИМ","%DATA_CELL%":"KIM1","%DATA_FORMULA%":"","%INPUT_VALUE%":"1.16"},"1":{"%ROW_NUMBER%":"S1","%ROW_NAME%":"Площадь, м2","%DATA_CELL%":"S1","%DATA_FORMULA%":"","%INPUT_VALUE%":""},"2":{"%ROW_NUMBER%":"PR1","%ROW_NAME%":"Цена за м2, грн","%DATA_CELL%":"PR1","%DATA_FORMULA%":"","%INPUT_VALUE%":"185"},"3":{"%ROW_NUMBER%":"SUM1","%ROW_NAME%":"Сумма, грн","%DATA_CELL%":"SUM1","%DATA_FORMULA%":"PRODUCT(S1,PR1)","%INPUT_VALUE%":"0"}}', '{"0":{"formula":"A1*A2","cell":"A3"}}', '2015-07-19 21:44:20', 'draft', '0'),
+(187, 'Прямоугольный (скругленный)', 13, 19, 2, '{"0":{"%ROW_NUMBER%":"A1","%ROW_NAME%":"Высота H,м","%DATA_CELL%":"A1","%DATA_FORMULA%":"","%INPUT_VALUE%":"0.27"},"1":{"%ROW_NUMBER%":"A2","%ROW_NAME%":"Ширина L,м","%DATA_CELL%":"A2","%DATA_FORMULA%":"","%INPUT_VALUE%":"0.29"}}', '{"0":{"%ROW_NUMBER%":"KIM1","%ROW_NAME%":"КИМ","%DATA_CELL%":"KIM1","%DATA_FORMULA%":"","%INPUT_VALUE%":"1.20"},"1":{"%ROW_NUMBER%":"S1","%ROW_NAME%":"Площадь, м2","%DATA_CELL%":"S1","%DATA_FORMULA%":"KIM1*(2*(A1+0.11)*(A1+0.11)+(0.21+3.14*A1/4)*(A2+0.08)+0.21*(A2+0.08))","%INPUT_VALUE%":"0.63"},"2":{"%ROW_NUMBER%":"PR1","%ROW_NAME%":"Цена за м2, грн","%DATA_CELL%":"PR1","%DATA_FORMULA%":"","%INPUT_VALUE%":"185"},"3":{"%ROW_NUMBER%":"SUM1","%ROW_NAME%":"Сумма, грн","%DATA_CELL%":"SUM1","%DATA_FORMULA%":"PRODUCT(S1,PR1)","%INPUT_VALUE%":"116.02"}}', '{"0":{"formula":"KIM1*(2*(A1+0.11)*(A1+0.11)+(0.21+3.14*A1/4)*(A2+0.08)+0.21*(A2+0.08))","cell":"S1"}}', '2015-07-20 22:10:00', 'draft', '0'),
+(192, 'Новое изделие', 11, 17, 2, NULL, '[\r\n    {\r\n        "%ROW_NUMBER%": "KIM1",\r\n        "%ROW_NAME%": "КИМ",\r\n        "%DATA_CELL%": "KIM1",\r\n        "%DATA_FORMULA%": "",\r\n        "%INPUT_VALUE%": ""\r\n    },\r\n    {\r\n        "%ROW_NUMBER%": "S1",\r\n        "%ROW_NAME%": "Площадь, м2",\r\n        "%DATA_CELL%": "S1",\r\n        "%DATA_FORMULA%": "",\r\n        "%INPUT_VALUE%": ""\r\n    },\r\n    {\r\n        "%ROW_NUMBER%": "PR1",\r\n        "%ROW_NAME%": "Цена за м2, грн",\r\n        "%DATA_CELL%": "PR1",\r\n        "%DATA_FORMULA%": "",\r\n        "%INPUT_VALUE%": ""\r\n    },\r\n    {\r\n        "%ROW_NUMBER%": "SUM1",\r\n        "%ROW_NAME%": "Сумма, грн",\r\n        "%DATA_CELL%": "SUM1",\r\n        "%DATA_FORMULA%": "PRODUCT(S1,PR1)",\r\n        "%INPUT_VALUE%": ""\r\n    }\r\n]\r\n', NULL, '2015-08-06 07:56:06', 'draft', '1');
 
 -- --------------------------------------------------------
 
@@ -168,7 +201,7 @@ CREATE TABLE IF NOT EXISTS `tabs` (
   PRIMARY KEY (`id`),
   KEY `product_id` (`product_id`),
   KEY `product_id_2` (`product_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=296 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=301 ;
 
 --
 -- Дамп данных таблицы `tabs`
@@ -176,7 +209,8 @@ CREATE TABLE IF NOT EXISTS `tabs` (
 
 INSERT INTO `tabs` (`id`, `tab_id`, `product_id`, `active`) VALUES
 (293, 'pr1', 185, 0),
-(295, 'pr294', 187, 1);
+(295, 'pr294', 187, 0),
+(300, 'pr296', 192, 1);
 
 -- --------------------------------------------------------
 
@@ -201,6 +235,13 @@ CREATE TABLE IF NOT EXISTS `tabs_right` (
 --
 ALTER TABLE `formulas`
   ADD CONSTRAINT `formulas_ibfk_1` FOREIGN KEY (`category_id`) REFERENCES `categories` (`category_id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
+
+--
+-- Ограничения внешнего ключа таблицы `productInOrder`
+--
+ALTER TABLE `productInOrder`
+  ADD CONSTRAINT `productinorder_ibfk_2` FOREIGN KEY (`productId`) REFERENCES `products` (`product_id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  ADD CONSTRAINT `productinorder_ibfk_1` FOREIGN KEY (`orderId`) REFERENCES `orders` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
 
 --
 -- Ограничения внешнего ключа таблицы `products`
