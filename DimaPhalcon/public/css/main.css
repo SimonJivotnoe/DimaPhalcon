@@ -280,3 +280,10 @@ ol li:hover {
     background-color: white;
     width: 60px;
 }
+#createOrderBtn {
+    /*margin-bottom: 5px;*/
+    margin-right: 5px;
+}
+.tableContent {
+    margin-top: 10px;
+}

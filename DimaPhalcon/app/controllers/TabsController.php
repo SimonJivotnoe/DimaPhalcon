@@ -95,6 +95,7 @@ class TabsController extends \Phalcon\Mvc\Controller
                 $kimObj = new KimController;
                 $metallsObj = new MetallsController;
                 $formulaHelperObj = new FormulasController;
+                $addToOrder =  new OrderController;
 
                 $prName = $product->getProductName();
                 if ('Новое изделие' === $prName) {
@@ -105,14 +106,15 @@ class TabsController extends \Phalcon\Mvc\Controller
 
                 $productDetails = array(
                     '%PRODUCT_NAME%' => $prName,
-                    '%CATEGORIES%' => $categoriesList = $categoryObj->createCategoriesList($productCatId),
-                    '%KIM_LIST%' => $kimList = $kimObj->createKimList($productKim),
-                    '%METALL_LIST%' => $metallList = $metallsObj->createMetallsList ($productMetall),
+                    '%CATEGORIES%' => $categoryObj->createCategoriesList($productCatId),
+                    '%KIM_LIST%' => $kimObj->createKimList($productKim),
+                    '%METALL_LIST%' => $metallsObj->createMetallsList($productMetall),
                     '%CREATED%' => $product->getCreated(),
-                    '%TABLE_CONTENT%' => $tableRes = $productObj->createTableRes($table, 'tableContent.html'),
-                    '%ALWAYS_IN_TABLE%' => $alwRes = $productObj->createTableRes($alwaysInTable, 'alwaysInTable.html'),
-                    '%FORMULAS_HELPER%' => $formHelpList = $formulaHelperObj->createFormulaHelperList(),
-                    '%FORMULAS%' => $formulasRes = $formulaHelperObj->createFormulasList($formulas)
+                    '%TABLE_CONTENT%' => $productObj->createTableRes($table, 'tableContent.html'),
+                    '%ALWAYS_IN_TABLE%' => $productObj->createTableRes($alwaysInTable, 'alwaysInTable.html'),
+                    '%FORMULAS_HELPER%' => $formulaHelperObj->createFormulaHelperList(),
+                    '%FORMULAS%' => $formulaHelperObj->createFormulasList($formulas),
+                    '%ADD_TO_ORDER%' => $addToOrder->createAddToOrder($productId)
                 );
                 $tabContent .= $substObj->subHTMLReplace('tabContent.html', $productDetails);
                 $this->response->setContentType('application/json', 'UTF-8');

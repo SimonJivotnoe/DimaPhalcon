@@ -11,7 +11,8 @@ var app = {
             curTabId: '',
             productId: '',
             curTabName: '',
-            tabsList: ''
+            tabsList: '',
+            createOrderBtn: '#createOrderBtn'
         },        
         addTab: function (id) {
             var self = this;
@@ -176,7 +177,12 @@ var app = {
                         self.closeTabMethod(idDb, currentID);
                     });
                     /*----CLOSING TAB END----*/
-
+                    
+                    /*----ORDERS START----*/
+                    $(self.dom.createOrderBtn).on('click', function() {
+                        app.order.createNewOrder(self.dom.productId);
+                    });
+                    /*----ORDERS END----*/
                     //RIGHT PART
 
                     $('body' ).fadeIn(350);
