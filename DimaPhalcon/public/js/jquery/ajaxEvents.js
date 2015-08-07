@@ -10,19 +10,22 @@ function getTabs(param) {
             if ('' !== data[0]) {
                 $(data[0]).insertBefore( '#addNewTab' );
                 if (!data[1]) {
-                    showPreferences();
+                    app.tabs.showPreferences();
+                    app.addHandlers();
                 } else {
                     app.tabs.getTabContent(data[2], data[1], 1);
                 }
             } else {
-                showPreferences();
+                app.tabs.showPreferences();
+                app.addHandlers();
             }
         } else if(0 === data.length && 'last' === param){
             app.tabs.addTab(1);
         } else if(0 !== data.length && 'last' === param){
             app.tabs.addTab(parseInt(data) +1);
         } else {
-            showPreferences();
+            app.tabs.showPreferences();
+            app.addHandlers();
         }
     });
 }

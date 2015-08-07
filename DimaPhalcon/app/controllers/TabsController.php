@@ -19,7 +19,10 @@ class TabsController extends \Phalcon\Mvc\Controller
                         $tabsLi = '';
                         $active = 0;
                         $prodId = 0;
-                        $tabArr = [];
+                        $tabArr['preferences1'] = (object)[
+                                'active' => '',
+                                'productId' => 'preferences1'];
+                        
                         foreach ($tabs as $val) {
                             $tabsList = array();
                             if ($val->getActive()) {
@@ -39,7 +42,7 @@ class TabsController extends \Phalcon\Mvc\Controller
                             $tabArr[$val->getTabId()] = (object)[
                                 'active' => $val->getActive(),
                                 'productId' => $val->getProductId()];
-                        }
+                        }                        
                         $tabObj = (object)$tabArr;
                         $kim = Kim::find();
                         $resObj = [];
@@ -114,7 +117,7 @@ class TabsController extends \Phalcon\Mvc\Controller
                     '%ALWAYS_IN_TABLE%' => $productObj->createTableRes($alwaysInTable, 'alwaysInTable.html'),
                     '%FORMULAS_HELPER%' => $formulaHelperObj->createFormulaHelperList(),
                     '%FORMULAS%' => $formulaHelperObj->createFormulasList($formulas),
-                    '%ADD_TO_ORDER%' => $addToOrder->createAddToOrder($productId)
+                    '%ADD_TO_ORDER%' => $addToOrder->createAddToOrder()
                 );
                 $tabContent .= $substObj->subHTMLReplace('tabContent.html', $productDetails);
                 $this->response->setContentType('application/json', 'UTF-8');
@@ -275,6 +278,78 @@ class TabsController extends \Phalcon\Mvc\Controller
         } else {
             $this->response->redirect('');
         }
-    }    
+    }
+    
+    public function getRightTabsAction() {
+        if ($this->request->isAjax() && $this->request->isGet()) {
+            $tabs = TabsRight::find();
+            if ($tabs == false) {
+                echo "Мы не можем сохранить робота прямо сейчас: \n";
+                foreach ($tabs->getMessages() as $message) {
+                    echo $message, "\n";
+                }
+            } else {
+                $this->response->setContentType('application/json', 'UTF-8');
+                if (count($tabs)) {
+                    $active = 'kim';
+                    $tabsLi = '';
+                    $tabArr = array();
+                    $substObj = new Substitution();
+                    foreach ($tabs as $val) {
+                        $tabsList = array();
+                        if ($val->getActive()) {
+                            $tabsList[ '%ACTIVE%' ] = 'active';
+                            $active = $val->getTabId();
+                            $prodId = $val->getProductId();
+                        } else {
+                            $tabsList[ '%ACTIVE%' ] = '';
+                        }
+                        $tabsList['%TABID%'] = 'or' . $val->getId();
+                        $tabsList['%ORDER_ID%'] = $val->getOrderId();
+                        $order = Orders::findFirst($val->getOrderId());
+                        $tabsList[ '%ORDER_NAME%' ] = $order->getArticle();
+                        $tabsLi .= $substObj->subHTMLReplace('tab_li_right.html', $tabsList);
+
+                        $tabArr['or' . $val->getId()] = (object)[
+                            'active' => $val->getActive(),
+                            'orderId' => $val->getOrderId()];
+                    }
+                    $this->response->setJsonContent(array(true, $active, (object)$tabArr, $tabsLi));
+                    return $this->response;
+                }
+                
+                $this->response->setJsonContent(array(false));
+
+                return $this->response;
+            }
+        } else {
+            $this->response->redirect('');
+        }
+    }
+    
+    public function addNewRightTab($order_id) {
+        $tabActive = TabsRight::find(array("active = 1"));
+        foreach ($tabActive as $val) {
+            $val->setActive(0);
+            $val->save();
+        }
+        if ($tabActive == false) {
+            echo "Мы не можем сохранить робота прямо сейчас: \n";
+            foreach ($tabActive->getMessages() as $message) {
+                echo $message, "\n";
+            }
+        } else {
+
+        }
+        $tab = new TabsRight;
+        $tab->setOrderId($order_id)
+            ->setActive('1')
+            ->save();
+        if($tab == false) {
+           return false;
+        }
+        
+        return true;
+    }
 }
 

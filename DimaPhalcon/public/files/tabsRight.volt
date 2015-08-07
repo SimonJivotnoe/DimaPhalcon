@@ -1,6 +1,6 @@
 <div role="rightTabs">
     <ul class="nav nav-tabs" role="tablist" id="rightTabs">
-        <li role="kim" id="kim" class="active">
+        <li role="kim" id="kim">
             <a href="#kim" aria-controls="kim" role="tab" data-toggle="tab">КИМ</a>
         </li>
         <li role="presentation" id="addNewTabRight"><a>+</a></li>
@@ -42,7 +42,7 @@
     </div>
 </div>
 
-<div class="col-md-8">
+<!--<div class="col-md-8">
     <table class="table table-bordered">
         <tbody>
         <tr>
@@ -72,4 +72,4 @@
         </tr>
         </tbody>
     </table>
-</div>
+</div>-->

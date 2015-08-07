@@ -13,6 +13,7 @@ $( document ).ready( function ()
         
     /*----RECEIVE TABS LIST----*/
     getTabs('all');
+    app.tabs.getRightTabs();
     /*----RECEIVE TABS LIST END----*/
 
     /*----PREFERENCES_START----*/

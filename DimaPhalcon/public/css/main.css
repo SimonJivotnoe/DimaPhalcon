@@ -31,13 +31,13 @@ html, body {
     cursor: pointer;
 }
 
-.closeTab {
+.closeTab, .closeTabRight {
     margin-left: 20px;
     margin-right: -5px;
     font-size: 10px;
 }
 
-.closeTab:hover {
+.closeTab:hover, .closeTabRight:hover {
     border-radius: 20px;
     font-size: 12px;
     cursor: pointer;

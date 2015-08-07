@@ -1,8 +1,73 @@
 $.fn.hasAttr = function(name) {
     return this.attr(name) !== undefined;
 };
-var app = {
+var app = {    
     BASE_URL: 'http://DimaPhalcon/DimaPhalcon/',
+    addHandlers: function() {
+        var self = app.tabs;
+        /*----PREFERENCES_START----*/
+        // cog spin on
+        $('#preferences').on('mouseover', function(){
+            $('.fa-cog').addClass('fa-spin');
+        });
+        // cog spin off
+        $('#preferences').on('mouseleave', function(){
+            $('.fa-cog').removeClass('fa-spin');
+        });
+        
+        // add new category
+        $('#addCategoryBtn').on('click', function(){
+            var newCategoryName = $('#addCategoryInput' ).val();
+            ('' !== newCategoryName) ? addCategory(newCategoryName) : 0;
+        });
+        /*----PREFERENCES_END----*/
+
+        /*----NEW_TAB_START----*/
+        /* creating new tab clicking on + */
+        $('#addNewTab').on('click', function(){
+            getTabs('last');
+        });
+        /*----NEW_TAB_END----*/
+
+        /*----CURRENT TAB START----*/
+        $('body').on('click', '#myTab [role=tab]', function() {
+            var selectedTabId = $(this ).attr('aria-controls'),
+                tab = self.dom,
+                tabId, prodId;
+                
+            '' !== tab.curTabId ? tab.tabsList[tab.curTabId].active = '0' : 0;
+            if ('preferences1' === selectedTabId && tab.curTabId !== selectedTabId) {                               
+                app.tabs.loadPreferences();                
+                tabId = ''; 
+                selectedTabId = '';
+            } else if (tab.curTabId !== selectedTabId && undefined !== selectedTabId){
+                tabId = $(this ).find('.glyphicon-remove' ).attr('name' );
+                prodId = $(this ).attr('name');                
+                tab.tabsList[selectedTabId].active = '1'; 
+                self.getTabContent(prodId, selectedTabId, 0);
+            }
+            
+            self.changeActiveTab(tabId, selectedTabId);
+        });
+        /*----CURRENT TAB END----*/
+
+        /*----CLOSING TAB START----*/
+        $(self.dom.closeTab).on('click', function (e){
+            e.stopPropagation();
+            var currentID = $(this).parent().attr('aria-controls' ),
+                idDb = $(this ).attr('name');
+            $(this ).attr('class', 'glyphicon glyphicon-remove');
+            self.closeTabMethod(idDb, currentID);
+        });
+        /*----CLOSING TAB END----*/
+
+        /*----ORDERS START----*/
+        $(self.dom.createOrderBtn).on('click', function() {
+            app.order.createNewOrder(self.dom.productId);
+        });
+        /*----ORDERS END----*/
+        //RIGHT PART
+    },
     tabs: {
         URL: 'tabs/',
         dom: {
@@ -34,19 +99,23 @@ var app = {
                     id: id,
                     tabId: tabId
                 }
+            }).then( function ( data )
+            {
+                //console.log(data);
             });
         },
         closeTabMethod: function (idDb, currentID) {
             var self = this,
                 nextActiveTab = self.dom.curTabId,
                 productId = self.dom.productId,
-                elemInObj = Object.keys(self.dom.tabsList);    
-            if (1 === elemInObj.length) {
+                elemInObj = Object.keys(self.dom.tabsList),
+                ifActive, index;
+            if (2 === elemInObj.length) {
                 nextActiveTab = 'preferences1';
             } else {
-                var ifActive = self.dom.tabsList[currentID].active;
+                ifActive = self.dom.tabsList[currentID].active;
                 if ('1' === ifActive) {            
-                    var index = elemInObj.indexOf(currentID);
+                    index = elemInObj.indexOf(currentID);
                     if (index === elemInObj.length - 1) {
                         nextActiveTab = Object.keys(self.dom.tabsList)[elemInObj.length - 2];                
                     } else {
@@ -64,9 +133,7 @@ var app = {
             if ('preferences1' === nextActiveTab || undefined === nextActiveTab) {
                 $('.currentTab').removeClass('active');
                 $('#preferences, #preferences1').addClass('active');
-                $('.bg-danger' ).fadeOut(10);
-                $(self.dom.addCategoryInput ).val('');
-                getCategoriesList();
+                self.loadPreferences();
             } else {
                 $('[aria-controls=' + nextActiveTab +']').parent().addClass('active');
             }
@@ -125,69 +192,41 @@ var app = {
                 $('[data-cell="PR1"]' ).val(metall);
                 $('#calx').calx();
                 if (body) {
-                    /*----PREFERENCES_START----*/
-                    // cog spin on
-                    $('#preferences').on('mouseover', function(){
-                        $('.fa-cog').addClass('fa-spin');
-                    });
-                    // cog spin off
-                    $('#preferences').on('mouseleave', function(){
-                        $('.fa-cog').removeClass('fa-spin');
-                    });
-                    $('#preferences').on('click', function(){
-                        $('.bg-danger' ).fadeOut(10);
-                        $('#addCategoryInput' ).val('');
-                        getCategoriesList();
-                        self.changeActiveTab('', '');
-                    });
-                    // add new category
-                    $('#addCategoryBtn').on('click', function(){
-                        var newCategoryName = $('#addCategoryInput' ).val();
-                        ('' !== newCategoryName) ? addCategory(newCategoryName) : 0;
-                    });
-                    /*----PREFERENCES_END----*/
-
-                    /*----NEW_TAB_START----*/
-                    /* creating new tab clicking on + */
-                    $('#addNewTab').on('click', function(){
-                        getTabs('last');
-                    });
-                    /*----NEW_TAB_END----*/
-
-                    /*----CURRENT TAB START----*/
-                    $('#myTab [role=tab]').on('click', function() {
-                        var selectedTabId = $(this ).attr('aria-controls');
-                        if (selectedTabId !== 'preferences1' && self.dom.curTabId !== selectedTabId && undefined !== selectedTabId) {
-                            var tabId = $(this ).find('.glyphicon-remove' ).attr('name' ),
-                                prodId = $(this ).attr('name');
-                            '' !== self.dom.curTabId ? self.dom.tabsList[self.dom.curTabId].active = '0' : 0;
-                            self.dom.tabsList[selectedTabId].active = '1';
-                            self.changeActiveTab(tabId, selectedTabId);
-                            self.getTabContent(prodId, selectedTabId, 0);
-                        }
-                    });
-                    /*----CURRENT TAB END----*/
-
-                    /*----CLOSING TAB START----*/
-                    $(self.dom.closeTab).on('click', function (e){
-                        e.stopPropagation();
-                        var currentID = $(this).parent().attr('aria-controls' ),
-                            idDb = $(this ).attr('name');
-                        $(this ).attr('class', 'glyphicon glyphicon-remove');
-                        self.closeTabMethod(idDb, currentID);
-                    });
-                    /*----CLOSING TAB END----*/
-                    
-                    /*----ORDERS START----*/
-                    $(self.dom.createOrderBtn).on('click', function() {
-                        app.order.createNewOrder(self.dom.productId);
-                    });
-                    /*----ORDERS END----*/
-                    //RIGHT PART
+                    app.addHandlers();
 
                     $('body' ).fadeIn(350);
                 }
-
+            });
+        },
+        loadPreferences: function() {
+            var self = this;
+            self.dom.tabsList['preferences1'].active = '1';
+            self.dom.curTabId = 'preferences1';
+            $('.bg-danger' ).fadeOut(10);
+            $(self.dom.addCategoryInput ).val('');
+            getCategoriesList();
+        },
+        showPreferences: function (){
+            var self = this;
+            $('#preferences, #preferences1').addClass('active');
+            self.loadPreferences();
+            $('body' ).fadeIn(350);
+        },
+        getRightTabs: function () {
+            var self = this;
+            $.ajax( {
+                url   : app.BASE_URL + self.URL + 'getRightTabs',
+                method: 'GET'
+            } ).then( function ( data )
+            {
+                console.log(data);
+                if(!data[0]) {
+                    app.kim.getKIMTable();
+                    app.metalls.getMetallsTable();                    
+                    return true;
+                }
+                
+                $(data[3]).insertBefore( '#addNewTabRight' );
             });
         }
     },
@@ -624,6 +663,24 @@ var app = {
             });
         }
     },
+    order: {
+        URL: 'order/',
+        createNewOrder: function (productId) {
+            var self = this;
+            $.ajax( {
+                url   : app.BASE_URL + self.URL + 'createNewOrder',
+                method: 'POST',
+                data: {
+                    productId: productId
+                }
+            } ).then( function ( data ) {
+                console.log(data);
+                if (false !== data) {
+                    window.location.href = 'http://DimaPhalcon/DimaPhalcon/';
+                }
+            });
+        }
+    },
     fn: {
         kimEditOver: function(obj, scope) {
             $('.glyphicon-pencil', scope)
@@ -644,7 +701,7 @@ var app = {
     }
 };
 
-function showPreferences(){
+function showPreferences(body){
     $('#preferences, #preferences1').addClass('active');
     $('.bg-danger' ).fadeOut(10);
     $('#addCategoryInput' ).val('');
