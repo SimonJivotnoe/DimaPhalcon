@@ -8,6 +8,12 @@ class Orders extends \Phalcon\Mvc\Model
      * @var integer
      */
     protected $id;
+    
+    /**
+     *
+     * @var integer
+     */
+    protected $order_number;
 
     /**
      *
@@ -33,7 +39,20 @@ class Orders extends \Phalcon\Mvc\Model
 
         return $this;
     }
+    
+    /**
+     * Method to set the value of field order_number
+     *
+     * @param integer $order_number
+     * @return $this
+     */
+    public function setOrderNumber($order_number)
+    {
+        $this->order_number = $order_number;
 
+        return $this;
+    }
+    
     /**
      * Method to set the value of field article
      *
@@ -69,11 +88,21 @@ class Orders extends \Phalcon\Mvc\Model
     {
         return $this->id;
     }
-
+    
+    /**
+     * Returns the value of field order_number
+     *
+     * @return string
+     */
+    public function getOrderNumber()
+    {
+        return $this->order_number;
+    }
+    
     /**
      * Returns the value of field article
      *
-     * @return string
+     * @return integer
      */
     public function getArticle()
     {

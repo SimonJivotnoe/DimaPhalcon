@@ -292,6 +292,7 @@ class TabsController extends \Phalcon\Mvc\Controller
                 $this->response->setContentType('application/json', 'UTF-8');
                 if (count($tabs)) {
                     $active = 'kim';
+                    $orderId = '';
                     $tabsLi = '';
                     $tabArr = array();
                     $substObj = new Substitution();
@@ -299,8 +300,8 @@ class TabsController extends \Phalcon\Mvc\Controller
                         $tabsList = array();
                         if ($val->getActive()) {
                             $tabsList[ '%ACTIVE%' ] = 'active';
-                            $active = $val->getTabId();
-                            $prodId = $val->getProductId();
+                            $active = $val->getId();
+                            $orderId = $val->getOrderId();
                         } else {
                             $tabsList[ '%ACTIVE%' ] = '';
                         }
@@ -314,11 +315,74 @@ class TabsController extends \Phalcon\Mvc\Controller
                             'active' => $val->getActive(),
                             'orderId' => $val->getOrderId()];
                     }
-                    $this->response->setJsonContent(array(true, $active, (object)$tabArr, $tabsLi));
+                    $this->response->setJsonContent([
+                                                    'tabs' => true,
+                                                    'tabId' => $active,
+                                                    'orderId' => $orderId,
+                                                    'obj' => (object)$tabArr,
+                                                    'html' => $tabsLi
+                                                    ]
+                    );
                     return $this->response;
                 }
                 
                 $this->response->setJsonContent(array(false));
+
+                return $this->response;
+            }
+        } else {
+            $this->response->redirect('');
+        }
+    }
+    
+    public function getRightTabContentAction(){
+        if ($this->request->isAjax() && $this->request->isGet()) {
+            $orderId= $this->request->getPost('orderId');
+            $order = Orders::findFirst($orderId);
+            if ($order == false) {
+                echo "Мы не можем сохранить робота прямо сейчас: \n";
+                foreach ($order->getMessages() as $message) {
+                    echo $message, "\n";
+                }
+            } else {
+                $substObj = new Substitution();
+                $tabContent = '';
+
+                $productCatId = $product->getCategoryId();
+                $productKim = $product->getKim();
+                $productMetall = $product->getMetall();
+                $table = json_decode($product->getTableContent());
+                $alwaysInTable = json_decode($product->getAlwaysintable());
+
+                $productObj = new ProductsController;
+                $categoryObj = new CategoriesController;
+                $kimObj = new KimController;
+                $metallsObj = new MetallsController;
+                $formulaHelperObj = new FormulasController;
+                $addToOrder =  new OrderController;
+
+                $prName = $product->getProductName();
+                if ('Новое изделие' === $prName) {
+                    $prName = '';
+                }
+
+                $formulas = json_decode($product->getFormulas());
+
+                $productDetails = array(
+                    '%PRODUCT_NAME%' => $prName,
+                    '%CATEGORIES%' => $categoryObj->createCategoriesList($productCatId),
+                    '%KIM_LIST%' => $kimObj->createKimList($productKim),
+                    '%METALL_LIST%' => $metallsObj->createMetallsList($productMetall),
+                    '%CREATED%' => $product->getCreated(),
+                    '%TABLE_CONTENT%' => $productObj->createTableRes($table, 'tableContent.html'),
+                    '%ALWAYS_IN_TABLE%' => $productObj->createTableRes($alwaysInTable, 'alwaysInTable.html'),
+                    '%FORMULAS_HELPER%' => $formulaHelperObj->createFormulaHelperList(),
+                    '%FORMULAS%' => $formulaHelperObj->createFormulasList($formulas),
+                    '%ADD_TO_ORDER%' => $addToOrder->createAddToOrder()
+                );
+                $tabContent .= $substObj->subHTMLReplace('tabContent.html', $productDetails);
+                $this->response->setContentType('application/json', 'UTF-8');
+                $this->response->setJsonContent($tabContent);
 
                 return $this->response;
             }

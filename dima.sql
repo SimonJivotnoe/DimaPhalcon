@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Хост: 127.0.0.1:3306
--- Час створення: Сер 07 2015 р., 20:23
+-- Час створення: Сер 10 2015 р., 20:56
 -- Версія сервера: 5.5.41-log
 -- Версія PHP: 5.6.3
 
@@ -132,18 +132,12 @@ INSERT INTO `metalls` (`id`, `name`, `price`, `mass`, `out_price`) VALUES
 
 CREATE TABLE IF NOT EXISTS `orders` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
+  `order_number` int(11) NOT NULL,
   `article` varchar(255) NOT NULL,
   `discount` varchar(255) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `id` (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=10 ;
-
---
--- Дамп даних таблиці `orders`
---
-
-INSERT INTO `orders` (`id`, `article`, `discount`) VALUES
-(9, 'В-ОЦ-У-0001', '0');
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=26 ;
 
 -- --------------------------------------------------------
 
@@ -159,14 +153,7 @@ CREATE TABLE IF NOT EXISTS `productInOrder` (
   PRIMARY KEY (`id`),
   KEY `orderId` (`orderId`,`productId`),
   KEY `productId` (`productId`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=6 ;
-
---
--- Дамп даних таблиці `productInOrder`
---
-
-INSERT INTO `productInOrder` (`id`, `orderId`, `productId`, `quantity`) VALUES
-(5, 9, 187, 1);
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=21 ;
 
 -- --------------------------------------------------------
 
@@ -190,7 +177,7 @@ CREATE TABLE IF NOT EXISTS `products` (
   KEY `category_id` (`category_id`),
   KEY `kim` (`kim`),
   KEY `metall` (`metall`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=231 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=189 ;
 
 --
 -- Дамп даних таблиці `products`
@@ -214,7 +201,7 @@ CREATE TABLE IF NOT EXISTS `tabs` (
   PRIMARY KEY (`id`),
   KEY `product_id` (`product_id`),
   KEY `product_id_2` (`product_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=339 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=297 ;
 
 --
 -- Дамп даних таблиці `tabs`
@@ -236,14 +223,7 @@ CREATE TABLE IF NOT EXISTS `tabs_right` (
   `active` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `order_id` (`order_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=2 ;
-
---
--- Дамп даних таблиці `tabs_right`
---
-
-INSERT INTO `tabs_right` (`id`, `order_id`, `active`) VALUES
-(1, 9, 1);
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=17 ;
 
 --
 -- Обмеження зовнішнього ключа збережених таблиць

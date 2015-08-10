@@ -40,6 +40,7 @@
             </div>
         </div>
     </div>
+    <div role="tabpanel" class="tab-pane currentTabRight" id=""></div>
 </div>
 
 <!--<div class="col-md-8">

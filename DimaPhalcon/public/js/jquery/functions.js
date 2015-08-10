@@ -4,7 +4,8 @@ $.fn.hasAttr = function(name) {
 var app = {    
     BASE_URL: 'http://DimaPhalcon/DimaPhalcon/',
     addHandlers: function() {
-        var self = app.tabs;
+        var tabs = app.tabs,
+            tabsDom = app.tabs.dom;
         /*----PREFERENCES_START----*/
         // cog spin on
         $('#preferences').on('mouseover', function(){
@@ -32,38 +33,37 @@ var app = {
         /*----CURRENT TAB START----*/
         $('body').on('click', '#myTab [role=tab]', function() {
             var selectedTabId = $(this ).attr('aria-controls'),
-                tab = self.dom,
                 tabId, prodId;
                 
-            '' !== tab.curTabId ? tab.tabsList[tab.curTabId].active = '0' : 0;
-            if ('preferences1' === selectedTabId && tab.curTabId !== selectedTabId) {                               
-                app.tabs.loadPreferences();                
+            '' !== tabsDom.curTabId ? tabsDom.tabsList[tabsDom.curTabId].active = '0' : 0;
+            if ('preferences1' === selectedTabId && tabsDom.curTabId !== selectedTabId) {                               
+                tabs.loadPreferences();                
                 tabId = ''; 
                 selectedTabId = '';
-            } else if (tab.curTabId !== selectedTabId && undefined !== selectedTabId){
+            } else if (tabsDom.curTabId !== selectedTabId && undefined !== selectedTabId){
                 tabId = $(this ).find('.glyphicon-remove' ).attr('name' );
                 prodId = $(this ).attr('name');                
-                tab.tabsList[selectedTabId].active = '1'; 
-                self.getTabContent(prodId, selectedTabId, 0);
+                tabsDom.tabsList[selectedTabId].active = '1'; 
+                tabs.getTabContent(prodId, selectedTabId, 0);
             }
             
-            self.changeActiveTab(tabId, selectedTabId);
+            tabs.changeActiveTab(tabId, selectedTabId);
         });
         /*----CURRENT TAB END----*/
 
         /*----CLOSING TAB START----*/
-        $(self.dom.closeTab).on('click', function (e){
+        $(tabsDom.closeTab).on('click', function (e){
             e.stopPropagation();
             var currentID = $(this).parent().attr('aria-controls' ),
                 idDb = $(this ).attr('name');
             $(this ).attr('class', 'glyphicon glyphicon-remove');
-            self.closeTabMethod(idDb, currentID);
+            tabs.closeTabMethod(idDb, currentID);
         });
         /*----CLOSING TAB END----*/
 
         /*----ORDERS START----*/
-        $(self.dom.createOrderBtn).on('click', function() {
-            app.order.createNewOrder(self.dom.productId);
+        $(tabsDom.createOrderBtn).on('click', function() {
+            app.order.createNewOrder(tabsDom.productId);
         });
         /*----ORDERS END----*/
         //RIGHT PART
@@ -178,12 +178,13 @@ var app = {
             } ).then( function ( data )
             {
                 var kim, metall;
-                $('#preferences1').attr('class', 'tab-pane');
-                $('.currentTab' ).attr('id', tabId);
-                $('.currentTab').attr('class', 'tab-pane active currentTab');
-                $('.currentTab' ).html(data);
+                $('#preferences1').removeClass('active');
+                $('.currentTab' )
+                        .attr('id', tabId)
+                        .addClass('active')
+                        .html(data);
                 $('.removeRow' ).hide();
-                self.dom.curTabId = $('.currentTab').attr('id');
+                self.dom.curTabId = tabId;
                 self.dom.curTabName = 'a[href="#' + self.dom.curTabId + '"] .tabName';
                 self.dom.productId = productId;
                 kim = $('.listOfKim option:selected' ).attr('kim');
@@ -220,13 +221,33 @@ var app = {
             } ).then( function ( data )
             {
                 console.log(data);
-                if(!data[0]) {
+                if(!data.tabs) {
                     app.kim.getKIMTable();
                     app.metalls.getMetallsTable();                    
                     return true;
                 }
                 
-                $(data[3]).insertBefore( '#addNewTabRight' );
+                $(data.html).insertBefore( '#addNewTabRight' );
+                self.dom.tabsRightList = data.obj;
+                //self.getRightTabContent();
+            });
+        },
+        getRightTabContent: function (orderId, tabId) {
+            var self = this;
+            $.ajax( {
+                url   : app.BASE_URL + self.URL + 'getTabContentRight/',
+                method: 'GET',
+                data: {orderId: orderId}
+            } ).then( function ( data )
+            {
+                $('#kim').removeClass('active');
+                $('.currentTabRight' )
+                        .attr('id', tabId)
+                        .addClass('active')
+                        .html(data);
+                self.dom.curTabRightId = tabId;
+                self.dom.curTabRightName = 'a[href="#' + self.dom.curTabRightId + '"] .tabName';
+                self.dom.orderId = orderId;
             });
         }
     },
@@ -676,7 +697,7 @@ var app = {
             } ).then( function ( data ) {
                 console.log(data);
                 if (false !== data) {
-                    window.location.href = 'http://DimaPhalcon/DimaPhalcon/';
+                   // window.location.href = 'http://DimaPhalcon/DimaPhalcon/';
                 }
             });
         }
