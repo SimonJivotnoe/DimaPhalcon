@@ -229,17 +229,17 @@ var app = {
                 
                 $(data.html).insertBefore( '#addNewTabRight' );
                 self.dom.tabsRightList = data.obj;
-                //self.getRightTabContent();
+                self.getRightTabContent(data.orderId, data.tabId);
             });
         },
         getRightTabContent: function (orderId, tabId) {
             var self = this;
             $.ajax( {
-                url   : app.BASE_URL + self.URL + 'getTabContentRight/',
+                url   : app.BASE_URL + self.URL + 'getRightTabContent/',
                 method: 'GET',
                 data: {orderId: orderId}
             } ).then( function ( data )
-            {
+            {console.log(data);
                 $('#kim').removeClass('active');
                 $('.currentTabRight' )
                         .attr('id', tabId)
@@ -697,7 +697,7 @@ var app = {
             } ).then( function ( data ) {
                 console.log(data);
                 if (false !== data) {
-                   // window.location.href = 'http://DimaPhalcon/DimaPhalcon/';
+                    window.location.href = 'http://DimaPhalcon/DimaPhalcon/';
                 }
             });
         }

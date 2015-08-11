@@ -305,7 +305,8 @@ class TabsController extends \Phalcon\Mvc\Controller
                         } else {
                             $tabsList[ '%ACTIVE%' ] = '';
                         }
-                        $tabsList['%TABID%'] = 'or' . $val->getId();
+                        $tabsList['%ID%'] = 'or' . $val->getId();
+                        $tabsList['%TABID%'] = $val->getId();
                         $tabsList['%ORDER_ID%'] = $val->getOrderId();
                         $order = Orders::findFirst($val->getOrderId());
                         $tabsList[ '%ORDER_NAME%' ] = $order->getArticle();
@@ -337,7 +338,7 @@ class TabsController extends \Phalcon\Mvc\Controller
     
     public function getRightTabContentAction(){
         if ($this->request->isAjax() && $this->request->isGet()) {
-            $orderId= $this->request->getPost('orderId');
+            $orderId= $this->request->get('orderId');
             $order = Orders::findFirst($orderId);
             if ($order == false) {
                 echo "Мы не можем сохранить робота прямо сейчас: \n";
@@ -346,7 +347,27 @@ class TabsController extends \Phalcon\Mvc\Controller
                 }
             } else {
                 $substObj = new Substitution();
-                $tabContent = '';
+                
+                $res = array();
+                $products = array();
+                $discount = $order->getDiscount();
+                
+                $productsInOrder = Productinorder::find(array("orderId = '$orderId'"));
+                foreach ($productsInOrder as $val) {
+                    $products[$val->getProductId()] = $val->getQuantity();  
+                }
+                $productObj = new ProductsController;
+                $kimObj = new Kim;
+                $metallObj = new Metalls;
+                foreach ($products as $key => $val) {
+                    $res['%PRODUCTS%'] .= $productObj->createProductInOrder($key, $val);
+                    
+                }
+                $this->response->setContentType('application/json', 'UTF-8');
+                $this->response->setJsonContent($products);
+
+                return $this->response;
+                
 
                 $productCatId = $product->getCategoryId();
                 $productKim = $product->getKim();

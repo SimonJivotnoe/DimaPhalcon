@@ -141,5 +141,11 @@ class ProductsController extends \Phalcon\Mvc\Controller
 
         return $tableRes;
     }
+    
+    public function createProductInOrder($productId, $quantity) {
+        $productObj = Products::findFirst($productId);
+        $res['%NAME%'] = $productObj->getProductName();
+        $metall = $productObj->getMetall();
+    }
 }
 

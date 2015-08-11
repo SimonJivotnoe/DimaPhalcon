@@ -6,16 +6,16 @@ class OrderController  extends \Phalcon\Mvc\Controller
         if ($this->request->isAjax() && $this->request->isPost()) {
             $prId = $this->request->getPost('productId');
             $orderMax = Orders::maximum(array("column" => "order_number"));
-            $orderNumber = 1;            
-            if (empty($orderMax)) {
-                $order = new Orders;
-                $order->setOrderNumber('1')->save();
-            } else {
-                $orderNumber = (int)($orderMax->getOrderNumber()) + 1;
+            $orderNumber = 1;
+            if ($orderMax) {
+                $orderNumber = (int)($orderMax) + 1;
             }
+            
             $order = new Orders;
-            $order->setArticle($this->generateArticle($orderNumber))
-                  ->setDiscount(new RawValue('default'));
+            $order->setOrderNumber($orderNumber)
+                  ->setArticle($this->generateArticle($orderNumber))
+                  ->setDiscount(new RawValue('default'))
+                  ->save();
             
             $this->response->setContentType('application/json', 'UTF-8');
             
@@ -50,9 +50,9 @@ class OrderController  extends \Phalcon\Mvc\Controller
     
     public function generateArticle($number) {
         $zero = '00';
-        if (100 > $number) {
+        if (9 < $number && 100 > $number) {
            $zero = '0';
-        } else if(1000 > $number) {
+        } else if(100 < $number && 1000 > $number) {
             $zero = '';
         }
         return date('y') . '-' . $zero . strval($number) . '-' . date('d') . date('m') . date('o');
