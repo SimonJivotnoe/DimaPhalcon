@@ -1,12 +1,67 @@
 <h2>Счет</h2>
-<div class="col-md-12 panel panel-default">
+<div class="col-md-7 col-md-offset-5">
+   <button class="btn btn-default btn-sm"><span class="glyphicon glyphicon-check" aria-hidden="true"></span></button>
+   <button class="btn btn-default btn-sm"><span class="glyphicon glyphicon-unchecked" aria-hidden="true"></span></button> 
+</div>
+<div class="col-md-12 panel panel-info" id="orderDetails">
     <div class="col-md-12 panel-body">
-        <label><input type="checkbox" name="FIO"/>Вниманию(Ф.И.О.):</label><span contenteditable="true"></span>
-        <label><input type="checkbox" name="projectName"/>Название проэкта:</label><span contenteditable="true"></span>
+        <div class="col-md-6">
+            <label><input type="checkbox" name="FIO"/>Вниманию(Ф.И.О.):</label>
+            <span contenteditable="true" class="inputOrderDetails"></span>
+        </div>
+         <div class="col-md-6">   
+            <label><input type="checkbox" name="projectName"/>Название проэкта:</label>
+            <span contenteditable="true" class="inputOrderDetails"></span>
+        </div>
     </div>
-    <div class="col-md-12 panel-footer">
-        <label><input type="checkbox" name="appeal"/>Обращение:</label><span contenteditable="true"></span>
-        <label><input type="checkbox" name="projectDescr"/>Описание проэкта:</label><span contenteditable="true"></span>
+    <div class="col-md-12 panel-heading">
+        <div class="col-md-6">
+            <label><input type="checkbox" name="appeal"/>Обращение:</label>
+            <span contenteditable="true" class="inputOrderDetails"></span>
+        </div>
+         <div class="col-md-6">     
+            <label><input type="checkbox" name="projectDescr"/>Описание проэкта:</label>
+            <span contenteditable="true" class="inputOrderDetails"></span>
+        </div>    
+    </div>
+    <div class="col-md-12 panel-body">
+        <div class="col-md-6">
+            <label><input type="checkbox" name="companyName"/>Название компании:</label>
+            <span contenteditable="true" class="inputOrderDetails"></span>
+        </div>
+         <div class="col-md-6">   
+            <label><input type="checkbox" name="orderNumber"/>Номер заказа:</label>
+            <span class="inputOrderDetails">%ORDER_NAME%</span>
+        </div>
+    </div>
+    <div class="col-md-12 panel-heading">
+        <div class="col-md-6">
+            <label><input type="checkbox" name="adress"/>Почтовый адрес:</label>
+            <span contenteditable="true" class="inputOrderDetails"></span>
+        </div>
+         <div class="col-md-6">     
+            <label><input type="checkbox" name="accNumber"/>Номер счета:</label>
+            <span contenteditable="true" class="inputOrderDetails"></span>
+        </div>    
+    </div>
+    <div class="col-md-12 panel-body">
+        <div class="col-md-6">
+            <label><input type="checkbox" name="city"/>Город, почтовый индекс:</label>
+            <span contenteditable="true" class="inputOrderDetails"></span>
+        </div>
+         <div class="col-md-6">   
+            <label><input type="checkbox" name="estimate"/>Срок:</label>
+            <span contenteditable="true" class="inputOrderDetails"></span>
+        </div>
+    </div>
+    <div class="col-md-12 panel-heading">
+        <div class="col-md-6">
+            <label><input type="checkbox" name="date"/>Дата:</label>
+            <span contenteditable="true" class="inputOrderDetails"></span>
+        </div>
+         <div class="col-md-6">     
+
+        </div>    
     </div>
 </div>
 
@@ -28,17 +83,6 @@
             <th colspan="9" id="colspan">Раздел 1</th>
         </tr>
         %PRODUCTS%
-        <!--<tr>
-            <td>1</td>
-            <td>В-ОЦ-У-0001</td>
-            <td>Утка из оц. Стали 0.55 300х200 h=100 a=100</td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-        </tr>-->
         </tbody>
     </table>
 </div>

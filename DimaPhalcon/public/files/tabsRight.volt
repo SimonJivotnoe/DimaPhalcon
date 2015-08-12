@@ -1,14 +1,14 @@
 <div role="rightTabs">
     <ul class="nav nav-tabs" role="tablist" id="rightTabs">
         <li role="kim" id="kim">
-            <a href="#kim" aria-controls="kim" role="tab" data-toggle="tab">КИМ</a>
+            <a href="#kimTab" aria-controls="kim" role="tab" data-toggle="tab">КИМ</a>
         </li>
         <li role="presentation" id="addNewTabRight"><a>+</a></li>
     </ul>
 </div>
 
 <div class="tab-content">
-    <div role="rightTabs" class="tab-pane active" id="kim">
+    <div role="rightTabs" class="tab-pane" id="kimTab">
         <div class="col-md-8">
             <h4>КИМ</h4>
             <input type="text" id="kimHardInput" placeholder="Сложность изделия"/>

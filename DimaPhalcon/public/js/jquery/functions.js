@@ -239,8 +239,8 @@ var app = {
                 method: 'GET',
                 data: {orderId: orderId}
             } ).then( function ( data )
-            {console.log(data);
-                $('#kim').removeClass('active');
+            {
+                $('#kimTab').removeClass('active');
                 $('.currentTabRight' )
                         .attr('id', tabId)
                         .addClass('active')

@@ -287,3 +287,24 @@ ol li:hover {
 .tableContent {
     margin-top: 10px;
 }
+/*.panel-body .inputOrderDetails {
+  border: 3px solid #f5f5f5;
+  border-top: none;
+  border-left: none;
+  border-right: none;
+  margin-left: 15px;
+}
+.panel-footer .inputOrderDetails {
+  border: 3px solid white;
+  border-top: none;
+  border-left: none;
+  border-right: none;
+  margin-left: 15px;
+  background-color: #f5f5f5;
+}
+.inputOrderDetails {
+   color: #2aabd2;
+   font-weight: 600;
+   font-size: 17px;
+   width:auto;
+}*/

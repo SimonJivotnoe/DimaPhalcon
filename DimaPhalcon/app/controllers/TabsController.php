@@ -348,7 +348,7 @@ class TabsController extends \Phalcon\Mvc\Controller
             } else {
                 $substObj = new Substitution();
                 
-                $res = array();
+                $rows = array('%ORDER_NAME%' => $order->getArticle());
                 $products = array();
                 $discount = $order->getDiscount();
                 
@@ -360,50 +360,14 @@ class TabsController extends \Phalcon\Mvc\Controller
                 $kimObj = new Kim;
                 $metallObj = new Metalls;
                 foreach ($products as $key => $val) {
-                    $res['%PRODUCTS%'] .= $productObj->createProductInOrder($key, $val);
+                    $rows['%PRODUCTS%'] .= $productObj->createProductInOrder($key, $val);
                     
                 }
-                $this->response->setContentType('application/json', 'UTF-8');
-                $this->response->setJsonContent($products);
-
-                return $this->response;
                 
-
-                $productCatId = $product->getCategoryId();
-                $productKim = $product->getKim();
-                $productMetall = $product->getMetall();
-                $table = json_decode($product->getTableContent());
-                $alwaysInTable = json_decode($product->getAlwaysintable());
-
-                $productObj = new ProductsController;
-                $categoryObj = new CategoriesController;
-                $kimObj = new KimController;
-                $metallsObj = new MetallsController;
-                $formulaHelperObj = new FormulasController;
-                $addToOrder =  new OrderController;
-
-                $prName = $product->getProductName();
-                if ('Новое изделие' === $prName) {
-                    $prName = '';
-                }
-
-                $formulas = json_decode($product->getFormulas());
-
-                $productDetails = array(
-                    '%PRODUCT_NAME%' => $prName,
-                    '%CATEGORIES%' => $categoryObj->createCategoriesList($productCatId),
-                    '%KIM_LIST%' => $kimObj->createKimList($productKim),
-                    '%METALL_LIST%' => $metallsObj->createMetallsList($productMetall),
-                    '%CREATED%' => $product->getCreated(),
-                    '%TABLE_CONTENT%' => $productObj->createTableRes($table, 'tableContent.html'),
-                    '%ALWAYS_IN_TABLE%' => $productObj->createTableRes($alwaysInTable, 'alwaysInTable.html'),
-                    '%FORMULAS_HELPER%' => $formulaHelperObj->createFormulaHelperList(),
-                    '%FORMULAS%' => $formulaHelperObj->createFormulasList($formulas),
-                    '%ADD_TO_ORDER%' => $addToOrder->createAddToOrder()
-                );
-                $tabContent .= $substObj->subHTMLReplace('tabContent.html', $productDetails);
+                $res = $substObj->subHTMLReplace('rightTabContent.html', $rows);
+                
                 $this->response->setContentType('application/json', 'UTF-8');
-                $this->response->setJsonContent($tabContent);
+                $this->response->setJsonContent($res);
 
                 return $this->response;
             }

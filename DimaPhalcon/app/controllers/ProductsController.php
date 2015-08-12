@@ -143,9 +143,20 @@ class ProductsController extends \Phalcon\Mvc\Controller
     }
     
     public function createProductInOrder($productId, $quantity) {
-        $productObj = Products::findFirst($productId);
+        $substObj = new Substitution();
+        $productObj = Products::findFirst($productId);        
+        $metallId = $productObj->getMetall();
+        $metallObj = Metalls::findFirst($metallId);
+        
         $res['%NAME%'] = $productObj->getProductName();
-        $metall = $productObj->getMetall();
+        $res['%NAME_METALL%'] = $metallObj->getName();
+        $res['%QUANTITY%'] = $quantity;
+        $res['%PRICE%'] = $metallObj->getPrice();
+        $res['%SUM%'] = (int)$metallObj->getPrice() * (int)$quantity;
+        $res['%PRICE_OUT%'] = $metallObj->getOutPrice();
+        $res['%SUM_OUT%'] = (int)$metallObj->getOutPrice() * (int)$quantity;
+        
+        return $substObj->subHTMLReplace('orderRow.html', $res);
     }
 }
 
