@@ -1,33 +1,33 @@
 <h2>Счет</h2>
 <div class="col-md-7 col-md-offset-5">
-   <button class="btn btn-default btn-sm"><span class="glyphicon glyphicon-check" aria-hidden="true"></span></button>
-   <button class="btn btn-default btn-sm"><span class="glyphicon glyphicon-unchecked" aria-hidden="true"></span></button> 
+   <button class="btn btn-default btn-sm" id="checkAllInOrder"><span class="glyphicon glyphicon-check" aria-hidden="true"></span></button>
+   <button class="btn btn-default btn-sm" id="uncheckAllInOrder"><span class="glyphicon glyphicon-unchecked" aria-hidden="true"></span></button> 
 </div>
 <div class="col-md-12 panel panel-info" id="orderDetails">
     <div class="col-md-12 panel-body">
         <div class="col-md-6">
             <label><input type="checkbox" name="FIO"/>Вниманию(Ф.И.О.):</label>
-            <span contenteditable="true" class="inputOrderDetails"></span>
+            <span contenteditable="true" class="inputOrderDetails">%FIO%</span>
         </div>
          <div class="col-md-6">   
             <label><input type="checkbox" name="projectName"/>Название проэкта:</label>
-            <span contenteditable="true" class="inputOrderDetails"></span>
+            <span contenteditable="true" class="inputOrderDetails">%PROJECT_NAME%</span>
         </div>
     </div>
     <div class="col-md-12 panel-heading">
         <div class="col-md-6">
             <label><input type="checkbox" name="appeal"/>Обращение:</label>
-            <span contenteditable="true" class="inputOrderDetails"></span>
+            <span contenteditable="true" class="inputOrderDetails">%APPEAL%</span>
         </div>
          <div class="col-md-6">     
             <label><input type="checkbox" name="projectDescr"/>Описание проэкта:</label>
-            <span contenteditable="true" class="inputOrderDetails"></span>
+            <span contenteditable="true" class="inputOrderDetails">%PROJECT_DESCR%</span>
         </div>    
     </div>
     <div class="col-md-12 panel-body">
         <div class="col-md-6">
             <label><input type="checkbox" name="companyName"/>Название компании:</label>
-            <span contenteditable="true" class="inputOrderDetails"></span>
+            <span contenteditable="true" class="inputOrderDetails">%COMPANY_NAME%</span>
         </div>
          <div class="col-md-6">   
             <label><input type="checkbox" name="orderNumber"/>Номер заказа:</label>
@@ -37,27 +37,28 @@
     <div class="col-md-12 panel-heading">
         <div class="col-md-6">
             <label><input type="checkbox" name="adress"/>Почтовый адрес:</label>
-            <span contenteditable="true" class="inputOrderDetails"></span>
+            <span contenteditable="true" class="inputOrderDetails">%ADDRES%</span>
         </div>
          <div class="col-md-6">     
             <label><input type="checkbox" name="accNumber"/>Номер счета:</label>
-            <span contenteditable="true" class="inputOrderDetails"></span>
+            <span contenteditable="true" class="inputOrderDetails">%ACC_NUMBER%</span>
         </div>    
     </div>
     <div class="col-md-12 panel-body">
         <div class="col-md-6">
             <label><input type="checkbox" name="city"/>Город, почтовый индекс:</label>
-            <span contenteditable="true" class="inputOrderDetails"></span>
+            <span contenteditable="true" class="inputOrderDetails">%CITY%</span>
         </div>
          <div class="col-md-6">   
             <label><input type="checkbox" name="estimate"/>Срок:</label>
-            <span contenteditable="true" class="inputOrderDetails"></span>
+            <input type="date" value="%ESTIMATE%">            
         </div>
     </div>
     <div class="col-md-12 panel-heading">
         <div class="col-md-6">
             <label><input type="checkbox" name="date"/>Дата:</label>
-            <span contenteditable="true" class="inputOrderDetails"></span>
+            <!--<span contenteditable="true" class="inputOrderDetails"></span>-->
+            <input type="date" value="%DATE%">
         </div>
          <div class="col-md-6">     
 

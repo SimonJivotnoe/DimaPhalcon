@@ -15,6 +15,7 @@ class OrderController  extends \Phalcon\Mvc\Controller
             $order->setOrderNumber($orderNumber)
                   ->setArticle($this->generateArticle($orderNumber))
                   ->setDiscount(new RawValue('default'))
+                  ->setOrderDescription(new RawValue('default'))
                   ->save();
             
             $this->response->setContentType('application/json', 'UTF-8');
@@ -27,7 +28,8 @@ class OrderController  extends \Phalcon\Mvc\Controller
             $prInOrder = new Productinorder;
             $prInOrder->setOrderid($order_id)
                       ->setProductid($prId)
-                      ->setQuantity(new RawValue('default'));
+                      ->setQuantity(new RawValue('default'))
+                      ->setOrderDescription(new RawValue('default'));
             if ($prInOrder->save() == false) {
                 $this->response->setJsonContent('error');
                 return $this->response;
@@ -37,6 +39,30 @@ class OrderController  extends \Phalcon\Mvc\Controller
             $this->response->setJsonContent($tab->addNewRightTab($order_id));
             return $this->response;
         } else {
+            $this->response->redirect('');
+        }
+    }
+    
+    public function changeQuantityAction() {
+       if ($this->request->isAjax() && $this->request->isPost()) {
+           $orderId = $this->request->getPost('orderId');
+           $productId = $this->request->getPost('productId');
+           $quantity = $this->request->getPost('quantity');
+           $this->response->setContentType('application/json', 'UTF-8');
+           $orderObj = Productinorder::findFirst(array("orderId = '$orderId'", "productId = '$productId'"));
+           if ($orderObj) {
+               $q = $orderObj->setQuantity($quantity);
+               if($q->save() == true) {
+                   $this->response->setJsonContent(true);
+               } else {
+                   $this->response->setJsonContent(false);
+               }
+               
+               return $this->response;
+           }
+           $this->response->setJsonContent('error');
+           return $this->response;
+       } else {
             $this->response->redirect('');
         }
     }

@@ -5,7 +5,8 @@ var app = {
     BASE_URL: 'http://DimaPhalcon/DimaPhalcon/',
     addHandlers: function() {
         var tabs = app.tabs,
-            tabsDom = app.tabs.dom;
+            tabsDom = app.tabs.dom,
+            order = app.order;
         /*----PREFERENCES_START----*/
         // cog spin on
         $('#preferences').on('mouseover', function(){
@@ -59,14 +60,48 @@ var app = {
             $(this ).attr('class', 'glyphicon glyphicon-remove');
             tabs.closeTabMethod(idDb, currentID);
         });
-        /*----CLOSING TAB END----*/
-
+        /*----CLOSING TAB END----*/        
+        
+        //RIGHT PART
+        
         /*----ORDERS START----*/
         $(tabsDom.createOrderBtn).on('click', function() {
             app.order.createNewOrder(tabsDom.productId);
         });
-        /*----ORDERS END----*/
-        //RIGHT PART
+        
+        $('body').on('click', '#checkAllInOrder', function () {
+            order.checkAllInOrderDetails(true);
+        });
+        
+        $('body').on('click', '#uncheckAllInOrder', function () {
+            order.checkAllInOrderDetails(false);
+        });
+        $('body').on('change', '.quantityInOrder', function () {
+            var quantity = parseInt($(this).val()),
+                orderId = $(this).attr('data-order'),
+                productId = $(this).attr('data-product'),
+                row = $(this).parents('.orderRow'),
+                inPrice, outPrice, inSum, outSum;
+            if (0 > quantity) {
+                quantity = 1;
+                $(this).val(quantity);
+            }    
+            inPrice = parseInt(row.find('.inputPriceInOrder').text());
+            outPrice = parseInt(row.find('.outputPriceInOrder').text());
+            inSum = quantity * inPrice;
+            outSum = quantity * outPrice;
+            row.find('.inputSumInOrder').html(inSum).
+                    end().
+                    find('.outputSumInOrder').html(outSum);
+            order.changeQuantity({
+                    orderId: orderId,
+                    productId: productId,
+                    quantity: quantity
+                }
+            );
+        });
+        /*----ORDERS END----*/   
+        
     },
     tabs: {
         URL: 'tabs/',
@@ -699,6 +734,21 @@ var app = {
                 if (false !== data) {
                     window.location.href = 'http://DimaPhalcon/DimaPhalcon/';
                 }
+            });
+        },
+        checkAllInOrderDetails: function (param) {
+            $.each($('#orderDetails input'), function (key, val) {
+                $(val).prop('checked', param);                
+            });
+        },
+        changeQuantity: function (obj) {
+            var self = this;
+            $.ajax( {
+                url   : app.BASE_URL + self.URL + 'changeQuantity',
+                method: 'POST',
+                data: obj
+            } ).then( function ( data ) {
+                console.log(data);
             });
         }
     },

@@ -26,6 +26,12 @@ class Orders extends \Phalcon\Mvc\Model
      * @var string
      */
     protected $discount;
+    
+    /**
+     *
+     * @var string
+     */
+    protected $order_description;
 
     /**
      * Method to set the value of field id
@@ -80,6 +86,19 @@ class Orders extends \Phalcon\Mvc\Model
     }
 
     /**
+     * Method to set the value of field order_description
+     *
+     * @param string $order_description
+     * @return $this
+     */
+    public function setOrderDescription($order_description)
+    {
+        $this->order_description = $order_description;
+
+        return $this;
+    }
+    
+    /**
      * Returns the value of field id
      *
      * @return integer
@@ -119,6 +138,16 @@ class Orders extends \Phalcon\Mvc\Model
         return $this->discount;
     }
 
+    /**
+     * Returns the value of field order_description
+     *
+     * @return string
+     */
+    public function getOrderDescription()
+    {
+        return $this->order_description;
+    }
+    
     /**
      * Initialize method for model.
      */
