@@ -348,12 +348,9 @@ class TabsController extends \Phalcon\Mvc\Controller
             } else {
                 $substObj = new Substitution();
                 
-                $rows = array('%ORDER_NAME%' => $order->getArticle());
-                $products = array();
-                $year = date('o');
-                $month = date('m');
-                $day = date('d');
-                $rows['%DATE%'] = $year . '-' . $month . '-' . $day;
+                $rows = (array)json_decode($order->getOrderDescription());
+                $rows['%ORDER_NAME%'] = $order->getArticle();
+                $products = array();                
                 $discount = $order->getDiscount();
                 
                 $productsInOrder = Productinorder::find(array("orderId = '$orderId'"));

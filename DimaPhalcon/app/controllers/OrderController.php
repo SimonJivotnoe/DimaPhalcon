@@ -11,11 +11,17 @@ class OrderController  extends \Phalcon\Mvc\Controller
                 $orderNumber = (int)($orderMax) + 1;
             }
             
-            $order = new Orders;
+            $order = new Orders;            
+            $descr = (array)json_decode(file_get_contents('files/orderDetails.json'));
+            $year = date('o');
+            $month = date('m');
+            $day = date('d');
+            $descr['%DATE%'] = $year . '-' . $month . '-' . $day;
+            $descr['%ESTIMATE%'] = $year . '-' . $month . '-' . $day;
             $order->setOrderNumber($orderNumber)
                   ->setArticle($this->generateArticle($orderNumber))
                   ->setDiscount(new RawValue('default'))
-                  ->setOrderDescription(new RawValue('default'))
+                  ->setOrderDescription(json_encode((object)$descr))
                   ->save();
             
             $this->response->setContentType('application/json', 'UTF-8');
@@ -28,8 +34,7 @@ class OrderController  extends \Phalcon\Mvc\Controller
             $prInOrder = new Productinorder;
             $prInOrder->setOrderid($order_id)
                       ->setProductid($prId)
-                      ->setQuantity(new RawValue('default'))
-                      ->setOrderDescription(new RawValue('default'));
+                      ->setQuantity(new RawValue('default'));
             if ($prInOrder->save() == false) {
                 $this->response->setJsonContent('error');
                 return $this->response;
