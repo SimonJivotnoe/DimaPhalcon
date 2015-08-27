@@ -350,8 +350,9 @@ class TabsController extends \Phalcon\Mvc\Controller
                 
                 $rows = (array)json_decode($order->getOrderDescription());
                 $rows['%ORDER_NAME%'] = $order->getArticle();
-                $products = array();                
+                $products = array();
                 $discount = $order->getDiscount();
+                $rows['%DISCOUNT%'] = $discount;
                 
                 $productsInOrder = Productinorder::find(array("orderId = '$orderId'"));
                 foreach ($productsInOrder as $val) {
@@ -361,7 +362,7 @@ class TabsController extends \Phalcon\Mvc\Controller
                 $kimObj = new Kim;
                 $metallObj = new Metalls;
                 foreach ($products as $key => $val) {
-                    $rows['%PRODUCTS%'] .= $productObj->createProductInOrder($key, $val, $orderId);
+                    $rows['%PRODUCTS%'] .= $productObj->createProductInOrder($key, $val, $orderId, $discount);
                     
                 }
                 

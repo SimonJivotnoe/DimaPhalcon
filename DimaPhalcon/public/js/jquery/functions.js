@@ -68,15 +68,18 @@ var app = {
         $(tabsDom.createOrderBtn).on('click', function() {
             app.order.createNewOrder(tabsDom.productId);
         });
-        
-        $('body').on('click', '#checkAllInOrder', function () {
-            order.checkAllInOrderDetails(true);
+
+        $('body').on('click', '#changeDiscount', function () {
+            order.changeDiscount({
+                discount: $(this ).val(),
+                orderId: tabsDom.orderId
+            });
         });
-        
+
         $('body').on('click', '#uncheckAllInOrder', function () {
             order.checkAllInOrderDetails(false);
         });
-        $('body').on('change', '.quantityInOrder', function () {
+        $('body').on('change', '#quantityInOrder', function () {
             var quantity = parseInt($(this).val()),
                 //orderId = $(this).attr('data-order'),
                 productId = $(this).attr('data-product'),
@@ -101,23 +104,15 @@ var app = {
             );
         });
         $('body').on('keyup', '.inputOrderDetails', function() {
-            $(this).attr('name');
-            var obj = {
-                "%FIO%": "",
-                "%PROJECT_NAME%": "",
-                "%APPEAL%": "",
-                "%PROJECT_DESCR%": "",
-                "%COMPANY_NAME%": "",
-                "%ADDRES%": "",
-                "%ACC_NUMBER%": "",
-                "%CITY%": "",
-                "%ESTIMATE%": "",
-                "%DATE%": ""
-            }, arr = _.keys(obj), i = 0;
-            $.each($('.inputOrderDetails'), function(key, val){
-                obj[arr[i]] = $(val).text();
-                i++;            
-            });
+            var obj = order.createJSONFromOrderDescription();
+            order.changeOrderDetails({
+                    orderId: tabsDom.orderId,
+                    orderDescr: obj
+                }
+            );
+        });
+        $('body').on('keyup, click, change', '#orderEstimateInput, #orderDateInput', function() {
+            var obj = order.createJSONFromOrderDescription();
             order.changeOrderDetails({
                     orderId: tabsDom.orderId,
                     orderDescr: obj
@@ -759,6 +754,16 @@ var app = {
                 }
             });
         },
+        changeDiscount: function(obj) {
+            var self = this;
+            $.ajax( {
+                url   : app.BASE_URL + self.URL + 'changeDiscount',
+                method: 'POST',
+                data: obj
+            } ).then( function ( data ) {
+
+            });
+        },
         checkAllInOrderDetails: function (param) {
             $.each($('#orderDetails input'), function (key, val) {
                 $(val).prop('checked', param);                
@@ -773,6 +778,27 @@ var app = {
             } ).then( function ( data ) {
                 
             });
+        },
+        createJSONFromOrderDescription: function() {
+            var obj = {
+                "%FIO%": "",
+                "%PROJECT_NAME%": "",
+                "%APPEAL%": "",
+                "%PROJECT_DESCR%": "",
+                "%COMPANY_NAME%": "",
+                "%ADDRES%": "",
+                "%ACC_NUMBER%": "",
+                "%CITY%": "",
+                "%ESTIMATE%": "",
+                "%DATE%": ""
+            }, arr = _.keys(obj), i = 0;
+            $.each($('.inputOrderDetails'), function(key, val){
+                obj[arr[i]] = $(val).text();
+                i++;
+            });
+            obj["%ESTIMATE%"] = $('#orderEstimateInput' ).val();
+            obj["%DATE%"] = $('#orderDateInput' ).val();
+            return obj;
         },
         changeOrderDetails: function(obj) {
             var self = this;

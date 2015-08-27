@@ -47,7 +47,30 @@ class OrderController  extends \Phalcon\Mvc\Controller
             $this->response->redirect('');
         }
     }
-    
+
+    public function changeDiscountAction(){
+        if ($this->request->isAjax() && $this->request->isPost()) {
+            $orderId = $this->request->getPost('orderId');
+            $discount = $this->request->getPost('discount');
+            $this->response->setContentType('application/json', 'UTF-8');
+            $orderObj = Orders::findFirst(array("id = '$orderId'"));
+            if ($orderObj) {
+                $q = $orderObj->setDiscount($discount);
+                if($q->save() == true) {
+                    $this->response->setJsonContent(true);
+                } else {
+                    $this->response->setJsonContent(false);
+                }
+
+                return $this->response;
+            }
+            $this->response->setJsonContent('error');
+            return $this->response;
+        } else {
+            $this->response->redirect('');
+        }
+    }
+
     public function changeQuantityAction() {
        if ($this->request->isAjax() && $this->request->isPost()) {
            $orderId = $this->request->getPost('orderId');

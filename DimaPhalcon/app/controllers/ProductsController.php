@@ -142,7 +142,7 @@ class ProductsController extends \Phalcon\Mvc\Controller
         return $tableRes;
     }
     
-    public function createProductInOrder($productId, $quantity, $orderId) {
+    public function createProductInOrder($productId, $quantity, $orderId, $discount) {
         $substObj = new Substitution();
         $productObj = Products::findFirst($productId);        
         $metallId = $productObj->getMetall();
@@ -156,7 +156,7 @@ class ProductsController extends \Phalcon\Mvc\Controller
         $res['%PRICE%'] = $metallObj->getPrice();
         $res['%SUM%'] = (int)$metallObj->getPrice() * (int)$quantity;
         $res['%PRICE_OUT%'] = $metallObj->getOutPrice();
-        $res['%SUM_OUT%'] = (int)$metallObj->getOutPrice() * (int)$quantity;
+        $res['%SUM_OUT%'] = (int)$metallObj->getOutPrice() * (int)$quantity - (int)$metallObj->getOutPrice() * (int)$discount/100;
         
         return $substObj->subHTMLReplace('orderRow.html', $res);
     }

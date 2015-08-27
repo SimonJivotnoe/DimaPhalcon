@@ -1,4 +1,5 @@
 <h2>Счет</h2>
+<p>Дисконт: <input id="changeDiscount" class="inputWithoutBorders" type="number" value="%DISCOUNT%"/>%</p>
 <div class="col-md-7 col-md-offset-5">
    <button class="btn btn-default btn-sm" id="checkAllInOrder"><span class="glyphicon glyphicon-check" aria-hidden="true"></span></button>
    <button class="btn btn-default btn-sm" id="uncheckAllInOrder"><span class="glyphicon glyphicon-unchecked" aria-hidden="true"></span></button> 
@@ -51,14 +52,14 @@
         </div>
          <div class="col-md-6">   
             <label><input type="checkbox" name="estimate"/>Срок:</label>
-            <input type="date" name="estimate" value="%ESTIMATE%" class="inputOrderDetails">            
+            <input type="date" name="estimate" value="%ESTIMATE%" id="orderEstimateInput" class="inputOrderDetails skipLineHeight">
         </div>
     </div>
     <div class="col-md-12 panel-heading">
         <div class="col-md-6">
-            <label><input type="checkbox" name="date" class="skipLineHeight"/>Дата:</label>
+            <label><input type="checkbox" name="date" />Дата:</label>
             <!--<span contenteditable="true" class="inputOrderDetails"></span>-->
-            <input type="date" name="date" value="%DATE%" class="inputOrderDetails">
+            <input type="date" name="date" value="%DATE%" id="orderDateInput" class="inputOrderDetails skipLineHeight">
         </div>
          <div class="col-md-6">     
 

@@ -287,7 +287,7 @@ ol li:hover {
 .tableContent {
     margin-top: 10px;
 }
-.quantityInOrder {
+.inputWithoutBorders {
     width: 3em;
     border-top: none;
     border-left: none;
@@ -295,5 +295,5 @@ ol li:hover {
     border-bottom: none;
 }
 .skipLineHeight {
-    line-height: 14px;
+    line-height: 14px !important;
 }
