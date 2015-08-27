@@ -78,7 +78,7 @@ var app = {
         });
         $('body').on('change', '.quantityInOrder', function () {
             var quantity = parseInt($(this).val()),
-                orderId = $(this).attr('data-order'),
+                //orderId = $(this).attr('data-order'),
                 productId = $(this).attr('data-product'),
                 row = $(this).parents('.orderRow'),
                 inPrice, outPrice, inSum, outSum;
@@ -94,9 +94,33 @@ var app = {
                     end().
                     find('.outputSumInOrder').html(outSum);
             order.changeQuantity({
-                    orderId: orderId,
+                    orderId: tabsDom.orderId,
                     productId: productId,
                     quantity: quantity
+                }
+            );
+        });
+        $('body').on('keyup', '.inputOrderDetails', function() {
+            $(this).attr('name');
+            var obj = {
+                "%FIO%": "",
+                "%PROJECT_NAME%": "",
+                "%APPEAL%": "",
+                "%PROJECT_DESCR%": "",
+                "%COMPANY_NAME%": "",
+                "%ADDRES%": "",
+                "%ACC_NUMBER%": "",
+                "%CITY%": "",
+                "%ESTIMATE%": "",
+                "%DATE%": ""
+            }, arr = _.keys(obj), i = 0;
+            $.each($('.inputOrderDetails'), function(key, val){
+                obj[arr[i]] = $(val).text();
+                i++;            
+            });
+            order.changeOrderDetails({
+                    orderId: tabsDom.orderId,
+                    orderDescr: obj
                 }
             );
         });
@@ -255,7 +279,6 @@ var app = {
                 method: 'GET'
             } ).then( function ( data )
             {
-                console.log(data);
                 if(!data.tabs) {
                     app.kim.getKIMTable();
                     app.metalls.getMetallsTable();                    
@@ -745,6 +768,16 @@ var app = {
             var self = this;
             $.ajax( {
                 url   : app.BASE_URL + self.URL + 'changeQuantity',
+                method: 'POST',
+                data: obj
+            } ).then( function ( data ) {
+                
+            });
+        },
+        changeOrderDetails: function(obj) {
+            var self = this;
+            $.ajax( {
+                url   : app.BASE_URL + self.URL + 'changeOrderDetails',
                 method: 'POST',
                 data: obj
             } ).then( function ( data ) {

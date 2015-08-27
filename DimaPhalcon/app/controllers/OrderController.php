@@ -72,6 +72,29 @@ class OrderController  extends \Phalcon\Mvc\Controller
         }
     }
     
+    public function changeOrderDetailsAction() {
+        if ($this->request->isAjax() && $this->request->isPost()) {
+           $orderId = $this->request->getPost('orderId');
+           $orderDescr = $this->request->getPost('orderDescr');
+           $this->response->setContentType('application/json', 'UTF-8');
+           $orderObj = Orders::findFirst(array("id = '$orderId'"));
+           if ($orderObj) {
+               $q = $orderObj->setOrderDescription(json_encode($orderDescr));
+               if($q->save() == true) {
+                   $this->response->setJsonContent(true);
+               } else {
+                   $this->response->setJsonContent(false);
+               }
+               
+               return $this->response;
+           }
+           $this->response->setJsonContent('error');
+           return $this->response;
+       } else {
+            $this->response->redirect('');
+        }
+    }
+    
     public function createAddToOrder() {
         //$substObj = new Substitution();
         $res = '<button class="btn btn-info btn-sm" id="createOrderBtn">Создать новый ордер</button>'
