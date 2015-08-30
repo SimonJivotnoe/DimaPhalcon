@@ -147,16 +147,18 @@ class ProductsController extends \Phalcon\Mvc\Controller
         $productObj = Products::findFirst($productId);        
         $metallId = $productObj->getMetall();
         $metallObj = Metalls::findFirst($metallId);
-        
+        $alwaysInTable = json_decode($productObj->getAlwaysInTable());
+        var_dump($alwaysInTable->{'3'}->{'%INPUT_VALUE%'});
+
         $res['%NAME%'] = $productObj->getProductName();
         $res['%NAME_METALL%'] = $metallObj->getName();
         $res['%ORDER_ID%'] = $orderId;
         $res['%PRODUCT_ID%'] = $productId;
         $res['%QUANTITY%'] = $quantity;
-        $res['%PRICE%'] = $metallObj->getPrice();
-        $res['%SUM%'] = (int)$metallObj->getPrice() * (int)$quantity;
-        $res['%PRICE_OUT%'] = $metallObj->getOutPrice();
-        $res['%SUM_OUT%'] = (int)$metallObj->getOutPrice() * (int)$quantity - (int)$metallObj->getOutPrice() * (int)$discount/100;
+        $res['%PRICE%'] = $alwaysInTable->{'3'}->{'%INPUT_VALUE%'};
+        $res['%SUM%'] = (float)$alwaysInTable->{'3'}->{'%INPUT_VALUE%'} * (int)$quantity;
+        $res['%PRICE_OUT%'] = $alwaysInTable->{'5'}->{'%INPUT_VALUE%'};
+        $res['%SUM_OUT%'] = (float)$alwaysInTable->{'5'}->{'%INPUT_VALUE%'} * (int)$quantity - (int)$alwaysInTable->{'5'}->{'%INPUT_VALUE%'} * (int)$discount/100;
         
         return $substObj->subHTMLReplace('orderRow.html', $res);
     }

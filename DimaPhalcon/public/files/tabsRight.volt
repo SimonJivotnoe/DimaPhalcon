@@ -40,7 +40,10 @@
             </div>
         </div>
     </div>
-    <div role="tabpanel" class="tab-pane currentTabRight" id=""></div>
+    <div role="tabpanel" class="tab-pane currentTabRight" id="">
+        <div id="orderDetailsWrapper"></div>
+        <div class="col-md-8" id="orderTableWrapper"></div>
+    </div>
 </div>
 
 <!--<div class="col-md-8">

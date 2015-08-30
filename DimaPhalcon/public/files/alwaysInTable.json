@@ -15,16 +15,30 @@
     },
     {
         "%ROW_NUMBER%": "PR1",
-        "%ROW_NAME%": "Цена за м2, грн",
+        "%ROW_NAME%": "Цена входящая за м2, грн",
         "%DATA_CELL%": "PR1",
         "%DATA_FORMULA%": "",
         "%INPUT_VALUE%": ""
     },
     {
         "%ROW_NUMBER%": "SUM1",
-        "%ROW_NAME%": "Сумма, грн",
+        "%ROW_NAME%": "Цена изделия входящая, грн",
         "%DATA_CELL%": "SUM1",
         "%DATA_FORMULA%": "PRODUCT(S1,PR1)",
+        "%INPUT_VALUE%": ""
+    },
+    {
+        "%ROW_NUMBER%": "PR2",
+        "%ROW_NAME%": "Цена исходящая, грн",
+        "%DATA_CELL%": "PR2",
+        "%DATA_FORMULA%": "",
+        "%INPUT_VALUE%": ""
+    },
+    {
+        "%ROW_NUMBER%": "SUM2",
+        "%ROW_NAME%": "Цена изделия исходящая, грн",
+        "%DATA_CELL%": "SUM2",
+        "%DATA_FORMULA%": "PRODUCT(S1,PR2)",
         "%INPUT_VALUE%": ""
     }
 ]

@@ -140,10 +140,10 @@ class MetallsController extends \Phalcon\Mvc\Controller
             "order" => "name ASC"));
         foreach ($metalls as $val) {
             if ($productMetall === $val->getId()) {
-                $metallsList .= '<option selected="selected" name="'.$val->getId().'" metall="'.$val->getPrice().'">'.
+                $metallsList .= '<option selected="selected" name="'.$val->getId().'" metall="'.$val->getPrice().'" metallOut="'.$val->getOutPrice().'">'.
                     $val->getName().': '.$val->getPrice().' грн</option>';
             } else {
-                $metallsList .= '<option name="'.$val->getId().'" metall="'.$val->getPrice().'">'.
+                $metallsList .= '<option name="'.$val->getId().'" metall="'.$val->getPrice().'" metallOut="'.$val->getOutPrice().'">'.
                     $val->getName().': '.$val->getPrice().' грн</option>';
             }
         }

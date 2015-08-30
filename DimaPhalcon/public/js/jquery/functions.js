@@ -76,6 +76,9 @@ var app = {
             });
         });
 
+        $('body').on('click', '#checkAllInOrder', function () {
+            order.checkAllInOrderDetails(true);
+        });
         $('body').on('click', '#uncheckAllInOrder', function () {
             order.checkAllInOrderDetails(false);
         });
@@ -89,13 +92,13 @@ var app = {
                 quantity = 1;
                 $(this).val(quantity);
             }    
-            inPrice = parseInt(row.find('.inputPriceInOrder').text());
-            outPrice = parseInt(row.find('.outputPriceInOrder').text());
+            inPrice = parseFloat(row.find('.inputPriceInOrder').text());
+            outPrice = parseFloat(row.find('.outputPriceInOrder').text());
             inSum = quantity * inPrice;
             outSum = quantity * outPrice;
-            row.find('.inputSumInOrder').html(inSum).
+            row.find('.inputSumInOrder').html(inSum.toFixed(2)).
                     end().
-                    find('.outputSumInOrder').html(outSum);
+                    find('.outputSumInOrder').html(outSum.toFixed(2));
             order.changeQuantity({
                     orderId: tabsDom.orderId,
                     productId: productId,
@@ -231,7 +234,7 @@ var app = {
                 method: 'GET'
             } ).then( function ( data )
             {
-                var kim, metall;
+                var kim, metall, metallOut;
                 $('#preferences1').removeClass('active');
                 $('.currentTab' )
                         .attr('id', tabId)
@@ -243,8 +246,10 @@ var app = {
                 self.dom.productId = productId;
                 kim = $('.listOfKim option:selected' ).attr('kim');
                 metall = $('.listOfMetalls option:selected' ).attr('metall');
+                metallOut = $('.listOfMetalls option:selected' ).attr('metallOut');
                 $('[data-cell="KIM1"]' ).val(kim);
                 $('[data-cell="PR1"]' ).val(metall);
+                $('[data-cell="PR2"]' ).val(metallOut);
                 $('#calx').calx();
                 if (body) {
                     app.addHandlers();
@@ -679,7 +684,9 @@ var app = {
                 console.log(data);
                 $('.listOfMetalls' ).html(data);
                 var metall = $('.listOfMetalls option:selected' ).attr('metall');
+                var metallOut = $('.listOfMetalls option:selected' ).attr('metallOut');
                 $('[data-cell="PR1"]' ).val(metall);
+                $('[data-cell="PR2"]' ).val(metallOut);
                 $('#calx').calx();
             });
         },
@@ -750,7 +757,7 @@ var app = {
             } ).then( function ( data ) {
                 console.log(data);
                 if (false !== data) {
-                    window.location.href = 'http://DimaPhalcon/DimaPhalcon/';
+                   // window.location.href = 'http://DimaPhalcon/DimaPhalcon/';
                 }
             });
         },

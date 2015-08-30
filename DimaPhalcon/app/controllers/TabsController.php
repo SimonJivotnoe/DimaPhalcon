@@ -336,48 +336,77 @@ class TabsController extends \Phalcon\Mvc\Controller
         }
     }
     
-    public function getRightTabContentAction(){
+    public function getRightTabContentOrderDetailsAction(){
         if ($this->request->isAjax() && $this->request->isGet()) {
             $orderId= $this->request->get('orderId');
+            $this->response->setContentType('application/json', 'UTF-8');
             $order = Orders::findFirst($orderId);
             if ($order == false) {
                 echo "Мы не можем сохранить робота прямо сейчас: \n";
                 foreach ($order->getMessages() as $message) {
                     echo $message, "\n";
                 }
-            } else {
-                $substObj = new Substitution();
-                
-                $rows = (array)json_decode($order->getOrderDescription());
-                $rows['%ORDER_NAME%'] = $order->getArticle();
-                $products = array();
-                $discount = $order->getDiscount();
-                $rows['%DISCOUNT%'] = $discount;
-                
-                $productsInOrder = Productinorder::find(array("orderId = '$orderId'"));
-                foreach ($productsInOrder as $val) {
-                    $products[$val->getProductId()] = $val->getQuantity();  
-                }
-                $productObj = new ProductsController;
-                $kimObj = new Kim;
-                $metallObj = new Metalls;
-                foreach ($products as $key => $val) {
-                    $rows['%PRODUCTS%'] .= $productObj->createProductInOrder($key, $val, $orderId, $discount);
-                    
-                }
-                
-                $res = $substObj->subHTMLReplace('rightTabContent.html', $rows);
-                
-                $this->response->setContentType('application/json', 'UTF-8');
-                $this->response->setJsonContent($res);
-
+                $this->response->setJsonContent(['success' => false]);
                 return $this->response;
             }
+            $substObj = new Substitution();
+
+            $rows = (array)json_decode($order->getOrderDescription());
+            $rows['%ORDER_NAME%'] = $order->getArticle();
+            $discount = $order->getDiscount();
+            $rows['%DISCOUNT%'] = $discount;
+
+            $res = $substObj->subHTMLReplace('rightTabContent.html', $rows);
+            $this->response->setJsonContent(['success' => true, 'html' => $res]);
+
+            return $this->response;
         } else {
             $this->response->redirect('');
         }
     }
-    
+
+    public function getRightTabContentTableAction(){
+        if ($this->request->isAjax() && $this->request->isGet()) {
+            $orderId= $this->request->get('orderId');
+            $productsInOrder = Productinorder::find(array("orderId = '$orderId'"));
+            $this->response->setContentType('application/json', 'UTF-8');
+            if ($productsInOrder == false) {
+                echo "Мы не можем сохранить робота прямо сейчас: \n";
+                foreach ($productsInOrder->getMessages() as $message) {
+                    echo $message, "\n";
+                }
+                return false;
+            }
+            $order = Orders::findFirst($orderId);
+            if ($order == false) {
+                echo "Мы не можем сохранить робота прямо сейчас: \n";
+                foreach ($order->getMessages() as $message) {
+                    echo $message, "\n";
+                }
+                return false;
+            }
+            $substObj = new Substitution();
+
+            $rows = array();
+            $products = array();
+            $discount = $order->getDiscount();
+            foreach ($productsInOrder as $val) {
+                $products[$val->getProductId()] = $val->getQuantity();
+            }
+            $productObj = new ProductsController;
+            foreach ($products as $key => $val) {
+                $rows['%PRODUCTS%'] .= $productObj->createProductInOrder($key, $val, $orderId, $discount);
+            }
+
+            $res = $substObj->subHTMLReplace('orderTable.html', $rows);
+            $this->response->setJsonContent(['html' => $res]);
+
+            return $this->response;
+        } else {
+            $this->response->redirect('');
+        }
+    }
+
     public function addNewRightTab($order_id) {
         $tabActive = TabsRight::find(array("active = 1"));
         foreach ($tabActive as $val) {

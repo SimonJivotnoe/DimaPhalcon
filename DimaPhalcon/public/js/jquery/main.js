@@ -12,8 +12,9 @@ $( document ).ready( function ()
     });
         
     /*----RECEIVE TABS LIST----*/
-    getTabs('all');
-    app.tabs.getRightTabs();
+    //getTabs('all');
+    //app.tabs.getRightTabs();
+    D$();
     /*----RECEIVE TABS LIST END----*/
 
     /*----PREFERENCES_START----*/
@@ -217,7 +218,9 @@ $( document ).ready( function ()
     });
     $('body').on('change', '.listOfMetalls', function(){
         var metall = $('option:selected', this ).attr('metall');
+        var metallOut = $('.listOfMetalls option:selected' ).attr('metallOut');
         $('[data-cell="PR1"]' ).val(metall);
+        $('[data-cell="PR2"]' ).val(metallOut);
         $( '#calx' ).calx();
     });
     $('body').on('click', '#editCategoriesListContent', function(){
