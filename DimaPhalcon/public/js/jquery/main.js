@@ -1,6 +1,9 @@
 'use strict';
 $( document ).ready( function ()
-{    // split monitor
+{    
+    var d = D$();
+    
+    // split monitor
     if (undefined === localStorage.split) {
         localStorage.split = '60em';
     }
@@ -10,11 +13,29 @@ $( document ).ready( function ()
     $('#divider').on('mouseleave', function(){
         localStorage.split = $('#divider').css('left');
     });
-        
+    
+    
+    /*----PREFERENCES_START----*/
+    
+        // handlers
+        // cog spin on-off
+        $('#preferences')
+            .on('mouseover', function(){
+                $('.fa-cog').addClass('fa-spin');
+            })
+            .on('mouseleave', function(){
+                $('.fa-cog').removeClass('fa-spin');
+            });
+        // add new category
+        $('#addCategoryBtn').on('click', function(){
+            var newCategoryName = $('#addCategoryInput' ).val();
+            ('' !== newCategoryName) ? addCategory(newCategoryName) : 0;
+        });
+    /*----PREFERENCES_END----*/
+    
     /*----RECEIVE TABS LIST----*/
     //getTabs('all');
     //app.tabs.getRightTabs();
-    D$();
     /*----RECEIVE TABS LIST END----*/
 
     /*----PREFERENCES_START----*/

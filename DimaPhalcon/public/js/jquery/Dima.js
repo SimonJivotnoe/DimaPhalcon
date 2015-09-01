@@ -3,7 +3,7 @@
     // 'new' an object
     var Dima = function(firstName, lastName, language) {
         return new Dima.init(firstName, lastName, language);   
-    }
+    };
 
     // url's
     var URL = {
@@ -12,11 +12,20 @@
     };
 
     var SELF;
+    
+    function log(php) {
+        if('undefined' != typeof(console))
+        {
+            console.error('ERROR in ' + php);
+        }        
+    }
+    
     // prototype holds methods (to save memory space)
     Dima.prototype = {
 
         run: function() {
             SELF  = this;
+            this.tabs.getLeftTabsList();
             this.tabs.getRightTabs();
             $('body').show();
         },
@@ -25,7 +34,48 @@
         tabs: {
 
             URL: URL.BASE + URL.TABS,
-
+            
+            getLeftTabsList: function() {
+                var _self = this;
+                $.ajax( {
+                    url   : _self.URL + 'getLeftTabsList',
+                    method: 'GET'
+                } ).then( function ( data )
+                {console.log(data);
+                    var html = $(data.html);
+                    
+                    SELF.main.tabsList = data.tabsList;
+                    SELF.main.tableContent = data.kim;
+                    
+                    if (false !== data.acrive) {
+                        html.insertBefore( '#addNewTab' );
+                    }
+                   /* app.tabs.dom.tabsList = data[3];
+                    app.kim.tableContent = data[4];
+                    if(0 !== data.length && 'all' === param){
+                        if ('' !== data[0]) {
+                            $(data[0]).insertBefore( '#addNewTab' );
+                            if (!data[1]) {
+                                app.tabs.showPreferences();
+                                app.addHandlers();
+                            } else {
+                                app.tabs.getTabContent(data[2], data[1], 1);
+                            }
+                        } else {
+                            app.tabs.showPreferences();
+                            app.addHandlers();
+                        }
+                    } else if(0 === data.length && 'last' === param){
+                        app.tabs.addTab(1);
+                    } else if(0 !== data.length && 'last' === param){
+                        app.tabs.addTab(parseInt(data) +1);
+                    } else {
+                        app.tabs.showPreferences();
+                        app.addHandlers();
+                    }*/
+                });
+            },
+            
             getRightTabs: function ()
             {
                 var _self = this;
@@ -49,7 +99,7 @@
 
             getRightTabContentOrderDetails: function (orderId, tabId) {
                 var _self = this,
-                    main = SELF.main;console.log(arguments.callee);
+                    main = SELF.main;
                 $.ajax( {
                     url   : _self.URL + 'getRightTabContentOrderDetails/',
                     method: 'GET',
@@ -72,7 +122,9 @@
                         main.curTabRightId = tabId;
                         main.curTabRightName = 'a[href="#' + main.curTabRightId + '"] .tabName';
                         main.orderId = orderId;
+                        return this;
                     }
+                    log(data.error);
                 });
             },
 
@@ -112,7 +164,7 @@
         
         self.run();
         
-    }
+    };
     
     // trick borrowed from jQuery so we don't have to use the 'new' keyword
     Dima.init.prototype = Dima.prototype;

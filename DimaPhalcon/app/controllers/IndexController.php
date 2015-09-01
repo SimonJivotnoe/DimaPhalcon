@@ -38,12 +38,5 @@ class IndexController extends ControllerBase
             'tabsRight' => $right
         ));
     }
-
-    public function getTabsAction(){
-        if ( $this->request->isAjax() ) {
-            $this->response->setJsonContent(array('ok'));
-            return $this->response;
-        }
-    }
 }
 

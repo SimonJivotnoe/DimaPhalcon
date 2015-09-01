@@ -1,6 +1,6 @@
 function getTabs(param) {
     $.ajax( {
-        url   : 'http://DimaPhalcon/DimaPhalcon/tabs/getTabsList/' + param,
+        url   : 'http://DimaPhalcon/DimaPhalcon/tabs/getTabsList/',
         method: 'GET'
     } ).then( function ( data )
     {
@@ -74,8 +74,8 @@ function addCategory(categoryName) {
             } else {
                 $('.bg-danger' ).fadeIn();
             }
-        })
-    } )
+        });
+    } );
 }
 
 function getCategoriesList() {
