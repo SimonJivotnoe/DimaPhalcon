@@ -50,30 +50,6 @@ $( document ).ready( function ()
     });
     
     /*----NEW_TAB_END----*/
-    
-    /*----CURRENT TAB START----*/
-    /*$('body').on('click', '#myTab [role=tab]', function() {
-        var selectedTabId = $(this ).attr('aria-controls');
-        if (selectedTabId !== 'preferences1' && app.tabs.dom.curTabId !== selectedTabId && undefined !== selectedTabId) {
-            var tabId = $(this ).find('.glyphicon-remove' ).attr('name');
-            var prodId = $(this ).attr('name');
-            '' !== app.tabs.dom.curTabId ? app.tabs.dom.tabsList[app.tabs.dom.curTabId].active = '0' : 0;
-            app.tabs.dom.tabsList[selectedTabId].active = '1';
-            app.tabs.changeActiveTab(tabId, selectedTabId);
-            app.tabs.getTabContent(prodId, selectedTabId, 0);
-        }
-    });*/
-    /*----CURRENT TAB END----*/
-
-    /*----CLOSING TAB START----*/
-    /*$('body').on('click', app.tabs.dom.closeTab, function (e){
-        e.stopPropagation();
-        var currentID = $(this).parent().attr('aria-controls');
-        var idDb = $(this ).attr('name');        
-        $(this ).attr('class', 'glyphicon glyphicon-remove');
-       app.tabs.closeTabMethod(idDb, currentID);
-    });*/
-    /*----CLOSING TAB END----*/
 
     /*----INSIDE TAB START----*/
     /* add rows to table */

@@ -18,10 +18,25 @@
     var CATEG = URL.BASE + URL.CATEG;
 
     var ORDER = URL.BASE + URL.ORDER;
-    
+
+    // alias to this Class
     var SELF;
 
+    // alias to self.main
     var MAIN;
+
+    var orderPlaceholder = {
+        "%FIO%": "",
+        "%PROJECT_NAME%": "",
+        "%APPEAL%": "",
+        "%PROJECT_DESCR%": "",
+        "%COMPANY_NAME%": "",
+        "%ADDRES%": "",
+        "%ACC_NUMBER%": "",
+        "%CITY%": "",
+        "%ESTIMATE%": "",
+        "%DATE%": ""
+    };
 
     // logging errors
     function log(php) {
@@ -42,37 +57,56 @@
     function addLeftTabsHandler(html) {
         var tabs = SELF.tabs;        
         
-        // change current tab
-        html.find('[role=tab]').click(function(){
-            var selectedTabId = $(this ).attr('aria-controls'),
-                tabId, prodId;
-                
-            '' !== MAIN.curTabId ? MAIN.tabsList[MAIN.curTabId].active = '0' : 0;
-            
-            if (MAIN.curTabId !== selectedTabId && undefined !== selectedTabId){
-                tabId = $(this ).find('.glyphicon-remove' ).attr('name' );
-                prodId = $(this ).attr('name');                
-                MAIN.tabsList[selectedTabId].active = '1'; 
-                tabs.getLeftTabContent(prodId, selectedTabId);
-            }
-            
-            tabs.changeActiveTab(tabId, selectedTabId);
-        });
+
+        html
+            // change current tab
+            .find('[role=tab]').click(function(){
+                var selectedTabId = $(this ).attr('aria-controls'),
+                    tabId, prodId;
+
+                '' !== MAIN.curTabId ? MAIN.tabsList[MAIN.curTabId].active = '0' : 0;
+
+                if (MAIN.curTabId !== selectedTabId && undefined !== selectedTabId){
+                    tabId = $(this ).find('.glyphicon-remove' ).attr('name' );
+                    prodId = $(this ).attr('name');
+                    MAIN.tabsList[selectedTabId].active = '1';
+                    tabs.getLeftTabContent(prodId, selectedTabId);
+                }
+
+                tabs.changeActiveTab(tabId, selectedTabId);
+            }).end()
         
-        //close tab
-        html.find('.closeTab').click(function (e){
-            e.stopPropagation();
-            var currentID = $(this).parent().attr('aria-controls' ),
-                idDb = $(this ).attr('name');
-            $(this ).attr('class', 'glyphicon glyphicon-remove');
-            tabs.closeTabMethod(idDb, currentID);
-        });
+            //close tab
+            .find('.closeTab').click(function (e){
+                e.stopPropagation();
+                var currentID = $(this).parent().attr('aria-controls' ),
+                    idDb = $(this ).attr('name');
+                $(this ).attr('class', 'glyphicon glyphicon-remove');
+                tabs.closeTabMethod(idDb, currentID);
+            });
     }
     
     function addLeftTabContentHandler(html) {
         var tabs = SELF.tabs,
             order = SELF.order;
-        
+
+        html
+            // edit & save categories list content
+            .filter('.blockNameAndCat')
+                .mouseover(function(){
+                    $('#editCategoriesListContent' ).show();
+                })
+                .mouseleave(function(){
+                    $('#editCategoriesListContent' ).css('display', 'none');
+                } ).end()
+            .filter('.tableContent')
+                .mouseover(function(){
+                    $('#editTableContent' ).show();
+                })
+                .mouseleave(function(){
+                    $('#editTableContent' ).css('display', 'none');
+                });
+
         return html;
     }
     
@@ -84,7 +118,7 @@
             .find('#checkAllInOrder').click(function () {
                 order.checkAllInOrderDetails(true);
             }).end()
-            
+
             .find('#uncheckAllInOrder').click(function () {
                 order.checkAllInOrderDetails(false);
             }).end()
@@ -94,84 +128,29 @@
                     discount: $(this).val(),
                     orderId: MAIN.orderId
                 });
+            }).end()
+
+            .find('.inputOrderDetails' ).keyup(function() {
+                var obj = order.createJSONFromOrderDescription();
+                order.changeOrderDetails(
+                    {
+                        orderId: MAIN.orderId,
+                        orderDescr: obj
+                    }
+                );
+            }).end()
+
+            .find('#orderEstimateInput, #orderDateInput').on('keyup, click, change', function() {
+                var obj = order.createJSONFromOrderDescription();
+                order.changeOrderDetails(
+                    {
+                        orderId: MAIN.orderId,
+                        orderDescr: obj
+                    }
+                );
             });
-        /*html.find('#uncheckAllInOrder').click(function () {
-            order.checkAllInOrderDetails(false);
-        });*/
-        
-        html.find('#changeDiscount').click(function () {
-            order.changeDiscount({
-                discount: $(this).val(),
-                orderId: MAIN.orderId
-            });
-            
-        });
         
         return html;
-    }
-    
-    function addHandlers() {
-        var tabs = app.tabs,
-            tabsDom = app.tabs.dom,
-            order = app.order;     
-        
-        //RIGHT PART
-        
-        /*----ORDERS START----*/
-        $(tabsDom.createOrderBtn).on('click', function() {
-            app.order.createNewOrder(tabsDom.productId);
-        });
-
-        
-
-        $('body').on('click', '#checkAllInOrder', function () {
-            order.checkAllInOrderDetails(true);
-        });
-        $('body').on('click', '#uncheckAllInOrder', function () {
-            order.checkAllInOrderDetails(false);
-        });
-        $('body').on('change', '#quantityInOrder', function () {
-            var quantity = parseInt($(this).val()),
-                //orderId = $(this).attr('data-order'),
-                productId = $(this).attr('data-product'),
-                row = $(this).parents('.orderRow'),
-                inPrice, outPrice, inSum, outSum;
-            if (0 > quantity) {
-                quantity = 1;
-                $(this).val(quantity);
-            }    
-            inPrice = parseFloat(row.find('.inputPriceInOrder').text());
-            outPrice = parseFloat(row.find('.outputPriceInOrder').text());
-            inSum = quantity * inPrice;
-            outSum = quantity * outPrice;
-            row.find('.inputSumInOrder').html(inSum.toFixed(2)).
-                    end().
-                    find('.outputSumInOrder').html(outSum.toFixed(2));
-            order.changeQuantity({
-                    orderId: tabsDom.orderId,
-                    productId: productId,
-                    quantity: quantity
-                }
-            );
-        });
-        $('body').on('keyup', '.inputOrderDetails', function() {
-            var obj = order.createJSONFromOrderDescription();
-            order.changeOrderDetails({
-                    orderId: tabsDom.orderId,
-                    orderDescr: obj
-                }
-            );
-        });
-        $('body').on('keyup, click, change', '#orderEstimateInput, #orderDateInput', function() {
-            var obj = order.createJSONFromOrderDescription();
-            order.changeOrderDetails({
-                    orderId: tabsDom.orderId,
-                    orderDescr: obj
-                }
-            );
-        });
-        /*----ORDERS END----*/   
-        
     }
     
     // prototype holds methods (to save memory space)
@@ -194,7 +173,7 @@
                     url   : TABS + 'getLeftTabsList',
                     method: 'GET'
                 } ).then( function ( data )
-                {console.log(data);
+                {
                     MAIN.tabsList = data.tabsList;
                     MAIN.tableContent = data.kim;
                     
@@ -203,7 +182,7 @@
                         addLeftTabsHandler(html);
                         html.insertBefore( '#addNewTab' );
                     }
-                    if (data.active) {
+                    if (data.active && data.html) {
                         _self.getLeftTabContent(data.productId, data.active);
                     } else {
                         _self.showPreferences();
@@ -362,7 +341,6 @@
                         $('.currentTabRight' )
                             .attr('id', tabId)
                             .addClass('active');
-                        var b = addRightTabContentHandler($(data.html));console.log(b);    
                         $('#orderDetailsWrapper').html(addRightTabContentHandler($(data.html)));
                         MAIN.curTabRightId = tabId;
                         MAIN.curTabRightName = 'a[href="#' + MAIN.curTabRightId + '"] .tabName';
@@ -456,6 +434,29 @@
                 }).then(function (data) {
                         console.log(data);
                 });
+            },
+
+            changeOrderDetails: function(obj) {
+                var _self = this;
+                $.ajax( {
+                    url   : ORDER + 'changeOrderDetails',
+                    method: 'POST',
+                    data: obj
+                } ).then( function ( data ) {
+                    console.log(data);
+                });
+            },
+
+            createJSONFromOrderDescription: function() {
+                var obj = orderPlaceholder,
+                    arr = _.keys(obj), i = 0;
+                $.each($('.inputOrderDetails'), function(key, val){
+                    obj[arr[i]] = $(val).text();
+                    i++;
+                });
+                obj["%ESTIMATE%"] = $('#orderEstimateInput' ).val();
+                obj["%DATE%"] = $('#orderDateInput' ).val();
+                return obj;
             }
         }
         

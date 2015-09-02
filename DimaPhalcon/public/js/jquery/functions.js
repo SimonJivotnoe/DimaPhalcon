@@ -84,7 +84,6 @@ var app = {
         });
         $('body').on('change', '#quantityInOrder', function () {
             var quantity = parseInt($(this).val()),
-                //orderId = $(this).attr('data-order'),
                 productId = $(this).attr('data-product'),
                 row = $(this).parents('.orderRow'),
                 inPrice, outPrice, inSum, outSum;
