@@ -9,13 +9,16 @@
     var URL = {
        BASE: 'http://DimaPhalcon/DimaPhalcon/',
        TABS: 'tabs/',
-       CATEG: 'categories/'
+       CATEG: 'categories/',
+       ORDER: 'order/'
     };
 
     var TABS = URL.BASE + URL.TABS;
 
     var CATEG = URL.BASE + URL.CATEG;
 
+    var ORDER = URL.BASE + URL.ORDER;
+    
     var SELF;
 
     var MAIN;
@@ -30,12 +33,147 @@
 
     function showBody() {
         if ($('body').is(":visible")) {
-            return true;
+            return false;
         }
         $('body' ).fadeIn(350);
-        return false;
+        return true;
     }
+    
+    function addLeftTabsHandler(html) {
+        var tabs = SELF.tabs;        
+        
+        // change current tab
+        html.find('[role=tab]').click(function(){
+            var selectedTabId = $(this ).attr('aria-controls'),
+                tabId, prodId;
+                
+            '' !== MAIN.curTabId ? MAIN.tabsList[MAIN.curTabId].active = '0' : 0;
+            
+            if (MAIN.curTabId !== selectedTabId && undefined !== selectedTabId){
+                tabId = $(this ).find('.glyphicon-remove' ).attr('name' );
+                prodId = $(this ).attr('name');                
+                MAIN.tabsList[selectedTabId].active = '1'; 
+                tabs.getLeftTabContent(prodId, selectedTabId);
+            }
+            
+            tabs.changeActiveTab(tabId, selectedTabId);
+        });
+        
+        //close tab
+        html.find('.closeTab').click(function (e){
+            e.stopPropagation();
+            var currentID = $(this).parent().attr('aria-controls' ),
+                idDb = $(this ).attr('name');
+            $(this ).attr('class', 'glyphicon glyphicon-remove');
+            tabs.closeTabMethod(idDb, currentID);
+        });
+    }
+    
+    function addLeftTabContentHandler(html) {
+        var tabs = SELF.tabs,
+            order = SELF.order;
+        
+        return html;
+    }
+    
+    function addRightTabContentHandler(html) {
+        var tabs = SELF.tabs,
+            order = SELF.order;        
+        
+        html
+            .find('#checkAllInOrder').click(function () {
+                order.checkAllInOrderDetails(true);
+            }).end()
+            
+            .find('#uncheckAllInOrder').click(function () {
+                order.checkAllInOrderDetails(false);
+            }).end()
+            
+            .find('#changeDiscount').click(function () {
+                order.changeDiscount({
+                    discount: $(this).val(),
+                    orderId: MAIN.orderId
+                });
+            });
+        /*html.find('#uncheckAllInOrder').click(function () {
+            order.checkAllInOrderDetails(false);
+        });*/
+        
+        html.find('#changeDiscount').click(function () {
+            order.changeDiscount({
+                discount: $(this).val(),
+                orderId: MAIN.orderId
+            });
+            
+        });
+        
+        return html;
+    }
+    
+    function addHandlers() {
+        var tabs = app.tabs,
+            tabsDom = app.tabs.dom,
+            order = app.order;     
+        
+        //RIGHT PART
+        
+        /*----ORDERS START----*/
+        $(tabsDom.createOrderBtn).on('click', function() {
+            app.order.createNewOrder(tabsDom.productId);
+        });
 
+        
+
+        $('body').on('click', '#checkAllInOrder', function () {
+            order.checkAllInOrderDetails(true);
+        });
+        $('body').on('click', '#uncheckAllInOrder', function () {
+            order.checkAllInOrderDetails(false);
+        });
+        $('body').on('change', '#quantityInOrder', function () {
+            var quantity = parseInt($(this).val()),
+                //orderId = $(this).attr('data-order'),
+                productId = $(this).attr('data-product'),
+                row = $(this).parents('.orderRow'),
+                inPrice, outPrice, inSum, outSum;
+            if (0 > quantity) {
+                quantity = 1;
+                $(this).val(quantity);
+            }    
+            inPrice = parseFloat(row.find('.inputPriceInOrder').text());
+            outPrice = parseFloat(row.find('.outputPriceInOrder').text());
+            inSum = quantity * inPrice;
+            outSum = quantity * outPrice;
+            row.find('.inputSumInOrder').html(inSum.toFixed(2)).
+                    end().
+                    find('.outputSumInOrder').html(outSum.toFixed(2));
+            order.changeQuantity({
+                    orderId: tabsDom.orderId,
+                    productId: productId,
+                    quantity: quantity
+                }
+            );
+        });
+        $('body').on('keyup', '.inputOrderDetails', function() {
+            var obj = order.createJSONFromOrderDescription();
+            order.changeOrderDetails({
+                    orderId: tabsDom.orderId,
+                    orderDescr: obj
+                }
+            );
+        });
+        $('body').on('keyup, click, change', '#orderEstimateInput, #orderDateInput', function() {
+            var obj = order.createJSONFromOrderDescription();
+            order.changeOrderDetails({
+                    orderId: tabsDom.orderId,
+                    orderDescr: obj
+                }
+            );
+        });
+        /*----ORDERS END----*/   
+        
+    }
+    
     // prototype holds methods (to save memory space)
     Dima.prototype = {
 
@@ -44,7 +182,6 @@
             MAIN = SELF.main;
             this.tabs.getLeftTabsList();
             this.tabs.getRightTabsList();
-            showBody();
         },
 
         // tabs section
@@ -58,13 +195,15 @@
                     method: 'GET'
                 } ).then( function ( data )
                 {console.log(data);
-                    html = $(data.html);
-
                     MAIN.tabsList = data.tabsList;
                     MAIN.tableContent = data.kim;
                     
-                    if (false !== data.active) {
+                    if (data.html) {
+                        html = $(data.html);
+                        addLeftTabsHandler(html);
                         html.insertBefore( '#addNewTab' );
+                    }
+                    if (data.active) {
                         _self.getLeftTabContent(data.productId, data.active);
                     } else {
                         _self.showPreferences();
@@ -75,7 +214,7 @@
             getLeftTabContent: function(productId, tabId) {
                 var _self = this;
                 $.ajax( {
-                    url   : TABS + 'getTabContent/' + productId,
+                    url   : TABS + 'getLeftTabContent/' + productId,
                     method: 'GET'
                 } ).then( function ( data )
                 {
@@ -84,7 +223,7 @@
                     $('.currentTab' )
                         .attr('id', tabId)
                         .addClass('active')
-                        .html(data);
+                        .html(addLeftTabContentHandler($(data)));
                     $('.removeRow' ).hide();
                     MAIN.curTabId = tabId;
                     MAIN.curTabName = 'a[href="#' + MAIN.curTabId + '"] .tabName';
@@ -96,12 +235,96 @@
                     $('[data-cell="PR1"]' ).val(metall);
                     $('[data-cell="PR2"]' ).val(metallOut);
                     $('#calx').calx();
-                    /*if (body) {
-                        app.addHandlers();
-
-                        $('body' ).fadeIn(350);
-                    }*/
                     showBody();
+                });
+            },
+            
+            changeActiveTab: function (id, tabId) {
+                var _self = this;
+                $.ajax({
+                    url: TABS + 'changeActiveTab',
+                    method: 'POST',
+                    data: {
+                        id: id,
+                        tabId: tabId
+                    }
+                }).then(function (data)
+                {
+                    //console.log(data);
+                });
+            },
+            
+            closeTabMethod: function (idDb, currentID) {
+                var _self = this,
+                        nextActiveTab = MAIN.curTabId,
+                        productId = MAIN.productId,
+                        elemInObj = Object.keys(MAIN.tabsList),
+                        ifActive, index;
+                if (2 === elemInObj.length) {
+                    nextActiveTab = 'preferences1';
+                } else {
+                    ifActive = MAIN.tabsList[currentID].active;
+                    if ('1' === ifActive) {
+                        index = elemInObj.indexOf(currentID);
+                        if (index === elemInObj.length - 1) {
+                            nextActiveTab = Object.keys(MAIN.tabsList)[elemInObj.length - 2];
+                        } else {
+                            nextActiveTab = Object.keys(MAIN.tabsList)[index + 1];
+                        }
+                        productId = MAIN.tabsList[nextActiveTab].productId;
+                        MAIN.tabsList[nextActiveTab].active = '1';
+                    }
+                }
+                delete MAIN.tabsList[currentID];
+                $('[aria-controls=' + currentID + ']').hide('highlight');
+                setTimeout(function () {
+                    $('[aria-controls=' + currentID + ']').parent().remove();
+                }, 700);
+                if ('preferences1' === nextActiveTab || undefined === nextActiveTab) {
+                    $('.currentTab').removeClass('active');
+                    $('#preferences, #preferences1').addClass('active');
+                    _self.loadPreferences();
+                } else {
+                    $('[aria-controls=' + nextActiveTab + ']').parent().addClass('active');
+                }
+
+                $.ajax({
+                    url: TABS + 'closeTab',
+                    method: 'POST',
+                    data: {
+                        id: idDb,
+                        tabId: currentID,
+                        nextActiveTab: nextActiveTab
+                    }
+                }).then(function (  )
+                {
+                    if ('preferences1' !== nextActiveTab) {
+                        _self.getLeftTabContent(productId, nextActiveTab);
+                    }
+                });
+            },
+            
+            getLastLeftTab: function() {
+                var _self = this,
+                    html;
+                $.ajax( {
+                    url   : TABS + 'getLastLeftTab',
+                    method: 'GET'
+                } ).then( function ( data )
+                {console.log(data);
+                    _self.addNewLeftTab(data);
+                });
+            },
+            
+            addNewLeftTab: function(id) {
+                var _self = this,
+                    html;
+                $.ajax( {
+                    url   : TABS + 'addNewLeftTab/' + id,
+                    method: 'POST'
+                } ).then( function ( data )
+                {
+                    window.location.href = 'http://DimaPhalcon/DimaPhalcon/';
                 });
             },
 
@@ -135,18 +358,12 @@
                 } ).then( function ( data )
                 {
                     if (true === data.success) {
-                        var html = $(data.html);
                         $('#kimTab').removeClass('active');
                         $('.currentTabRight' )
                             .attr('id', tabId)
                             .addClass('active');
-                        html.find('#checkAllInOrder' ).click(function () {
-                            SELF.order.checkAllInOrderDetails(true);
-                        });
-                        html.find('#uncheckAllInOrder' ).click(function () {
-                            SELF.order.checkAllInOrderDetails(false);
-                        });
-                        $('#orderDetailsWrapper').html(html);
+                        var b = addRightTabContentHandler($(data.html));console.log(b);    
+                        $('#orderDetailsWrapper').html(addRightTabContentHandler($(data.html)));
                         MAIN.curTabRightId = tabId;
                         MAIN.curTabRightName = 'a[href="#' + MAIN.curTabRightId + '"] .tabName';
                         MAIN.orderId = orderId;
@@ -227,6 +444,17 @@
             checkAllInOrderDetails:  function(param) {
                 $.each($('#orderDetails input'), function (key, val) {
                     $(val).prop('checked', param);
+                });
+            },
+            
+            changeDiscount: function (obj) {
+                var _self = this;
+                $.ajax({
+                    url: ORDER + 'changeDiscount',
+                    method: 'POST',
+                    data: obj
+                }).then(function (data) {
+                        console.log(data);
                 });
             }
         }

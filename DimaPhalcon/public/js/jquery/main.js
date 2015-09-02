@@ -1,7 +1,10 @@
 'use strict';
 $( document ).ready( function ()
 {    
-    var d = D$();
+    var d = D$(),
+        MAIN = d.main,
+        TABS = d.tabs,
+        ORDER = d.order;
     
     // split monitor
     if (undefined === localStorage.split) {
@@ -17,54 +20,35 @@ $( document ).ready( function ()
     
     /*----PREFERENCES_START----*/
     
-        // handlers
-        // cog spin on-off
-        $('#preferences')
-            .on('mouseover', function(){
-                $('.fa-cog').addClass('fa-spin');
-            })
-            .on('mouseleave', function(){
-                $('.fa-cog').removeClass('fa-spin');
-            });
-        // add new category
-        $('#addCategoryBtn').on('click', function(){
-            var newCategoryName = $('#addCategoryInput' ).val();
-            ('' !== newCategoryName) ? d.addCategory(newCategoryName) : 0;
+    // handlers
+    // cog spin on-off
+    $('#preferences')
+        .mouseover(function(){
+            $('.fa-cog').addClass('fa-spin');
+        })
+        .mouseleave(function(){
+            $('.fa-cog').removeClass('fa-spin');
+        })
+        .click(function(){
+            TABS.loadPreferences();
+            TABS.changeActiveTab('', '');
         });
-    /*----PREFERENCES_END----*/
-    
-    /*----RECEIVE TABS LIST----*/
-    //getTabs('all');
-    //app.tabs.getRightTabs();
-    /*----RECEIVE TABS LIST END----*/
 
-    /*----PREFERENCES_START----*/
-    // cog spin on
-    /*$('body').on('mouseover', '#preferences', function(){
-        $(this ).find('.fa-cog').addClass('fa-spin');
-    });*/
-    // cog spin off
-   /* $('body').on('mouseleave', '#preferences', function(){
-        $(this ).find('.fa-cog').removeClass('fa-spin');
-    });*/
-    /*$('#preferences').on('click', function(){
-        $('.bg-danger' ).fadeOut(10);
-        $('#addCategoryInput' ).val('');
-        getCategoriesList();
-        app.tabs.changeActiveTab('', '');
-    });*/
     // add new category
-    /*$('#addCategoryBtn').on('click', function(){
+    $('#addCategoryBtn').on('click', function(){
         var newCategoryName = $('#addCategoryInput' ).val();
-        ('' !== newCategoryName) ? addCategory(newCategoryName) : 0;
-    });*/
+        ('' !== newCategoryName) ? TABS.addCategory(newCategoryName) : 0;
+    });
+        
     /*----PREFERENCES_END----*/
 
     /*----NEW_TAB_START----*/
-    /* creating new tab clicking on + */
-    /*$('#addNewTab').on('click', function(){
-        getTabs('last');
-    });*/
+    
+    // creating new tab clicking on +
+    $('#addNewTab').on('click', function(){
+        TABS.getLastLeftTab();
+    });
+    
     /*----NEW_TAB_END----*/
     
     /*----CURRENT TAB START----*/

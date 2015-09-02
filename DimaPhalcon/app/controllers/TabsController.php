@@ -12,7 +12,7 @@ class TabsController extends \Phalcon\Mvc\Controller
                 $this->response->setJsonContent(['success' => false, 'error' => __METHOD__ . ':' . $tabs->getMessages()]);
                 return $this->response;
             }
-            $html = '';
+            $html = false;
             $active = false;
             $prodId = false;
             $tabArr['preferences1'] = (object)[
@@ -64,79 +64,23 @@ class TabsController extends \Phalcon\Mvc\Controller
         }
     }
     
-    public function getTabsListAction($tabId) {
+    public function getLastLeftTabAction() {
         if ($this->request->isAjax() && $this->request->isGet()) {
-            $tabId = $this->request->get('param', 'string');
-            if ('all' === $tabId) {
-                $tabs = Tabs::find();
-                if ($tabs == false) {
-                    echo "Мы не можем сохранить робота прямо сейчас: \n";
-                    foreach ($tabs->getMessages() as $message) {
-                        echo $message, "\n";
-                    }
-                } else {
-                    if (count($tabs)) {
-                        $substObj = new Substitution();
-                        $tabsLi = '';
-                        $active = 0;
-                        $prodId = 0;
-                        $tabArr['preferences1'] = (object) [
-                                    'active' => '',
-                                    'productId' => 'preferences1'];
-
-                        foreach ($tabs as $val) {
-                            $tabsList = array();
-                            if ($val->getActive()) {
-                                $tabsList['%ACTIVE%'] = 'active';
-                                $active = $val->getTabId();
-                                $prodId = $val->getProductId();
-                            } else {
-                                $tabsList['%ACTIVE%'] = '';
-                            }
-                            $tabsList['%ID%'] = $val->getId();
-                            $tabsList['%TABID%'] = $val->getTabId();
-                            $tabsList['%PRODUCT_ID%'] = $val->getProductId();
-                            $product = Products::findFirst($val->getProductId());
-                            $tabsList['%PRODUCT_NAME%'] = $product->getProductName();
-                            $tabsLi .= $substObj->subHTMLReplace('tab_li.html', $tabsList);
-
-                            $tabArr[$val->getTabId()] = (object) [
-                                        'active' => $val->getActive(),
-                                        'productId' => $val->getProductId()];
-                        }
-                        $tabObj = (object) $tabArr;
-                        $kim = Kim::find();
-                        $resObj = [];
-                        foreach ($kim as $val) {
-                            $resObj[$val->getKim()] = $val->getKimPrice();
-                        }
-                        $this->response->setContentType('application/json', 'UTF-8');
-                        $this->response->setJsonContent(array($tabsLi, $active, $prodId, $tabObj, (object) $resObj));
-
-                        return $this->response;
-                    } else {
-                        $this->response->setContentType('application/json', 'UTF-8');
-                        $this->response->setJsonContent(array('', 0, '', ''));
-                        return $this->response;
-                    }
-                }
-            } else {
-                $tabs = Tabs::maximum(array("column" => "id"));
-                if (!empty($tabs)) {
-                    $this->response->setContentType('application/json', 'UTF-8');
-                    $this->response->setJsonContent($tabs);
-                } else {
-                    $this->response->setContentType('application/json', 'UTF-8');
-                    $this->response->setJsonContent(array());
-                }
-                return $this->response;
-            }
-        } else {
-            $this->response->redirect('');
-        }
+            $tabs = Tabs::maximum(array("column" => "id"));
+               if (!empty($tabs)) {
+                   $this->response->setContentType('application/json', 'UTF-8');
+                   $this->response->setJsonContent($tabs);
+               } else {
+                   $this->response->setContentType('application/json', 'UTF-8');
+                   $this->response->setJsonContent(array());
+               }
+               return $this->response;
+           } else {
+               $this->response->redirect('');
+       }
     }
-
-    public function getTabContentAction($productId) {
+    
+    public function getLeftTabContentAction($productId) {
         if ($this->request->isAjax() && $this->request->isGet()) {
             $product = Products::findFirst($productId);
             if ($product == false) {
@@ -221,7 +165,7 @@ class TabsController extends \Phalcon\Mvc\Controller
         }
     }
 
-    public function addNewTabAction($id) {
+    public function addNewLeftTabAction($id) {
         if ($this->request->isAjax() && $this->request->isPost()) {
             $tab = new Tabs();
             $categoryId = Categories::minimum(array("column" => "category_id"));
