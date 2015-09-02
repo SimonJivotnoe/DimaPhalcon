@@ -29,7 +29,7 @@ $( document ).ready( function ()
         // add new category
         $('#addCategoryBtn').on('click', function(){
             var newCategoryName = $('#addCategoryInput' ).val();
-            ('' !== newCategoryName) ? addCategory(newCategoryName) : 0;
+            ('' !== newCategoryName) ? d.addCategory(newCategoryName) : 0;
         });
     /*----PREFERENCES_END----*/
     

@@ -8,79 +8,108 @@
     // url's
     var URL = {
        BASE: 'http://DimaPhalcon/DimaPhalcon/',
-       TABS: 'tabs/'
+       TABS: 'tabs/',
+       CATEG: 'categories/'
     };
 
+    var TABS = URL.BASE + URL.TABS;
+
+    var CATEG = URL.BASE + URL.CATEG;
+
     var SELF;
-    
+
+    var MAIN;
+
+    // logging errors
     function log(php) {
         if('undefined' != typeof(console))
         {
             console.error('ERROR in ' + php);
         }        
     }
-    
+
+    function showBody() {
+        if ($('body').is(":visible")) {
+            return true;
+        }
+        $('body' ).fadeIn(350);
+        return false;
+    }
+
     // prototype holds methods (to save memory space)
     Dima.prototype = {
 
         run: function() {
             SELF  = this;
+            MAIN = SELF.main;
             this.tabs.getLeftTabsList();
-            this.tabs.getRightTabs();
-            $('body').show();
+            this.tabs.getRightTabsList();
+            showBody();
         },
 
         // tabs section
         tabs: {
 
-            URL: URL.BASE + URL.TABS,
-            
             getLeftTabsList: function() {
-                var _self = this;
+                var _self = this,
+                    html;
                 $.ajax( {
-                    url   : _self.URL + 'getLeftTabsList',
+                    url   : TABS + 'getLeftTabsList',
                     method: 'GET'
                 } ).then( function ( data )
                 {console.log(data);
-                    var html = $(data.html);
+                    html = $(data.html);
+
+                    MAIN.tabsList = data.tabsList;
+                    MAIN.tableContent = data.kim;
                     
-                    SELF.main.tabsList = data.tabsList;
-                    SELF.main.tableContent = data.kim;
-                    
-                    if (false !== data.acrive) {
+                    if (false !== data.active) {
                         html.insertBefore( '#addNewTab' );
-                    }
-                   /* app.tabs.dom.tabsList = data[3];
-                    app.kim.tableContent = data[4];
-                    if(0 !== data.length && 'all' === param){
-                        if ('' !== data[0]) {
-                            $(data[0]).insertBefore( '#addNewTab' );
-                            if (!data[1]) {
-                                app.tabs.showPreferences();
-                                app.addHandlers();
-                            } else {
-                                app.tabs.getTabContent(data[2], data[1], 1);
-                            }
-                        } else {
-                            app.tabs.showPreferences();
-                            app.addHandlers();
-                        }
-                    } else if(0 === data.length && 'last' === param){
-                        app.tabs.addTab(1);
-                    } else if(0 !== data.length && 'last' === param){
-                        app.tabs.addTab(parseInt(data) +1);
+                        _self.getLeftTabContent(data.productId, data.active);
                     } else {
-                        app.tabs.showPreferences();
-                        app.addHandlers();
-                    }*/
+                        _self.showPreferences();
+                    }
                 });
             },
-            
-            getRightTabs: function ()
+
+            getLeftTabContent: function(productId, tabId) {
+                var _self = this;
+                $.ajax( {
+                    url   : TABS + 'getTabContent/' + productId,
+                    method: 'GET'
+                } ).then( function ( data )
+                {
+                    var kim, metall, metallOut;
+                    $('#preferences1').removeClass('active');
+                    $('.currentTab' )
+                        .attr('id', tabId)
+                        .addClass('active')
+                        .html(data);
+                    $('.removeRow' ).hide();
+                    MAIN.curTabId = tabId;
+                    MAIN.curTabName = 'a[href="#' + MAIN.curTabId + '"] .tabName';
+                    MAIN.productId = productId;
+                    kim = $('.listOfKim option:selected' ).attr('kim');
+                    metall = $('.listOfMetalls option:selected' ).attr('metall');
+                    metallOut = $('.listOfMetalls option:selected' ).attr('metallOut');
+                    $('[data-cell="KIM1"]' ).val(kim);
+                    $('[data-cell="PR1"]' ).val(metall);
+                    $('[data-cell="PR2"]' ).val(metallOut);
+                    $('#calx').calx();
+                    /*if (body) {
+                        app.addHandlers();
+
+                        $('body' ).fadeIn(350);
+                    }*/
+                    showBody();
+                });
+            },
+
+            getRightTabsList: function ()
             {
                 var _self = this;
                 $.ajax( {
-                    url   : _self.URL + 'getRightTabs',
+                    url   : TABS + 'getRightTabsList',
                     method: 'GET'
                 } ).then( function ( data )
                 {
@@ -91,17 +120,16 @@
                     }
 
                     $(data.html).insertBefore( '#addNewTabRight' );
-                    SELF.main.tabsRightList = data.obj;
+                    MAIN.tabsRightList = data.obj;
                     _self.getRightTabContentOrderDetails(data.orderId, data.tabId);
                     _self.getRightTabContentTable(data.orderId);
                 });
             },
 
             getRightTabContentOrderDetails: function (orderId, tabId) {
-                var _self = this,
-                    main = SELF.main;
+                var _self = this;
                 $.ajax( {
-                    url   : _self.URL + 'getRightTabContentOrderDetails/',
+                    url   : TABS + 'getRightTabContentOrderDetails/',
                     method: 'GET',
                     data: {orderId: orderId}
                 } ).then( function ( data )
@@ -119,9 +147,9 @@
                             SELF.order.checkAllInOrderDetails(false);
                         });
                         $('#orderDetailsWrapper').html(html);
-                        main.curTabRightId = tabId;
-                        main.curTabRightName = 'a[href="#' + main.curTabRightId + '"] .tabName';
-                        main.orderId = orderId;
+                        MAIN.curTabRightId = tabId;
+                        MAIN.curTabRightName = 'a[href="#' + MAIN.curTabRightId + '"] .tabName';
+                        MAIN.orderId = orderId;
                         return this;
                     }
                     log(data.error);
@@ -131,7 +159,7 @@
             getRightTabContentTable: function (orderId) {
                 var _self = this;
                 $.ajax( {
-                    url   : _self.URL + 'getRightTabContentTable/',
+                    url   : TABS + 'getRightTabContentTable/',
                     method: 'GET',
                     data: {orderId: orderId}
                 } ).then( function ( data )
@@ -139,6 +167,58 @@
                     var html;
                     $('#orderTableWrapper').html(data.html);
                 });
+            },
+
+            loadPreferences: function() {
+                var _self = this;
+                MAIN.tabsList['preferences1'].active = '1';
+                MAIN.curTabId = 'preferences1';
+                $('.bg-danger' ).fadeOut(10);
+                $(MAIN.addCategoryInput ).val('');
+                _self.getCategoriesList();
+            },
+
+            showPreferences: function (){
+                var _self = this;
+                $('#preferences, #preferences1').addClass('active');
+                _self.loadPreferences();
+                showBody();
+            },
+
+            addCategory: function(categoryName) {
+                var _self = this,
+                    objJSON;
+                $.ajax( {
+                    url   :  CATEG +'add',
+                    method: 'POST',
+                    data: {categoryName: categoryName}
+                } ).then( function ( data )
+                {
+                    objJSON = JSON.parse( data );
+                    $.each(objJSON, function(key, val){
+                        if ('ok' === val) {
+                            $('#addCategoryInput' ).val('');
+                            $('.bg-danger' ).fadeOut();
+                            _self.getCategoriesList();
+                        } else {
+                            $('.bg-danger' ).fadeIn();
+                        }
+                    });
+                } );
+            },
+
+            getCategoriesList: function() {
+                var _self = this;
+                $.ajax( {
+                    url   : CATEG + 'getCategoriesList',
+                    method: 'GET'
+                } ).then( function ( data )
+                {
+                    $('#categoriesListTable tbody' ).html('<tr><th>Список категорий</th></tr>');
+                    $.each(data, function(key, val){
+                        $('#categoriesListTable tbody' ).append('<tr><td>' + val + '</td></tr>');
+                    })
+                } )
             }
         },
 

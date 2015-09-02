@@ -341,7 +341,7 @@ class TabsController extends \Phalcon\Mvc\Controller
         }
     }
 
-    public function getRightTabsAction() {
+    public function getRightTabsListAction() {
         if ($this->request->isAjax() && $this->request->isGet()) {
             $tabs = TabsRight::find();
             if ($tabs == false) {
