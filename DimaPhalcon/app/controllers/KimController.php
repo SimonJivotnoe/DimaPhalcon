@@ -42,7 +42,7 @@ class KimController extends \Phalcon\Mvc\Controller
             }
 
             $this->response->setContentType('application/json', 'UTF-8');
-            $this->response->setJsonContent(array($res, (object)$resObj));
+            $this->response->setJsonContent(array('html' => $res, 'kimTableContent' => (object)$resObj));
 
             return $this->response;
         } else {

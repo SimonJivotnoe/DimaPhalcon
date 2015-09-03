@@ -2,11 +2,12 @@
 <html>
 <head lang="en">
     <meta charset="UTF-8">
-    <title>Start</title>
+    <title>Дима</title>
     <link href="css/split-pane.css" rel="stylesheet" type="text/css"/>
     <link href="css/pretty-split-pane.css" rel="stylesheet" type="text/css"/>
     <link href="css/main.css" rel="stylesheet" type="text/css"/>
     <link href="css/jquery-ui.css" rel="stylesheet" type="text/css"/>
+    <!--<link rel="shortcut icon" href="favicon.ico" />-->
    <!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">-->
 
 
