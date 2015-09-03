@@ -33,7 +33,10 @@
 
     // alias to self.tabs
     var TABS;
-    
+
+    // alias to self.product
+    var PRODUCT;
+
     // alias to self.order
     var ORDER;
     
@@ -112,7 +115,7 @@
     }
     
     function addLeftTabContentHandler(html) {
-
+        console.log(html.find('#editCategoriesListContent' ));
         html
             // edit & save categories list content
             .filter('.blockNameAndCat')
@@ -122,13 +125,34 @@
                 .mouseleave(function(){
                     $('#editCategoriesListContent' ).css('display', 'none');
                 } ).end()
+
             .filter('.tableContent')
                 .mouseover(function(){
                     $('#editTableContent' ).show();
                 })
                 .mouseleave(function(){
                     $('#editTableContent' ).css('display', 'none');
-                });
+                } ).end()
+
+            .find('#editCategoriesListContent' ).click(function(){
+                $(this ).attr('class', 'glyphicon glyphicon-floppy-disk' ).attr('id', 'saveCategoriesListContent');
+                $('.nameOfProduct, .listOfCategories, .listOfKim, .listOfMetalls' ).prop('disabled', false );
+            } ).end()
+
+            .find('#saveCategoriesListContent' ).click(function(){
+                $(this ).attr('class', 'glyphicon glyphicon-pencil leftTable').attr('id', 'editCategoriesListContent');
+                $('.nameOfProduct, .listOfCategories, .listOfKim, .listOfMetalls' ).prop('disabled', true );
+                var prName = $('.nameOfProduct' ).val(),
+                    categoryId = $('.listOfCategories option:selected' ).attr('name' ),
+                    kimId = $('.listOfKim option:selected' ).attr('name' ),
+                    metallId = $('.listOfMetalls option:selected' ).attr('name');
+                if ('' === prName) {
+                    prName = 'Новое изделие';
+                    $(app.tabs.curTabName).text('Новое изделие');
+                }
+                TABS.changeTabName(prName, categoryId, kimId, metallId);
+                PRODUCT.saveTable();
+            });
 
         return html;
     }
@@ -137,7 +161,7 @@
         return html;
     }
     
-    function addRightTabContentHandler(html) {       
+    function addRightTabContentOrderHandler(html) {
         
         html
             .find('#checkAllInOrder').click(function () {
@@ -177,7 +201,37 @@
         
         return html;
     }
-    
+
+    function addRightTabContentTableHandler(html) {
+
+        html
+            .find('#quantityInOrder' ).change(function () {
+                var quantity = parseInt($(this).val()),
+                    productId = $(this).attr('data-product'),
+                    row = $(this).parents('.orderRow'),
+                    inPrice, outPrice, inSum, outSum;
+                if (0 > quantity) {
+                    quantity = 1;
+                    $(this).val(quantity);
+                }
+                inPrice = parseFloat(row.find('.inputPriceInOrder').text());
+                outPrice = parseFloat(row.find('.outputPriceInOrder').text());
+                inSum = quantity * inPrice;
+                outSum = quantity * outPrice;
+                row.find('.inputSumInOrder').html(inSum.toFixed(2)).
+                    end().
+                    find('.outputSumInOrder').html(outSum.toFixed(2));
+                ORDER.changeQuantity({
+                        orderId: MAIN.orderId,
+                        productId: productId,
+                        quantity: quantity
+                    }
+                );
+            })
+
+        return html;
+    }
+
     function addKimTableHandler(html) {
         
         html
@@ -212,6 +266,7 @@
             MAIN = SELF.main,
             TABS = SELF.tabs;
             ORDER = SELF.order;
+            PRODUCT = SELF.product;
             KIM = SELF.kim;
             METALLS = SELF.metalls;
             TABS.getLeftTabsList();
@@ -392,7 +447,7 @@
                         $('.currentTabRight' )
                             .attr('id', tabId)
                             .addClass('active');
-                        $('#orderDetailsWrapper').html(addRightTabContentHandler($(data.html)));
+                        $('#orderDetailsWrapper').html(addRightTabContentOrderHandler($(data.html)));
                         
                         MAIN.curTabRightId = tabId;
                         MAIN.curTabRightName = 'a[href="#' + MAIN.curTabRightId + '"] .tabName';
@@ -413,7 +468,7 @@
                 {
                     var html;
                     
-                    $('#orderTableWrapper').html(data.html);
+                    $('#orderTableWrapper').html(addRightTabContentTableHandler($(data.html)));
                 });
             },
 
@@ -466,6 +521,11 @@
             }
         },
 
+        // product section
+        product: {
+
+        },
+
         // order section
         order: {
             checkAllInOrderDetails:  function(param) {
@@ -494,6 +554,15 @@
                 });
             },
 
+            changeQuantity: function (obj) {
+                $.ajax( {
+                    url   : URL_ORDER + 'changeQuantity',
+                    method: 'POST',
+                    data: obj
+                } ).then( function ( data ) {
+
+                });
+            },
             createJSONFromOrderDescription: function() {
                 var obj = orderPlaceholder,
                     arr = _.keys(obj), i = 0;
