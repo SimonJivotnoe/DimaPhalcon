@@ -7,12 +7,12 @@
 
     // url's
     var URL = {
-       BASE: 'http://DimaPhalcon/DimaPhalcon/',
-       TABS: 'tabs/',
-       CATEG: 'categories/',
-       ORDER: 'order/',
-       KIM: 'kim/',
-       METALLS: 'metalls/'
+        BASE: 'http://DimaPhalcon/DimaPhalcon/',
+        TABS: 'tabs/',
+        CATEG: 'categories/',
+        ORDER: 'order/',
+        KIM: 'kim/',
+        METALLS: 'metalls/'
     };
 
     var URL_TABS = URL.BASE + URL.TABS;
@@ -24,6 +24,8 @@
     var URL_KIM = URL.BASE + URL.KIM;
     
     var URL_METALLS = URL.BASE + URL.METALLS;
+    
+    var LOCATION = 'http://DimaPhalcon/DimaPhalcon/';
 
     // alias to this Class
     var SELF;
@@ -57,8 +59,8 @@
         "%CITY%": "",
         "%ESTIMATE%": "",
         "%DATE%": ""
-    };
-
+    };   
+    
     // logging errors
     function log(php) {
         if('undefined' != typeof(console))
@@ -115,7 +117,7 @@
     }
     
     function addLeftTabContentHandler(html) {
-        console.log(html.find('#editCategoriesListContent' ));
+        
         html
             // edit & save categories list content
             .filter('.blockNameAndCat')
@@ -148,16 +150,21 @@
                     metallId = $('.listOfMetalls option:selected' ).attr('name');
                 if ('' === prName) {
                     prName = 'Новое изделие';
-                    $(app.tabs.curTabName).text('Новое изделие');
+                    $(MAIN.curTabName).text('Новое изделие');
                 }
                 TABS.changeTabName(prName, categoryId, kimId, metallId);
                 PRODUCT.saveTable();
+            }).end()
+            
+            .find('#createOrderBtn').click(function () {
+                ORDER.createNewOrder(MAIN.productId);
             });
 
         return html;
     }
     
     function addRightTabsHandler(html) {
+        
         return html;
     }
     
@@ -227,15 +234,15 @@
                         quantity: quantity
                     }
                 );
-            })
+            });
 
         return html;
     }
 
     function addKimTableHandler(html) {
-        
+        //console.log(html.find('.editKimPencil'));
         html
-            .find('#tbodyKIM tr')
+            .filter('tr')
                 .mouseover(function () {
                     var obj = {
                         pencilRemove: 'triggerKimPencil',
@@ -253,8 +260,91 @@
                         removeAdd: 'triggerRemoveKim'
                     };
                     kimEditOver(obj, this);
-                });
+                }).end()
+                
+            .on('click', '.removeKim', function(){
+                var kimId = $(this ).attr('name');;
+                KIM.removeKim(kimId);
+            })
+            
+            .on('click', '.editKimPencil', function(){
+                $(this )
+                    .attr('class', 'glyphicon glyphicon-floppy-disk saveEditKim' )
+                    .css('margin-left', '0');
+                $(this )
+                    .parents('tr')
+                    .find('.kimHardName, .kimName')
+                    .attr('contenteditable', 'true')
+                    .css({
+                        'border': '1px solid hsl(195, 79%, 43%)',
+                        'border-radius': '2px'
+                    });
+            })
+            
+            .on('click', '.saveEditKim', function(){
+                var kimId = $(this ).attr('name'),
+                    kim = KIM.validation($(this ).parents('tr').find('.kimName' ).text()),
+                    kimHard = $(this ).parents('tr').find('.kimHardName' ).text(),
+                    self = this;
+                KIM.editKim(kimId, kim, kimHard, self);
+            });
+            
+        return html;
+    }
+    
+    function addMetallsTableHandler(html) {
         
+        html
+            .filter('tr')
+                .mouseover(function () {
+                    var obj = {
+                        pencilRemove: 'triggerMetallPencil',
+                        pencilAdd: 'editMetallPencil',
+                        removeRemove: 'triggerRemoveMetall',
+                        removeAdd: 'removeMetall'
+                    };
+                    kimEditOver(obj, this);
+                })
+                .mouseleave(function () {
+                    var obj = {
+                        pencilRemove: 'editMetallPencil',
+                        pencilAdd: 'triggerMetallPencil',
+                        removeRemove: 'removeMetall',
+                        removeAdd: 'triggerRemoveMetall'
+                    };
+                    kimEditOver(obj, this);
+                }).end()
+                
+            .on('click', '.editMetallPencil', function () {
+                $(this)
+                        .attr('class', 'glyphicon glyphicon-floppy-disk saveEditMetall')
+                        .css('margin-left', '0');
+                $(this)
+                        .parents('tr')
+                        .find('.metallName, .metallPrice, .metallMass, .metallOutPrice')
+                        .attr('contenteditable', 'true')
+                        .css({
+                            'border': '1px solid hsl(195, 79%, 43%)',
+                            'border-radius': '2px'
+                        });
+            })
+            
+            .on('click', '.saveEditMetall', function(){
+                var obj = {
+                    metallId: $(this ).attr('name'),
+                    metallName: $(this ).parents('tr').find('.metallName' ).text(),
+                    metallPrice: KIM.validation($(this ).parents('tr').find('.metallPrice' ).text()),
+                    metallMass: KIM.validation($(this ).parents('tr').find('.metallMass' ).text()),
+                    metallOutPrice: KIM.validation($(this ).parents('tr').find('.metallOutPrice' ).text())
+                };
+                var self = this;
+                METALLS.editMetall(obj, this);
+            })
+            .on('click', '.removeMetall', function () {
+                var metallId = $(this).attr('name');
+                METALLS.removeMetall(metallId);
+            });
+            
         return html;
     }
     
@@ -411,7 +501,7 @@
                     method: 'POST'
                 } ).then( function ( data )
                 {
-                    window.location.href = 'http://DimaPhalcon/DimaPhalcon/';
+                    window.location.href = LOCATION;
                 });
             },
 
@@ -421,7 +511,7 @@
                     url   : URL_TABS + 'getRightTabsList',
                     method: 'GET'
                 } ).then( function ( data )
-                {console.log(data);
+                {
                     if(!data.tabs) {
                         KIM.getKIMTable();
                         METALLS.getMetallsTable();
@@ -466,8 +556,6 @@
                     data: {orderId: orderId}
                 } ).then( function ( data )
                 {
-                    var html;
-                    
                     $('#orderTableWrapper').html(addRightTabContentTableHandler($(data.html)));
                 });
             },
@@ -528,6 +616,21 @@
 
         // order section
         order: {
+            createNewOrder: function (productId) {
+                $.ajax({
+                    url: URL_ORDER + 'createNewOrder',
+                    method: 'POST',
+                    data: {
+                        productId: productId
+                    }
+                }).then(function (data)
+                {
+                    if (false !== data) {
+                        window.location.href = LOCATION;
+                    }
+                });
+            },
+            
             checkAllInOrderDetails:  function(param) {
                 $.each($('#orderDetails input'), function (key, val) {
                     $(val).prop('checked', param);
@@ -579,7 +682,6 @@
         // kim section
         kim: {            
             getKIMTable: function () {
-                var self = this;
                 $.ajax({
                     url: URL_KIM + 'getKIMTable',
                     method: 'GET'
@@ -588,10 +690,177 @@
                     MAIN.kimTableContent = data.kimTableContent;
                     $('#tbodyKIM').html(addKimTableHandler($(data.html)));
                 });
+            },
+            
+            getKimList: function () {
+                $.ajax({
+                    url: URL_KIM + 'getKimList',
+                    method: 'GET',
+                    data: {
+                        prId: MAIN.productId
+                    }
+                }).then(function (data) {
+                    $('.listOfKim').html(data);
+                    var kim = $('.listOfKim option:selected').attr('kim');
+                    $('[data-cell="KIM1"]').val(kim);
+                    $('#calx').calx();
+                });
+            },
+            
+            addKIMtoTable: function (kim, kimHard) {
+                $.ajax({
+                    url: URL_KIM + 'addKIMtoTable',
+                    method: 'POST',
+                    data: {
+                        kim: kim,
+                        kimHard: kimHard
+                    }
+                }).then(function (data)
+                {
+                    if (true === data) {
+                        $('#kimInput, #kimHardInput').val('');
+                        KIM.getKIMTable();
+                        KIM.getKimList();
+                    } else {
+
+                    }
+                });
+            },
+            
+            editKim: function (kimId, kim, kimHard, save) {
+                var self = this;
+                $.ajax( {
+                    url   : URL_KIM + 'editKim',
+                    method: 'POST',
+                    data: {
+                        kimId: kimId,
+                        kim: kim,
+                        kimHard : kimHard
+                    }
+                } ).then( function ( data )
+                {
+                    if (true === data) {
+                        KIM.getKIMTable();
+                        KIM.getKimList();
+                    } else {
+                        $(save )
+                            .parents('tr')
+                            .find('.kimHardName, .kimName')
+                            .css({
+                                'border': '3px solid hsl(0, 69%, 22%)',
+                                'border-radius': '2px'
+                            });
+                    }
+                });
+            },
+            
+            removeKim: function (kimId) {
+                $.ajax({
+                    url   : URL_KIM + 'removeKim',
+                    method: 'POST',
+                    data: {
+                    kimId: kimId
+                    }
+                }).then(function (data)
+                {
+                    console.log(data);
+                    if (true === data) {
+                        KIM.getKIMTable();
+                        KIM.getKimList();
+                    }
+                });
+            },
+                        
+            validation: function (val) {
+                var res;
+                res = val.replace(/[A-Za-z]+/g, '').replace(/,/g, '.');
+                return res;
+            }
+        },
+        
+        // metalls section        
+        metalls: {
+            getMetallsTable: function() {
+                var self = this;
+                $.ajax({
+                    url: URL_METALLS + 'getMetallsTable',
+                    method: 'GET'
+                }).then(function (data){
+                     $('#tbodyMetalls').html(addMetallsTableHandler($(data)));
+                }); 
+            },
+            
+            editMetall: function (obj, scope) {
+                $.ajax({
+                    url: URL_METALLS + 'editMetall',
+                    method: 'POST',
+                    data: obj
+                }).then(function (data)
+                {
+                    if (true === data) {
+                        METALLS.getMetallsTable();
+                        METALLS.getMetallsList();
+                    } else {
+                        $(scope)
+                                .parents('tr')
+                                .find('.metallName, .metallPrice, .metallMass, .metallOutPrice')
+                                .css({
+                                    'border': '3px solid hsl(0, 69%, 22%)',
+                                    'border-radius': '2px'
+                                });
+                    }
+                });
+            },
+            
+            getMetallsList: function () {
+                $.ajax({
+                    url: URL_METALLS + 'getMetallsList',
+                    method: 'GET',
+                    data: {
+                        prId: MAIN.productId
+                    }
+                }).then(function (data) {
+                    $('.listOfMetalls').html(data);
+                    var metall = $('.listOfMetalls option:selected').attr('metall');
+                    var metallOut = $('.listOfMetalls option:selected').attr('metallOut');
+                    $('[data-cell="PR1"]').val(metall);
+                    $('[data-cell="PR2"]').val(metallOut);
+                    $('#calx').calx();
+                });
+            },
+            
+            addMetallToTable: function (dates) {
+                $.ajax( {
+                    url   : URL_METALLS + 'addMetallToTable',
+                    method: 'POST',
+                    data: dates
+                } ).then( function ( data )
+                {
+                    if (true === data) {
+                        $('#metallName, #metallPrice, #metallMass, #metallOutPrice').val('');
+                        METALLS.getMetallsTable();
+                        METALLS.getMetallsList();
+                    }
+                });
+            },
+            
+            removeMetall: function(metallId) {
+                $.ajax( {
+                    url   : URL_METALLS + 'removeMetall',
+                    method: 'POST',
+                    data: {
+                        metallId: metallId
+                    }
+                } ).then( function ( data )
+                {
+                    console.log(data);
+                    if (true === data) {
+                        METALLS.getMetallsTable();
+                        METALLS.getMetallsList();
+                    }
+                });
             }
         }
-        
-        
     };
     
     // the actual object is created here, allowing us to 'new' an object without calling 'new'
@@ -602,6 +871,10 @@
         self.firstName = firstName || '';
         self.lastName = lastName || '';
         self.language = language || 'en';
+        
+        $.fn.hasAttr = function(name) {
+            return this.attr(name) !== undefined;
+        };
         
         self.run();
         

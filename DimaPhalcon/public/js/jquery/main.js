@@ -4,7 +4,10 @@ $( document ).ready( function ()
     var d = D$(),
         MAIN = d.main,
         TABS = d.tabs,
-        ORDER = d.order;
+        ORDER = d.order,
+        PRODUCT = d.product,
+        KIM = d.kim,
+        METALLS = d.metalls;
     
     // split monitor
     if (undefined === localStorage.split) {
@@ -51,6 +54,56 @@ $( document ).ready( function ()
     
     /*----NEW_TAB_END----*/
 
+    //RIGHT PART
+    // kim tab
+    // kim table
+    $('#kim').on('click', function(){
+        if (false === $('#kim').hasClass('active')) {
+            KIM.getKIMTable();
+            METALLS.getMetallsTable();
+        }        
+    });
+
+    $('#addKIM').on('click', function(){
+        var kim = $('#kimInput' ).val(),
+            kimHardInput = $('#kimHardInput' ).val();
+        kim = KIM.validation(kim);
+        KIM.addKIMtoTable(kim, kimHardInput);
+    });
+    
+    /*$('body').on('click', '.editKimPencil', function(){
+        $(this )
+            .attr('class', 'glyphicon glyphicon-floppy-disk saveEditKim' )
+            .css('margin-left', '0');
+        $(this )
+            .parents('tr')
+            .find('.kimHardName, .kimName')
+            .attr('contenteditable', 'true')
+            .css({
+                'border': '1px solid hsl(195, 79%, 43%)',
+                'border-radius': '2px'
+            });
+    });
+    $('body').on('click', '.saveEditKim', function(){
+        var kimId = $(this ).attr('name'),
+            kim = app.fn.inputValidator($(this ).parents('tr').find('.kimName' ).text()),
+            kimHard = $(this ).parents('tr').find('.kimHardName' ).text(),
+            self = this;
+        app.kim.editKim(kimId, kim, kimHard, self);
+    });*/
+    
+    // metalls table    
+    $('#addMetall').on('click', function(){console.log('here');
+        var data = {
+            metall: $('#metallName' ).val(),
+            price: KIM.validation($('#metallPrice' ).val()),
+            mass: KIM.validation($('#metallMass' ).val()),
+            outPrice: KIM.validation($('#metallOutPrice' ).val())
+        };
+        METALLS.addMetallToTable(data);
+    });
+        
+        
     /*----INSIDE TAB START----*/
     /* add rows to table */
     $('body').on('click', app.product.dom.addNewRow, function(){
@@ -415,44 +468,6 @@ $( document ).ready( function ()
         var tableContent = app.product.getTableContent(app.product.dom.sortable + ' li');
         var alwaysInTable = app.product.getTableContent(app.product.dom.alw + ' li');
         app.product.createTable(tableContent, alwaysInTable);
-    });
-
-    //RIGHT PART
-    $('#kim').on('click', function(){
-        app.kim.getKIMTable();
-        app.metalls.getMetallsTable();
-    });
-
-    $('body').on('click', '#addKIM', function(){
-        var kim = $('#kimInput' ).val(),
-            kimHardInput = $('#kimHardInput' ).val();
-        kim = app.kim.validation(kim);
-        app.kim.addKIMtoTable(kim, kimHardInput);
-    });
-    $('body').on('click', '.editKimPencil', function(){
-        $(this )
-            .attr('class', 'glyphicon glyphicon-floppy-disk saveEditKim' )
-            .css('margin-left', '0');
-        $(this )
-            .parents('tr')
-            .find('.kimHardName, .kimName')
-            .attr('contenteditable', 'true')
-            .css({
-                'border': '1px solid hsl(195, 79%, 43%)',
-                'border-radius': '2px'
-            });
-    });
-    $('body').on('click', '.saveEditKim', function(){
-        var kimId = $(this ).attr('name'),
-            kim = app.fn.inputValidator($(this ).parents('tr').find('.kimName' ).text()),
-            kimHard = $(this ).parents('tr').find('.kimHardName' ).text(),
-            self = this;
-        app.kim.editKim(kimId, kim, kimHard, self);
-    });
-
-    $('body').on('click', '.removeKim', function(){
-        var kimId = $(this ).attr('name');
-        app.kim.removeKim(kimId);
-    });
+    });  
 
 } );
