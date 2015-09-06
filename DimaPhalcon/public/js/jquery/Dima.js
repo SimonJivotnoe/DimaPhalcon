@@ -85,25 +85,40 @@
             .removeClass(obj.removeRemove)
             .addClass(obj.removeAdd);
     }
-    
+    function changeActiveTab(obj) {
+        var scope = obj.scope,
+            selectedTabId = $(scope ).attr('aria-controls'),
+            curTabId = obj.curTabId,
+            tabsList = obj.tabsList,
+            tabId, prodId;
+        console.log(MAIN[tabsList][MAIN[curTabId]]);
+        '' !== MAIN[curTabId] ? MAIN[tabsList][MAIN[curTabId]].active = '0' : 0;
+
+        if (MAIN[curTabId] !== selectedTabId && undefined !== selectedTabId){
+            tabId = $(scope ).find('.glyphicon-remove' ).attr('name' );
+            prodId = $(scope ).attr('name');
+            MAIN[tabsList][selectedTabId].active = '1';
+            if (obj.hasOwnProperty('order')) {
+                TABS.getRightTabContentOrderDetails(prodId, selectedTabId);
+                TABS.getRightTabContentTable(prodId);
+            } else {
+                TABS[obj.getTabContent](prodId, selectedTabId);
+            }
+            //TABS[obj.changeActiveTab](tabId, selectedTabId);
+        }
+    }
     function addLeftTabsHandler(html) {
 
         html
             // change current tab
             .find('[role=tab]').click(function(){
-                var selectedTabId = $(this ).attr('aria-controls'),
-                    tabId, prodId;
-
-                '' !== MAIN.curTabId ? MAIN.tabsList[MAIN.curTabId].active = '0' : 0;
-
-                if (MAIN.curTabId !== selectedTabId && undefined !== selectedTabId){
-                    tabId = $(this ).find('.glyphicon-remove' ).attr('name' );
-                    prodId = $(this ).attr('name');
-                    MAIN.tabsList[selectedTabId].active = '1';
-                    TABS.getLeftTabContent(prodId, selectedTabId);
-                }
-
-                TABS.changeActiveTab(tabId, selectedTabId);
+                changeActiveTab({
+                    scope: this,
+                    curTabId: 'curTabId',
+                    tabsList: 'tabsList',
+                    getTabContent: 'getLeftTabContent',
+                    changeActiveTab: 'changeActiveTab'
+                });
             }).end()
         
             //close tab
@@ -164,7 +179,18 @@
     }
     
     function addRightTabsHandler(html) {
-        
+
+        html
+            .find('[role=tab]').click(function(){
+                changeActiveTab({
+                    scope: this,
+                    order: true,
+                    curTabId: 'curTabRightId',
+                    tabsList: 'tabsRightList',
+                    getTabContent: 'getLeftTabContent',
+                    changeActiveTab: 'changeActiveRightTab'
+                });
+            })
         return html;
     }
     
@@ -434,7 +460,11 @@
                     //console.log(data);
                 });
             },
-            
+
+            changeActiveRightTab: function (id, tabId) {
+                   console.log('here');
+            },
+
             closeTabMethod: function (idDb, currentID) {
                 var nextActiveTab = MAIN.curTabId,
                     productId = MAIN.productId,
@@ -526,6 +556,8 @@
             },
 
             getRightTabContentOrderDetails: function (orderId, tabId) {
+                console.log(orderId);
+                console.log(tabId);
                 $.ajax( {
                     url   : URL_TABS + 'getRightTabContentOrderDetails/',
                     method: 'GET',
@@ -539,7 +571,7 @@
                             .addClass('active');
                         $('#orderDetailsWrapper').html(addRightTabContentOrderHandler($(data.html)));
                         
-                        MAIN.curTabRightId = tabId;
+                        MAIN.curTabRightId = 'or' + tabId;
                         MAIN.curTabRightName = 'a[href="#' + MAIN.curTabRightId + '"] .tabName';
                         MAIN.orderId = orderId;
                         
