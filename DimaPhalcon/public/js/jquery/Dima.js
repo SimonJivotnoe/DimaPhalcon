@@ -12,7 +12,8 @@
         CATEG: 'categories/',
         ORDER: 'order/',
         KIM: 'kim/',
-        METALLS: 'metalls/'
+        METALLS: 'metalls/',
+        PRODUCT: 'products/'
     };
 
     var URL_TABS = URL.BASE + URL.TABS;
@@ -24,6 +25,8 @@
     var URL_KIM = URL.BASE + URL.KIM;
     
     var URL_METALLS = URL.BASE + URL.METALLS;
+    
+    var URL_PRODUCT = URL.BASE + URL.PRODUCT;
     
     var LOCATION = 'http://DimaPhalcon/DimaPhalcon/';
 
@@ -48,6 +51,11 @@
     // alias to self.metalls
     var METALLS;
     
+    function run() {
+        TABS.getLeftTabsList();
+        TABS.getRightTabsList();
+    }
+    
     var orderPlaceholder = {
         "%FIO%": "",
         "%PROJECT_NAME%": "",
@@ -60,6 +68,14 @@
         "%ESTIMATE%": "",
         "%DATE%": ""
     };   
+    
+    var tempTable = {
+        "%ROW_NUMBER%": "",
+        "%ROW_NAME%": "",
+        "%DATA_CELL%": "",
+        "%DATA_FORMULA%": "",
+        "%INPUT_VALUE%": ""
+    };
     
     // logging errors
     function log(php) {
@@ -90,8 +106,8 @@
             selectedTabId = $(scope ).attr('aria-controls'),
             curTabId = obj.curTabId,
             tabsList = obj.tabsList,
-            tabId, prodId;
-        console.log(MAIN[tabsList][MAIN[curTabId]]);
+            tabId, prodId, orderId;
+        
         '' !== MAIN[curTabId] ? MAIN[tabsList][MAIN[curTabId]].active = '0' : 0;
 
         if (MAIN[curTabId] !== selectedTabId && undefined !== selectedTabId){
@@ -99,12 +115,13 @@
             prodId = $(scope ).attr('name');
             MAIN[tabsList][selectedTabId].active = '1';
             if (obj.hasOwnProperty('order')) {
-                TABS.getRightTabContentOrderDetails(prodId, selectedTabId);
-                TABS.getRightTabContentTable(prodId);
+                orderId = $(scope ).attr('data-order');
+                TABS.getRightTabContentOrderDetails(orderId, selectedTabId);
+                TABS.getRightTabContentTable(orderId);
             } else {
                 TABS[obj.getTabContent](prodId, selectedTabId);
             }
-            //TABS[obj.changeActiveTab](tabId, selectedTabId);
+            TABS[obj.changeActiveTab](tabId, selectedTabId, obj.action);
         }
     }
     function addLeftTabsHandler(html) {
@@ -117,7 +134,8 @@
                     curTabId: 'curTabId',
                     tabsList: 'tabsList',
                     getTabContent: 'getLeftTabContent',
-                    changeActiveTab: 'changeActiveTab'
+                    changeActiveTab: 'changeActiveTab',
+                    action: 'changeActiveLeftTab'
                 });
             }).end()
         
@@ -132,7 +150,7 @@
     }
     
     function addLeftTabContentHandler(html) {
-        
+        console.log(html.find('#addNewRow'));
         html
             // edit & save categories list content
             .filter('.blockNameAndCat')
@@ -151,12 +169,18 @@
                     $('#editTableContent' ).css('display', 'none');
                 } ).end()
 
-            .find('#editCategoriesListContent' ).click(function(){
-                $(this ).attr('class', 'glyphicon glyphicon-floppy-disk' ).attr('id', 'saveCategoriesListContent');
+            .on('click', '#editCategoriesListContent', function(){
+                $(this )
+                        .removeAttr('id')
+                        .attr({
+                            class: 'glyphicon glyphicon-floppy-disk',
+                            id: 'saveCategoriesListContent' 
+                        });
                 $('.nameOfProduct, .listOfCategories, .listOfKim, .listOfMetalls' ).prop('disabled', false );
-            } ).end()
+                
+            } )
 
-            .find('#saveCategoriesListContent' ).click(function(){
+            .on('click', '#saveCategoriesListContent', function(){
                 $(this ).attr('class', 'glyphicon glyphicon-pencil leftTable').attr('id', 'editCategoriesListContent');
                 $('.nameOfProduct, .listOfCategories, .listOfKim, .listOfMetalls' ).prop('disabled', true );
                 var prName = $('.nameOfProduct' ).val(),
@@ -169,10 +193,48 @@
                 }
                 TABS.changeTabName(prName, categoryId, kimId, metallId);
                 PRODUCT.saveTable();
-            }).end()
+            })
             
             .find('#createOrderBtn').click(function () {
                 ORDER.createNewOrder(MAIN.productId);
+            }).end()
+            
+            .find('#addNewRow').click(function () {
+                var numbersOfRows = $('#duration').val(),
+                    tableContent = {},
+                    temp,
+                    alwaysInTable,
+                    arr = [],
+                    max = 0,
+                    i;
+                    
+                if (0 === $('#sortable li').size()) {
+                    for (i = 0; i < numbersOfRows; i++) {
+                        //temp = _.clone(app.product.temp);
+                        temp = tempTable;
+                        temp['%ROW_NUMBER%'] = 'A' + (i + 1);
+                        temp['%DATA_CELL%'] = 'A' + (i + 1);
+                        tableContent[i] = temp;
+                    }
+                    alwaysInTable = PRODUCT.getTableContent('#alwaysInTable li');
+                    PRODUCT.createTable(tableContent, alwaysInTable);
+                } else {
+                    $.each($(app.product.dom.sortable + ' .rowNumber'), function (key, val) {
+                        ('' !== $(val).text()) ? arr.push(parseInt($(val).text().substring(1))) : 0;
+                    });
+                    (0 !== arr.length) ? max = Math.max.apply(Math, arr) : 0;
+
+                    tableContent = app.product.getTableContent(app.product.dom.sortable + ' li');
+                    for (var i = 0; i < numbersOfRows; i++) {
+                        temp = _.clone(app.product.temp);
+                        temp['%ROW_NUMBER%'] = 'A' + (max + 1);
+                        temp['%DATA_CELL%'] = 'A' + (max + 1);
+                        tableContent[max] = temp;
+                        max++;
+                    }
+                    alwaysInTable = app.product.getTableContent(app.product.dom.alw + ' li');
+                    app.product.createTable(tableContent, alwaysInTable);
+                }
             });
 
         return html;
@@ -188,9 +250,10 @@
                     curTabId: 'curTabRightId',
                     tabsList: 'tabsRightList',
                     getTabContent: 'getLeftTabContent',
-                    changeActiveTab: 'changeActiveRightTab'
+                    changeActiveTab: 'changeActiveTab',
+                    action: 'changeActiveRightTab'
                 });
-            })
+            });
         return html;
     }
     
@@ -377,18 +440,6 @@
     // prototype holds methods (to save memory space)
     Dima.prototype = {
 
-        run: function() {
-            SELF  = this;
-            MAIN = SELF.main,
-            TABS = SELF.tabs;
-            ORDER = SELF.order;
-            PRODUCT = SELF.product;
-            KIM = SELF.kim;
-            METALLS = SELF.metalls;
-            TABS.getLeftTabsList();
-            TABS.getRightTabsList();
-        },
-
         // tabs section
         tabs: {
             getLeftTabsList: function() {
@@ -447,9 +498,9 @@
                 });
             },
             
-            changeActiveTab: function (id, tabId) {
+            changeActiveTab: function (id, tabId, action) {
                 $.ajax({
-                    url: URL_TABS + 'changeActiveTab',
+                    url: URL_TABS + action,
                     method: 'POST',
                     data: {
                         id: id,
@@ -457,14 +508,10 @@
                     }
                 }).then(function (data)
                 {
-                    //console.log(data);
+                    console.log(data);
                 });
             },
-
-            changeActiveRightTab: function (id, tabId) {
-                   console.log('here');
-            },
-
+            
             closeTabMethod: function (idDb, currentID) {
                 var nextActiveTab = MAIN.curTabId,
                     productId = MAIN.productId,
@@ -534,7 +581,25 @@
                     window.location.href = LOCATION;
                 });
             },
-
+            
+            changeTabName: function (prName, categoryId, kimId, metallId) {
+                var self = this;
+                $.ajax( {
+                    url   : URL_TABS + 'changeTabName',
+                    method: 'POST',
+                    data: {
+                        prId: MAIN.productId,
+                        prName : prName,
+                        categoryId : categoryId,
+                        kimId: kimId,
+                        metallId: metallId
+                    }
+                } ).then( function ( data )
+                {
+                    console.log(data);
+                });
+            },
+            
             getRightTabsList: function ()
             {
                 $.ajax( {
@@ -550,14 +615,16 @@
 
                     $(addRightTabsHandler($(data.html))).insertBefore( '#addNewTabRight' );
                     MAIN.tabsRightList = data.obj;
-                    TABS.getRightTabContentOrderDetails(data.orderId, data.tabId);
-                    TABS.getRightTabContentTable(data.orderId);
+                    if('kim' !== data.tabId) {
+                        TABS.getRightTabContentOrderDetails(data.orderId, data.tabId);
+                        TABS.getRightTabContentTable(data.orderId);
+                        return true;
+                    }
+                    TABS.showKim();
                 });
             },
 
             getRightTabContentOrderDetails: function (orderId, tabId) {
-                console.log(orderId);
-                console.log(tabId);
                 $.ajax( {
                     url   : URL_TABS + 'getRightTabContentOrderDetails/',
                     method: 'GET',
@@ -590,6 +657,13 @@
                 {
                     $('#orderTableWrapper').html(addRightTabContentTableHandler($(data.html)));
                 });
+            },
+
+            showKim: function() {
+                MAIN.tabsRightList.kim.active = '1';
+                MAIN.curTabRightId = 'kim';
+                KIM.getKIMTable();
+                METALLS.getMetallsTable();
             },
 
             loadPreferences: function() {
@@ -643,7 +717,43 @@
 
         // product section
         product: {
+            saveTable: function () {
+                var self = this;
+                $.ajax( {
+                    url   : URL_PRODUCT + 'changeTableContent',
+                    method: 'POST',
+                    data: {
+                        prId: MAIN.productId,
+                        tableContent: JSON.stringify(PRODUCT.getTableContent('#sortable li')),
+                        alwaysInTable: JSON.stringify(PRODUCT.getTableContent('#alwaysInTable li'))
+                    }
+                } ).then( function ( data )
+                {
+                    console.log(data);
+                });
+            },
+            
+            getTableContent: function (dom) {
+                var self = this,
+                    tableContent = {},
+                    i = 0,
+                    temp;
+                $.each($(dom), function(key, val) {
+                    //temp = _.clone(self.temp);
+                    temp = tempTable;
+                    if ('' !== $('.rowNumber', val ).text()) {
+                        temp['%ROW_NUMBER%'] = $('.rowNumber', val ).text();
+                        temp['%ROW_NAME%'] = $('.rowNameInput', val ).val();
+                        temp['%DATA_CELL%'] = $('.rowValueInput', val ).attr('data-cell');
+                        temp['%DATA_FORMULA%'] = $('.rowValueInput', val ).attr('data-formula');
+                        temp['%INPUT_VALUE%'] = $('.rowValueInput', val ).val();
+                        tableContent[i] = temp;
+                        i++;
+                    }
+                });
 
+                return tableContent;
+            }
         },
 
         // order section
@@ -900,15 +1010,22 @@
         
         var self = this;
         self.main = {};
-        self.firstName = firstName || '';
+        SELF  = this;
+        MAIN = this.main,
+        TABS = this.tabs;
+        ORDER = this.order;
+        PRODUCT = this.product;
+        KIM = this.kim;
+        METALLS = this.metalls;
+        /*self.firstName = firstName || '';
         self.lastName = lastName || '';
-        self.language = language || 'en';
+        self.language = language || 'en';*/
         
         $.fn.hasAttr = function(name) {
             return this.attr(name) !== undefined;
         };
         
-        self.run();
+        run();
         
     };
     

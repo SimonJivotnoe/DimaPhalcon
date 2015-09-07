@@ -15,23 +15,6 @@ var app = {
             curTabName: '',
             tabsList: '',
             createOrderBtn: '#createOrderBtn'
-        },
-        changeTabName: function (prName, categoryId, kimId, metallId) {
-            var self = this;
-            $.ajax( {
-                url   : app.BASE_URL + self.URL + 'changeTabName',
-                method: 'POST',
-                data: {
-                    prId: self.dom.productId,
-                    prName : prName,
-                    categoryId : categoryId,
-                    kimId: kimId,
-                    metallId: metallId
-                }
-            } ).then( function ( data )
-            {
-                console.log(data);
-            });
         }
     },
     product: {
@@ -48,14 +31,7 @@ var app = {
            formulasList: '#formulasList',
            addFormulaInputPr: '#addFormulaInputPr',
            removeFhBtn: '.removeFhBtn'
-        },
-        temp: {
-            "%ROW_NUMBER%": "",
-            "%ROW_NAME%": "",
-            "%DATA_CELL%": "",
-            "%DATA_FORMULA%": "",
-            "%INPUT_VALUE%": ""
-        },  
+        }, 
         createTable: function(tableContent, alwaysInTable) {
             var self = this;
             $.ajax( {
@@ -71,41 +47,6 @@ var app = {
                 $(self.dom.sortable ).html(data[0]);
                 $(self.dom.alw ).html(data[1]);
                 $(self.dom.removeRow ).hide();
-            });
-        },
-        getTableContent: function (dom) {
-            var self = this,
-                tableContent = {},
-                i = 0,
-                temp;
-            $.each($(dom), function(key, val) {
-                temp = _.clone(self.temp);
-                if ('' !== $('.rowNumber', val ).text()) {
-                    temp['%ROW_NUMBER%'] = $('.rowNumber', val ).text();
-                    temp['%ROW_NAME%'] = $('.rowNameInput', val ).val();
-                    temp['%DATA_CELL%'] = $('.rowValueInput', val ).attr('data-cell');
-                    temp['%DATA_FORMULA%'] = $('.rowValueInput', val ).attr('data-formula');
-                    temp['%INPUT_VALUE%'] = $('.rowValueInput', val ).val();
-                    tableContent[i] = temp;
-                    i++;
-                }
-            });
-
-            return tableContent;
-        },
-        saveTable: function () {
-            var self = this;
-            $.ajax( {
-                url   : app.BASE_URL + self.URL + 'changeTableContent',
-                method: 'POST',
-                data: {
-                    prId: app.tabs.dom.productId,
-                    tableContent: JSON.stringify(self.getTableContent(self.dom.sortable + ' li')),
-                    alwaysInTable: JSON.stringify(self.getTableContent(self.dom.alw + ' li'))
-                }
-            } ).then( function ( data )
-            {
-                console.log(data);
             });
         },
         catchKey: function (el, mathAction, step) {

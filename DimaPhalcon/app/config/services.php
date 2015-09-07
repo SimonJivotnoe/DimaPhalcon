@@ -7,6 +7,7 @@ use Phalcon\Db\Adapter\Pdo\Mysql as DbAdapter;
 use Phalcon\Mvc\View\Engine\Volt as VoltEngine;
 use Phalcon\Mvc\Model\Metadata\Memory as MetaDataAdapter;
 use Phalcon\Session\Adapter\Files as SessionAdapter;
+use Phalcon\Mvc\Model\Manager as ModelsManager;
 
 /**
  * The FactoryDefault Dependency Injector automatically register the right services providing a full stack framework
@@ -70,6 +71,9 @@ $di->set('modelsMetadata', function () {
     return new MetaDataAdapter();
 });
 
+$di->set('modelsManager', function() {
+      return new ModelsManager();
+ });
 /**
  * Start the session the first time some component request the session service
  */

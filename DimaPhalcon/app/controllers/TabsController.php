@@ -3,7 +3,7 @@
 use Phalcon\Db\RawValue;
 
 class TabsController extends \Phalcon\Mvc\Controller 
-{
+{    
     public function getLeftTabsListAction() {      
         if ($this->request->isAjax() && $this->request->isGet()) {
             $tabs = Tabs::find();
@@ -135,7 +135,7 @@ class TabsController extends \Phalcon\Mvc\Controller
         }
     }
 
-    public function changeActiveTabAction() {
+    public function changeActiveLeftTabAction() {
         if ($this->request->isAjax() && $this->request->isPost()) {
             $tabs = Tabs::find("active = 1");
             foreach ($tabs as $val) {
@@ -319,7 +319,12 @@ class TabsController extends \Phalcon\Mvc\Controller
 
                         $tabArr['or' . $val->getId()] = (object) [
                                     'active' => $val->getActive(),
-                                    'orderId' => $val->getOrderId()];
+                                    'orderId' => $val->getOrderId()
+                                ];
+                        $tabArr['kim'] = (object)[
+                                                'active' => '',
+                                                'orderId' => 'kim'
+            ];
                     }
                     $this->response->setJsonContent([
                         'tabs' => true,
@@ -407,7 +412,36 @@ class TabsController extends \Phalcon\Mvc\Controller
             $this->response->redirect('');
         }
     }
+    
+    public function changeActiveRightTabAction() {
+        if ($this->request->isAjax() && $this->request->isPost()) {
+            $tabs = TabsRight::find("active = 1");
+            foreach ($tabs as $val) {
+                $val->setActive(0);
+                $val->save();
+            }
+            if ($tabs == false) {
+                echo "Мы не можем сохранить робота прямо сейчас: \n";
+                foreach ($tabs->getMessages() as $message) {
+                    echo $message, "\n";
+                }
+            } else {
+                $id = $this->request->getPost('id');
+                $tabs = TabsRight::find(array("id = '$id'"));
+                foreach ($tabs as $val) {
+                    $val->setActive(1);
+                    $val->save();
+                }
+                $this->response->setContentType('application/json', 'UTF-8');
+                $this->response->setJsonContent('ok');
 
+                return $this->response;
+            }
+        } else {
+            $this->response->redirect('');
+        }
+    }
+    
     public function addNewRightTab($order_id) {
         $tabActive = TabsRight::find(array("active = 1"));
         foreach ($tabActive as $val) {

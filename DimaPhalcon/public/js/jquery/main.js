@@ -34,7 +34,7 @@ $( document ).ready( function ()
         })
         .click(function(){
             TABS.loadPreferences();
-            TABS.changeActiveTab('', '');
+            TABS.changeActiveTab('', '', 'changeActiveLeftTab');
         });
 
     // add new category
@@ -59,8 +59,8 @@ $( document ).ready( function ()
     // kim table
     $('#kim').on('click', function(){
         if (false === $('#kim').hasClass('active')) {
-            KIM.getKIMTable();
-            METALLS.getMetallsTable();
+            TABS.showKim();
+            TABS.changeActiveTab('', '', 'changeActiveRightTab');
         }        
     });
 
@@ -70,27 +70,6 @@ $( document ).ready( function ()
         kim = KIM.validation(kim);
         KIM.addKIMtoTable(kim, kimHardInput);
     });
-    
-    /*$('body').on('click', '.editKimPencil', function(){
-        $(this )
-            .attr('class', 'glyphicon glyphicon-floppy-disk saveEditKim' )
-            .css('margin-left', '0');
-        $(this )
-            .parents('tr')
-            .find('.kimHardName, .kimName')
-            .attr('contenteditable', 'true')
-            .css({
-                'border': '1px solid hsl(195, 79%, 43%)',
-                'border-radius': '2px'
-            });
-    });
-    $('body').on('click', '.saveEditKim', function(){
-        var kimId = $(this ).attr('name'),
-            kim = app.fn.inputValidator($(this ).parents('tr').find('.kimName' ).text()),
-            kimHard = $(this ).parents('tr').find('.kimHardName' ).text(),
-            self = this;
-        app.kim.editKim(kimId, kim, kimHard, self);
-    });*/
     
     // metalls table    
     $('#addMetall').on('click', function(){console.log('here');
@@ -224,57 +203,7 @@ $( document ).ready( function ()
             }
             
         }
-    });
-    /* SAVE CHANGES IN TABLE END*/
-
-    /* EDIT & SAVE CATEGORIES LIST CONTENT */
-    $('body').on('mouseover', '.blockNameAndCat', function(){
-        $('#editCategoriesListContent' ).show();
-    });
-    $('body').on('mouseleave', '.blockNameAndCat', function(){
-        $('#editCategoriesListContent' ).css('display', 'none');
-    });
-    $('body').on('mouseover', '.tableContent', function(){
-        $('#editTableContent' ).show();
-    });
-    $('body').on('mouseleave', '.tableContent', function(){
-        $('#editTableContent' ).css('display', 'none');
-    });
-    // set tab name
-     $('body').on('change, keyup', '.nameOfProduct', function(){
-         $(app.tabs.dom.curTabName).text($(this ).val());
-         ('' === $(this ).val()) ? $(app.tabs.dom.curTabName).text('Новое изделие') : 0;
-     });
-    $('body').on('change', '.listOfKim', function(){
-        var kim = $('option:selected', this ).attr('kim');
-        $('[data-cell="KIM1"]' ).val(kim);
-        $( '#calx' ).calx();
-    });
-    $('body').on('change', '.listOfMetalls', function(){
-        var metall = $('option:selected', this ).attr('metall');
-        var metallOut = $('.listOfMetalls option:selected' ).attr('metallOut');
-        $('[data-cell="PR1"]' ).val(metall);
-        $('[data-cell="PR2"]' ).val(metallOut);
-        $( '#calx' ).calx();
-    });
-    $('body').on('click', '#editCategoriesListContent', function(){
-        $(this ).attr('class', 'glyphicon glyphicon-floppy-disk' ).attr('id', 'saveCategoriesListContent');
-        $('.nameOfProduct, .listOfCategories, .listOfKim, .listOfMetalls' ).prop('disabled', false );
-    });
-    $('body').on('click', '#saveCategoriesListContent', function(){
-        $(this ).attr('class', 'glyphicon glyphicon-pencil leftTable').attr('id', 'editCategoriesListContent');
-        $('.nameOfProduct, .listOfCategories, .listOfKim, .listOfMetalls' ).prop('disabled', true );
-        var prName = $('.nameOfProduct' ).val(),
-            categoryId = $('.listOfCategories option:selected' ).attr('name' ),
-            kimId = $('.listOfKim option:selected' ).attr('name' ),
-            metallId = $('.listOfMetalls option:selected' ).attr('name');
-        if ('' === prName) {
-            prName = 'Новое изделие';
-            $(app.tabs.curTabName).text('Новое изделие');
-        }
-        app.tabs.changeTabName(prName, categoryId, kimId, metallId);
-        app.product.saveTable();
-    });
+    });    
 
     /* edit & save TableContent */
     $('body').on('click', '#editTableContent', function(){
