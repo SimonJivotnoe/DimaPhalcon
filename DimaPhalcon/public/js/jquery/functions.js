@@ -31,23 +31,6 @@ var app = {
            formulasList: '#formulasList',
            addFormulaInputPr: '#addFormulaInputPr',
            removeFhBtn: '.removeFhBtn'
-        }, 
-        createTable: function(tableContent, alwaysInTable) {
-            var self = this;
-            $.ajax( {
-                url   : app.BASE_URL + self.URL + 'createTable',
-                method: 'POST',
-                data: {
-                    prId: app.tabs.dom.productId,
-                    tableContent: JSON.stringify(tableContent),
-                    alwaysInTable: JSON.stringify(alwaysInTable)
-                }
-            } ).then( function ( data )
-            {
-                $(self.dom.sortable ).html(data[0]);
-                $(self.dom.alw ).html(data[1]);
-                $(self.dom.removeRow ).hide();
-            });
         },
         catchKey: function (el, mathAction, step) {
             var thisVal = Number($( el ).val());

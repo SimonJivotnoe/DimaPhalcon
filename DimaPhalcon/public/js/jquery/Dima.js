@@ -101,6 +101,7 @@
             .removeClass(obj.removeRemove)
             .addClass(obj.removeAdd);
     }
+    
     function changeActiveTab(obj) {
         var scope = obj.scope,
             selectedTabId = $(scope ).attr('aria-controls'),
@@ -123,6 +124,23 @@
             }
             TABS[obj.changeActiveTab](tabId, selectedTabId, obj.action);
         }
+    }
+    
+    function editDescriptionOfProduct(bool) {
+        var obj = {};
+        
+        $('.nameOfProduct, .listOfCategories, .listOfKim, .listOfMetalls' ).prop('disabled', bool );
+        
+        if (!bool) {            
+            return true;
+        }
+        
+        obj.prName = $('.nameOfProduct' ).val(),
+        obj.categoryId = $('.listOfCategories option:selected' ).attr('name' ),
+        obj.kimId = $('.listOfKim option:selected' ).attr('name' ),
+        obj.metallId = $('.listOfMetalls option:selected' ).attr('name');
+        
+        return obj;
     }
     function addLeftTabsHandler(html) {
 
@@ -150,7 +168,7 @@
     }
     
     function addLeftTabContentHandler(html) {
-        console.log(html.find('#addNewRow'));
+        console.log(html.find('.rowNameInput'));
         html
             // edit & save categories list content
             .filter('.blockNameAndCat')
@@ -168,37 +186,64 @@
                 .mouseleave(function(){
                     $('#editTableContent' ).css('display', 'none');
                 } ).end()
-
+                
+            // edit & save Categories list    
             .on('click', '#editCategoriesListContent', function(){
-                $(this )
-                        .removeAttr('id')
-                        .attr({
+                $(this ).attr({
                             class: 'glyphicon glyphicon-floppy-disk',
                             id: 'saveCategoriesListContent' 
                         });
-                $('.nameOfProduct, .listOfCategories, .listOfKim, .listOfMetalls' ).prop('disabled', false );
+                editDescriptionOfProduct(false);
                 
-            } )
-
+            } )            
+            
             .on('click', '#saveCategoriesListContent', function(){
-                $(this ).attr('class', 'glyphicon glyphicon-pencil leftTable').attr('id', 'editCategoriesListContent');
-                $('.nameOfProduct, .listOfCategories, .listOfKim, .listOfMetalls' ).prop('disabled', true );
-                var prName = $('.nameOfProduct' ).val(),
-                    categoryId = $('.listOfCategories option:selected' ).attr('name' ),
-                    kimId = $('.listOfKim option:selected' ).attr('name' ),
-                    metallId = $('.listOfMetalls option:selected' ).attr('name');
-                if ('' === prName) {
-                    prName = 'Новое изделие';
+                var obj;
+                $(this ).attr({
+                            class: 'glyphicon glyphicon-pencil leftTable',
+                            id: 'editCategoriesListContent'
+                        });
+                obj = editDescriptionOfProduct(true);
+                if ('' === obj.prName) {
+                    obj.prName = 'Новое изделие';
                     $(MAIN.curTabName).text('Новое изделие');
                 }
-                TABS.changeTabName(prName, categoryId, kimId, metallId);
+                TABS.changeTabName(obj);
                 PRODUCT.saveTable();
+            })
+            
+            // edit & save TableContent
+            .on('click', '#editTableContent', function(){
+                $(this ).attr({
+                            class: 'glyphicon glyphicon-floppy-disk',
+                            id: 'saveTableContent' 
+                        });
+                $('.removeRow').show();
+                $('#sortable').sortable({
+                    revert: true
+                });
+                $('#sortable').sortable("enable");
+                //$( "ul, li" ).disableSelection();
+            })
+            
+            .on('click', '#saveTableContent', function(){
+                $(this ).attr({
+                            class: 'glyphicon glyphicon-pencil leftTable',
+                            id: 'editTableContent' 
+                        });
+                $('.removeRow' ).hide();
+                PRODUCT.saveTable();
+                $('#sortable').sortable({
+                    revert: false
+                });
+                $('#sortable').sortable('disable');
             })
             
             .find('#createOrderBtn').click(function () {
                 ORDER.createNewOrder(MAIN.productId);
             }).end()
             
+	    .find()
             .find('#addNewRow').click(function () {
                 var numbersOfRows = $('#duration').val(),
                     tableContent = {},
@@ -210,8 +255,7 @@
                     
                 if (0 === $('#sortable li').size()) {
                     for (i = 0; i < numbersOfRows; i++) {
-                        //temp = _.clone(app.product.temp);
-                        temp = tempTable;
+                        temp = _.clone(tempTable);
                         temp['%ROW_NUMBER%'] = 'A' + (i + 1);
                         temp['%DATA_CELL%'] = 'A' + (i + 1);
                         tableContent[i] = temp;
@@ -219,21 +263,21 @@
                     alwaysInTable = PRODUCT.getTableContent('#alwaysInTable li');
                     PRODUCT.createTable(tableContent, alwaysInTable);
                 } else {
-                    $.each($(app.product.dom.sortable + ' .rowNumber'), function (key, val) {
+                    $.each($('#sortable .rowNumber'), function (key, val) {
                         ('' !== $(val).text()) ? arr.push(parseInt($(val).text().substring(1))) : 0;
                     });
                     (0 !== arr.length) ? max = Math.max.apply(Math, arr) : 0;
 
-                    tableContent = app.product.getTableContent(app.product.dom.sortable + ' li');
+                    tableContent = PRODUCT.getTableContent('#sortable li');
                     for (var i = 0; i < numbersOfRows; i++) {
-                        temp = _.clone(app.product.temp);
+                        temp = _.clone(tempTable);
                         temp['%ROW_NUMBER%'] = 'A' + (max + 1);
                         temp['%DATA_CELL%'] = 'A' + (max + 1);
                         tableContent[max] = temp;
                         max++;
                     }
-                    alwaysInTable = app.product.getTableContent(app.product.dom.alw + ' li');
-                    app.product.createTable(tableContent, alwaysInTable);
+                    alwaysInTable = PRODUCT.getTableContent('#alwaysInTable li');
+                    PRODUCT.createTable(tableContent, alwaysInTable);
                 }
             });
 
@@ -582,21 +626,21 @@
                 });
             },
             
-            changeTabName: function (prName, categoryId, kimId, metallId) {
+            changeTabName: function (obj) {
                 var self = this;
                 $.ajax( {
                     url   : URL_TABS + 'changeTabName',
                     method: 'POST',
                     data: {
                         prId: MAIN.productId,
-                        prName : prName,
-                        categoryId : categoryId,
-                        kimId: kimId,
-                        metallId: metallId
+                        prName : obj.prName,
+                        categoryId : obj.categoryId,
+                        kimId: obj.kimId,
+                        metallId: obj.metallId
                     }
                 } ).then( function ( data )
                 {
-                    console.log(data);
+                    //console.log(data);
                 });
             },
             
@@ -729,7 +773,7 @@
                     }
                 } ).then( function ( data )
                 {
-                    console.log(data);
+                    //console.log(data);
                 });
             },
             
@@ -739,8 +783,7 @@
                     i = 0,
                     temp;
                 $.each($(dom), function(key, val) {
-                    //temp = _.clone(self.temp);
-                    temp = tempTable;
+                    temp = _.clone(tempTable);
                     if ('' !== $('.rowNumber', val ).text()) {
                         temp['%ROW_NUMBER%'] = $('.rowNumber', val ).text();
                         temp['%ROW_NAME%'] = $('.rowNameInput', val ).val();
@@ -753,6 +796,24 @@
                 });
 
                 return tableContent;
+            },
+            
+            createTable: function (tableContent, alwaysInTable) {
+                var self = this;
+                $.ajax({
+                    url: URL_PRODUCT + 'createTable',
+                    method: 'POST',
+                    data: {
+                        prId: MAIN.productId,
+                        tableContent: JSON.stringify(tableContent),
+                        alwaysInTable: JSON.stringify(alwaysInTable)
+                    }
+                }).then(function (data)
+                {console.log(data);
+                    $('#sortable').html(data[0]);
+                    $('#alwaysInTable').html(data[1]);
+                    $('.removeRow').hide();
+                });
             }
         },
 

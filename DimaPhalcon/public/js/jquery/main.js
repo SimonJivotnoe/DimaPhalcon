@@ -54,7 +54,7 @@ $( document ).ready( function ()
     
     /*----NEW_TAB_END----*/
 
-    //RIGHT PART
+    // RIGHT PART
     // kim tab
     // kim table
     $('#kim').on('click', function(){
@@ -82,44 +82,24 @@ $( document ).ready( function ()
         METALLS.addMetallToTable(data);
     });
         
-        
+     /*// set tab name
+-     $('body').on('change, keyup', '.nameOfProduct', function(){
+-         $(app.tabs.dom.curTabName).text($(this ).val());
+-         ('' === $(this ).val()) ? $(app.tabs.dom.curTabName).text('Новое изделие') : 0;
+-     });
+-    $('body').on('change', '.listOfKim', function(){
+-        var kim = $('option:selected', this ).attr('kim');
+-        $('[data-cell="KIM1"]' ).val(kim);
+-        $( '#calx' ).calx();
+-    });
+-    $('body').on('change', '.listOfMetalls', function(){
+-        var metall = $('option:selected', this ).attr('metall');
+-        var metallOut = $('.listOfMetalls option:selected' ).attr('metallOut');
+-        $('[data-cell="PR1"]' ).val(metall);
+-        $('[data-cell="PR2"]' ).val(metallOut);
+-        $( '#calx' ).calx();
+-    });*/   
     /*----INSIDE TAB START----*/
-    /* add rows to table */
-    $('body').on('click', app.product.dom.addNewRow, function(){
-        var numbersOfRows = $( app.product.dom.duration ).val(),
-            tableContent = {},
-            temp,
-            alwaysInTable,
-            arr = [],
-            max = 0,
-            i;
-        if (0 === $(app.product.dom.sortable + ' li').size()) {
-            for (i = 0; i < numbersOfRows; i++) {
-                temp = _.clone(app.product.temp);
-                temp['%ROW_NUMBER%'] = 'A' + (i+1);
-                temp['%DATA_CELL%'] = 'A' + (i+1);
-                tableContent[i] = temp;
-            }
-            alwaysInTable = app.product.getTableContent(app.product.dom.alw + ' li');
-            app.product.createTable(tableContent, alwaysInTable);
-        } else {
-            $.each($(app.product.dom.sortable + ' .rowNumber'), function(key, val) {
-                ('' !== $(val).text()) ? arr.push(parseInt($(val).text().substring(1))) : 0;
-            });
-            (0 !== arr.length) ? max = Math.max.apply(Math, arr) : 0;
-
-            tableContent = app.product.getTableContent(app.product.dom.sortable + ' li');
-            for (var i = 0; i < numbersOfRows; i++) {
-                temp = _.clone(app.product.temp);
-                temp['%ROW_NUMBER%'] = 'A' + (max+1);
-                temp['%DATA_CELL%'] = 'A' + (max+1);
-                tableContent[max] = temp;
-                max++;
-            }
-            alwaysInTable = app.product.getTableContent(app.product.dom.alw + ' li');
-            app.product.createTable(tableContent, alwaysInTable);
-        }
-    });
 
     /* remove tr */
     $('body').on('click', app.product.dom.removeRow, function(){
@@ -203,26 +183,6 @@ $( document ).ready( function ()
             }
             
         }
-    });    
-
-    /* edit & save TableContent */
-    $('body').on('click', '#editTableContent', function(){
-        $(this ).attr('class', 'glyphicon glyphicon-floppy-disk' ).attr('id', 'saveTableContent');
-        $('.removeRow' ).show();
-        $( app.product.dom.sortable ).sortable({
-            revert: true
-        });
-        $( app.product.dom.sortable ).sortable("enable");
-        //$( "ul, li" ).disableSelection();
-    });
-    $('body').on('click', '#saveTableContent', function(){
-        $(this ).attr('class', 'glyphicon glyphicon-pencil leftTable').attr('id', 'editTableContent');
-        $('.removeRow' ).hide();
-        app.product.saveTable();
-        $( app.product.dom.sortable ).sortable({
-            revert: false
-        });
-        $(app.product.dom.sortable).sortable('disable');
     });
 
     /* create formula */
