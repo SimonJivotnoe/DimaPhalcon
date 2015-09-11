@@ -13,7 +13,8 @@
         ORDER: 'order/',
         KIM: 'kim/',
         METALLS: 'metalls/',
-        PRODUCT: 'products/'
+        PRODUCT: 'products/',
+	LOCATION: 'http://DimaPhalcon/DimaPhalcon/'
     };
 
     var URL_TABS = URL.BASE + URL.TABS;
@@ -28,7 +29,7 @@
     
     var URL_PRODUCT = URL.BASE + URL.PRODUCT;
     
-    var LOCATION = 'http://DimaPhalcon/DimaPhalcon/';
+    var LOCATION = URL.LOCATION;
 
     // alias to this Class
     var SELF;
@@ -168,7 +169,7 @@
     }
     
     function addLeftTabContentHandler(html) {
-        console.log(html.find('.rowNameInput'));
+        console.log(html.find('#addFormulaInputPr'));
         html
             // edit & save categories list content
             .filter('.blockNameAndCat')
@@ -243,7 +244,29 @@
                 ORDER.createNewOrder(MAIN.productId);
             }).end()
             
-	    .find()
+	    // change left tab name
+	    .find('.nameOfProduct').on('change, keyup', function(){
+		$(MAIN.curTabName).text($(this ).val());
+		('' === $(this ).val()) ? $(MAIN.curTabName).text('Новое изделие') : 0;
+    	    }).end()
+	    
+	    // change kim in table
+	    .find('.listOfKim').change(function(){
+		var kim = $('option:selected', this ).attr('kim');
+		$('[data-cell="KIM1"]' ).val(kim);
+		$( '#calx' ).calx();
+	    }).end()
+	    
+	    // change metall in table
+	    .find('.listOfMetalls').change(function(){
+		var metall = $('option:selected', this ).attr('metall');
+		var metallOut = $('.listOfMetalls option:selected' ).attr('metallOut');
+		$('[data-cell="PR1"]' ).val(metall);
+		$('[data-cell="PR2"]' ).val(metallOut);
+		$( '#calx' ).calx();
+	    }).end()
+	    
+	    // add new row in product table
             .find('#addNewRow').click(function () {
                 var numbersOfRows = $('#duration').val(),
                     tableContent = {},
@@ -279,8 +302,96 @@
                     alwaysInTable = PRODUCT.getTableContent('#alwaysInTable li');
                     PRODUCT.createTable(tableContent, alwaysInTable);
                 }
-            });
+            }).end()
+	    
+	    // remove tr in product table
+	    .find('.removeRow').click(function () {
+		var rowName = $(this).parent().find('.rowValueInput').attr('data-cell');
+		var checkBinding = $('.list-group-item').find('.glyphicon:contains(' + rowName + ')');
+		checkBinding.length ? checkBinding.remove() : 0;
+		$(this).parent().hide('drop');
+		$(this).parent().find('.rowNumber').text('');
+		$(this).parent().find('.rowValueInput').attr('data-cell', '');
+		setTimeout(function () {
+		    $(this).parent().remove();
+		}, 500);
+	    }).end()
+	    
+	    // change row name in product table
+	    .on('keyup', '.rowNameInput', function () {
+		$(this).attr('value', $(this).val());
+		PRODUCT.saveTable();
+	    })
+	    
+	    // change value in product table by mouse wheel
+	    .on('mousewheel', '.rowValueInput', function (e) {
+		var thisVal = Number($(this).val());
+		if (1 === e.deltaY) {
+		    $(this).val((thisVal + 0.01).toFixed(2)).attr('value', (thisVal + 0.01).toFixed(2));
+		} else if (-1 === e.deltaY) {
+		    $(this).val((thisVal - 0.01).toFixed(2)).attr('value', (thisVal - 0.01).toFixed(2));
+		}
+		$('#calx').calx();
+		PRODUCT.saveTable();
+	    })
+	    
+	    // change value in product table by keys
+	    .on('keydown', '.rowValueInput', function (e) {
+		switch (e.keyCode) {
+		    case 38: // UP
+			PRODUCT.catchKey(this, '+', 1);
+			e.preventDefault();
+			break;
+		    case 40: // DOWN
+			PRODUCT.catchKey(this, '-', 1);
+			e.preventDefault();
+			break;
+		    case 191: // /
+			PRODUCT.catchKey(this, '+', 10);
+			e.preventDefault();
+			break;
+		    case 17: // Ctrl
+			PRODUCT.catchKey(this, '-', 10);
+			e.preventDefault();
+			break;
+		    case 190: // >
+			PRODUCT.catchKey(this, '+', 100);
+			e.preventDefault();
+			break;
+		    case 18: // Alt
+			PRODUCT.catchKey(this, '-', 100);
+			e.preventDefault();
+			break;
+		    case 32: // Space
+			e.preventDefault();
+			break;
+		}
+	    })
+	    
+	    // prevent space and comma default action
+	    .on('keyup', '.rowValueInput', function (e) {
+		var notToReact = [17, 18, 32, 37, 38, 39, 40, 110, 188, 190, 191],
+		    text = $(this).val(),
+		    caretPos;
+		if (text.indexOf(',') !== -1) {
+		    text = text.replace(',', '.');
+		    $(this).val(text);
+		}
+		$(this).attr('value', text);
+		if (-1 === $.inArray(e.keyCode, notToReact)) {
+		    caretPos = this.selectionStart;
+		    if (96 === e.keyCode && '.' === text.charAt((text.length - 2))) {
 
+		    } else {
+			$('#calx').calx();
+			text = '' + $(this).val();
+			$(this).caret(caretPos);
+			('.' === text.charAt((text.length - 2))) ? $(this).caret((text.length - 1)) : 0;
+			PRODUCT.saveTable();
+		    }
+		}
+	    })
+	    
         return html;
     }
     
@@ -814,7 +925,18 @@
                     $('#alwaysInTable').html(data[1]);
                     $('.removeRow').hide();
                 });
-            }
+            },
+	    
+	    catchKey: function (el, mathAction, step) {
+		var thisVal = Number($(el).val());
+		if ('+' === mathAction) {
+		    $(el).val((thisVal + step).toFixed(2)).attr('value', (thisVal + step).toFixed(2));
+		} else {
+		    $(el).val((thisVal - step).toFixed(2)).attr('value', (thisVal - step).toFixed(2));
+		}
+		$('#calx').calx();
+		PRODUCT.saveTable(MAIN.productId);
+	    }
         },
 
         // order section

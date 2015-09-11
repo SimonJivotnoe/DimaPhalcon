@@ -31,16 +31,6 @@ var app = {
            formulasList: '#formulasList',
            addFormulaInputPr: '#addFormulaInputPr',
            removeFhBtn: '.removeFhBtn'
-        },
-        catchKey: function (el, mathAction, step) {
-            var thisVal = Number($( el ).val());
-            if ('+' === mathAction) {
-                $(el ).val((thisVal + step).toFixed(2)).attr('value', (thisVal + step).toFixed(2));
-            } else {
-                $(el ).val((thisVal - step).toFixed(2)).attr('value', (thisVal - step).toFixed(2));
-            }
-            $( '#calx' ).calx();
-            this.saveTable(self.tabs.productId);
         },        
         formulaInputValue: function() {
             return $('#addFormulaInputPr').val();
