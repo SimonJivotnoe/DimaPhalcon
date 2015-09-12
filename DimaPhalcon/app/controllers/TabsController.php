@@ -106,8 +106,18 @@ class TabsController extends \Phalcon\Mvc\Controller
                 $addToOrder = new OrderController;
 
                 $prName = $product->getProductName();
-                if ('Новое изделие' === $prName) {
-                    $prName = '';
+                'Новое изделие' === $prName ? $prName = '' : true ;
+
+                $css = '';
+                $prStatus = $product->getStatus();
+                if ('draft' === $prStatus) {
+                    $prStatus = '<button type="button" class="btn btn-danger btn-sm" id="saveInDB">Сохранить в базе данных</button>';
+                } else if ('save' === $prStatus){
+                    $prStatus = 'Сохранено в базе данных' ;
+                    $css = 'saveInDB';
+                } else if ('order') {
+                    $prStatus = '' ;
+                    $css = 'addedToOrder';
                 }
 
                 $formulas = json_decode($product->getFormulas());
@@ -118,6 +128,7 @@ class TabsController extends \Phalcon\Mvc\Controller
                     '%KIM_LIST%' => $kimObj->createKimList($productKim),
                     '%METALL_LIST%' => $metallsObj->createMetallsList($productMetall),
                     '%CREATED%' => $product->getCreated(),
+                    '%SAVE_IN_DB%' => $prStatus,
                     '%TABLE_CONTENT%' => $productObj->createTableRes($table, 'tableContent.html'),
                     '%ALWAYS_IN_TABLE%' => $productObj->createTableRes($alwaysInTable, 'alwaysInTable.html'),
                     '%FORMULAS_HELPER%' => $formulaHelperObj->createFormulaHelperList(),
@@ -126,7 +137,7 @@ class TabsController extends \Phalcon\Mvc\Controller
                 );
                 $tabContent .= $substObj->subHTMLReplace('tabContent.html', $productDetails);
                 $this->response->setContentType('application/json', 'UTF-8');
-                $this->response->setJsonContent($tabContent);
+                $this->response->setJsonContent(['html' => $tabContent, 'css' => $css]);
 
                 return $this->response;
             }
@@ -237,6 +248,7 @@ class TabsController extends \Phalcon\Mvc\Controller
             $tabId = $this->request->getPost('tabId');
             $nextActive = $this->request->getPost('nextActiveTab');
             $tabs = Tabs::findFirst(array("id = '$id'", "tab_id = '$tabId'"));
+            $productObj = Products::findFirst($tabs->getProductId());
             if ($tabs != false) {
                 if ($tabs->delete() == false) {
                     echo "Sorry, we can't delete the robot right now: \n";
@@ -246,6 +258,7 @@ class TabsController extends \Phalcon\Mvc\Controller
                 } else {
                     $changeActiveStatus = Tabs::findFirst(array("tab_id = '$nextActive'"));
                     $changeActiveStatus->setActive(1)->save();
+                    'draft' === $productObj->getStatus() ? $productObj->delete() : true ;
                     $this->response->setContentType('application/json', 'UTF-8');
                     $this->response->setJsonContent('ok');
                     return $this->response;

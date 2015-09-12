@@ -1,5 +1,10 @@
 <div class="col-md-12 created">
-Создано: %CREATED%
+    <div class="col-md-8">
+        Создано: %CREATED%
+    </div>
+    <div class="col-md-4">
+        %SAVE_IN_DB%
+    </div>
 </div>
 <div class="col-md-10 col-md-offset-0 blockNameAndCat">
     <input class="col-md-5 nameOfProduct" type="text" value="%PRODUCT_NAME%"
@@ -46,7 +51,7 @@
         
     </div>
 <div class="col-md-8 tableContent" >
-    <div class="col-md-10">
+    <div class="col-md-10 productTableWrapper">
         <form id="calx">
             <div class="col-md-12">
                 <ul id="sortable">
@@ -85,7 +90,7 @@
         %FORMULAS%
     </ul>
 </div>
-
+<div class="clearer"></div>
 <!--<li class="list-group-item">2*A4+A2*TAN(RADIANS(A5/2))+A3/TAN(RADIANS(A5))</li>
 <li class="list-group-item">
     2*A6*1.05*((0.01+2*A4+A2*TAN(RADIANS(A5/2))+A3/TAN(RADIANS(A5)))*(0.01+A2+A3)+(0.01+2*A4+A2*TAN(RADIANS(A5/2))+A3/SIN(RADIANS(A5)))*(A1+0.06))

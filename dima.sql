@@ -3,9 +3,9 @@
 -- http://www.phpmyadmin.net
 --
 -- Хост: 127.0.0.1:3306
--- Час створення: Сер 10 2015 р., 20:56
--- Версія сервера: 5.5.41-log
--- Версія PHP: 5.6.3
+-- Время создания: Сен 12 2015 г., 23:38
+-- Версия сервера: 5.5.41-log
+-- Версия PHP: 5.6.3
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+00:00";
@@ -17,13 +17,13 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8 */;
 
 --
--- База даних: `dima`
+-- База данных: `dima`
 --
 
 -- --------------------------------------------------------
 
 --
--- Структура таблиці `categories`
+-- Структура таблицы `categories`
 --
 
 CREATE TABLE IF NOT EXISTS `categories` (
@@ -33,7 +33,7 @@ CREATE TABLE IF NOT EXISTS `categories` (
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=14 ;
 
 --
--- Дамп даних таблиці `categories`
+-- Дамп данных таблицы `categories`
 --
 
 INSERT INTO `categories` (`category_id`, `category_name`) VALUES
@@ -44,7 +44,7 @@ INSERT INTO `categories` (`category_id`, `category_name`) VALUES
 -- --------------------------------------------------------
 
 --
--- Структура таблиці `formulas`
+-- Структура таблицы `formulas`
 --
 
 CREATE TABLE IF NOT EXISTS `formulas` (
@@ -58,7 +58,7 @@ CREATE TABLE IF NOT EXISTS `formulas` (
 -- --------------------------------------------------------
 
 --
--- Структура таблиці `formulas_helper`
+-- Структура таблицы `formulas_helper`
 --
 
 CREATE TABLE IF NOT EXISTS `formulas_helper` (
@@ -68,7 +68,7 @@ CREATE TABLE IF NOT EXISTS `formulas_helper` (
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=10 ;
 
 --
--- Дамп даних таблиці `formulas_helper`
+-- Дамп данных таблицы `formulas_helper`
 --
 
 INSERT INTO `formulas_helper` (`id`, `name`) VALUES
@@ -80,7 +80,7 @@ INSERT INTO `formulas_helper` (`id`, `name`) VALUES
 -- --------------------------------------------------------
 
 --
--- Структура таблиці `kim`
+-- Структура таблицы `kim`
 --
 
 CREATE TABLE IF NOT EXISTS `kim` (
@@ -92,7 +92,7 @@ CREATE TABLE IF NOT EXISTS `kim` (
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=21 ;
 
 --
--- Дамп даних таблиці `kim`
+-- Дамп данных таблицы `kim`
 --
 
 INSERT INTO `kim` (`kim_id`, `kim_hard`, `kim`) VALUES
@@ -104,7 +104,7 @@ INSERT INTO `kim` (`kim_id`, `kim_hard`, `kim`) VALUES
 -- --------------------------------------------------------
 
 --
--- Структура таблиці `metalls`
+-- Структура таблицы `metalls`
 --
 
 CREATE TABLE IF NOT EXISTS `metalls` (
@@ -114,20 +114,21 @@ CREATE TABLE IF NOT EXISTS `metalls` (
   `mass` varchar(255) NOT NULL,
   `out_price` varchar(255) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=4 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=5 ;
 
 --
--- Дамп даних таблиці `metalls`
+-- Дамп данных таблицы `metalls`
 --
 
 INSERT INTO `metalls` (`id`, `name`, `price`, `mass`, `out_price`) VALUES
 (2, 'металл оц. 0.55', '185', '8.5', '245'),
-(3, 'резина 1мм', '200', '10', '300');
+(3, 'резина 1мм', '200', '10', '300'),
+(4, 'дерево', '50', '60', '70');
 
 -- --------------------------------------------------------
 
 --
--- Структура таблиці `orders`
+-- Структура таблицы `orders`
 --
 
 CREATE TABLE IF NOT EXISTS `orders` (
@@ -135,14 +136,22 @@ CREATE TABLE IF NOT EXISTS `orders` (
   `order_number` int(11) NOT NULL,
   `article` varchar(255) NOT NULL,
   `discount` varchar(255) NOT NULL DEFAULT '0',
+  `order_description` text,
   PRIMARY KEY (`id`),
   KEY `id` (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=26 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=35 ;
+
+--
+-- Дамп данных таблицы `orders`
+--
+
+INSERT INTO `orders` (`id`, `order_number`, `article`, `discount`, `order_description`) VALUES
+(34, 1, '15-001-12092015', '3', '{"%FIO%":"","%PROJECT_NAME%":"","%APPEAL%":"","%PROJECT_DESCR%":"","%COMPANY_NAME%":"","%ADDRES%":"","%ACC_NUMBER%":"","%CITY%":"","%ESTIMATE%":"2015-09-12","%DATE%":"2015-09-10"}');
 
 -- --------------------------------------------------------
 
 --
--- Структура таблиці `productInOrder`
+-- Структура таблицы `productInOrder`
 --
 
 CREATE TABLE IF NOT EXISTS `productInOrder` (
@@ -153,12 +162,19 @@ CREATE TABLE IF NOT EXISTS `productInOrder` (
   PRIMARY KEY (`id`),
   KEY `orderId` (`orderId`,`productId`),
   KEY `productId` (`productId`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=21 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=30 ;
+
+--
+-- Дамп данных таблицы `productInOrder`
+--
+
+INSERT INTO `productInOrder` (`id`, `orderId`, `productId`, `quantity`) VALUES
+(29, 34, 193, 1);
 
 -- --------------------------------------------------------
 
 --
--- Структура таблиці `products`
+-- Структура таблицы `products`
 --
 
 CREATE TABLE IF NOT EXISTS `products` (
@@ -177,20 +193,19 @@ CREATE TABLE IF NOT EXISTS `products` (
   KEY `category_id` (`category_id`),
   KEY `kim` (`kim`),
   KEY `metall` (`metall`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=189 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=194 ;
 
 --
--- Дамп даних таблиці `products`
+-- Дамп данных таблицы `products`
 --
 
 INSERT INTO `products` (`product_id`, `product_name`, `category_id`, `kim`, `metall`, `table_content`, `alwaysInTable`, `formulas`, `created`, `status`, `template`) VALUES
-(185, 'Утка', 12, 20, 2, '{"0":{"%ROW_NUMBER%":"A1","%ROW_NAME%":"аваисиса","%DATA_CELL%":"A1","%DATA_FORMULA%":"","%INPUT_VALUE%":"-67.93"}}', '{"0":{"%ROW_NUMBER%":"KIM1","%ROW_NAME%":"КИМ","%DATA_CELL%":"KIM1","%DATA_FORMULA%":"","%INPUT_VALUE%":"1.16"},"1":{"%ROW_NUMBER%":"S1","%ROW_NAME%":"Площадь, м2","%DATA_CELL%":"S1","%DATA_FORMULA%":"","%INPUT_VALUE%":""},"2":{"%ROW_NUMBER%":"PR1","%ROW_NAME%":"Цена за м2, грн","%DATA_CELL%":"PR1","%DATA_FORMULA%":"","%INPUT_VALUE%":"185"},"3":{"%ROW_NUMBER%":"SUM1","%ROW_NAME%":"Сумма, грн","%DATA_CELL%":"SUM1","%DATA_FORMULA%":"PRODUCT(S1,PR1)","%INPUT_VALUE%":"0"}}', '{"0":{"formula":"A1*A2","cell":"A3"}}', '2015-07-19 21:44:20', 'draft', '0'),
-(187, 'Прямоугольный (скругленный)', 13, 19, 2, '{"0":{"%ROW_NUMBER%":"A1","%ROW_NAME%":"Высота H,м","%DATA_CELL%":"A1","%DATA_FORMULA%":"","%INPUT_VALUE%":"0.27"},"1":{"%ROW_NUMBER%":"A2","%ROW_NAME%":"Ширина L,м","%DATA_CELL%":"A2","%DATA_FORMULA%":"","%INPUT_VALUE%":"0.29"}}', '{"0":{"%ROW_NUMBER%":"KIM1","%ROW_NAME%":"КИМ","%DATA_CELL%":"KIM1","%DATA_FORMULA%":"","%INPUT_VALUE%":"1.20"},"1":{"%ROW_NUMBER%":"S1","%ROW_NAME%":"Площадь, м2","%DATA_CELL%":"S1","%DATA_FORMULA%":"KIM1*(2*(A1+0.11)*(A1+0.11)+(0.21+3.14*A1/4)*(A2+0.08)+0.21*(A2+0.08))","%INPUT_VALUE%":"0.63"},"2":{"%ROW_NUMBER%":"PR1","%ROW_NAME%":"Цена за м2, грн","%DATA_CELL%":"PR1","%DATA_FORMULA%":"","%INPUT_VALUE%":"185"},"3":{"%ROW_NUMBER%":"SUM1","%ROW_NAME%":"Сумма, грн","%DATA_CELL%":"SUM1","%DATA_FORMULA%":"PRODUCT(S1,PR1)","%INPUT_VALUE%":"116.02"}}', '{"0":{"formula":"KIM1*(2*(A1+0.11)*(A1+0.11)+(0.21+3.14*A1/4)*(A2+0.08)+0.21*(A2+0.08))","cell":"S1"}}', '2015-07-20 22:10:00', 'draft', '0');
+(193, 'Новое изделие', 11, 17, 2, '{"0":{"%ROW_NUMBER%":"A17","%ROW_NAME%":"","%DATA_CELL%":"A17","%DATA_FORMULA%":"","%INPUT_VALUE%":""},"1":{"%ROW_NUMBER%":"A18","%ROW_NAME%":"","%DATA_CELL%":"A18","%DATA_FORMULA%":"","%INPUT_VALUE%":""}}', '{"0":{"%ROW_NUMBER%":"KIM1","%ROW_NAME%":"КИМ","%DATA_CELL%":"KIM1","%DATA_FORMULA%":"","%INPUT_VALUE%":"1.21"},"1":{"%ROW_NUMBER%":"S1","%ROW_NAME%":"Площадь, м2","%DATA_CELL%":"S1","%DATA_FORMULA%":"","%INPUT_VALUE%":"7.32"},"2":{"%ROW_NUMBER%":"PR1","%ROW_NAME%":"Цена входящая за м2, грн","%DATA_CELL%":"PR1","%DATA_FORMULA%":"","%INPUT_VALUE%":"185"},"3":{"%ROW_NUMBER%":"SUM1","%ROW_NAME%":"Цена изделия входящая, грн","%DATA_CELL%":"SUM1","%DATA_FORMULA%":"PRODUCT(S1,PR1)","%INPUT_VALUE%":"1354.20"},"4":{"%ROW_NUMBER%":"PR2","%ROW_NAME%":"Цена исходящая, грн","%DATA_CELL%":"PR2","%DATA_FORMULA%":"","%INPUT_VALUE%":"245"},"5":{"%ROW_NUMBER%":"SUM2","%ROW_NAME%":"Цена изделия исходящая, грн","%DATA_CELL%":"SUM2","%DATA_FORMULA%":"PRODUCT(S1,PR2)","%INPUT_VALUE%":"1793.40"}}', NULL, '2015-09-12 16:02:53', 'draft', '0');
 
 -- --------------------------------------------------------
 
 --
--- Структура таблиці `tabs`
+-- Структура таблицы `tabs`
 --
 
 CREATE TABLE IF NOT EXISTS `tabs` (
@@ -201,20 +216,19 @@ CREATE TABLE IF NOT EXISTS `tabs` (
   PRIMARY KEY (`id`),
   KEY `product_id` (`product_id`),
   KEY `product_id_2` (`product_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=297 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=299 ;
 
 --
--- Дамп даних таблиці `tabs`
+-- Дамп данных таблицы `tabs`
 --
 
 INSERT INTO `tabs` (`id`, `tab_id`, `product_id`, `active`) VALUES
-(293, 'pr1', 185, 0),
-(295, 'pr294', 187, 1);
+(298, 'pr', 193, 1);
 
 -- --------------------------------------------------------
 
 --
--- Структура таблиці `tabs_right`
+-- Структура таблицы `tabs_right`
 --
 
 CREATE TABLE IF NOT EXISTS `tabs_right` (
@@ -223,27 +237,34 @@ CREATE TABLE IF NOT EXISTS `tabs_right` (
   `active` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `order_id` (`order_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=17 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=26 ;
 
 --
--- Обмеження зовнішнього ключа збережених таблиць
+-- Дамп данных таблицы `tabs_right`
+--
+
+INSERT INTO `tabs_right` (`id`, `order_id`, `active`) VALUES
+(25, 34, 1);
+
+--
+-- Ограничения внешнего ключа сохраненных таблиц
 --
 
 --
--- Обмеження зовнішнього ключа таблиці `formulas`
+-- Ограничения внешнего ключа таблицы `formulas`
 --
 ALTER TABLE `formulas`
   ADD CONSTRAINT `formulas_ibfk_1` FOREIGN KEY (`category_id`) REFERENCES `categories` (`category_id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
 
 --
--- Обмеження зовнішнього ключа таблиці `productInOrder`
+-- Ограничения внешнего ключа таблицы `productInOrder`
 --
 ALTER TABLE `productInOrder`
   ADD CONSTRAINT `productinorder_ibfk_1` FOREIGN KEY (`orderId`) REFERENCES `orders` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   ADD CONSTRAINT `productinorder_ibfk_2` FOREIGN KEY (`productId`) REFERENCES `products` (`product_id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
 
 --
--- Обмеження зовнішнього ключа таблиці `products`
+-- Ограничения внешнего ключа таблицы `products`
 --
 ALTER TABLE `products`
   ADD CONSTRAINT `products_ibfk_1` FOREIGN KEY (`category_id`) REFERENCES `categories` (`category_id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
@@ -251,13 +272,13 @@ ALTER TABLE `products`
   ADD CONSTRAINT `products_ibfk_3` FOREIGN KEY (`metall`) REFERENCES `metalls` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
 
 --
--- Обмеження зовнішнього ключа таблиці `tabs`
+-- Ограничения внешнего ключа таблицы `tabs`
 --
 ALTER TABLE `tabs`
   ADD CONSTRAINT `tabs_ibfk_1` FOREIGN KEY (`product_id`) REFERENCES `products` (`product_id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
 
 --
--- Обмеження зовнішнього ключа таблиці `tabs_right`
+-- Ограничения внешнего ключа таблицы `tabs_right`
 --
 ALTER TABLE `tabs_right`
   ADD CONSTRAINT `tabs_right_ibfk_1` FOREIGN KEY (`order_id`) REFERENCES `orders` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION;

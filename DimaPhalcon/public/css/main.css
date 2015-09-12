@@ -69,7 +69,13 @@ html, body {
 #categoriesListContent {
     verflow: auto;
 }
-
+.productTableWrapper {
+    min-width: 500px;
+    max-width: 500px;
+}
+.rowNameInput {
+    width: 250px;
+}
 th {
     text-align: center !important;
     background-color: rgba(43, 41, 51, 0.100);
@@ -120,10 +126,14 @@ h4 {
 .ui-state-default {
     margin: 1px;
 }
-
+.tableContent {
+    margin-top: 10px;
+}
 .blockNameAndCat, .tableContent {
     border: 1px white solid;
     padding: 15px 0;
+    min-width: 670px;
+    max-width: 670px;
 }
 
 .blockNameAndCat:hover, .tableContent:hover {
@@ -284,9 +294,6 @@ ol li:hover {
     /*margin-bottom: 5px;*/
     margin-right: 5px;
 }
-.tableContent {
-    margin-top: 10px;
-}
 .inputWithoutBorders {
     width: 3em;
     border-top: none;
@@ -297,3 +304,10 @@ ol li:hover {
 .skipLineHeight {
     line-height: 14px !important;
 }
+.saveInDB {
+    /*background-color: pink !important;*/
+}
+.addedToOrder {
+   /* background-color: yellow !important;*/
+}
+.clearer { clear: both; }
