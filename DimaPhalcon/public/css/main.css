@@ -310,4 +310,11 @@ ol li:hover {
 .addedToOrder {
    /* background-color: yellow !important;*/
 }
+#addNewSection {
+    cursor: pointer;
+    font-size: 12px;
+}
+#addNewSection:hover {
+    color: green;
+}
 .clearer { clear: both; }

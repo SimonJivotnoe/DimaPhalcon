@@ -1,4 +1,4 @@
-<table class="table table-bordered">
+<table class="table table-bordered" id="orderTable">
     <tbody>
     <tr>
         <th>№</th>
@@ -10,10 +10,14 @@
         <th>Сумма входящая</th>
         <th>Цена</th>
         <th>Сумма</th>
+        <td><span class="glyphicon glyphicon-plus" id="addNewSection" aria-hidden="true"></span></td>
     </tr>
     <tr>
         <th colspan="9" id="colspan">Раздел 1</th>
     </tr>
     %PRODUCTS%
+    <tr id="withoutSectionInOrderTable">
+        <th colspan="9"></th>
+    </tr>
     </tbody>
 </table>

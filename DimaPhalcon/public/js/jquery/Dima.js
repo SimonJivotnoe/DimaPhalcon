@@ -478,8 +478,11 @@
                         quantity: quantity
                     }
                 );
-            });
+            } ).end()
 
+            .find('#addNewSection' ).click(function() {
+                $('#orderTable tbody' ).append('<tr><th colspan="9"><span contenteditable="true">Раздел</span></th></tr>');
+            });
         return html;
     }
 
