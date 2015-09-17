@@ -169,7 +169,7 @@
     }
     
     function addLeftTabContentHandler(html) {
-        console.log(html.find('#saveInDB' ).length);
+        //console.log(html.find('#saveInDB' ).length);
         html
             // edit & save categories list content
             .filter('.blockNameAndCat')
