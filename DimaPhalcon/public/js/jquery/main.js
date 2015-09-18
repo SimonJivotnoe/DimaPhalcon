@@ -72,7 +72,7 @@ $( document ).ready( function ()
     });
     
     // metalls table    
-    $('#addMetall').on('click', function(){console.log('here');
+    $('#addMetall').on('click', function(){
         var data = {
             metall: $('#metallName' ).val(),
             price: KIM.validation($('#metallPrice' ).val()),
@@ -87,7 +87,7 @@ $( document ).ready( function ()
 
     /* create formula */
     var currentCaretPos = 0;
-    $('body').on('click', '#addFormulaInputPr', function(){
+    /*$('body').on('click', '#addFormulaInputPr', function(){
         var caretPos = caretPositionInFormulaInput();
         console.log(caretPos());
         $('.removeFhBtn').hide();
@@ -119,17 +119,7 @@ $( document ).ready( function ()
                 currentCaretPos = currentCaretPos + $(this ).text().length;
             });
         }
-    });
-    $('body').on('keydown', '#addFormulaInputPr', function(e){
-        if (32 === e.keyCode) {
-            return false;
-        }
-    });
-    
-    $('body').on('mouseleave', '#addFormulaInputPr', function(){
-        var caretPos = caretPositionInFormulaInput();
-        currentCaretPos = caretPos();
-    });
+    });*/
     /* add formulas helper to formula input */
     $('body').on('click', '.fhBtn', function(){
         var caretPos = caretPositionInFormulaInput();

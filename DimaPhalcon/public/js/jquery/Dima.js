@@ -169,7 +169,7 @@
     }
     
     function addLeftTabContentHandler(html) {
-        //console.log(html.find('#saveInDB' ).length);
+        console.log(html.find('#addFormulaBtnPr' ));
         html
             // edit & save categories list content
             .filter('.blockNameAndCat')
@@ -306,91 +306,118 @@
 	    
 	    // remove tr in product table
 	    .on('click', '.removeRow', function () {
-            var rowName = $(this).parent().find('.rowValueInput').attr('data-cell');
-            var checkBinding = $('.list-group-item').find('.glyphicon:contains(' + rowName + ')');
-            checkBinding.length ? checkBinding.remove() : 0;
-            $(this).parent().hide('drop');
-            $(this).parent().find('.rowNumber').text('');
-            $(this).parent().find('.rowValueInput').attr('data-cell', '');
-            setTimeout(function () {
-                $(this).parent().remove();
-            }, 500);
+		var rowName = $(this).parent().find('.rowValueInput').attr('data-cell');
+		var checkBinding = $('.list-group-item').find('.glyphicon:contains(' + rowName + ')');
+		checkBinding.length ? checkBinding.remove() : 0;
+		$(this).parent().hide('drop');
+		$(this).parent().find('.rowNumber').text('');
+		$(this).parent().find('.rowValueInput').attr('data-cell', '');
+		setTimeout(function () {
+		    $(this).parent().remove();
+		}, 500);
 	    })
 	    
 	    // change row name in product table
 	    .on('keyup', '.rowNameInput', function () {
-            $(this).attr('value', $(this).val());
-            PRODUCT.saveTable();
+		$(this).attr('value', $(this).val());
+		PRODUCT.saveTable();
 	    })
 	    
 	    // change value in product table by mouse wheel
 	    .on('mousewheel', '.rowValueInput', function (e) {
-            var thisVal = Number($(this).val());
-            if (1 === e.deltaY) {
-                $(this).val((thisVal + 0.01).toFixed(2)).attr('value', (thisVal + 0.01).toFixed(2));
-            } else if (-1 === e.deltaY) {
-                $(this).val((thisVal - 0.01).toFixed(2)).attr('value', (thisVal - 0.01).toFixed(2));
-            }
-            $('#calx').calx();
-            PRODUCT.saveTable();
+		var thisVal = Number($(this).val());
+		if (1 === e.deltaY) {
+		    $(this).val((thisVal + 0.01).toFixed(2)).attr('value', (thisVal + 0.01).toFixed(2));
+		} else if (-1 === e.deltaY) {
+		    $(this).val((thisVal - 0.01).toFixed(2)).attr('value', (thisVal - 0.01).toFixed(2));
+		}
+		$('#calx').calx();
+		PRODUCT.saveTable();
 	    })
 	    
 	    // change value in product table by keys
 	    .on('keydown', '.rowValueInput', function (e) {
-            switch (e.keyCode) {
-                case 38: // UP
-                PRODUCT.catchKey(this, '+', 1);
-                e.preventDefault();
-                break;
-                case 40: // DOWN
-                PRODUCT.catchKey(this, '-', 1);
-                e.preventDefault();
-                break;
-                case 191: // /
-                PRODUCT.catchKey(this, '+', 10);
-                e.preventDefault();
-                break;
-                case 17: // Ctrl
-                PRODUCT.catchKey(this, '-', 10);
-                e.preventDefault();
-                break;
-                case 190: // >
-                PRODUCT.catchKey(this, '+', 100);
-                e.preventDefault();
-                break;
-                case 18: // Alt
-                PRODUCT.catchKey(this, '-', 100);
-                e.preventDefault();
-                break;
-                case 32: // Space
-                e.preventDefault();
-                break;
-            }
+		switch (e.keyCode) {
+		    case 38: // UP
+		    PRODUCT.catchKey(this, '+', 1);
+		    e.preventDefault();
+		    break;
+		    case 40: // DOWN
+		    PRODUCT.catchKey(this, '-', 1);
+		    e.preventDefault();
+		    break;
+		    case 191: // /
+		    PRODUCT.catchKey(this, '+', 10);
+		    e.preventDefault();
+		    break;
+		    case 17: // Ctrl
+		    PRODUCT.catchKey(this, '-', 10);
+		    e.preventDefault();
+		    break;
+		    case 190: // >
+		    PRODUCT.catchKey(this, '+', 100);
+		    e.preventDefault();
+		    break;
+		    case 18: // Alt
+		    PRODUCT.catchKey(this, '-', 100);
+		    e.preventDefault();
+		    break;
+		    case 32: // Space
+		    e.preventDefault();
+		    break;
+		}
 	    })
 	    
 	    // prevent space and comma default action
 	    .on('keyup', '.rowValueInput', function (e) {
-            var notToReact = [17, 18, 32, 37, 38, 39, 40, 110, 188, 190, 191],
-                text = $(this).val(),
-                caretPos;
-            if (text.indexOf(',') !== -1) {
-                text = text.replace(',', '.');
-                $(this).val(text);
-            }
-            $(this).attr('value', text);
-            if (-1 === $.inArray(e.keyCode, notToReact)) {
-                caretPos = this.selectionStart;
-                if (96 === e.keyCode && '.' === text.charAt((text.length - 2))) {
+		var notToReact = [17, 18, 32, 37, 38, 39, 40, 110, 188, 190, 191],
+		    text = $(this).val(),
+		    caretPos;
+		if (text.indexOf(',') !== -1) {
+		    text = text.replace(',', '.');
+		    $(this).val(text);
+		}
+		$(this).attr('value', text);
+		if (-1 === $.inArray(e.keyCode, notToReact)) {
+		    caretPos = this.selectionStart;
+		    if (96 === e.keyCode && '.' === text.charAt((text.length - 2))) {
 
-                } else {
-                $('#calx').calx();
-                text = '' + $(this).val();
-                $(this).caret(caretPos);
-                ('.' === text.charAt((text.length - 2))) ? $(this).caret((text.length - 1)) : 0;
-                PRODUCT.saveTable();
-                }
-            }
+		    } else {
+		    $('#calx').calx();
+		    text = '' + $(this).val();
+		    $(this).caret(caretPos);
+		    ('.' === text.charAt((text.length - 2))) ? $(this).caret((text.length - 1)) : 0;
+		    PRODUCT.saveTable();
+		    }
+		}
 	    })
+	    
+	    // add new formula
+	    .find('#addFormulaBtnPr').click(function(){
+		if ('' !== $('#addFormulaInputPr').val()) {
+		    $( '#formulasList' )
+			    .append('<li class="list-group-item formula"><span class="formulaValue">'
+			    + $( '#addFormulaInputPr' ).val() + '</span></li>');
+		    PRODUCT.cancelInputFotmula();
+		    $( '#addFormulaInputPr' ).val('');
+		    PRODUCT.addNewFormula(PRODUCT.getFormulasList());
+		}
+	    }).end()
+	    
+	    .find('#addFormulaInputPr')
+		.click(function(){
+		    
+		})
+		.keydown(function(e){
+		    if (32 === e.keyCode) {
+			return false;
+		    }
+		})
+		.mouseleave(function(){
+		    //var caretPos = PRODUCT.caretPositionInFormulaInput();
+		    localStorage.currentCaretPos = PRODUCT.caretPositionInFormulaInput()();
+		})
+		
 	    
         return html;
     }
@@ -625,6 +652,7 @@
             },
 
             getLeftTabContent: function(productId, tabId) {
+		localStorage.currentCaretPos = 0;
                 $.ajax( {
                     url   : URL_TABS + 'getLeftTabContent/' + productId,
                     method: 'GET'
@@ -939,7 +967,52 @@
 		    $(el).val((thisVal - step).toFixed(2)).attr('value', (thisVal - step).toFixed(2));
 		}
 		$('#calx').calx();
-		PRODUCT.saveTable(MAIN.productId);
+		PRODUCT.saveTable();
+	    },
+	    
+	    addNewFormula: function (formulas, binding) {
+		$.ajax( {
+		    url   : URL_PRODUCT + 'addNewFormula',
+		    method: 'POST',
+		    data: {
+			formulas: formulas,
+			prId : MAIN.productId
+		    }
+		} ).then( function ( data )
+		{console.log(data);
+		    if (true === binding) {
+		       PRODUCT.saveTable();         
+		    }
+		});
+	    },
+	    
+	    getFormulasList: function() {
+		var formulasList = {},
+		    formula,
+		    cell;
+		$.each($('.formula'), function(key, val) {
+		    formula = $('.formulaValue', val ).text();
+		    cell = $.trim($('.cellBind', val ).text());
+		    formulasList[key] = {
+			formula: formula,
+			cell: cell
+		    };
+		});
+		return JSON.stringify(formulasList);
+	    },
+	    
+	    cancelInputFotmula: function() {
+		$('#addFormulaInputPr' ).css('border-color', '' ).val('');
+		$('#addFormulaInputPr, .rowNumber').off('click');
+		$('body').off('keypress');
+		$('body').off('click', '.rowNumber');
+		$('body').css('cursor', 'auto');
+		$(document).keydown(function (e) {
+		    if (e.which === 8) {
+			return true;
+		    }
+		});
+		$('#formulasHelper' ).hide('slide');
 	    }
         },
 

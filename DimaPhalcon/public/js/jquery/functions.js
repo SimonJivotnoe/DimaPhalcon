@@ -65,22 +65,6 @@ var app = {
 
             });
         },
-        addNewFormula: function (formulas, binding) {
-            var self = this;
-            $.ajax( {
-                url   : app.BASE_URL + self.URL + 'addNewFormula',
-                method: 'POST',
-                data: {
-                    formulas: formulas,
-                    prId : app.tabs.dom.productId
-                }
-            } ).then( function ( data )
-            {console.log(data);
-                if (true === binding) {
-                   self.saveTable();         
-                }
-            });
-        },
         checkInputOnFormula: function(formula, cell) {
             var tableContent = this.getTableContent(this.dom.sortable + ' li'),
                 alwaysInTable = this.getTableContent(this.dom.alw + ' li'),
@@ -101,20 +85,6 @@ var app = {
 
             });
             return res;
-        },
-        getFormulasList: function() {
-            var formulasList = {},
-                formula,
-                cell;
-            $.each($('.formula'), function(key, val) {
-                formula = $('.formulaValue', val ).text();
-                cell = $.trim($('.cellBind', val ).text());
-                formulasList[key] = {
-                    formula: formula,
-                    cell: cell
-                };
-            });
-            return JSON.stringify(formulasList);
         }
     },
     kim: {
@@ -127,19 +97,6 @@ var app = {
     order: {
     }
 };
-function cancelInputFotmula() {
-    $('#addFormulaInputPr' ).css('border-color', '' ).val('');
-    $('#addFormulaInputPr, .rowNumber').off('click');
-    $('body').off('keypress');
-    $('body').off('click', '.rowNumber');
-    $('body').css('cursor', 'auto');
-    $(document).keydown(function (e) {
-        if (e.which === 8) {
-            return true;
-        }
-    });
-    $('#formulasHelper' ).hide('slide');
-}
 
 function addWhereCaret(caretPos, what) {console.log(caretPos);
     var currentVal =  $('#addFormulaInputPr').val();
