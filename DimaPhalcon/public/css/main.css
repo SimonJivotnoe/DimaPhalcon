@@ -183,8 +183,9 @@ ol li {
 ol li:hover {
     border: 1px green solid
 }
-.formulaBtnGroup {
+.formulaBtnGroupPr {
     margin: 15px 0;
+    display: none;
 }
 .removeRow, .removeKim, .removeMetall {
     opacity: 0.5;

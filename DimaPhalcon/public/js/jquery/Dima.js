@@ -398,27 +398,93 @@
 		    $( '#formulasList' )
 			    .append('<li class="list-group-item formula"><span class="formulaValue">'
 			    + $( '#addFormulaInputPr' ).val() + '</span></li>');
-		    PRODUCT.cancelInputFotmula();
+		    PRODUCT.cancelInputFormula();
 		    $( '#addFormulaInputPr' ).val('');
 		    PRODUCT.addNewFormula(PRODUCT.getFormulasList());
 		}
 	    }).end()
-	    
+
+        // create formula
 	    .find('#addFormulaInputPr')
-		.click(function(){
-		    
-		})
-		.keydown(function(e){
-		    if (32 === e.keyCode) {
-			return false;
-		    }
-		})
-		.mouseleave(function(){
-		    //var caretPos = PRODUCT.caretPositionInFormulaInput();
-		    localStorage.currentCaretPos = PRODUCT.caretPositionInFormulaInput()();
-		})
-		
-	    
+            .click(function(){
+                var currentVal, ls;
+                $('.removeFhBtn').hide();
+                $('#addFormulaInputPr' ).css('border-color', 'rgba(82, 168, 236, 0.8)');
+                $('#formulasHelper' ).show('scale');
+                if ('auto' === $('body').css('cursor')) {
+                    $('body').css('cursor', 'pointer');
+                    $(document )
+                        .off('keydown')
+                        .keydown(function (e) {
+                            if (!$('#addFormulaInputPr').is(":focus")  && 'pointer' === $('body').css('cursor')) {
+                                if (e.keyCode === 8) {
+                                    currentVal =  $('#addFormulaInputPr').val();
+                                    ls = localStorage.currentCaretPos;
+                                    currentVal = PRODUCT.removeChar(currentVal, ls - 1);
+                                    $('#addFormulaInputPr').val(currentVal);
+                                    localStorage.currentCaretPos--;
+                                    e.preventDefault();
+                                }
+                            }
+                        });
+                    $('body')
+                        .off('keypress')
+                        .keypress(function(e) {
+                            if (!$('#addFormulaInputPr').is(":focus") && 'pointer' === $('body').css('cursor')) {
+                                if (32 !== e.keyCode) {
+                                    PRODUCT.addWhereCaret(localStorage.currentCaretPos, String.fromCharCode(e.keyCode));
+                                    localStorage.currentCaretPos++;
+                                }
+                            }
+                        });
+                    $('body')
+                        .off('keyup')
+                        .keyup(function() {
+                        PRODUCT.toggleAddFormula();
+                    });
+                    $('body').on('click', '.rowNumber', function(){
+                        PRODUCT.addElementToFormulaInput(this);
+                    });
+                }
+            })
+            .keydown(function(e){
+                if (32 === e.keyCode) {
+                return false;
+                }
+            })
+            .mouseleave(function(){
+                localStorage.currentCaretPos = document.getElementById('addFormulaInputPr').selectionStart;
+            } ).end()
+
+		//cancel create new formula
+        .find('#cancelFormulaBtnPr' ).click(function(){
+            PRODUCT.cancelInputFormula();
+        } ).end()
+
+        // add formulas helper to formula input
+        .on('click', '.fhBtn', function(){
+            PRODUCT.addElementToFormulaInput(this);
+        })
+
+        // show remove formulas helper
+        .on('mouseover', '.fhBtn', function() {
+            $( '.removeFhBtn', this).show('fast');
+        })
+
+        // hide remove formulas helper
+        .on('mouseleave', '.fhBtn', function() {
+            $( '.removeFhBtn', this).hide('fast');
+        })
+
+        // remove formulas helper
+        .on('click', '.removeFhBtn', function(e) {
+            e.stopPropagation();
+            e.preventDefault();
+            var fhText = $(this ).parent().text();
+            PRODUCT.removeFormulasHelper(this, fhText);
+            $(this ).parent().fadeOut('slow');
+        })
+
         return html;
     }
     
@@ -652,7 +718,7 @@
             },
 
             getLeftTabContent: function(productId, tabId) {
-		localStorage.currentCaretPos = 0;
+		        localStorage.currentCaretPos = 0;
                 $.ajax( {
                     url   : URL_TABS + 'getLeftTabContent/' + productId,
                     method: 'GET'
@@ -905,7 +971,6 @@
         // product section
         product: {
             saveTable: function () {
-                var self = this;
                 $.ajax( {
                     url   : URL_PRODUCT + 'changeTableContent',
                     method: 'POST',
@@ -921,8 +986,7 @@
             },
             
             getTableContent: function (dom) {
-                var self = this,
-                    tableContent = {},
+                var tableContent = {},
                     i = 0,
                     temp;
                 $.each($(dom), function(key, val) {
@@ -942,7 +1006,6 @@
             },
             
             createTable: function (tableContent, alwaysInTable) {
-                var self = this;
                 $.ajax({
                     url: URL_PRODUCT + 'createTable',
                     method: 'POST',
@@ -952,68 +1015,105 @@
                         alwaysInTable: JSON.stringify(alwaysInTable)
                     }
                 }).then(function (data)
-                {console.log(data);
+                {
                     $('#sortable').html(data[0]);
                     $('#alwaysInTable').html(data[1]);
                     $('.removeRow').hide();
                 });
             },
 	    
-	    catchKey: function (el, mathAction, step) {
-		var thisVal = Number($(el).val());
-		if ('+' === mathAction) {
-		    $(el).val((thisVal + step).toFixed(2)).attr('value', (thisVal + step).toFixed(2));
-		} else {
-		    $(el).val((thisVal - step).toFixed(2)).attr('value', (thisVal - step).toFixed(2));
-		}
-		$('#calx').calx();
-		PRODUCT.saveTable();
-	    },
+            catchKey: function (el, mathAction, step) {
+                var thisVal = Number($(el).val());
+                if ('+' === mathAction) {
+                    $(el).val((thisVal + step).toFixed(2)).attr('value', (thisVal + step).toFixed(2));
+                } else {
+                    $(el).val((thisVal - step).toFixed(2)).attr('value', (thisVal - step).toFixed(2));
+                }
+                $('#calx').calx();
+                PRODUCT.saveTable();
+            },
 	    
-	    addNewFormula: function (formulas, binding) {
-		$.ajax( {
-		    url   : URL_PRODUCT + 'addNewFormula',
-		    method: 'POST',
-		    data: {
-			formulas: formulas,
-			prId : MAIN.productId
-		    }
-		} ).then( function ( data )
-		{console.log(data);
-		    if (true === binding) {
-		       PRODUCT.saveTable();         
-		    }
-		});
-	    },
+            addNewFormula: function (formulas, binding) {
+                $.ajax( {
+                    url   : URL_PRODUCT + 'addNewFormula',
+                    method: 'POST',
+                    data: {
+                    formulas: formulas,
+                    prId : MAIN.productId
+                    }
+                } ).then( function ( data )
+                {console.log(data);
+                    if (true === binding) {
+                       PRODUCT.saveTable();
+                    }
+                });
+            },
 	    
-	    getFormulasList: function() {
-		var formulasList = {},
-		    formula,
-		    cell;
-		$.each($('.formula'), function(key, val) {
-		    formula = $('.formulaValue', val ).text();
-		    cell = $.trim($('.cellBind', val ).text());
-		    formulasList[key] = {
-			formula: formula,
-			cell: cell
-		    };
-		});
-		return JSON.stringify(formulasList);
-	    },
-	    
-	    cancelInputFotmula: function() {
-		$('#addFormulaInputPr' ).css('border-color', '' ).val('');
-		$('#addFormulaInputPr, .rowNumber').off('click');
-		$('body').off('keypress');
-		$('body').off('click', '.rowNumber');
-		$('body').css('cursor', 'auto');
-		$(document).keydown(function (e) {
-		    if (e.which === 8) {
-			return true;
-		    }
-		});
-		$('#formulasHelper' ).hide('slide');
-	    }
+            getFormulasList: function() {
+                var formulasList = {},
+                    formula,
+                    cell;
+                $.each($('.formula'), function(key, val) {
+                    formula = $('.formulaValue', val ).text();
+                    cell = $.trim($('.cellBind', val ).text());
+                    formulasList[key] = {
+                    formula: formula,
+                    cell: cell
+                    };
+                });
+                return JSON.stringify(formulasList);
+            },
+
+            toggleAddFormula: function() {
+                '' !== $('#addFormulaInputPr').val() ? $('.formulaBtnGroupPr' ).show('drop') : $('.formulaBtnGroupPr' ).hide('drop');
+            },
+
+            cancelInputFormula: function() {
+                $('#addFormulaInputPr' ).css('border-color', '' ).val('');
+                $('.formulaBtnGroupPr' ).hide('drop');
+                $('body')
+                    .off('keypress')
+                    .off('click', '.rowNumber')
+                    .css('cursor', 'auto');
+                $(document).keydown(function (e) {
+                    if (e.which === 8) {
+                    return true;
+                    }
+                });
+                $('#formulasHelper' ).hide('slide');
+            },
+
+            addElementToFormulaInput: function(scope) {
+                PRODUCT.addWhereCaret(localStorage.currentCaretPos, $(scope ).text());
+                localStorage.currentCaretPos = parseInt(localStorage.currentCaretPos) + parseInt($(scope ).text().length);
+                PRODUCT.toggleAddFormula();
+            },
+
+            removeFormulasHelper: function(dom, fhText) {
+                $.ajax( {
+                    url   : URL_PRODUCT + 'removeBtnFromFormulasHelper',
+                    method: 'POST',
+                    data: {'fhText': fhText}
+                } ).then( function ( data )
+                {
+                    $(dom ).parent().fadeOut('slow');
+
+                });
+            },
+
+            addWhereCaret: function(caretPos, what) {
+                var currentVal =  $('#addFormulaInputPr').val();
+                $('#addFormulaInputPr').val(currentVal.substring(0, caretPos) + what + currentVal.substring(caretPos) );
+            },
+
+            removeChar: function(string, index){
+                var res = '';
+                for (var i in string) {
+                    (index !== Number(i)) ? res = res + string[i] : 1;
+                }
+
+                return res;
+            }
         },
 
         // order section
@@ -1130,7 +1230,6 @@
             },
             
             editKim: function (kimId, kim, kimHard, save) {
-                var self = this;
                 $.ajax( {
                     url   : URL_KIM + 'editKim',
                     method: 'POST',
@@ -1183,7 +1282,6 @@
         // metalls section        
         metalls: {
             getMetallsTable: function() {
-                var self = this;
                 $.ajax({
                     url: URL_METALLS + 'getMetallsTable',
                     method: 'GET'
@@ -1204,12 +1302,12 @@
                         METALLS.getMetallsList();
                     } else {
                         $(scope)
-                                .parents('tr')
-                                .find('.metallName, .metallPrice, .metallMass, .metallOutPrice')
-                                .css({
-                                    'border': '3px solid hsl(0, 69%, 22%)',
-                                    'border-radius': '2px'
-                                });
+                            .parents('tr')
+                            .find('.metallName, .metallPrice, .metallMass, .metallOutPrice')
+                            .css({
+                                'border': '3px solid hsl(0, 69%, 22%)',
+                                'border-radius': '2px'
+                            });
                     }
                 });
             },

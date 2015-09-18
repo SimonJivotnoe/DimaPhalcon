@@ -82,68 +82,6 @@ $( document ).ready( function ()
         METALLS.addMetallToTable(data);
     });  
     /*----INSIDE TAB START----*/
-
-    /* SAVE CHANGES IN TABLE */
-
-    /* create formula */
-    var currentCaretPos = 0;
-    /*$('body').on('click', '#addFormulaInputPr', function(){
-        var caretPos = caretPositionInFormulaInput();
-        console.log(caretPos());
-        $('.removeFhBtn').hide();
-        $('#addFormulaInputPr' ).css('border-color', 'rgba(82, 168, 236, 0.8)');
-        $('#formulasHelper' ).show('scale');
-        if ('auto' === $('body').css('cursor')) {
-            $('body').css('cursor', 'pointer');
-            $(document).keydown(function (e) {
-                if (!$('#addFormulaInputPr').is(":focus")  && 'pointer' === $('body').css('cursor')) {
-                    if (e.keyCode === 8) {
-                        var currentVal =  $('#addFormulaInputPr').val();
-                        currentVal = removeChar(currentVal, currentCaretPos - 1);
-                        $('#addFormulaInputPr').val(currentVal);
-                        currentCaretPos--;
-                        e.preventDefault();
-                    }
-                }
-            });
-            $('body').on('keypress',function(e) {
-                if (!$('#addFormulaInputPr').is(":focus") && 'pointer' === $('body').css('cursor')) {
-                    if (32 !== e.keyCode) {
-                        addWhereCaret(currentCaretPos, String.fromCharCode(e.keyCode));
-                        currentCaretPos++;
-                    }
-                }
-            });
-            $('body').on('click', '.rowNumber', function(){
-                addWhereCaret(currentCaretPos, $(this ).text());
-                currentCaretPos = currentCaretPos + $(this ).text().length;
-            });
-        }
-    });*/
-    /* add formulas helper to formula input */
-    $('body').on('click', '.fhBtn', function(){
-        var caretPos = caretPositionInFormulaInput();
-        addWhereCaret(caretPos(), $(this ).text());
-    });
-    /* show remove formulas helper */
-    $('body').on('mouseover', '.fhBtn', function() {
-        $( '.removeFhBtn', this).show('fast');
-    });
-    /* hide remove formulas helper */
-    $('body').on('mouseleave', '.fhBtn', function() {
-        $( '.removeFhBtn', this).hide('fast');
-    });
-    /* remove formulas helper*/
-    $('body').on('click', app.product.dom.removeFhBtn, function(e) {
-        e.stopPropagation();
-        e.preventDefault();
-        var fhText = $(this ).parent().text();
-        app.product.removeFormulasHelper(this, fhText);
-        $(this ).parent().fadeOut('slow');
-    });
-    $('body').on('click', '#cancelFormulaBtnPr', function(){
-        cancelInputFotmula();
-    });
     $('body').on('click', app.product.dom.addFormulaBtnPr, function(){
         if ('' !== app.product.formulaInputValue) {
             $( app.product.dom.formulasList )

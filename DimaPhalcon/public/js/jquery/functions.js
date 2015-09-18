@@ -31,9 +31,6 @@ var app = {
            formulasList: '#formulasList',
            addFormulaInputPr: '#addFormulaInputPr',
            removeFhBtn: '.removeFhBtn'
-        },        
-        formulaInputValue: function() {
-            return $('#addFormulaInputPr').val();
         },
         addBtnToFormulasHelper: function (newFl) {
             var self = this;
@@ -50,18 +47,6 @@ var app = {
                     $('.justCreated' ).show('slow' ).removeClass('.justCreated');
                     $('#addNewFhBtnInput' ).val('');
                 }
-
-            });
-        },
-        removeFormulasHelper: function(dom, fhText) {
-            var self = this;
-            $.ajax( {
-                url   : app.BASE_URL + self.URL + 'removeBtnFromFormulasHelper',
-                method: 'POST',
-                data: {'fhText': fhText}
-            } ).then( function ( data )
-            {
-                $(dom ).parent().fadeOut('slow');
 
             });
         },
@@ -98,10 +83,7 @@ var app = {
     }
 };
 
-function addWhereCaret(caretPos, what) {console.log(caretPos);
-    var currentVal =  $('#addFormulaInputPr').val();
-    $('#addFormulaInputPr').val(currentVal.substring(0, caretPos) + what + currentVal.substring(caretPos) );
-}
+
 
 function caretPositionInFormulaInput() {
     var caret = 0;
@@ -121,13 +103,4 @@ function caretAfterBlur() {
             console.log(caret);
         }       
     };     
-}
-
-function removeChar(string, index){
-    var res = '';
-    for (var i in string) {
-      (index !== Number(i)) ? res = res + string[i] : 1;        
-    }
-  
- return res;
 }
