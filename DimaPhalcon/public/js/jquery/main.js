@@ -7,7 +7,8 @@ $( document ).ready( function ()
         ORDER = d.order,
         PRODUCT = d.product,
         KIM = d.kim,
-        METALLS = d.metalls;
+        METALLS = d.metalls,
+        MENU = d.menu;
     
     // split monitor
     if (undefined === localStorage.split) {
@@ -20,7 +21,27 @@ $( document ).ready( function ()
         localStorage.split = $('#divider').css('left');
     });
     
-    
+    // MENU
+    $( "#menuOpen" )
+        .mouseenter(function() {
+            MENU.onHoverElement({
+                scope: this,
+                css: { "marginTop": "0px" },
+                speed: 200
+            });
+            $('span', this ).removeClass().addClass('glyphicon glyphicon-folder-open');
+        })
+        .mouseleave(function() {
+            MENU.onHoverElement({
+                scope: this,
+                css: { "marginTop": "-8px" },
+                speed: 200
+            });
+            $('span', this ).removeClass().addClass('glyphicon glyphicon-folder-close');
+        })
+        .click(function(){
+            $('#openMenuModal').modal('show');
+        })
     /*----PREFERENCES_START----*/
     
     // handlers
@@ -55,6 +76,11 @@ $( document ).ready( function ()
     /*----NEW_TAB_END----*/
 
     // RIGHT PART
+
+    // create new order
+    $('#addNewTabRight' ).click(function() {
+        ORDER.createNewOrder();
+    })
     // kim tab
     // kim table
     $('#kim').on('click', function(){
@@ -80,43 +106,15 @@ $( document ).ready( function ()
             outPrice: KIM.validation($('#metallOutPrice' ).val())
         };
         METALLS.addMetallToTable(data);
-    });  
-    /*----INSIDE TAB START----*/
-    $('body').on('click', app.product.dom.addFormulaBtnPr, function(){
-        if ('' !== app.product.formulaInputValue) {
-            $( app.product.dom.formulasList )
-                    .append('<li class="list-group-item formula"><span class="formulaValue">'
-                    + $( app.product.dom.addFormulaInputPr ).val() + '</span></li>');
-            cancelInputFotmula();
-            $( app.product.dom.addFormulaInputPr ).val('');
-            app.product.addNewFormula(app.product.getFormulasList);
-        }
-    });
-    $('body').on('click', '.addNewFhBtn', function(){
-        $('body').css('cursor', 'pointer');
-        var newFl = $('#addNewFhBtnInput' ).val();
-        app.product.addBtnToFormulasHelper(newFl);
-    });
-    $('body').on('click', '#addNewFhBtnInput', function(){
-        $('#addFormulaInputPr, .rowNumber').off('click');
-        $('body').off('keypress');
-        $('body').off('click', '.rowNumber');
-        $('body').css('cursor', 'auto');
     });
 
-    $('body').on('mouseover', '.list-group-item', function(){
-        $(this ).addClass('list-group-item-info');
-    });
-    $('body').on('mouseleave', '.list-group-item', function(){
-        $(this ).removeClass('list-group-item-info');
-    });
     $(function(){
         var self;
         var formula;
         var cell;
         $('body').on('click', '.list-group-item', function(){
             $('#formulasList li' ).removeClass('list-group-item-success');
-            cancelInputFotmula();
+            PRODUCT.cancelInputFormula();
             self = this;
             formula = $('.formulaValue', self ).text();
             $(self ).toggleClass('list-group-item-success');
@@ -124,7 +122,7 @@ $( document ).ready( function ()
         $('body').on('mouseover', '.rowValue', function() {
             if (undefined !== self) {
                 if ( -1 === formula.search($( '.rowValueInput', this ).attr( 'data-cell' ))) {
-                    if (app.product.checkInputOnFormula(formula, $( '.rowValueInput', this ).attr( 'data-cell' ))) {
+                    if (PRODUCT.checkInputOnFormula(formula, $( '.rowValueInput', this ).attr( 'data-cell' ))) {
                         $('.rowValueInput', this).css(
                                 {
                                     'background': 'hsl(145, 38%, 53%)',
@@ -146,7 +144,7 @@ $( document ).ready( function ()
         $('body').on('click', '.rowValueInput', function(){
             if (undefined !== self && false === $(this ).prop('disabled'))
             {
-                if (app.product.checkInputOnFormula(formula, $( this ).attr( 'data-cell' ))) {
+                if (PRODUCT.checkInputOnFormula(formula, $( this ).attr( 'data-cell' ))) {
                    $( this ).attr( 'data-formula', formula ).blur();
                     cell = $( this ).attr( 'data-cell' );
                     $( '#calx' ).calx();
@@ -155,36 +153,10 @@ $( document ).ready( function ()
                     $( self ).removeClass( 'list-group-item-success' );
                     $(this).css('background', '');
                     self = undefined;
-                    app.product.addNewFormula(app.product.getFormulasList, true);
+                    PRODUCT.addNewFormula(PRODUCT.getFormulasList, true);
                 }                
             }
         });
     });
-
-    $('body').on('mouseover', '.glyphicon-retweet', function(){
-        $(this ).removeClass('glyphicon glyphicon-retweet' ).addClass('glyphicon glyphicon-resize-full');
-    });
-    $('body').on('mouseleave', '.glyphicon-resize-full', function(){
-        $(this ).removeClass('glyphicon glyphicon-resize-full' ).addClass('glyphicon glyphicon-retweet');
-    });
-    $('body').on('click', '.glyphicon-resize-full', function(e){
-        e.stopPropagation();
-        e.preventDefault();
-        var bindCell = $(this ).text();
-        $('.rowValueInput[data-cell=' +bindCell + ']' )
-                .removeAttr('color' ).val('' )
-                .attr('value', '')
-                .attr('data-formula', '')
-                .css('color', '' );
-        $('.rowValueInput[data-cell=' +bindCell + ']' ).parent().parent().find('.rowNameInput').css('color', '' );
-        $('.rowValueInput[data-cell=' +bindCell + ']' ).parent().parent().css({'background' : '', 'color' : ''});
-        $(this ).parent().removeClass('list-group-item-info');
-        $(this ).remove();
-        $( '#calx' ).calx();
-        app.product.addNewFormula(app.product.getFormulasList, false);
-        var tableContent = app.product.getTableContent(app.product.dom.sortable + ' li');
-        var alwaysInTable = app.product.getTableContent(app.product.dom.alw + ' li');
-        app.product.createTable(tableContent, alwaysInTable);
-    });  
 
 } );

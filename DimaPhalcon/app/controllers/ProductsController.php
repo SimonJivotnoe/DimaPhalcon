@@ -127,6 +127,24 @@ class ProductsController extends \Phalcon\Mvc\Controller
         }
     }
 
+    public function saveProductInDBAction(){
+        if ($this->request->isAjax() && $this->request->isPost()) {
+            $prId = $this->request->getPost('prId');
+            $pr = Products::findFirst(array("product_id = '$prId'"));
+            $pr->setStatus('save');
+            if ($pr->save() == false) {
+                $this->response->setContentType('application/json', 'UTF-8');
+                $this->response->setJsonContent(false);
+            } else {
+                $this->response->setContentType('application/json', 'UTF-8');
+                $this->response->setJsonContent(true);
+            }
+            return $this->response;
+        } else {
+            $this->response->redirect('');
+        }
+    }
+
     public function createTableRes($table, $template){
         $substObj = new Substitution();
         $tabContArr = [];

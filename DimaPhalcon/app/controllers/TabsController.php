@@ -111,7 +111,7 @@ class TabsController extends \Phalcon\Mvc\Controller
                 $css = '';
                 $prStatus = $product->getStatus();
                 if ('draft' === $prStatus) {
-                    $prStatus = '<button type="button" class="btn btn-danger btn-sm" id="saveInDB">Сохранить в базе данных</button>';
+                    $prStatus = '<button type="button" class="btn btn-danger btn-sm" id="saveInDB">Сохранить в БД</button>';
                 } else if ('save' === $prStatus){
                     $prStatus = 'Сохранено в базе данных' ;
                     $css = 'saveInDB';
@@ -318,7 +318,7 @@ class TabsController extends \Phalcon\Mvc\Controller
                         $tabsList = array();
                         if ($val->getActive()) {
                             $tabsList['%ACTIVE%'] = 'active';
-                            $active = $val->getId();
+                            $active = 'or' . $val->getId();
                             $orderId = $val->getOrderId();
                         } else {
                             $tabsList['%ACTIVE%'] = '';
@@ -371,6 +371,10 @@ class TabsController extends \Phalcon\Mvc\Controller
             $substObj = new Substitution();
 
             $rows = (array) json_decode($order->getOrderDescription());
+            $status = $order->getStatus();
+            'draft' === $status
+                ? $rows['%SAVE_ORDER_IN_DB%'] = '<button type="button" class="btn btn-danger btn-sm" id="saveOrderInDB">Сохранить в БД</button>'
+                : $rows['%SAVE_ORDER_IN_DB%'] = 'Сохранено в базе данных';
             $rows['%ORDER_NAME%'] = $order->getArticle();
             $discount = $order->getDiscount();
             $rows['%DISCOUNT%'] = $discount;
@@ -396,27 +400,28 @@ class TabsController extends \Phalcon\Mvc\Controller
                 }
                 return false;
             }
-            $order = Orders::findFirst($orderId);
-            if ($order == false) {
-                echo "Мы не можем сохранить робота прямо сейчас: \n";
-                foreach ($order->getMessages() as $message) {
-                    echo $message, "\n";
-                }
-                return false;
-            }
+            $rows = ['%PRODUCTS%' => ''];
             $substObj = new Substitution();
+            if (count($productsInOrder)) {
+                $order = Orders::findFirst($orderId);
+                if ($order == false) {
+                    echo "Мы не можем сохранить робота прямо сейчас: \n";
+                    foreach ($order->getMessages() as $message) {
+                        echo $message, "\n";
+                    }
+                    return false;
+                }
 
-            $rows = array();
-            $products = array();
-            $discount = $order->getDiscount();
-            foreach ($productsInOrder as $val) {
-                $products[$val->getProductId()] = $val->getQuantity();
+                $products = array();
+                $discount = $order->getDiscount();
+                foreach ($productsInOrder as $val) {
+                    $products[$val->getProductId()] = $val->getQuantity();
+                }
+                $productObj = new ProductsController;
+                foreach ($products as $key => $val) {
+                    $rows['%PRODUCTS%'] .= $productObj->createProductInOrder($key, $val, $orderId, $discount);
+                }
             }
-            $productObj = new ProductsController;
-            foreach ($products as $key => $val) {
-                $rows['%PRODUCTS%'] .= $productObj->createProductInOrder($key, $val, $orderId, $discount);
-            }
-
             $res = $substObj->subHTMLReplace('orderTable.html', $rows);
             $this->response->setJsonContent(['html' => $res]);
 

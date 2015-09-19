@@ -8,7 +8,7 @@ class Orders extends \Phalcon\Mvc\Model
      * @var integer
      */
     protected $id;
-    
+
     /**
      *
      * @var integer
@@ -26,12 +26,18 @@ class Orders extends \Phalcon\Mvc\Model
      * @var string
      */
     protected $discount;
-    
+
     /**
      *
      * @var string
      */
     protected $order_description;
+
+    /**
+     *
+     * @var string
+     */
+    protected $status;
 
     /**
      * Method to set the value of field id
@@ -45,7 +51,7 @@ class Orders extends \Phalcon\Mvc\Model
 
         return $this;
     }
-    
+
     /**
      * Method to set the value of field order_number
      *
@@ -58,7 +64,7 @@ class Orders extends \Phalcon\Mvc\Model
 
         return $this;
     }
-    
+
     /**
      * Method to set the value of field article
      *
@@ -97,7 +103,20 @@ class Orders extends \Phalcon\Mvc\Model
 
         return $this;
     }
-    
+
+    /**
+     * Method to set the value of field status
+     *
+     * @param string $status
+     * @return $this
+     */
+    public function setStatus($status)
+    {
+        $this->status = $status;
+
+        return $this;
+    }
+
     /**
      * Returns the value of field id
      *
@@ -107,21 +126,21 @@ class Orders extends \Phalcon\Mvc\Model
     {
         return $this->id;
     }
-    
+
     /**
      * Returns the value of field order_number
      *
-     * @return string
+     * @return integer
      */
     public function getOrderNumber()
     {
         return $this->order_number;
     }
-    
+
     /**
      * Returns the value of field article
      *
-     * @return integer
+     * @return string
      */
     public function getArticle()
     {
@@ -147,13 +166,24 @@ class Orders extends \Phalcon\Mvc\Model
     {
         return $this->order_description;
     }
-    
+
+    /**
+     * Returns the value of field status
+     *
+     * @return string
+     */
+    public function getStatus()
+    {
+        return $this->status;
+    }
+
     /**
      * Initialize method for model.
      */
     public function initialize()
     {
         $this->hasMany('id', '\ProductInOrder', 'orderId', array('alias' => 'ProductInOrder'));
+        $this->hasMany('id', '\Tabs_right', 'order_id', array('alias' => 'Tabs_right'));
     }
 
 }

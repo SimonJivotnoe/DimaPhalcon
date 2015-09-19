@@ -51,6 +51,9 @@
     
     // alias to self.metalls
     var METALLS;
+
+    // alias to self.menu
+    var MENU;
     
     function run() {
         TABS.getLeftTabsList();
@@ -109,7 +112,7 @@
             curTabId = obj.curTabId,
             tabsList = obj.tabsList,
             tabId, prodId, orderId;
-        
+
         '' !== MAIN[curTabId] ? MAIN[tabsList][MAIN[curTabId]].active = '0' : 0;
 
         if (MAIN[curTabId] !== selectedTabId && undefined !== selectedTabId){
@@ -148,14 +151,16 @@
         html
             // change current tab
             .find('[role=tab]').click(function(){
-                changeActiveTab({
-                    scope: this,
-                    curTabId: 'curTabId',
-                    tabsList: 'tabsList',
-                    getTabContent: 'getLeftTabContent',
-                    changeActiveTab: 'changeActiveTab',
-                    action: 'changeActiveLeftTab'
-                });
+                if ($(this ).attr('aria-controls') !== MAIN.curTabId) {
+                    changeActiveTab({
+                        scope: this,
+                        curTabId: 'curTabId',
+                        tabsList: 'tabsList',
+                        getTabContent: 'getLeftTabContent',
+                        changeActiveTab: 'changeActiveTab',
+                        action: 'changeActiveLeftTab'
+                    });
+                }
             }).end()
         
             //close tab
@@ -169,7 +174,7 @@
     }
     
     function addLeftTabContentHandler(html) {
-        console.log(html.find('#addFormulaBtnPr' ));
+        //console.log(html.find('#addFormulaBtnPr' ));
         html
             // edit & save categories list content
             .filter('.blockNameAndCat')
@@ -239,7 +244,11 @@
                 });
                 $('#sortable').sortable('disable');
             })
-            
+
+            .find('#saveInDB' ).click(function() {
+                PRODUCT.saveProductInDB();
+            }).end()
+
             .find('#createOrderBtn').click(function () {
                 ORDER.createNewOrder(MAIN.productId);
             }).end()
@@ -400,7 +409,7 @@
 			    + $( '#addFormulaInputPr' ).val() + '</span></li>');
 		    PRODUCT.cancelInputFormula();
 		    $( '#addFormulaInputPr' ).val('');
-		    PRODUCT.addNewFormula(PRODUCT.getFormulasList());
+		    PRODUCT.addNewFormula(PRODUCT.getFormulasList);
 		}
 	    }).end()
 
@@ -411,6 +420,8 @@
                 $('.removeFhBtn').hide();
                 $('#addFormulaInputPr' ).css('border-color', 'rgba(82, 168, 236, 0.8)');
                 $('#formulasHelper' ).show('scale');
+                $('#addFormulaBtnPr' ).hide();
+                $('.formulaBtnGroupPr' ).show('drop');
                 if ('auto' === $('body').css('cursor')) {
                     $('body').css('cursor', 'pointer');
                     $(document )
@@ -485,6 +496,58 @@
             $(this ).parent().fadeOut('slow');
         })
 
+        // add new formula helper
+        .on('click', '.addNewFhBtn', function(){
+            $('body').css('cursor', 'pointer');
+            var newFl = $('#addNewFhBtnInput' ).val();
+            PRODUCT.addBtnToFormulasHelper(newFl);
+        })
+
+        // focus on formula helper input
+        .on('click', '#addNewFhBtnInput', function(){
+            $('#addFormulaInputPr, .rowNumber').off('click');
+            $('body').off('keypress');
+            $('body').off('click', '.rowNumber');
+            $('body').css('cursor', 'auto');
+        })
+
+        .on('mouseover', '.list-group-item', function(){
+            $(this ).addClass('list-group-item-info');
+        })
+
+        .on('mouseleave', '.list-group-item', function(){
+            $(this ).removeClass('list-group-item-info');
+        })
+
+        .on('mouseover', '.glyphicon-retweet', function(){
+            $(this ).removeClass('glyphicon glyphicon-retweet' ).addClass('glyphicon glyphicon-resize-full');
+        })
+
+        .on('mouseleave', '.glyphicon-resize-full', function(){
+            $(this ).removeClass('glyphicon glyphicon-resize-full' ).addClass('glyphicon glyphicon-retweet');
+        })
+
+        .on('click', '.glyphicon-resize-full', function(e){
+            var bindCell = $(this ).text(),
+                tableContent, alwaysInTable;
+            e.stopPropagation();
+            e.preventDefault();
+
+            $('.rowValueInput[data-cell=' +bindCell + ']' )
+                .removeAttr('color' ).val('' )
+                .attr('value', '')
+                .attr('data-formula', '')
+                .css('color', '' );
+            $('.rowValueInput[data-cell=' +bindCell + ']' ).parent().parent().find('.rowNameInput').css('color', '' );
+            $('.rowValueInput[data-cell=' +bindCell + ']' ).parent().parent().css({'background' : '', 'color' : ''});
+            $(this ).parent().removeClass('list-group-item-info');
+            $(this ).remove();
+            $( '#calx' ).calx();
+            PRODUCT.addNewFormula(PRODUCT.getFormulasList, false);
+            tableContent = PRODUCT.getTableContent('#sortable li');
+            alwaysInTable = PRODUCT.getTableContent('#alwaysInTable li');
+            PRODUCT.createTable(tableContent, alwaysInTable);
+        })
         return html;
     }
     
@@ -492,22 +555,28 @@
 
         html
             .find('[role=tab]').click(function(){
-                changeActiveTab({
-                    scope: this,
-                    order: true,
-                    curTabId: 'curTabRightId',
-                    tabsList: 'tabsRightList',
-                    getTabContent: 'getLeftTabContent',
-                    changeActiveTab: 'changeActiveTab',
-                    action: 'changeActiveRightTab'
-                });
+                if ($(this ).attr('aria-controls') !== MAIN.curTabRightId) {
+                    changeActiveTab({
+                        scope: this,
+                        order: true,
+                        curTabId: 'curTabRightId',
+                        tabsList: 'tabsRightList',
+                        getTabContent: 'getRightTabContent',
+                        changeActiveTab: 'changeActiveTab',
+                        action: 'changeActiveRightTab'
+                    });
+                }
             });
+
         return html;
     }
     
     function addRightTabContentOrderHandler(html) {
-        
+        //console.log(html.find('#saveOrderInDB'));
         html
+            .find('#saveOrderInDB').click(function() {
+                ORDER.saveOrderInDB();
+            } ).end()
             .find('#checkAllInOrder').click(function () {
                 ORDER.checkAllInOrderDetails(true);
             }).end()
@@ -761,7 +830,7 @@
                     }
                 }).then(function (data)
                 {
-                    console.log(data);
+                    //console.log(data);
                 });
             },
             
@@ -815,7 +884,6 @@
             },
             
             getLastLeftTab: function() {
-                var html;
                 $.ajax( {
                     url   : URL_TABS + 'getLastLeftTab',
                     method: 'GET'
@@ -836,7 +904,6 @@
             },
             
             changeTabName: function (obj) {
-                var self = this;
                 $.ajax( {
                     url   : URL_TABS + 'changeTabName',
                     method: 'POST',
@@ -891,7 +958,7 @@
                             .addClass('active');
                         $('#orderDetailsWrapper').html(addRightTabContentOrderHandler($(data.html)));
                         
-                        MAIN.curTabRightId = 'or' + tabId;
+                        MAIN.curTabRightId = tabId;
                         MAIN.curTabRightName = 'a[href="#' + MAIN.curTabRightId + '"] .tabName';
                         MAIN.orderId = orderId;
                         
@@ -970,6 +1037,17 @@
 
         // product section
         product: {
+            saveProductInDB: function() {
+                $.ajax( {
+                    url   : URL_PRODUCT + 'saveProductInDB',
+                    method: 'POST',
+                    data: {prId: MAIN.productId}
+                } ).then( function ( data )
+                {
+                    data ? $('#statusOfProductInDB' ).html('Сохранено в базе данных')  : false;
+                });
+            },
+
             saveTable: function () {
                 $.ajax( {
                     url   : URL_PRODUCT + 'changeTableContent',
@@ -1065,7 +1143,7 @@
             },
 
             toggleAddFormula: function() {
-                '' !== $('#addFormulaInputPr').val() ? $('.formulaBtnGroupPr' ).show('drop') : $('.formulaBtnGroupPr' ).hide('drop');
+                '' !== $('#addFormulaInputPr').val() ? $('#addFormulaBtnPr' ).slideDown() : $('#addFormulaBtnPr' ).slideUp();
             },
 
             cancelInputFormula: function() {
@@ -1089,6 +1167,24 @@
                 PRODUCT.toggleAddFormula();
             },
 
+            addBtnToFormulasHelper: function (newFl) {
+                $.ajax( {
+                    url   : URL_PRODUCT + 'addBtnToFormulasHelper',
+                    method: 'POST',
+                    data: {'newFl': newFl}
+                } ).then( function ( data )
+                {
+                    if (true === data) {
+                        $('<span class="justCreated"><button type="button" class="btn custom-addRowsToTable btn-xs fhBtn">' + newFl + '' +
+                        '<span class="glyphicon glyphicon-remove removeFhBtn" aria-hidden="true"></span></button></span>').insertBefore('#addNewBtnSpan');
+                        $('.justCreated' ).find('.removeFhBtn').hide('fast');
+                        $('.justCreated' ).show('slow' ).removeClass('.justCreated');
+                        $('#addNewFhBtnInput' ).val('');
+                    }
+
+                });
+            },
+
             removeFormulasHelper: function(dom, fhText) {
                 $.ajax( {
                     url   : URL_PRODUCT + 'removeBtnFromFormulasHelper',
@@ -1099,6 +1195,28 @@
                     $(dom ).parent().fadeOut('slow');
 
                 });
+            },
+
+            checkInputOnFormula: function(formula, cell) {
+                var tableContent = PRODUCT.getTableContent('#sortable li'),
+                    alwaysInTable = PRODUCT.getTableContent('#alwaysInTable li'),
+                    cellsArr = {},
+                    cellsInFormula = [],
+                    res = true;
+                $.each(tableContent, function (key, val) {
+                    cellsArr[val['%DATA_CELL%']] = val['%DATA_FORMULA%'];
+                });
+                $.each(alwaysInTable, function (key, val) {
+                    cellsArr[val['%DATA_CELL%']] = val['%DATA_FORMULA%'];
+                });
+                $.each(cellsArr, function (key) {
+                    (-1 !== formula.search(key)) ? cellsInFormula.push(key) : 0;
+                });
+                $.each(cellsInFormula, function (key, val) {
+                    (-1 !== cellsArr[val].search(cell)) ? res = false : 0;
+
+                });
+                return res;
             },
 
             addWhereCaret: function(caretPos, what) {
@@ -1118,13 +1236,10 @@
 
         // order section
         order: {
-            createNewOrder: function (productId) {
+            createNewOrder: function () {
                 $.ajax({
                     url: URL_ORDER + 'createNewOrder',
-                    method: 'POST',
-                    data: {
-                        productId: productId
-                    }
+                    method: 'POST'
                 }).then(function (data)
                 {
                     if (false !== data) {
@@ -1132,7 +1247,18 @@
                     }
                 });
             },
-            
+
+            saveOrderInDB: function() {
+                $.ajax({
+                    url: URL_ORDER + 'saveOrderInDB',
+                    method: 'POST',
+                    data: {orderId: MAIN.orderId}
+                }).then(function (data)
+                {console.log(data);
+                    data ? $('#saveOrderInDBWrapper' ).html('Сохранено в базе данных') : false;
+                });
+            },
+
             checkAllInOrderDetails:  function(param) {
                 $.each($('#orderDetails input'), function (key, val) {
                     $(val).prop('checked', param);
@@ -1360,6 +1486,16 @@
                     }
                 });
             }
+        },
+
+        menu: {
+            onHoverElement: function(obj){
+                var scope = obj.scope,
+                    css = obj.css,
+                    speed = obj.speed;
+                $(scope).stop(true).delay(20)
+                    .animate( css, speed );
+            }
         }
     };
     
@@ -1375,6 +1511,7 @@
         PRODUCT = this.product;
         KIM = this.kim;
         METALLS = this.metalls;
+        MENU = this.menu;
         /*self.firstName = firstName || '';
         self.lastName = lastName || '';
         self.language = language || 'en';*/

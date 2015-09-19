@@ -2,7 +2,7 @@
 use Phalcon\Db\RawValue;
 class OrderController  extends \Phalcon\Mvc\Controller 
 {
-    public function createNewOrderAction() {
+    /*public function createNewOrderAction() {
         if ($this->request->isAjax() && $this->request->isPost()) {
             $prId = $this->request->getPost('productId');
             $orderMax = Orders::maximum(array("column" => "order_number"));
@@ -42,6 +42,66 @@ class OrderController  extends \Phalcon\Mvc\Controller
             
             $tab = new TabsController;
             $this->response->setJsonContent($tab->addNewRightTab($order_id));
+            return $this->response;
+        } else {
+            $this->response->redirect('');
+        }
+    }*/
+
+    public function createNewOrderAction() {
+        if ($this->request->isAjax() && $this->request->isPost()) {
+            $orderMax = Orders::maximum(array("column" => "order_number"));
+            $orderNumber = 1;
+            if ($orderMax) {
+                $orderNumber = (int)($orderMax) + 1;
+            }
+
+            $order = new Orders;
+            $descr = (array)json_decode(file_get_contents('files/orderDetails.json'));
+            $year = date('o');
+            $month = date('m');
+            $day = date('d');
+            $descr['%DATE%'] = $year . '-' . $month . '-' . $day;
+            $descr['%ESTIMATE%'] = $year . '-' . $month . '-' . $day;
+            $order->setOrderNumber($orderNumber)
+                ->setArticle($this->generateArticle($orderNumber))
+                ->setDiscount(new RawValue('default'))
+                ->setOrderDescription(json_encode((object)$descr))
+                ->setStatus(new RawValue('default'))
+                ->save();
+
+            $this->response->setContentType('application/json', 'UTF-8');
+
+            if ($order->save() == false) {
+                $this->response->setJsonContent('error');
+                return $this->response;
+            }
+            $order_id = $order->getId();
+
+            $tab = new TabsController;
+            $this->response->setJsonContent($tab->addNewRightTab($order_id));
+            return $this->response;
+        } else {
+            $this->response->redirect('');
+        }
+    }
+
+    public function saveOrderInDBAction(){
+        if ($this->request->isAjax() && $this->request->isPost()) {
+            $orderId = $this->request->getPost('orderId');
+            $this->response->setContentType('application/json', 'UTF-8');
+            $orderObj = Orders::findFirst(array("id = '$orderId'"));
+            if ($orderObj) {
+                $q = $orderObj->setStatus('save');
+                if($q->save() == true) {
+                    $this->response->setJsonContent(true);
+                } else {
+                    $this->response->setJsonContent(false);
+                }
+
+                return $this->response;
+            }
+            $this->response->setJsonContent('error');
             return $this->response;
         } else {
             $this->response->redirect('');

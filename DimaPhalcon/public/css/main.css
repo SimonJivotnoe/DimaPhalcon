@@ -27,7 +27,7 @@ html, body {
     margin-left: 5px; /* same as divider width */
 }
 
-#addNewTab {
+#addNewTab, #addNewTabRight {
     cursor: pointer;
 }
 
@@ -187,6 +187,9 @@ ol li:hover {
     margin: 15px 0;
     display: none;
 }
+#addFormulaBtnPr {
+    display: none;
+}
 .removeRow, .removeKim, .removeMetall {
     opacity: 0.5;
     padding-left: 8px;
@@ -305,8 +308,14 @@ ol li:hover {
 .skipLineHeight {
     line-height: 14px !important;
 }
-.saveInDB {
-    /*background-color: pink !important;*/
+/*#saveInDB {
+    color: #000000;
+}
+#saveInDB:hover {
+    color: #ffffff;
+}*/
+#saveOrderInDBWrapper {
+    margin-left: 207px;
 }
 .addedToOrder {
    /* background-color: yellow !important;*/
@@ -317,5 +326,26 @@ ol li:hover {
 }
 #addNewSection:hover {
     color: green;
+}
+#menuOpen {
+    position: absolute;
+    left: 49%;
+    z-index: 5000;
+    opacity: 0.3;
+    background-color: #2aabd2;
+    width: 31px;
+    padding: 3px;
+    border-radius: 3px;
+    cursor: pointer;
+    font-size: 20px;
+    margin-top: -8px;
+}
+#menuOpen:hover {
+    opacity: 1;
+    color: aliceblue;
+}
+#orderDetailsWrapper {
+    padding-top: 15px;
+    margin-bottom: 15px;
 }
 .clearer { clear: both; }

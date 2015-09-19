@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Хост: 127.0.0.1:3306
--- Время создания: Сен 12 2015 г., 23:38
+-- Время создания: Сен 20 2015 г., 01:19
 -- Версия сервера: 5.5.41-log
 -- Версия PHP: 5.6.3
 
@@ -65,7 +65,7 @@ CREATE TABLE IF NOT EXISTS `formulas_helper` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=10 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=11 ;
 
 --
 -- Дамп данных таблицы `formulas_helper`
@@ -73,7 +73,6 @@ CREATE TABLE IF NOT EXISTS `formulas_helper` (
 
 INSERT INTO `formulas_helper` (`id`, `name`) VALUES
 (1, 'TAN()'),
-(2, 'SIN()'),
 (8, 'RADIANS()'),
 (9, 'PRODUCT()');
 
@@ -137,16 +136,18 @@ CREATE TABLE IF NOT EXISTS `orders` (
   `article` varchar(255) NOT NULL,
   `discount` varchar(255) NOT NULL DEFAULT '0',
   `order_description` text,
+  `status` enum('draft','save','','') NOT NULL DEFAULT 'draft',
   PRIMARY KEY (`id`),
   KEY `id` (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=35 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=37 ;
 
 --
 -- Дамп данных таблицы `orders`
 --
 
-INSERT INTO `orders` (`id`, `order_number`, `article`, `discount`, `order_description`) VALUES
-(34, 1, '15-001-12092015', '3', '{"%FIO%":"","%PROJECT_NAME%":"","%APPEAL%":"","%PROJECT_DESCR%":"","%COMPANY_NAME%":"","%ADDRES%":"","%ACC_NUMBER%":"","%CITY%":"","%ESTIMATE%":"2015-09-12","%DATE%":"2015-09-10"}');
+INSERT INTO `orders` (`id`, `order_number`, `article`, `discount`, `order_description`, `status`) VALUES
+(34, 1, '15-001-12092015', '3', '{"%FIO%":"","%PROJECT_NAME%":"","%APPEAL%":"","%PROJECT_DESCR%":"","%COMPANY_NAME%":"","%ADDRES%":"","%ACC_NUMBER%":"","%CITY%":"","%ESTIMATE%":"2015-09-12","%DATE%":"2015-09-10"}', 'save'),
+(36, 2, '15-002-20092015', '0', '{"%FIO%":"","%PROJECT_NAME%":"","%APPEAL%":"","%PROJECT_DESCR%":"","%COMPANY_NAME%":"","%ADDRES%":"","%ACC_NUMBER%":"","%CITY%":"","%ESTIMATE%":"2015-09-20","%DATE%":"2015-09-20"}', 'draft');
 
 -- --------------------------------------------------------
 
@@ -169,7 +170,7 @@ CREATE TABLE IF NOT EXISTS `productInOrder` (
 --
 
 INSERT INTO `productInOrder` (`id`, `orderId`, `productId`, `quantity`) VALUES
-(29, 34, 193, 1);
+(29, 34, 193, 3);
 
 -- --------------------------------------------------------
 
@@ -187,20 +188,21 @@ CREATE TABLE IF NOT EXISTS `products` (
   `alwaysInTable` text,
   `formulas` text,
   `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `status` varchar(255) NOT NULL DEFAULT 'draft',
+  `status` enum('draft','save','','') NOT NULL DEFAULT 'draft',
   `template` varchar(255) NOT NULL DEFAULT '0',
   PRIMARY KEY (`product_id`),
   KEY `category_id` (`category_id`),
   KEY `kim` (`kim`),
   KEY `metall` (`metall`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=194 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=196 ;
 
 --
 -- Дамп данных таблицы `products`
 --
 
 INSERT INTO `products` (`product_id`, `product_name`, `category_id`, `kim`, `metall`, `table_content`, `alwaysInTable`, `formulas`, `created`, `status`, `template`) VALUES
-(193, 'Новое изделие', 11, 17, 2, '{"0":{"%ROW_NUMBER%":"A17","%ROW_NAME%":"","%DATA_CELL%":"A17","%DATA_FORMULA%":"","%INPUT_VALUE%":""},"1":{"%ROW_NUMBER%":"A18","%ROW_NAME%":"","%DATA_CELL%":"A18","%DATA_FORMULA%":"","%INPUT_VALUE%":""}}', '{"0":{"%ROW_NUMBER%":"KIM1","%ROW_NAME%":"КИМ","%DATA_CELL%":"KIM1","%DATA_FORMULA%":"","%INPUT_VALUE%":"1.21"},"1":{"%ROW_NUMBER%":"S1","%ROW_NAME%":"Площадь, м2","%DATA_CELL%":"S1","%DATA_FORMULA%":"","%INPUT_VALUE%":"7.32"},"2":{"%ROW_NUMBER%":"PR1","%ROW_NAME%":"Цена входящая за м2, грн","%DATA_CELL%":"PR1","%DATA_FORMULA%":"","%INPUT_VALUE%":"185"},"3":{"%ROW_NUMBER%":"SUM1","%ROW_NAME%":"Цена изделия входящая, грн","%DATA_CELL%":"SUM1","%DATA_FORMULA%":"PRODUCT(S1,PR1)","%INPUT_VALUE%":"1354.20"},"4":{"%ROW_NUMBER%":"PR2","%ROW_NAME%":"Цена исходящая, грн","%DATA_CELL%":"PR2","%DATA_FORMULA%":"","%INPUT_VALUE%":"245"},"5":{"%ROW_NUMBER%":"SUM2","%ROW_NAME%":"Цена изделия исходящая, грн","%DATA_CELL%":"SUM2","%DATA_FORMULA%":"PRODUCT(S1,PR2)","%INPUT_VALUE%":"1793.40"}}', NULL, '2015-09-12 16:02:53', 'draft', '0');
+(193, 'Говно', 11, 17, 2, '{"0":{"%ROW_NUMBER%":"A17","%ROW_NAME%":"говно","%DATA_CELL%":"A17","%DATA_FORMULA%":"","%INPUT_VALUE%":"0.07"},"1":{"%ROW_NUMBER%":"A18","%ROW_NAME%":"жопа","%DATA_CELL%":"A18","%DATA_FORMULA%":"","%INPUT_VALUE%":"0.90"}}', '{"0":{"%ROW_NUMBER%":"KIM1","%ROW_NAME%":"КИМ","%DATA_CELL%":"KIM1","%DATA_FORMULA%":"","%INPUT_VALUE%":"1.21"},"1":{"%ROW_NUMBER%":"S1","%ROW_NAME%":"Площадь, м2","%DATA_CELL%":"S1","%DATA_FORMULA%":"A17+A18","%INPUT_VALUE%":"0.97"},"2":{"%ROW_NUMBER%":"PR1","%ROW_NAME%":"Цена входящая за м2, грн","%DATA_CELL%":"PR1","%DATA_FORMULA%":"","%INPUT_VALUE%":"185"},"3":{"%ROW_NUMBER%":"SUM1","%ROW_NAME%":"Цена изделия входящая, грн","%DATA_CELL%":"SUM1","%DATA_FORMULA%":"PRODUCT(S1,PR1)","%INPUT_VALUE%":"179.45"},"4":{"%ROW_NUMBER%":"PR2","%ROW_NAME%":"Цена исходящая, грн","%DATA_CELL%":"PR2","%DATA_FORMULA%":"","%INPUT_VALUE%":"245"},"5":{"%ROW_NUMBER%":"SUM2","%ROW_NAME%":"Цена изделия исходящая, грн","%DATA_CELL%":"SUM2","%DATA_FORMULA%":"PRODUCT(S1,PR2)","%INPUT_VALUE%":"237.65"}}', '{"0":{"formula":"A17+A18","cell":"S1"},"1":{"formula":"RADIANS()","cell":""}}', '2015-09-12 16:02:53', 'draft', '0'),
+(195, 'Новое изделие', 11, 17, 2, NULL, '[\r\n    {\r\n        "%ROW_NUMBER%": "KIM1",\r\n        "%ROW_NAME%": "КИМ",\r\n        "%DATA_CELL%": "KIM1",\r\n        "%DATA_FORMULA%": "",\r\n        "%INPUT_VALUE%": ""\r\n    },\r\n    {\r\n        "%ROW_NUMBER%": "S1",\r\n        "%ROW_NAME%": "Площадь, м2",\r\n        "%DATA_CELL%": "S1",\r\n        "%DATA_FORMULA%": "",\r\n        "%INPUT_VALUE%": ""\r\n    },\r\n    {\r\n        "%ROW_NUMBER%": "PR1",\r\n        "%ROW_NAME%": "Цена входящая за м2, грн",\r\n        "%DATA_CELL%": "PR1",\r\n        "%DATA_FORMULA%": "",\r\n        "%INPUT_VALUE%": ""\r\n    },\r\n    {\r\n        "%ROW_NUMBER%": "SUM1",\r\n        "%ROW_NAME%": "Цена изделия входящая, грн",\r\n        "%DATA_CELL%": "SUM1",\r\n        "%DATA_FORMULA%": "PRODUCT(S1,PR1)",\r\n        "%INPUT_VALUE%": ""\r\n    },\r\n    {\r\n        "%ROW_NUMBER%": "PR2",\r\n        "%ROW_NAME%": "Цена исходящая, грн",\r\n        "%DATA_CELL%": "PR2",\r\n        "%DATA_FORMULA%": "",\r\n        "%INPUT_VALUE%": ""\r\n    },\r\n    {\r\n        "%ROW_NUMBER%": "SUM2",\r\n        "%ROW_NAME%": "Цена изделия исходящая, грн",\r\n        "%DATA_CELL%": "SUM2",\r\n        "%DATA_FORMULA%": "PRODUCT(S1,PR2)",\r\n        "%INPUT_VALUE%": ""\r\n    }\r\n]\r\n', NULL, '2015-09-19 20:49:57', 'save', '0');
 
 -- --------------------------------------------------------
 
@@ -216,14 +218,15 @@ CREATE TABLE IF NOT EXISTS `tabs` (
   PRIMARY KEY (`id`),
   KEY `product_id` (`product_id`),
   KEY `product_id_2` (`product_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=299 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=301 ;
 
 --
 -- Дамп данных таблицы `tabs`
 --
 
 INSERT INTO `tabs` (`id`, `tab_id`, `product_id`, `active`) VALUES
-(298, 'pr', 193, 1);
+(298, 'pr', 193, 1),
+(300, 'pr298', 195, 0);
 
 -- --------------------------------------------------------
 
@@ -237,14 +240,15 @@ CREATE TABLE IF NOT EXISTS `tabs_right` (
   `active` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `order_id` (`order_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=26 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=28 ;
 
 --
 -- Дамп данных таблицы `tabs_right`
 --
 
 INSERT INTO `tabs_right` (`id`, `order_id`, `active`) VALUES
-(25, 34, 1);
+(25, 34, 0),
+(27, 36, 1);
 
 --
 -- Ограничения внешнего ключа сохраненных таблиц

@@ -8,20 +8,34 @@
     <link href="css/main.css" rel="stylesheet" type="text/css"/>
     <link href="css/jquery-ui.css" rel="stylesheet" type="text/css"/>
     <!--<link rel="shortcut icon" href="favicon.ico" />-->
-   <!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">-->
+    <!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">-->
 
 
 </head>
 <body>
+<div id="menuOpen" ><span class="glyphicon glyphicon-folder-close" aria-hidden="true"></span></div>
 <div id="split-pane-1" class="split-pane fixed-left">
     <div class="split-pane-component" id="left-component">
         <div id="tabs">{{ tabs }}</div>
-
     </div>
     <div class="split-pane-divider" id="divider"></div>
     <div class="split-pane-component" id="right-component">
-    <div id="tabsRight">{{ tabsRight }}</div>
+        <div id="tabsRight">{{ tabsRight }}</div>
     </div>
+</div>
+
+<div class="modal fade bs-example-modal-lg in" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" id="openMenuModal">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                <h4 class="modal-title" id="myLargeModalLabel">Файловый менеджер</h4>
+            </div>
+            <div class="modal-body">
+                ...
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
 </div>
 <script src="js/jquery/jquery-1.11.2.min.js"></script>
 <script src="js/jquery/jquery-ui.js"></script>
