@@ -89,6 +89,7 @@
         }        
     }
 
+    // show body
     function showBody() {
         if ($('body').is(":visible")) {
             return false;
@@ -96,7 +97,8 @@
         $('body' ).fadeIn(350);
         return true;
     }
-    
+
+    // editing kim table
     function kimEditOver(obj, scope) {
         $('.glyphicon-pencil', scope)
             .removeClass(obj.pencilRemove)
@@ -105,7 +107,8 @@
             .removeClass(obj.removeRemove)
             .addClass(obj.removeAdd);
     }
-    
+
+    // change active tab method
     function changeActiveTab(obj) {
         var scope = obj.scope,
             selectedTabId = $(scope ).attr('aria-controls'),
@@ -126,10 +129,47 @@
             } else {
                 TABS[obj.getTabContent](prodId, selectedTabId);
             }
+
             TABS[obj.changeActiveTab](tabId, selectedTabId, obj.action);
         }
     }
-    
+
+    // close tab method
+    function closeTabMethod  (obj) {
+        var idDb = obj.idDb,
+            currentID = obj.currentID,
+            curTabId = obj.curTabId,
+            productId = obj.productId,
+            tabsList = obj.tabsList,
+            defaultTab = obj.defaultTab,
+            currentTab = obj.currentTab,
+            nextActiveTab = MAIN[curTabId],
+            productId = MAIN[productId],
+            elemInObj = Object.keys(MAIN[tabsList]),
+            ifActive, index;console.log(MAIN[tabsList][currentID ].active);console.log(obj);
+        if (2 === elemInObj.length) {
+            nextActiveTab = defaultTab;
+        } else {
+            ifActive = MAIN[tabsList][currentID].active;
+            if ('1' === ifActive) {
+                index = elemInObj.indexOf(currentID);
+                if (index === elemInObj.length - 1) {
+                    nextActiveTab = Object.keys(MAIN[tabsList])[elemInObj.length - 2];
+                } else {
+                    nextActiveTab = Object.keys(MAIN[tabsList])[index + 1];
+                }
+                productId = MAIN[tabsList][nextActiveTab][productId];
+                MAIN[tabsList][nextActiveTab].active = '1';
+            }
+        }
+        delete MAIN[tabsList][currentID];
+        $('[aria-controls=' + currentID + ']').hide('highlight');
+        setTimeout(function () {
+            $('[aria-controls=' + currentID + ']').parent().remove();
+        }, 700);
+
+    }
+
     function editDescriptionOfProduct(bool) {
         var obj = {};
         
@@ -146,6 +186,7 @@
         
         return obj;
     }
+
     function addLeftTabsHandler(html) {
 
         html
@@ -169,7 +210,7 @@
                 var currentID = $(this).parent().attr('aria-controls' ),
                     idDb = $(this ).attr('name');
                 $(this ).attr('class', 'glyphicon glyphicon-remove');
-                TABS.closeTabMethod(idDb, currentID);
+                TABS.closeLeftTab(idDb, currentID);
             });
     }
     
@@ -566,7 +607,11 @@
                         action: 'changeActiveRightTab'
                     });
                 }
-            });
+            } ).end()
+
+            .find('.closeTabRight ' ).click(function() {
+                console.log('here');
+            })
 
         return html;
     }
@@ -819,7 +864,7 @@
                     showBody();
                 });
             },
-            
+
             changeActiveTab: function (id, tabId, action) {
                 $.ajax({
                     url: URL_TABS + action,
@@ -833,12 +878,23 @@
                     //console.log(data);
                 });
             },
-            
-            closeTabMethod: function (idDb, currentID) {
+
+            closeLeftTab: function (idDb, currentID) {
                 var nextActiveTab = MAIN.curTabId,
                     productId = MAIN.productId,
                     elemInObj = Object.keys(MAIN.tabsList),
                     ifActive, index;
+                /*var obj =
+                {
+                    idDb: idDb,
+                    currentID: currentID,
+                    curTabId: 'curTabId',
+                    productId: 'productId',
+                    tabsList: 'tabsList',
+                    defaultTab: 'preferences1',
+                    currentTab: '.currentTab'
+                }
+                closeTabMethod(obj);*/
                 if (2 === elemInObj.length) {
                     nextActiveTab = 'preferences1';
                 } else {

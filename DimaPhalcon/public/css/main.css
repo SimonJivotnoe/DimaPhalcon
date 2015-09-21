@@ -339,6 +339,7 @@ ol li:hover {
     cursor: pointer;
     font-size: 20px;
     margin-top: -8px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.5);
 }
 #menuOpen:hover {
     opacity: 1;
