@@ -40,7 +40,7 @@ $( document ).ready( function ()
             $('span', this ).removeClass().addClass('glyphicon glyphicon-folder-close');
         })
         .click(function(){
-            $('#openMenuModal').modal('show');
+            MENU.createFileManager();
         })
     /*----PREFERENCES_START----*/
     

@@ -269,6 +269,33 @@ class TabsController extends \Phalcon\Mvc\Controller
         }
     }
 
+    public function closeRightTabAction() {
+        if ($this->request->isAjax() && $this->request->isPost()) {
+            $id = $this->request->getPost('tabId');
+            $orderID = $this->request->getPost('orderID');
+            $nextActive = $this->request->getPost('nextActiveTab');
+            $tabs = TabsRight::findFirst(array("id = '$id'", "order_id = '$orderID'"));
+            $orderObj = Orders::findFirst($orderID);
+            if ($tabs != false) {
+                if ($tabs->delete() == false) {
+                    echo "Sorry, we can't delete the robot right now: \n";
+                    $message = $tabs->getMessages();
+                    $this->response->setJsonContent(array($message[0]->__toString()));
+                    return $this->response;
+                } else {
+                    $changeActiveStatus = TabsRight::findFirst(array("id = '$nextActive'"));
+                    $changeActiveStatus->setActive(1)->save();
+                    'draft' === $orderObj->getStatus() ? $orderObj->delete() : true ;
+                    $this->response->setContentType('application/json', 'UTF-8');
+                    $this->response->setJsonContent('ok');
+                    return $this->response;
+                }
+            }
+        } else {
+            $this->response->redirect('');
+        }
+    }
+
     public function changeTabNameAction() {
         if ($this->request->isAjax() && $this->request->isPost()) {
             $prId = $this->request->getPost('prId');
@@ -330,14 +357,14 @@ class TabsController extends \Phalcon\Mvc\Controller
                         $tabsList['%ORDER_NAME%'] = $order->getArticle();
                         $tabsLi .= $substObj->subHTMLReplace('tab_li_right.html', $tabsList);
 
+                        $tabArr['kim'] = (object)[
+                            'active' => '',
+                            'orderId' => 'kim'
+                        ];
                         $tabArr['or' . $val->getId()] = (object) [
                                     'active' => $val->getActive(),
                                     'orderId' => $val->getOrderId()
                                 ];
-                        $tabArr['kim'] = (object)[
-                                                'active' => '',
-                                                'orderId' => 'kim'
-            ];
                     }
                     $this->response->setJsonContent([
                         'tabs' => true,
@@ -459,7 +486,57 @@ class TabsController extends \Phalcon\Mvc\Controller
             $this->response->redirect('');
         }
     }
-    
+
+    public function createFileManagerAction(){
+        if ($this->request->isAjax() && $this->request->isGet()) {
+            $products = Products::find();
+            $this->response->setContentType('application/json', 'UTF-8');
+            if ($products == false) {
+                echo "Мы не можем сохранить робота прямо сейчас: \n";
+                foreach ($products->getMessages() as $message) {
+                    echo $message, "\n";
+                }
+                return false;
+            }
+            $productArr = [];
+            foreach ($products as $val) {
+                $productArr['name'] = $val->getProductName();
+                $productArr['created'] = $val->getCreated();
+                $productArr['status'] = $val->getStatus();
+                $productArr['template'] = $val->getTemplate();
+                var_dump($productArr);die();
+            }
+            $rows = ['%PRODUCTS%' => ''];
+            $substObj = new Substitution();
+            if (count($productsInOrder)) {
+                $order = Orders::findFirst($orderId);
+                if ($order == false) {
+                    echo "Мы не можем сохранить робота прямо сейчас: \n";
+                    foreach ($order->getMessages() as $message) {
+                        echo $message, "\n";
+                    }
+                    return false;
+                }
+
+                $products = array();
+                $discount = $order->getDiscount();
+                foreach ($productsInOrder as $val) {
+                    $products[$val->getProductId()] = $val->getQuantity();
+                }
+                $productObj = new ProductsController;
+                foreach ($products as $key => $val) {
+                    $rows['%PRODUCTS%'] .= $productObj->createProductInOrder($key, $val, $orderId, $discount);
+                }
+            }
+            $res = $substObj->subHTMLReplace('orderTable.html', $rows);
+            $this->response->setJsonContent(['html' => $res]);
+
+            return $this->response;
+        } else {
+            $this->response->redirect('');
+        }
+    }
+
     public function addNewRightTab($order_id) {
         $tabActive = TabsRight::find(array("active = 1"));
         foreach ($tabActive as $val) {

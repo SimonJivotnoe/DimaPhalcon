@@ -134,42 +134,6 @@
         }
     }
 
-    // close tab method
-    function closeTabMethod  (obj) {
-        var idDb = obj.idDb,
-            currentID = obj.currentID,
-            curTabId = obj.curTabId,
-            productId = obj.productId,
-            tabsList = obj.tabsList,
-            defaultTab = obj.defaultTab,
-            currentTab = obj.currentTab,
-            nextActiveTab = MAIN[curTabId],
-            productId = MAIN[productId],
-            elemInObj = Object.keys(MAIN[tabsList]),
-            ifActive, index;console.log(MAIN[tabsList][currentID ].active);console.log(obj);
-        if (2 === elemInObj.length) {
-            nextActiveTab = defaultTab;
-        } else {
-            ifActive = MAIN[tabsList][currentID].active;
-            if ('1' === ifActive) {
-                index = elemInObj.indexOf(currentID);
-                if (index === elemInObj.length - 1) {
-                    nextActiveTab = Object.keys(MAIN[tabsList])[elemInObj.length - 2];
-                } else {
-                    nextActiveTab = Object.keys(MAIN[tabsList])[index + 1];
-                }
-                productId = MAIN[tabsList][nextActiveTab][productId];
-                MAIN[tabsList][nextActiveTab].active = '1';
-            }
-        }
-        delete MAIN[tabsList][currentID];
-        $('[aria-controls=' + currentID + ']').hide('highlight');
-        setTimeout(function () {
-            $('[aria-controls=' + currentID + ']').parent().remove();
-        }, 700);
-
-    }
-
     function editDescriptionOfProduct(bool) {
         var obj = {};
         
@@ -609,8 +573,12 @@
                 }
             } ).end()
 
-            .find('.closeTabRight ' ).click(function() {
-                console.log('here');
+            .find('.closeTabRight ' ).click(function(e) {
+                e.stopPropagation();
+                var currentID = $(this).parent().attr('data-order' ),
+                    idDb = $(this ).attr('name');
+                $(this ).attr('class', 'glyphicon glyphicon-remove');
+                TABS.closeRightTab(idDb, currentID);
             })
 
         return html;
@@ -884,17 +852,6 @@
                     productId = MAIN.productId,
                     elemInObj = Object.keys(MAIN.tabsList),
                     ifActive, index;
-                /*var obj =
-                {
-                    idDb: idDb,
-                    currentID: currentID,
-                    curTabId: 'curTabId',
-                    productId: 'productId',
-                    tabsList: 'tabsList',
-                    defaultTab: 'preferences1',
-                    currentTab: '.currentTab'
-                }
-                closeTabMethod(obj);*/
                 if (2 === elemInObj.length) {
                     nextActiveTab = 'preferences1';
                 } else {
@@ -935,6 +892,59 @@
                 {
                     if ('preferences1' !== nextActiveTab) {
                         TABS.getLeftTabContent(productId, nextActiveTab);
+                    }
+                });
+            },
+
+            closeRightTab: function (tabId, orderID) {
+                var nextActiveTab = MAIN.curTabRightId,
+                    productId = MAIN.orderId,
+                    elemInObj = Object.keys(MAIN.tabsRightList),
+                    orderId = 'or' + tabId,
+                    ifActive, index;
+
+                if (2 === elemInObj.length) {
+                    nextActiveTab = 'kim';
+                } else {
+                    ifActive = MAIN.tabsRightList[orderId].active;
+                    if ('1' === ifActive) {
+                        index = elemInObj.indexOf(orderId);
+                        if (index === elemInObj.length - 1) {
+                            nextActiveTab = Object.keys(MAIN.tabsRightList)[elemInObj.length - 2];
+                        } else {
+                            nextActiveTab = Object.keys(MAIN.tabsRightList)[index + 1];
+                        }
+                        productId = MAIN.tabsRightList[nextActiveTab].orderId;
+                        MAIN.tabsRightList[nextActiveTab].active = '1';
+                    }
+                }
+                delete MAIN.tabsRightList[orderId];
+                $('[aria-controls=' + orderId + ']').hide('highlight');
+                setTimeout(function () {
+                    $('[aria-controls=' + orderId + ']').parent().remove();
+                }, 700);
+                if ('kim' === nextActiveTab || undefined === nextActiveTab) {
+                    $('.currentTabRight').removeClass('active');
+                    $('#kim, #kimTab').addClass('active');
+                    KIM.getKIMTable();
+                    KIM.getKimList();
+                } else {
+                    $('[aria-controls=' + nextActiveTab + ']').parent().addClass('active');
+                }
+                nextActiveTab = KIM.validation(nextActiveTab);
+                $.ajax({
+                    url: URL_TABS + 'closeRightTab',
+                    method: 'POST',
+                    data: {
+                        tabId: tabId,
+                        orderID: orderID,
+                        nextActiveTab: nextActiveTab
+                    }
+                }).then(function (  )
+                {
+                    if ('kim' !== nextActiveTab) {
+                         TABS.getRightTabContentOrderDetails(productId, nextActiveTab);
+                         TABS.getRightTabContentTable(productId);
                     }
                 });
             },
@@ -1551,6 +1561,17 @@
                     speed = obj.speed;
                 $(scope).stop(true).delay(20)
                     .animate( css, speed );
+            },
+
+            createFileManager: function() {
+                $.ajax( {
+                    url   : URL_TABS + 'createFileManager',
+                    method: 'GET'
+                } ).then( function ( data )
+                {
+                    console.log(data);
+                    $('#openMenuModal').modal('show');
+                });
             }
         }
     };
