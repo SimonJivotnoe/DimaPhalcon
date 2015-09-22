@@ -14,6 +14,7 @@
         KIM: 'kim/',
         METALLS: 'metalls/',
         PRODUCT: 'products/',
+        MENU: 'menu/',
 	LOCATION: 'http://DimaPhalcon/DimaPhalcon/'
     };
 
@@ -28,6 +29,8 @@
     var URL_METALLS = URL.BASE + URL.METALLS;
     
     var URL_PRODUCT = URL.BASE + URL.PRODUCT;
+    
+    var URL_MENU = URL.BASE + URL.MENU;
     
     var LOCATION = URL.LOCATION;
 
@@ -1565,7 +1568,7 @@
 
             createFileManager: function() {
                 $.ajax( {
-                    url   : URL_TABS + 'createFileManager',
+                    url   : URL_MENU + 'createFileManager',
                     method: 'GET'
                 } ).then( function ( data )
                 {

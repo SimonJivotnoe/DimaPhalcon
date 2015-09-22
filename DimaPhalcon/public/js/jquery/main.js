@@ -41,7 +41,7 @@ $( document ).ready( function ()
         })
         .click(function(){
             MENU.createFileManager();
-        })
+        });
     /*----PREFERENCES_START----*/
     
     // handlers
@@ -80,7 +80,7 @@ $( document ).ready( function ()
     // create new order
     $('#addNewTabRight' ).click(function() {
         ORDER.createNewOrder();
-    })
+    });
     // kim tab
     // kim table
     $('#kim').on('click', function(){

@@ -166,7 +166,6 @@ class ProductsController extends \Phalcon\Mvc\Controller
         $metallId = $productObj->getMetall();
         $metallObj = Metalls::findFirst($metallId);
         $alwaysInTable = json_decode($productObj->getAlwaysInTable());
-        var_dump($alwaysInTable->{'3'}->{'%INPUT_VALUE%'});
 
         $res['%NAME%'] = $productObj->getProductName();
         $res['%NAME_METALL%'] = $metallObj->getName();

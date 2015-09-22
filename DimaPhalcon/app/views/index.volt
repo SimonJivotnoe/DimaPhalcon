@@ -13,7 +13,7 @@
 
 </head>
 <body>
-<div id="menuOpen" ><span class="glyphicon glyphicon-folder-close" aria-hidden="true"></span></div>
+<div id="menuOpen"><span class="glyphicon glyphicon-folder-close" aria-hidden="true"></span></div>
 <div id="split-pane-1" class="split-pane fixed-left">
     <div class="split-pane-component" id="left-component">
         <div id="tabs">{{ tabs }}</div>
