@@ -56,9 +56,10 @@ class CategoriesController extends ControllerBase
         }
     }
 
-    public function createCategoriesList($productCatId){
+    public function createCategoriesList($productCatId=null){
         $category = Categories::find();
         $categoriesList = '';
+        $categoriesArr = array();
         if ($category == false) {
             echo "Мы не можем сохранить робота прямо сейчас: \n";
             foreach ($category->getMessages() as $message) {
@@ -66,13 +67,14 @@ class CategoriesController extends ControllerBase
             }
         } else {
             foreach ($category as $val) {
+                $categoriesArr[$val->getCategoryId()] = $val->getCategoryName();
                 if ($val->getCategoryId() === $productCatId) {
                     $categoriesList .= '<option selected="selected" name="'.$val->getCategoryId().'">'.$val->getCategoryName().'</option>';
                 } else {
                     $categoriesList .= '<option name="'.$val->getCategoryId().'">'.$val->getCategoryName().'</option>';
                 }
             }
-            return $categoriesList;
+            return ['categoriesList' => $categoriesList, 'categoriesArr' => $categoriesArr];
         }
     }
 }

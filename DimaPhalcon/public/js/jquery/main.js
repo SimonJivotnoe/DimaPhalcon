@@ -108,6 +108,15 @@ $( document ).ready( function ()
         METALLS.addMetallToTable(data);
     });
 
+    // menu modal
+    $('#fileManagerCatogoriesSelect' ).on('change', function() {
+       var category = $('option:selected', this ).attr('name' );
+        $.each($('.prManProductTableCategory'), function(){
+            $(this ).parent().show();
+            'categoriesAll' === category ? 0 : $(this).attr('name') !== category ? $(this ).parent().hide() : 0 ;
+        })
+    });
+
     $(function(){
         var self;
         var formula;

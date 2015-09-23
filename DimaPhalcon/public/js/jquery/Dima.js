@@ -1573,6 +1573,8 @@
                 } ).then( function ( data )
                 {
                     console.log(data);
+                    $('#fileManagerCatogoriesSelect' ).html(data.categories);
+                    $('#fileManagerProductsTable' ).html(data.products);
                     $('#openMenuModal').modal('show');
                 });
             }

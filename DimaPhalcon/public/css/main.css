@@ -57,6 +57,22 @@ html, body {
     overflow: auto;
 
 }
+#fileManagerProductsWrapper {
+    width: 100%;
+    height: 200px;
+    overflow: auto;
+}
+#myLargeModalLabel {
+    text-align: center;
+    background-color: hsl(193, 46%, 41%);
+    background-repeat: repeat-x;
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#57aac1", endColorstr="#388398");
+    background-image: linear-gradient(#57aac1, #388398) !important;
+    border-color: #388398 #388398 hsl(193, 46%, 37.5%);
+    color: #fff !important;
+    text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.23);
+    -webkit-font-smoothing: antialiased;
+}
 #kimListWrapper, #metallListWrapper {
     max-height: 300px;
     overflow: auto;

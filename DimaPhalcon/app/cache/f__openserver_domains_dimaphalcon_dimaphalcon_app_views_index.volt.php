@@ -13,7 +13,7 @@
 
 </head>
 <body>
-<div id="menuOpen" ><span class="glyphicon glyphicon-folder-close" aria-hidden="true"></span></div>
+<div id="menuOpen"><span class="glyphicon glyphicon-folder-close" aria-hidden="true"></span></div>
 <div id="split-pane-1" class="split-pane fixed-left">
     <div class="split-pane-component" id="left-component">
         <div id="tabs"><?php echo $tabs; ?></div>
@@ -29,10 +29,22 @@
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
-                <h4 class="modal-title" id="myLargeModalLabel">Файловый менеджер</h4>
+                <h3 class="modal-title" id="myLargeModalLabel">Файловый менеджер</h3>
             </div>
             <div class="modal-body">
-                ...
+                <h4 class="well" style="margin-top: -15px; height: 43px;">Продукты</h4>
+                <div id="fileManagerProductsWrapper">
+                    <div class="col-md-4 col-md-offset-4">
+                        <select class="form-control input-sm" id="fileManagerCatogoriesSelect">
+
+                        </select>
+                    </div>
+                    <table class="table table-bordered">
+                        <tbody id="fileManagerProductsTable">
+                        </tbody>
+                    </table>
+                </div>
+
             </div>
         </div><!-- /.modal-content -->
     </div><!-- /.modal-dialog -->

@@ -124,7 +124,7 @@ class TabsController extends \Phalcon\Mvc\Controller
 
                 $productDetails = array(
                     '%PRODUCT_NAME%' => $prName,
-                    '%CATEGORIES%' => $categoryObj->createCategoriesList($productCatId),
+                    '%CATEGORIES%' => $categoryObj->createCategoriesList($productCatId)['categoriesList'],
                     '%KIM_LIST%' => $kimObj->createKimList($productKim),
                     '%METALL_LIST%' => $metallsObj->createMetallsList($productMetall),
                     '%CREATED%' => $product->getCreated(),
