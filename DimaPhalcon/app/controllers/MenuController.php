@@ -2,7 +2,6 @@
 
 class MenuController extends \Phalcon\Mvc\Controller
 {
-
     public function createFileManagerAction(){
         if ($this->request->isAjax() && $this->request->isGet()) {
             $products = Products::find(array("status = 'save'"));
@@ -20,7 +19,7 @@ class MenuController extends \Phalcon\Mvc\Controller
                             <th>Дата создания</th>
                             <th>Ордера</th>
                             <th>Действия</th>
-                        </tr>';
+                            </tr>';
             $substObj = new Substitution();
 
             $categoriesObj = new CategoriesController;
@@ -34,6 +33,12 @@ class MenuController extends \Phalcon\Mvc\Controller
                 $arr['%CATEGORY_ID%'] = $val->getCategoryId();
                 $arr['%CREATED%'] = $val->getCreated();
                 $arr['%ORDERS%'] = '';
+                $arr['%ACTIONS%'] = '';
+                $productID = $val->getProductId();
+                $tabsObj = Tabs::findFirst(array("product_id = '$productID'"));
+                if (!$tabsObj) {
+                    $arr['%ACTIONS%'] = '<span class="glyphicon glyphicon-eye-open openProductTab" aria-hidden="true"></span>';
+                }
                 $productSTable .= $substObj->subHTMLReplace('fileManagerProductTableRow.html', $arr);
             }
             $rows = ['%PRODUCTS%' => ''];

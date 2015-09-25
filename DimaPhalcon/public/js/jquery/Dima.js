@@ -773,6 +773,23 @@
         return html;
     }
     
+    function addMenuProductHandler(html) {
+	
+	html
+	    .find('.openProductTab').click(function(e) {
+		e.stopPropagation();
+		$(this).removeClass('openProductTab').addClass('openProductTabSelected');
+	    }).end()
+	    
+	    .on('click', '.openProductTabSelected', function(e) {
+		e.stopPropagation();
+		    console.log('here');
+		$(this).removeClass('openProductTabSelected').addClass('openProductTab');
+	    });
+	    
+	return html;    
+    }
+    
     // prototype holds methods (to save memory space)
     Dima.prototype = {
 
@@ -1574,7 +1591,7 @@
                 {
                     console.log(data);
                     $('#fileManagerCatogoriesSelect' ).html(data.categories);
-                    $('#fileManagerProductsTable' ).html(data.products);
+                    $('#fileManagerProductsTable' ).html(addMenuProductHandler($(data.products)));
                     $('#openMenuModal').modal('show');
                 });
             }

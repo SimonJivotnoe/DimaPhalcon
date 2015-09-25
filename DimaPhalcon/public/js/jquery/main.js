@@ -114,7 +114,13 @@ $( document ).ready( function ()
         $.each($('.prManProductTableCategory'), function(){
             $(this ).parent().show();
             'categoriesAll' === category ? 0 : $(this).attr('name') !== category ? $(this ).parent().hide() : 0 ;
-        })
+        });
+    });
+    
+    $('#fileManagerProductsTable').on('click', '.openProductTabSelected', function(e) {
+	e.stopPropagation();
+	    console.log('here');
+	$(this).removeClass('openProductTabSelected').addClass('openProductTab');
     });
 
     $(function(){

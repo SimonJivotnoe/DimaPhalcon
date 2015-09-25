@@ -365,4 +365,13 @@ ol li:hover {
     padding-top: 15px;
     margin-bottom: 15px;
 }
+.openProductTab:hover {
+    font-size: 15px;
+    cursor: pointer;
+}
+.openProductTabSelected {
+    font-size: 15px;
+    cursor: pointer;
+    color: green;
+}
 .clearer { clear: both; }
