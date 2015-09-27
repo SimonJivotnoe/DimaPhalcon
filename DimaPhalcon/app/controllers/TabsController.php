@@ -418,39 +418,51 @@ class TabsController extends \Phalcon\Mvc\Controller
     public function getRightTabContentTableAction() {
         if ($this->request->isAjax() && $this->request->isGet()) {
             $orderId = $this->request->get('orderId');
-            $productsInOrder = Productinorder::find(array("orderId = '$orderId'"));
             $this->response->setContentType('application/json', 'UTF-8');
-            if ($productsInOrder == false) {
+            $order = Orders::findFirst($orderId);
+            if ($order == false) {
                 echo "Мы не можем сохранить робота прямо сейчас: \n";
-                foreach ($productsInOrder->getMessages() as $message) {
+                foreach ($order->getMessages() as $message) {
                     echo $message, "\n";
                 }
                 return false;
             }
-            $rows = ['%PRODUCTS%' => ''];
+            $res = array('%SECTIONS%' => '', '%WITHOUT_SECTIONS%' => '');
+            $map = json_decode($order->getMap());
+            $withoutSectionArr = array();
+            $productObj = new ProductsController;
             $substObj = new Substitution();
-            if (count($productsInOrder)) {
-                $order = Orders::findFirst($orderId);
-                if ($order == false) {
-                    echo "Мы не можем сохранить робота прямо сейчас: \n";
-                    foreach ($order->getMessages() as $message) {
-                        echo $message, "\n";
+            if ('' !== $map && null !== $map) {
+                $orderObj = new OrderController;
+                foreach ($map as $key => $val) {
+                    if ('out' === $key && count($val)) {
+                        $withoutSectionArr = $orderObj->generateWithoutSectionArr($val);
+                    } else {
+                        $res['%SECTIONS%'] .= '<tr class="orderTableSection" name="' . $key . '">
+                        <th colspan="9"><span contenteditable="true">' . $key . '</span></th></tr>';
+                        if (count($val)) {
+                            $sectionArr = array();
+                            $sectionArr = $orderObj->generateWithoutSectionArr($val);
+                            if (count($sectionArr)) {
+                                foreach ($sectionArr as $key => $val) {
+                                    foreach ($val as $productId => $quantity) {
+                                        $res['%SECTIONS%'] .= $productObj->createProductInOrder($productId, $quantity, $orderId);
+                                    }
+                                }
+                            }
+                        }
                     }
-                    return false;
-                }
-
-                $products = array();
-                $discount = $order->getDiscount();
-                foreach ($productsInOrder as $val) {
-                    $products[$val->getProductId()] = $val->getQuantity();
-                }
-                $productObj = new ProductsController;
-                foreach ($products as $key => $val) {
-                    $rows['%PRODUCTS%'] .= $productObj->createProductInOrder($key, $val, $orderId, $discount);
                 }
             }
-            $res = $substObj->subHTMLReplace('orderTable.html', $rows);
-            $this->response->setJsonContent(['html' => $res]);
+            if (count($withoutSectionArr)) {
+                foreach ($withoutSectionArr as $key => $val) {
+                    foreach ($val as $productId => $quantity) {
+                        $res['%WITHOUT_SECTIONS%'] .= $productObj->createProductInOrder($productId, $quantity, $orderId);
+                    }
+                }
+            }
+            $res = $substObj->subHTMLReplace('orderTable.html', $res);
+            $this->response->setJsonContent(['html' => $res, 'success' => true]);
 
             return $this->response;
         } else {

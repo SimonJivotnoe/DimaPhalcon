@@ -37,6 +37,12 @@ class Orders extends \Phalcon\Mvc\Model
      *
      * @var string
      */
+    protected $map;
+
+    /**
+     *
+     * @var string
+     */
     protected $status;
 
     /**
@@ -105,6 +111,19 @@ class Orders extends \Phalcon\Mvc\Model
     }
 
     /**
+     * Method to set the value of field map
+     *
+     * @param string $map
+     * @return $this
+     */
+    public function setMap($map)
+    {
+        $this->map = $map;
+
+        return $this;
+    }
+
+    /**
      * Method to set the value of field status
      *
      * @param string $status
@@ -165,6 +184,16 @@ class Orders extends \Phalcon\Mvc\Model
     public function getOrderDescription()
     {
         return $this->order_description;
+    }
+
+    /**
+     * Returns the value of field map
+     *
+     * @return string
+     */
+    public function getMap()
+    {
+        return $this->map;
     }
 
     /**

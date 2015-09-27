@@ -81,6 +81,7 @@ $( document ).ready( function ()
     $('#addNewTabRight' ).click(function() {
         ORDER.createNewOrder();
     });
+
     // kim tab
     // kim table
     $('#kim').on('click', function(){
@@ -117,11 +118,11 @@ $( document ).ready( function ()
         });
     });
     
-    $('#fileManagerProductsTable').on('click', '.openProductTabSelected', function(e) {
+    /*$('body').on('click', '.openProductTab .openProductTabSelected', function(e) {
 	e.stopPropagation();
 	    console.log('here');
 	$(this).removeClass('openProductTabSelected').addClass('openProductTab');
-    });
+    });*/
 
     $(function(){
         var self;
@@ -173,5 +174,4 @@ $( document ).ready( function ()
             }
         });
     });
-
 } );

@@ -1,6 +1,6 @@
 <table class="table table-bordered" id="orderTable">
     <tbody>
-    <tr>
+    <tr class="skip">
         <th>№</th>
         <th>Артикул</th>
         <th>Наименование</th>
@@ -12,12 +12,10 @@
         <th>Сумма</th>
         <td><span class="glyphicon glyphicon-plus" id="addNewSection" aria-hidden="true"></span></td>
     </tr>
-    <!--<tr>
-        <th colspan="9" id="colspan">Раздел 1</th>
-    </tr>-->
-    %PRODUCTS%
-    <tr id="withoutSectionInOrderTable">
+    %SECTIONS%
+    <tr class="withoutSectionInOrderTable">
         <th colspan="9"></th>
+    %WITHOUT_SECTIONS%
     </tr>
     </tbody>
 </table>

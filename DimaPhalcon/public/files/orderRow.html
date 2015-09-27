@@ -1,19 +1,21 @@
-<tr class="orderRow">
+<tr class="%ROW_CLASS%" name="%PRODUCT_ID%">
     <td></td>
     <td></td>
     <td>%NAME% из %NAME_METALL%</td>
     <td>шт</td>
-    <td><input id="quantityInOrder" class="inputWithoutBorders" data-order="%ORDER_ID%" data-product="%PRODUCT_ID%" type="number" min="1" value="%QUANTITY%"/></td>
+    <td class="quantityInOrderTd"><input class="quantityInOrder inputWithoutBorders"  data-order="%ORDER_ID%" data-product="%PRODUCT_ID%" type="number" min="1" value="%QUANTITY%"/></td>
     <td class="inputPriceInOrder">%PRICE%</td>
     <td class="inputSumInOrder">%SUM%</td>
     <td class="outputPriceInOrder">%PRICE_OUT%</td>
     <td class="outputSumInOrder">%SUM_OUT%</td>
-	<td>
-	<span class="glyphicon glyphicon-arrow-up" aria-hidden="true"></span>
-	<span class="glyphicon glyphicon-arrow-down" aria-hidden="true"></span>
-	<span class="glyphicon glyphicon-chevron-up" aria-hidden="true"></span>
-	<span class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span>
-	<span class="glyphicon glyphicon-share-alt" aria-hidden="true"></span>
-	<span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+	<td class="orderTableActions">
+        <div class="col-md-8 orderTableActionsWrapper">
+            <span class="glyphicon glyphicon-arrow-up" data-toggle="tooltip" data-placement="top" title="Tooltip on left" aria-hidden="true"></span>
+            <span class="glyphicon glyphicon-arrow-down" aria-hidden="true"></span>
+            <span class="glyphicon glyphicon-chevron-up" aria-hidden="true"></span>
+            <span class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span>
+            <span class="glyphicon glyphicon-share-alt" aria-hidden="true"></span>
+            <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+        </div>
 	</td>
 </tr>

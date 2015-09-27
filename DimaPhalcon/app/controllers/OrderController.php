@@ -2,52 +2,6 @@
 use Phalcon\Db\RawValue;
 class OrderController  extends \Phalcon\Mvc\Controller 
 {
-    /*public function createNewOrderAction() {
-        if ($this->request->isAjax() && $this->request->isPost()) {
-            $prId = $this->request->getPost('productId');
-            $orderMax = Orders::maximum(array("column" => "order_number"));
-            $orderNumber = 1;
-            if ($orderMax) {
-                $orderNumber = (int)($orderMax) + 1;
-            }
-            
-            $order = new Orders;            
-            $descr = (array)json_decode(file_get_contents('files/orderDetails.json'));
-            $year = date('o');
-            $month = date('m');
-            $day = date('d');
-            $descr['%DATE%'] = $year . '-' . $month . '-' . $day;
-            $descr['%ESTIMATE%'] = $year . '-' . $month . '-' . $day;
-            $order->setOrderNumber($orderNumber)
-                  ->setArticle($this->generateArticle($orderNumber))
-                  ->setDiscount(new RawValue('default'))
-                  ->setOrderDescription(json_encode((object)$descr))
-                  ->save();
-            
-            $this->response->setContentType('application/json', 'UTF-8');
-            
-            if ($order->save() == false) {                
-                $this->response->setJsonContent('error');
-                return $this->response;
-            }
-            $order_id = $order->getId();
-            $prInOrder = new Productinorder;
-            $prInOrder->setOrderid($order_id)
-                      ->setProductid($prId)
-                      ->setQuantity(new RawValue('default'));
-            if ($prInOrder->save() == false) {
-                $this->response->setJsonContent('error');
-                return $this->response;
-            }
-            
-            $tab = new TabsController;
-            $this->response->setJsonContent($tab->addNewRightTab($order_id));
-            return $this->response;
-        } else {
-            $this->response->redirect('');
-        }
-    }*/
-
     public function createNewOrderAction() {
         if ($this->request->isAjax() && $this->request->isPost()) {
             $orderMax = Orders::maximum(array("column" => "order_number"));
@@ -67,6 +21,7 @@ class OrderController  extends \Phalcon\Mvc\Controller
                 ->setArticle($this->generateArticle($orderNumber))
                 ->setDiscount(new RawValue('default'))
                 ->setOrderDescription(json_encode((object)$descr))
+                ->setMap(new RawValue('default'))
                 ->setStatus(new RawValue('default'))
                 ->save();
 
@@ -86,6 +41,31 @@ class OrderController  extends \Phalcon\Mvc\Controller
         }
     }
 
+    public function addProductToOrderAction(){
+        if ($this->request->isAjax() && $this->request->isPost()) {
+            $orderId = $this->request->getPost('orderId');
+            $prId = $this->request->getPost('productId');
+            $this->response->setContentType('application/json', 'UTF-8');
+            $orObj = Productinorder::findFirst(
+                "orderId = '" . $orderId . "' AND productId = '" . $prId . "'"
+            );
+            if (!$orObj) {
+                $prInOrder = new Productinorder;
+                $prInOrder->setOrderid($orderId)
+                          ->setProductid($prId);
+                if ($prInOrder->save() == false) {
+                    $this->response->setJsonContent('error');
+                    return $this->response;
+                }
+                $this->response->setJsonContent(array('status' => 'ok'));
+                return $this->response;
+            }
+            $this->response->setJsonContent(array('status' => 'already'));
+            return $this->response;
+        } else {
+            $this->response->redirect('');
+        }
+    }
     public function saveOrderInDBAction(){
         if ($this->request->isAjax() && $this->request->isPost()) {
             $orderId = $this->request->getPost('orderId');
@@ -177,10 +157,36 @@ class OrderController  extends \Phalcon\Mvc\Controller
             $this->response->redirect('');
         }
     }
-    
+
+    public function generateWithoutSectionArr ($arr) {
+        $productInOrderObj = Productinorder::find();
+        if ($productInOrderObj == false) {
+            echo "Мы не можем сохранить робота прямо сейчас: \n";
+            foreach ($productInOrderObj->getMessages() as $message) {
+                echo $message, "\n";
+            }
+            return false;
+        }
+        $productsArr = array();
+        $res = array();
+        foreach ($productInOrderObj as $val) {
+            array_push($productsArr, $val->getProductid());
+        }
+        $productObj = new ProductsController;
+        foreach ($arr as $key => $val) {
+            foreach ((array)$val as $productId => $quantity) {
+                if (in_array($productId, $productsArr)) {
+                    array_push($res, [$productId => $quantity]);
+                }
+            }
+        }
+
+        return $res;
+    }
+
     public function createAddToOrder() {
         //$substObj = new Substitution();
-        $res = '<button class="btn btn-info btn-sm" id="createOrderBtn">Добавить в ордер</button>';
+        $res = '<button class="btn btn-info btn-sm" id="addToOrderBtn">Добавить в ордер</button>';
         return $res;
     }
     

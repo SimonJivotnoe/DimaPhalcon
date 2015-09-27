@@ -22,12 +22,6 @@ class Productinorder extends \Phalcon\Mvc\Model
     protected $productId;
 
     /**
-     *
-     * @var integer
-     */
-    protected $quantity;
-
-    /**
      * Method to set the value of field id
      *
      * @param integer $id
@@ -67,19 +61,6 @@ class Productinorder extends \Phalcon\Mvc\Model
     }
 
     /**
-     * Method to set the value of field quantity
-     *
-     * @param integer $quantity
-     * @return $this
-     */
-    public function setQuantity($quantity)
-    {
-        $this->quantity = $quantity;
-
-        return $this;
-    }
-
-    /**
      * Returns the value of field id
      *
      * @return integer
@@ -110,22 +91,12 @@ class Productinorder extends \Phalcon\Mvc\Model
     }
 
     /**
-     * Returns the value of field quantity
-     *
-     * @return integer
-     */
-    public function getQuantity()
-    {
-        return $this->quantity;
-    }
-
-    /**
      * Initialize method for model.
      */
     public function initialize()
     {
-        $this->belongsTo('productId', '\Products', 'product_id', array('alias' => 'Products'));
         $this->belongsTo('orderId', '\Orders', 'id', array('alias' => 'Orders'));
+        $this->belongsTo('productId', '\Products', 'product_id', array('alias' => 'Products'));
     }
 
 }

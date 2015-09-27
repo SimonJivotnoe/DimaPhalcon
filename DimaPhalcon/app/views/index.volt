@@ -44,7 +44,13 @@
                         </tbody>
                     </table>
                 </div>
-
+                <h4 class="well" style="margin-top: -15px; height: 43px;">Ордера</h4>
+                <div id="fileManagerOrdersWrapper">
+                    <table class="table table-bordered">
+                        <tbody id="fileManagerOrdersTable">
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div><!-- /.modal-content -->
     </div><!-- /.modal-dialog -->

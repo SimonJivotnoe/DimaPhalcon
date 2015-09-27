@@ -154,6 +154,59 @@
         return obj;
     }
 
+    function getOrderMap() {
+        var res = {};
+        res.out = [];
+        $.each($('#orderTable tr'), function(key, val) {
+            var name;
+            switch ($(val ).attr('class')) {
+                case 'skip':
+                    break;
+                case 'orderTableSection':
+                    name = $(val ).attr('name');
+                    res[name] = [];
+                    break;
+                case 'sectionRow':
+                    var productId = $(val ).attr('name' ),
+                        obj = {};
+                    $.each($('td', val), function(k, v) {
+                        if ('quantityInOrderTd' === $(v).attr('class')) {
+                            obj[productId] = $('input', v).val();
+                            res[name].push(obj);
+                        }
+                    });
+                    break;
+                case 'withoutSectionRow':
+                    var productId = $(val ).attr('name' ),
+                        obj = {};
+                    $.each($('td', val), function(k, v) {
+                        if ('quantityInOrderTd' === $(v).attr('class')) {
+                            obj[productId] = $('input', v).val();
+                            res.out.push(obj);
+                        }
+                    });
+                    break;
+                default:
+                    break;
+            }
+        });
+
+        return res;
+    }
+
+    function saveOrderMap(map) {
+        $.ajax( {
+            url   : URL_MENU + 'saveOrderMap',
+            method: 'POST',
+            data: {map: map, orderId: MAIN.orderId}
+        } ).then( function ( data )
+        {
+            if (data) {
+                TABS.getRightTabContentTable(MAIN.orderId);
+            }
+        } );
+    }
+
     function addLeftTabsHandler(html) {
 
         html
@@ -257,8 +310,8 @@
                 PRODUCT.saveProductInDB();
             }).end()
 
-            .find('#createOrderBtn').click(function () {
-                ORDER.createNewOrder(MAIN.productId);
+            .find('#addToOrderBtn').click(function () {
+                ORDER.addToOrder();
             }).end()
             
             // change left tab name
@@ -634,7 +687,7 @@
     function addRightTabContentTableHandler(html) {
 
         html
-            .find('#quantityInOrder' ).change(function () {
+            .find('.quantityInOrder' ).change(function () {
                 var quantity = parseInt($(this).val()),
                     productId = $(this).attr('data-product'),
                     row = $(this).parents('.orderRow'),
@@ -659,7 +712,12 @@
             } ).end()
 
             .find('#addNewSection' ).click(function() {
-                $('#orderTable tbody' ).append('<tr><th colspan="9"><span contenteditable="true">Раздел</span></th></tr>');
+                var count = $('.orderTableSection').length,
+                    map;
+                $('.withoutSectionInOrderTable' ).before('<tr class="orderTableSection" name="Раздел ' +
+                (count + 1)+ '"><th colspan="9"><span contenteditable="true">Раздел ' + (count + 1)+ '</span></th></tr>');
+                map = JSON.stringify(getOrderMap());
+                saveOrderMap(map);
             });
         return html;
     }
@@ -776,18 +834,19 @@
     function addMenuProductHandler(html) {
 	
 	html
-	    .find('.openProductTab').click(function(e) {
-		e.stopPropagation();
-		$(this).removeClass('openProductTab').addClass('openProductTabSelected');
-	    }).end()
-	    
-	    .on('click', '.openProductTabSelected', function(e) {
-		e.stopPropagation();
-		    console.log('here');
-		$(this).removeClass('openProductTabSelected').addClass('openProductTab');
-	    });
+	    .find('.openProductTab').click(function() {
+            if ('' === $(this ).attr('data-selected')) {
+                $(this ).addClass('openProductTabSelected').attr('data-selected', 'selected' );
+            } else if('selected' === $(this ).attr('data-selected')){
+                $(this).removeClass('openProductTabSelected').attr('data-selected', '' );
+            }
+        }).end();
 	    
 	return html;    
+    }
+
+    function addMenuOrdersHandler(html) {
+        return html;
     }
     
     // prototype holds methods (to save memory space)
@@ -816,6 +875,9 @@
                     } else {
                         TABS.showPreferences();
                     }
+                    $(function () {
+                        $('[data-toggle="tooltip"]').tooltip();
+                    })
                 });
             },
 
@@ -850,6 +912,9 @@
                     
                     $('#calx').calx();
                     showBody();
+                    $(function () {
+                        $('[data-toggle="tooltip"]').tooltip();
+                    })
                 });
             },
 
@@ -1027,6 +1092,9 @@
                         return true;
                     }
                     TABS.showKim();
+                    $(function () {
+                        $('[data-toggle="tooltip"]').tooltip();
+                    })
                 });
             },
 
@@ -1047,7 +1115,9 @@
                         MAIN.curTabRightId = tabId;
                         MAIN.curTabRightName = 'a[href="#' + MAIN.curTabRightId + '"] .tabName';
                         MAIN.orderId = orderId;
-                        
+                        $(function () {
+                            $('[data-toggle="tooltip"]').tooltip();
+                        })
                         return this;
                     }
                     log(data.error);
@@ -1061,7 +1131,12 @@
                     data: {orderId: orderId}
                 } ).then( function ( data )
                 {
-                    $('#orderTableWrapper').html(addRightTabContentTableHandler($(data.html)));
+                    if (data.success) {
+                        $('#orderTableWrapper').html(addRightTabContentTableHandler($(data.html)));
+                        $(function () {
+                            $('[data-toggle="tooltip"]').tooltip();
+                        })
+                    }
                 });
             },
 
@@ -1333,7 +1408,24 @@
                     }
                 });
             },
-
+            addToOrder: function () {
+                var map,
+                    productId = MAIN.productId,
+                    obj = {};
+                $.ajax({
+                    url: URL_ORDER + 'addProductToOrder',
+                    method: 'POST',
+                    data: {orderId: MAIN.orderId, productId: productId}
+                }).then(function (data)
+                {console.log(data);
+                    if ('ok' === data.status) {
+                        map = getOrderMap();
+                        obj[productId] = 1;
+                        map.out.push(obj);
+                        saveOrderMap(JSON.stringify(map));
+                    }
+                });
+            },
             saveOrderInDB: function() {
                 $.ajax({
                     url: URL_ORDER + 'saveOrderInDB',
@@ -1589,9 +1681,9 @@
                     method: 'GET'
                 } ).then( function ( data )
                 {
-                    console.log(data);
                     $('#fileManagerCatogoriesSelect' ).html(data.categories);
                     $('#fileManagerProductsTable' ).html(addMenuProductHandler($(data.products)));
+                    $('#fileManagerOrdersTable' ).html(addMenuOrdersHandler($(data.orders)));
                     $('#openMenuModal').modal('show');
                 });
             }
@@ -1620,7 +1712,7 @@
         };
         
         run();
-        
+
     };
     
     // trick borrowed from jQuery so we don't have to use the 'new' keyword

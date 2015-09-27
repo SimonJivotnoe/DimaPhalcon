@@ -310,7 +310,7 @@ ol li:hover {
     background-color: white;
     width: 60px;
 }
-#createOrderBtn {
+#addToOrderBtn {
     /*margin-bottom: 5px;*/
     margin-right: 5px;
 }
@@ -373,5 +373,11 @@ ol li:hover {
     font-size: 15px;
     cursor: pointer;
     color: green;
+}
+.orderTableActionsWrapper {
+    display: none;
+}
+.orderTableActionsWrapper:hover {
+    display: block;
 }
 .clearer { clear: both; }

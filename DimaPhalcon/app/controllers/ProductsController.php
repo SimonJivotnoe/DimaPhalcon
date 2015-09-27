@@ -160,13 +160,15 @@ class ProductsController extends \Phalcon\Mvc\Controller
         return $tableRes;
     }
     
-    public function createProductInOrder($productId, $quantity, $orderId, $discount) {
+    public function createProductInOrder($productId, $quantity, $orderId, $discount = 0) {
         $substObj = new Substitution();
         $productObj = Products::findFirst($productId);        
         $metallId = $productObj->getMetall();
         $metallObj = Metalls::findFirst($metallId);
         $alwaysInTable = json_decode($productObj->getAlwaysInTable());
 
+        $res['%ROW_CLASS%'] = 'withoutSectionRow';
+        $res['%PRODUCT_ID%'] = $productObj->getProductId();
         $res['%NAME%'] = $productObj->getProductName();
         $res['%NAME_METALL%'] = $metallObj->getName();
         $res['%ORDER_ID%'] = $orderId;
