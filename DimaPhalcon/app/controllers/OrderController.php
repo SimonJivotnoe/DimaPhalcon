@@ -110,30 +110,6 @@ class OrderController  extends \Phalcon\Mvc\Controller
             $this->response->redirect('');
         }
     }
-
-    public function changeQuantityAction() {
-       if ($this->request->isAjax() && $this->request->isPost()) {
-           $orderId = $this->request->getPost('orderId');
-           $productId = $this->request->getPost('productId');
-           $quantity = $this->request->getPost('quantity');
-           $this->response->setContentType('application/json', 'UTF-8');
-           $orderObj = Productinorder::findFirst(array("orderId = '$orderId'", "productId = '$productId'"));
-           if ($orderObj) {
-               $q = $orderObj->setQuantity($quantity);
-               if($q->save() == true) {
-                   $this->response->setJsonContent(true);
-               } else {
-                   $this->response->setJsonContent(false);
-               }
-               
-               return $this->response;
-           }
-           $this->response->setJsonContent('error');
-           return $this->response;
-       } else {
-            $this->response->redirect('');
-        }
-    }
     
     public function changeOrderDetailsAction() {
         if ($this->request->isAjax() && $this->request->isPost()) {
@@ -158,7 +134,7 @@ class OrderController  extends \Phalcon\Mvc\Controller
         }
     }
 
-    public function generateSectionArr ($arr, $orderId) {
+    public function generateSectionArr ($arr, $orderId, $scope = true) {
         $productInOrderObj = Productinorder::find(array('orderId' => $orderId));
         if ($productInOrderObj == false) {
             echo "Мы не можем сохранить робота прямо сейчас: \n";
@@ -175,7 +151,9 @@ class OrderController  extends \Phalcon\Mvc\Controller
         $productObj = new ProductsController;
         foreach ($arr as $key => $val) {
             foreach ((array)$val as $productId => $quantity) {
-                if (in_array($productId, $productsArr)) {
+                if (in_array($productId, $productsArr) && $scope) {
+                    array_push($res, [$productId => $quantity]);
+                } else if (!scope){
                     array_push($res, [$productId => $quantity]);
                 }
             }

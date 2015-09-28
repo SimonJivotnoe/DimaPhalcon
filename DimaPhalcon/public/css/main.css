@@ -374,10 +374,4 @@ ol li:hover {
     cursor: pointer;
     color: green;
 }
-.orderTableActionsWrapper {
-    display: none;
-}
-.orderTableActionsWrapper:hover {
-    display: block;
-}
 .clearer { clear: both; }

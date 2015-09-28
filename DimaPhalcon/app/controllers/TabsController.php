@@ -441,7 +441,6 @@ class TabsController extends \Phalcon\Mvc\Controller
                         $res['%SECTIONS%'] .= '<tr class="orderTableSection" name="' . $key . '">
                         <th colspan="9"><span contenteditable="true">' . $key . '</span></th></tr>';
                         if (count($val)) {
-                            $sectionArr = array();
                             $sectionArr = $orderObj->generateSectionArr($val, $orderId);
                             if (count($sectionArr)) {
                                 foreach ($sectionArr as $key => $val) {

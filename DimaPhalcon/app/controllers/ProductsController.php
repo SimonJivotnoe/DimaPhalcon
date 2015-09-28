@@ -165,7 +165,9 @@ class ProductsController extends \Phalcon\Mvc\Controller
         $productObj = Products::findFirst($productId);        
         $metallId = $productObj->getMetall();
         $metallObj = Metalls::findFirst($metallId);
+        $orderObj = new OrderController;
         $alwaysInTable = json_decode($productObj->getAlwaysInTable());
+        $actionRow = '';
 
         $res['%ROW_CLASS%'] = 'withoutSectionRow';
         $res['%PRODUCT_ID%'] = $productObj->getProductId();
