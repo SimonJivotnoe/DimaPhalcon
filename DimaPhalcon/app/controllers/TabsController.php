@@ -436,13 +436,13 @@ class TabsController extends \Phalcon\Mvc\Controller
                 $orderObj = new OrderController;
                 foreach ($map as $key => $val) {
                     if ('out' === $key && count($val)) {
-                        $withoutSectionArr = $orderObj->generateWithoutSectionArr($val);
-                    } else {
+                        $withoutSectionArr = $orderObj->generateSectionArr($val, $orderId);
+                    } else if ('out' !== $key) {
                         $res['%SECTIONS%'] .= '<tr class="orderTableSection" name="' . $key . '">
                         <th colspan="9"><span contenteditable="true">' . $key . '</span></th></tr>';
                         if (count($val)) {
                             $sectionArr = array();
-                            $sectionArr = $orderObj->generateWithoutSectionArr($val);
+                            $sectionArr = $orderObj->generateSectionArr($val, $orderId);
                             if (count($sectionArr)) {
                                 foreach ($sectionArr as $key => $val) {
                                     foreach ($val as $productId => $quantity) {

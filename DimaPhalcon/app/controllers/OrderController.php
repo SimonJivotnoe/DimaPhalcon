@@ -158,8 +158,8 @@ class OrderController  extends \Phalcon\Mvc\Controller
         }
     }
 
-    public function generateWithoutSectionArr ($arr) {
-        $productInOrderObj = Productinorder::find();
+    public function generateSectionArr ($arr, $orderId) {
+        $productInOrderObj = Productinorder::find(array('orderId' => $orderId));
         if ($productInOrderObj == false) {
             echo "Мы не можем сохранить робота прямо сейчас: \n";
             foreach ($productInOrderObj->getMessages() as $message) {
