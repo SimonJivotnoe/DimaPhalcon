@@ -430,18 +430,24 @@ class TabsController extends \Phalcon\Mvc\Controller
             $res = array('%SECTIONS%' => '', '%WITHOUT_SECTIONS%' => '');
             $map = json_decode($order->getMap());
             $withoutSectionArr = array();
+            $moveTo = array();
+            $moveWithout = array('out' => []);
             $productObj = new ProductsController;
             $substObj = new Substitution();
             if ('' !== $map && null !== $map) {
                 $orderObj = new OrderController;
                 foreach ($map as $key => $val) {
                     if ('out' === $key && count($val)) {
-                        $withoutSectionArr = $orderObj->generateSectionArr($val, $orderId);
+                        $sec = $orderObj->generateSectionArr($val, $orderId);
+                        $moveWithout['out'] = $sec['move'];
+                        $withoutSectionArr = $sec['res'];
                     } else if ('out' !== $key) {
                         $res['%SECTIONS%'] .= '<tr class="orderTableSection" name="' . $key . '">
                         <th colspan="9"><span contenteditable="true">' . $key . '</span></th></tr>';
                         if (count($val)) {
-                            $sectionArr = $orderObj->generateSectionArr($val, $orderId);
+                            $sec = $orderObj->generateSectionArr($val, $orderId);
+                            $moveTo[$key] = $sec['move'];
+                            $sectionArr = $sec['res'];
                             if (count($sectionArr)) {
                                 foreach ($sectionArr as $key => $val) {
                                     foreach ($val as $productId => $quantity) {
@@ -449,6 +455,8 @@ class TabsController extends \Phalcon\Mvc\Controller
                                     }
                                 }
                             }
+                        } else if (!count($val)) {
+                            $moveTo[$key] = array();
                         }
                     }
                 }

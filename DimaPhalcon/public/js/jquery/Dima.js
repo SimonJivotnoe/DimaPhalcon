@@ -516,7 +516,7 @@
 						.keyup(function() {
 						PRODUCT.toggleAddFormula();
 					});
-					$('body').on('click', '.rowNumber', function(){
+					$('body').on('click', '.rowNumber', function(){console.log('here');
 						PRODUCT.addElementToFormulaInput(this);
 					});
 				}

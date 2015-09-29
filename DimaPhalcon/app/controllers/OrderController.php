@@ -145,21 +145,23 @@ class OrderController  extends \Phalcon\Mvc\Controller
         }
         $productsArr = array();
         $res = array();
+        $move = array();
         foreach ($productInOrderObj as $val) {
             array_push($productsArr, $val->getProductid());
         }
         $productObj = new ProductsController;
         foreach ($arr as $key => $val) {
             foreach ((array)$val as $productId => $quantity) {
+                array_push($move, $productId);
                 if (in_array($productId, $productsArr) && $scope) {
                     array_push($res, [$productId => $quantity]);
-                } else if (!scope){
+                } else if (!$scope){
                     array_push($res, [$productId => $quantity]);
                 }
             }
         }
 
-        return $res;
+        return array('res' => $res, 'move' => $move);
     }
 
     public function createAddToOrder() {
