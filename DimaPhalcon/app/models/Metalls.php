@@ -2,7 +2,8 @@
 use Phalcon\Mvc\Model,
     Phalcon\Validation,
     Phalcon\Mvc\Model\Validator\Uniqueness;
-class Metalls extends Model
+
+class Metalls extends \Phalcon\Mvc\Model
 {
 
     /**
@@ -34,6 +35,12 @@ class Metalls extends Model
      * @var string
      */
     protected $out_price;
+
+    /**
+     *
+     * @var string
+     */
+    protected $article;
 
     /**
      * Method to set the value of field id
@@ -101,6 +108,19 @@ class Metalls extends Model
     }
 
     /**
+     * Method to set the value of field article
+     *
+     * @param string $article
+     * @return $this
+     */
+    public function setArticle($article)
+    {
+        $this->article = $article;
+
+        return $this;
+    }
+
+    /**
      * Returns the value of field id
      *
      * @return integer
@@ -148,6 +168,16 @@ class Metalls extends Model
     public function getOutPrice()
     {
         return $this->out_price;
+    }
+
+    /**
+     * Returns the value of field article
+     *
+     * @return string
+     */
+    public function getArticle()
+    {
+        return $this->article;
     }
 
     /**

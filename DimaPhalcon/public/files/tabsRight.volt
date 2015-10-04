@@ -13,6 +13,7 @@
             <h4>КИМ</h4>
             <input type="text" id="kimHardInput" placeholder="Сложность изделия"/>
             <input type="number" id="kimInput" step="0.1" min="0.1" placeholder="КИМ"/>
+            <input type="text" id="kimArticle" placeholder="Артикул"/>
             <button class="btn btn-info btn-sm" id="addKIM">Добавить</button>
             <div class="col-md-12" id="kimListWrapper">
                 <table class="table table-bordered">
@@ -30,6 +31,7 @@
             <div class="col-md-12">
                 <input type="number" id="metallMass" step="0.1" min="0.1" placeholder="Масса"/>
                 <input type="number" id="metallOutPrice" step="10" placeholder="Исходящая цена"/>
+                <input type="text" id="metallArticle" placeholder="Артикул"/>
                 <button class="btn btn-info btn-sm" id="addMetall">Добавить</button>
             </div>
             <div class="col-md-12" id="metallListWrapper">

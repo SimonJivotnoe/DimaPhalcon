@@ -8,8 +8,9 @@ $( document ).ready( function ()
         PRODUCT = d.product,
         KIM = d.kim,
         METALLS = d.metalls,
-        MENU = d.menu;
-    
+        MENU = d.menu,
+        VALID = d.validation;
+
     // split monitor
     if (undefined === localStorage.split) {
         localStorage.split = '60em';
@@ -91,22 +92,65 @@ $( document ).ready( function ()
         }        
     });
 
+    /**
+     *
+     */
     $('#addKIM').on('click', function(){
-        var kim = $('#kimInput' ).val(),
-            kimHardInput = $('#kimHardInput' ).val();
-        kim = KIM.validation(kim);
-        KIM.addKIMtoTable(kim, kimHardInput);
+        var kim = VALID.validateInputVal({
+                val: $('#kimInput' ).val(),
+                id: '#kimInput',
+                digitsOnly: true
+            }),
+            kimHardInput = VALID.validateInputVal({
+                val: $('#kimHardInput' ).val(),
+                id: '#kimHardInput'
+            }),
+            kimArticle = VALID.validateInputVal({
+                val: $('#kimArticle' ).val(),
+                id: '#kimArticle',
+                unique: true
+            });
+        if (kim && kimHardInput && kimArticle) {
+            KIM.addKIMtoTable(kim, kimHardInput, kimArticle);
+        }
     });
     
     // metalls table    
-    $('#addMetall').on('click', function(){
-        var data = {
-            metall: $('#metallName' ).val(),
-            price: KIM.validation($('#metallPrice' ).val()),
-            mass: KIM.validation($('#metallMass' ).val()),
-            outPrice: KIM.validation($('#metallOutPrice' ).val())
-        };
-        METALLS.addMetallToTable(data);
+    $('#addMetall').on('click', function(){console.log(MAIN.metallTableContent);
+        var metall = VALID.validateInputVal({
+                val: $('#metallName' ).val(),
+                id: '#metallName',
+                unique: true
+            }),
+            price =  VALID.validateInputVal({
+                val: $('#metallPrice' ).val(),
+                id: '#metallPrice',
+                digitsOnly: true
+            }),
+            mass =  VALID.validateInputVal({
+                val: $('#metallMass' ).val(),
+                id: '#metallMass',
+                digitsOnly: true
+            }),
+            outPrice =  VALID.validateInputVal({
+                val: $('#metallOutPrice' ).val(),
+                id: '#metallOutPrice',
+                digitsOnly: true
+            }),
+            article = VALID.validateInputVal({
+                val: $('#metallArticle' ).val(),
+                id: '#metallArticle',
+                unique: true
+            });
+        if (metall && price && mass && outPrice && article) {
+            METALLS.addMetallToTable({
+                metall: metall,
+                price: price,
+                mass: mass,
+                outPrice: outPrice,
+                article: article
+            });
+        }
     });
 
     // menu modal

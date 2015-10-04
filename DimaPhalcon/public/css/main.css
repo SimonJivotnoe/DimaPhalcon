@@ -208,7 +208,7 @@ ol li:hover {
 }
 .removeRow, .removeKim, .removeMetall {
     opacity: 0.5;
-    padding-left: 8px;
+    padding-left: 5px;
     font-size: 12px;
 }
 .removeRow:hover, .removeKim:hover, .removeMetall:hover {
@@ -373,5 +373,13 @@ ol li:hover {
     font-size: 15px;
     cursor: pointer;
     color: green;
+}
+.checkToArticule {
+    margin-left: 5px !important;
+    display: none;
+}
+.inputError {
+    border: 1px solid hsla(360, 99%, 46%, 0.92);
+    border-radius: 2px
 }
 .clearer { clear: both; }

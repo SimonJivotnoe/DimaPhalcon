@@ -58,6 +58,9 @@
 	// alias to self.menu
 	var MENU;
 
+    // alias to self.validation
+    var VALIDATION;
+
 	function run() {
 		TABS.getLeftTabsList();
 		TABS.getRightTabsList();
@@ -92,6 +95,10 @@
 	}
 
 	// show body
+    /**
+     *
+     * @returns {boolean}
+     */
 	function showBody() {
 		if ($('body').is(":visible")) {
 			return false;
@@ -100,7 +107,12 @@
 		return true;
 	}
 
-	// editing kim table
+    /**
+     * editing kim table
+     *
+     * @param obj
+     * @param scope
+     */
 	function kimEditOver(obj, scope) {
 		$('.glyphicon-pencil', scope)
 			.removeClass(obj.pencilRemove)
@@ -285,13 +297,18 @@
 						id: 'saveTableContent' 
 					}
 				);
-				$('.removeRow').show();
+                $('.checkToArticule').hide();
+                $('.removeRow').show();
 				$('#sortable').sortable({
 					revert: true
 				});
 				$('#sortable').sortable("enable");
 				//$( "ul, li" ).disableSelection();
 			})
+
+            .on('click', '.checkToArticule', function(){
+                console.log($(this).prop('checked'));
+            })
 
 			.on('click', '#saveTableContent', function(){
 				$(this ).attr(
@@ -301,6 +318,7 @@
 					}
 				);
 				$('.removeRow' ).hide();
+                $('.checkToArticule').show();
 				PRODUCT.saveTable();
 				$('#sortable').sortable({
 					revert: false
@@ -756,7 +774,7 @@
 					.css('margin-left', '0');
 				$(this )
 					.parents('tr')
-					.find('.kimHardName, .kimName')
+					.find('.kimHardName, .kimName, .kimArticle')
 					.attr('contenteditable', 'true')
 					.css({
 						'border': '1px solid hsl(195, 79%, 43%)',
@@ -766,10 +784,20 @@
 
 			.on('click', '.saveEditKim', function(){
 				var kimId = $(this ).attr('name'),
-					kim = KIM.validation($(this ).parents('tr').find('.kimName' ).text()),
-					kimHard = $(this ).parents('tr').find('.kimHardName' ).text(),
+					kim = VALIDATION.validateInputVal({
+                        val: $(this ).parents('tr').find('.kimName' ).text(),
+                        digitsOnly: true
+                    }),
+					kimHard = VALIDATION.validateInputVal({
+                        val: $(this ).parents('tr').find('.kimHardName' ).text()
+                    }),
+					article = VALIDATION.validateInputVal({
+                        val: $(this ).parents('tr').find('.kimArticle' ).text()
+                    }),
 					self = this;
-				KIM.editKim(kimId, kim, kimHard, self);
+                if (kim && kimHard && article) {
+                    KIM.editKim(kimId, kim, kimHard, article, self);
+                }
 			});
 
 		return html;
@@ -804,7 +832,7 @@
 						.css('margin-left', '0');
 				$(this)
 						.parents('tr')
-						.find('.metallName, .metallPrice, .metallMass, .metallOutPrice')
+						.find('.metallName, .metallPrice, .metallMass, .metallOutPrice, .metallArticle')
 						.attr('contenteditable', 'true')
 						.css({
 							'border': '1px solid hsl(195, 79%, 43%)',
@@ -813,15 +841,35 @@
 			})
 
 			.on('click', '.saveEditMetall', function(){
-				var obj = {
-					metallId: $(this ).attr('name'),
-					metallName: $(this ).parents('tr').find('.metallName' ).text(),
-					metallPrice: KIM.validation($(this ).parents('tr').find('.metallPrice' ).text()),
-					metallMass: KIM.validation($(this ).parents('tr').find('.metallMass' ).text()),
-					metallOutPrice: KIM.validation($(this ).parents('tr').find('.metallOutPrice' ).text())
-				};
-				var self = this;
-				METALLS.editMetall(obj, this);
+                var scope = $(this ).parents('tr');
+                var metallName = VALIDATION.validateInputVal({
+                        val: scope.find('.metallName' ).text()
+                    }),
+                    metallPrice =  VALIDATION.validateInputVal({
+                        val: scope.find('.metallPrice' ).text(),
+                        digitsOnly: true
+                    }),
+                    metallMass =  VALIDATION.validateInputVal({
+                        val: scope.find('.metallMass' ).text(),
+                        digitsOnly: true
+                    }),
+                    metallOutPrice =  VALIDATION.validateInputVal({
+                        val: scope.find('.metallOutPrice' ).text(),
+                        digitsOnly: true
+                    }),
+                    article = VALIDATION.validateInputVal({
+                        val: scope.find('.metallArticle' ).text()
+                    });
+                if (metallName && metallPrice && metallMass && metallOutPrice && article) {
+                    METALLS.editMetall({
+                        metallId: $(this ).attr('name'),
+                        metallName: metallName,
+                        metallPrice: metallPrice,
+                        metallMass: metallMass,
+                        metallOutPrice: metallOutPrice,
+                        article: article
+                    }, this);
+                }
 			})
 			.on('click', '.removeMetall', function () {
 				var metallId = $(this).attr('name');
@@ -1277,8 +1325,8 @@
 					url   : URL_PRODUCT + 'addNewFormula',
 					method: 'POST',
 					data: {
-					formulas: formulas,
-					prId : MAIN.productId
+                        formulas: formulas,
+                        prId : MAIN.productId
 					}
 				} ).then( function ( data )
 				{console.log(data);
@@ -1503,18 +1551,19 @@
 				});
 			},
 
-			addKIMtoTable: function (kim, kimHard) {
+			addKIMtoTable: function (kim, kimHard, kimArticle) {
 				$.ajax({
 					url: URL_KIM + 'addKIMtoTable',
 					method: 'POST',
 					data: {
 						kim: kim,
-						kimHard: kimHard
+						kimHard: kimHard,
+                        kimArticle: kimArticle
 					}
 				}).then(function (data)
 				{
 					if (true === data) {
-						$('#kimInput, #kimHardInput').val('');
+						$('#kimInput, #kimHardInput, #kimArticle').val('');
 						KIM.getKIMTable();
 						KIM.getKimList();
 					} else {
@@ -1523,14 +1572,15 @@
 				});
 			},
 
-			editKim: function (kimId, kim, kimHard, save) {
+			editKim: function (kimId, kim, kimHard, article, save) {
 				$.ajax( {
 					url   : URL_KIM + 'editKim',
 					method: 'POST',
 					data: {
 						kimId: kimId,
 						kim: kim,
-						kimHard : kimHard
+						kimHard : kimHard,
+                        article: article
 					}
 				} ).then( function ( data )
 				{
@@ -1540,7 +1590,7 @@
 					} else {
 						$(save )
 							.parents('tr')
-							.find('.kimHardName, .kimName')
+							.find('.kimHardName, .kimName, .kimArticle')
 							.css({
 								'border': '3px solid hsl(0, 69%, 22%)',
 								'border-radius': '2px'
@@ -1558,7 +1608,6 @@
 					}
 				}).then(function (data)
 				{
-					console.log(data);
 					if (true === data) {
 						KIM.getKIMTable();
 						KIM.getKimList();
@@ -1580,7 +1629,8 @@
 					url: URL_METALLS + 'getMetallsTable',
 					method: 'GET'
 				}).then(function (data){
-					 $('#tbodyMetalls').html(addMetallsTableHandler($(data)));
+                    MAIN.metallTableContent = data.metallTableContent;
+					 $('#tbodyMetalls').html(addMetallsTableHandler($(data.html)));
 				}); 
 			},
 
@@ -1590,14 +1640,14 @@
 					method: 'POST',
 					data: obj
 				}).then(function (data)
-				{
+				{console.log(data);
 					if (true === data) {
 						METALLS.getMetallsTable();
 						METALLS.getMetallsList();
 					} else {
 						$(scope)
 							.parents('tr')
-							.find('.metallName, .metallPrice, .metallMass, .metallOutPrice')
+							.find('.metallName, .metallPrice, .metallMass, .metallOutPrice, .metallArticle')
 							.css({
 								'border': '3px solid hsl(0, 69%, 22%)',
 								'border-radius': '2px'
@@ -1623,11 +1673,11 @@
 				});
 			},
 
-			addMetallToTable: function (dates) {
+			addMetallToTable: function (obj) {
 				$.ajax( {
 					url   : URL_METALLS + 'addMetallToTable',
 					method: 'POST',
-					data: dates
+					data: obj
 				} ).then( function ( data )
 				{
 					if (true === data) {
@@ -1677,7 +1727,83 @@
 					$('#openMenuModal').modal('show');
 				});
 			}
-		}
+		},
+
+        validation: {
+            validateInputVal: function (obj) {
+                var val = obj.val.trim();
+
+                if (val && obj.digitsOnly) {
+                    val = VALIDATION.digitsOnly(val)
+                }
+
+                if (val && obj.unique) {
+                    val = VALIDATION.onUnique(val, obj.id);
+                }
+
+                if (!val) {
+                    if (obj.id) {
+                        VALIDATION.showError(obj.id);
+                    }
+                    return false;
+                }
+
+                return val;
+            },
+
+            /**
+             * parse string remove all letters and change coma to dot
+             *
+             * @param val
+             * @returns {string}
+             */
+            digitsOnly: function (val) {
+                var res;
+                res = val.replace(/[A-Za-z]+/g, '').replace(/,/g, '.');
+                return res;
+            },
+
+            onUnique: function (val, id) {
+                var articles, names;
+                switch (id) {
+                    case '#kimArticle':
+                        articles = MAIN.kimTableContent.articles;
+                        if (0 < articles.length) {
+                            val = VALIDATION.parseArray(articles, val);
+                        }
+                        break;
+                    case '#metallName':
+                        names = MAIN.metallTableContent.names;
+                        if (0 < names.length) {
+                            val = VALIDATION.parseArray(names, val);
+                        }
+                        break;
+                    case '#metallArticle':
+                        articles = MAIN.metallTableContent.articles;
+                        if (0 < articles.length) {
+                            val = VALIDATION.parseArray(articles, val);
+                        }
+                        break;
+                }
+                return val;
+            },
+
+            showError: function (id) {
+                $(id).addClass('inputError');
+                setTimeout(function(){ $(id).removeClass('inputError'); }, 1000);
+            },
+
+            parseArray: function (arr, val) {
+                var i;
+                for (i = 0; i < arr.length; i++) {
+                    if (val === arr[i]) {
+                        val = false;
+                        break;
+                    }
+                }
+                return val;
+            }
+        }
 	};
 
 	// the actual object is created here, allowing us to 'new' an object without calling 'new'
@@ -1693,6 +1819,7 @@
 		KIM = this.kim;
 		METALLS = this.metalls;
 		MENU = this.menu;
+        VALIDATION = this.validation;
 		/*self.firstName = firstName || '';
 		self.lastName = lastName || '';
 		self.language = language || 'en';*/

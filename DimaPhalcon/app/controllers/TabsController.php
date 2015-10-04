@@ -92,6 +92,10 @@ class TabsController extends \Phalcon\Mvc\Controller
                 $substObj = new Substitution();
                 $tabContent = '';
 
+                $article = $product->getArticle();
+                if (!$article) {
+                    $article = '<p><button type="button" class="btn btn-info btn-sm" id="createArticle">Создать артикул</button></p>';
+                }
                 $productCatId = $product->getCategoryId();
                 $productKim = $product->getKim();
                 $productMetall = $product->getMetall();
@@ -124,6 +128,7 @@ class TabsController extends \Phalcon\Mvc\Controller
 
                 $productDetails = array(
                     '%PRODUCT_NAME%' => $prName,
+                    '%ARTICLE%' => $article,
                     '%CATEGORIES%' => $categoryObj->createCategoriesList($productCatId)['categoriesList'],
                     '%KIM_LIST%' => $kimObj->createKimList($productKim),
                     '%METALL_LIST%' => $metallsObj->createMetallsList($productMetall),
@@ -209,6 +214,7 @@ class TabsController extends \Phalcon\Mvc\Controller
             $alwaysInTable = file_get_contents('files/alwaysInTable.json');
             $product = new Products();
             $product->setProductName('Новое изделие')
+                    ->setArticle(new RawValue('default'))
                     ->setCategoryId($categoryId)
                     ->setKim($kimId)
                     ->setMetall($metallId)

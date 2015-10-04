@@ -12,23 +12,29 @@ class MetallsController extends \Phalcon\Mvc\Controller
                         <th>Цена</th>
                         <th>Масса</th>
                         <th>Исходящая цена</th>
+                        <th>Артикул</th>
                         <th class="editMetallTable"></th>
                     </tr>';
+            $names = [];
+            $article = [];
             foreach ($met as $val) {
                 $res .= '<tr>
                             <td><span class="metallName">' . $val->getName() . '</span></td>
                             <td><span class="metallPrice">'. $val->getPrice() . '</span></td>
                             <td><span class="metallMass">'. $val->getMass() . '</span></td>
                             <td><span class="metallOutPrice">'. $val->getOutPrice() . '</span></td>
+                            <td><span class="metallArticle">'. $val->getArticle() . '</span></td>
                             <td class="editMetallTable">
                                 <span class="glyphicon glyphicon-pencil triggerMetallPencil" aria-hidden="true" name="'. $val->getId() . '"></span>
                                 <span class="glyphicon glyphicon-remove triggerRemoveMetall" aria-hidden="true" name="'. $val->getId() . '"></span>
                                 </td>
                         </tr>';
+                array_push($names, $val->getName());
+                array_push($article, $val->getArticle());
             }
-
+            $resObj = ['names' => $names, 'articles' => $article];
             $this->response->setContentType('application/json', 'UTF-8');
-            $this->response->setJsonContent($res);
+            $this->response->setJsonContent(array('html' => $res, 'metallTableContent' => (object)$resObj));
 
             return $this->response;
         } else {
@@ -42,12 +48,21 @@ class MetallsController extends \Phalcon\Mvc\Controller
             $price = $this->request->getPost('price');
             $mass = $this->request->getPost('mass');
             $outPrice = $this->request->getPost('outPrice');
+            $article = $this->request->getPost('article');
+
+            $this->response->setContentType('application/json', 'UTF-8');
+
+            $checkArticle = Metalls::findFirst("article = '" . $article . "'");
+            if ($checkArticle) {
+                $this->response->setJsonContent('already');
+                return $this->response;
+            }
             $metalls = new Metalls();
             $metalls->setName($name)
                     ->setPrice($price)
                     ->setMass($mass)
-                    ->setOutPrice($outPrice);
-            $this->response->setContentType('application/json', 'UTF-8');
+                    ->setOutPrice($outPrice)
+                    ->setArticle($article);
             if ($metalls->save() == false) {
                 $this->response->setJsonContent('already');
             } else {
@@ -66,6 +81,15 @@ class MetallsController extends \Phalcon\Mvc\Controller
             $metallPrice = $this->request->getPost('metallPrice');
             $metallMass = $this->request->getPost('metallMass');
             $metallOutPrice = $this->request->getPost('metallOutPrice');
+            $article = $this->request->getPost('article');
+
+            $this->response->setContentType('application/json', 'UTF-8');
+
+            $checkArticle = Metalls::findFirst("article = '" . $article . "' AND id != '" . $metallId . "'");
+            if ($checkArticle) {
+                $this->response->setJsonContent('already');
+                return $this->response;
+            }
             $metallQ = Metalls::findFirst($metallId);
             if ($metallQ == false) {
                 echo "Мы не можем сохранить робота прямо сейчас: \n";
@@ -76,8 +100,8 @@ class MetallsController extends \Phalcon\Mvc\Controller
                 $metallQ->setName($metallName)
                          ->setPrice($metallPrice)
                          ->setMass($metallMass)
-                         ->setOutPrice($metallOutPrice);
-                $this->response->setContentType('application/json', 'UTF-8');
+                         ->setOutPrice($metallOutPrice)
+                         ->setArticle($article);
                 if ($metallQ->save() == false) {
                     $this->response->setJsonContent('already');
                 } else {
@@ -140,12 +164,16 @@ class MetallsController extends \Phalcon\Mvc\Controller
             "order" => "name ASC"));
         foreach ($metalls as $val) {
             if ($productMetall === $val->getId()) {
-                $metallsList .= '<option selected="selected" name="'.$val->getId().'" metall="'.$val->getPrice().'" metallOut="'.$val->getOutPrice().'">'.
-                    $val->getName().': '.$val->getPrice().' грн</option>';
+                $metallsList .= '<option selected="selected" ';
             } else {
-                $metallsList .= '<option name="'.$val->getId().'" metall="'.$val->getPrice().'" metallOut="'.$val->getOutPrice().'">'.
-                    $val->getName().': '.$val->getPrice().' грн</option>';
+                $metallsList .= '<option ';
             }
+            $metallsList .= 'name="' . $val->getId()
+                .'" metall="' . $val->getPrice()
+                .'" metallOut="' . $val->getOutPrice()
+                . '" article="' . $val->getArticle()
+                .'">'.
+                $val->getName().': '.$val->getPrice().' грн</option>';
         }
 
         return $metallsList;

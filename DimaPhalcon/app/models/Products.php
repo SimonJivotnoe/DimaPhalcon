@@ -1,4 +1,7 @@
 <?php
+use Phalcon\Mvc\Model,
+    Phalcon\Validation,
+    Phalcon\Mvc\Model\Validator\Uniqueness;
 
 class Products extends \Phalcon\Mvc\Model
 {
@@ -8,6 +11,12 @@ class Products extends \Phalcon\Mvc\Model
      * @var integer
      */
     protected $product_id;
+
+    /**
+     *
+     * @var string
+     */
+    protected $article;
 
     /**
      *
@@ -78,6 +87,19 @@ class Products extends \Phalcon\Mvc\Model
     public function setProductId($product_id)
     {
         $this->product_id = $product_id;
+
+        return $this;
+    }
+
+    /**
+     * Method to set the value of field article
+     *
+     * @param string $article
+     * @return $this
+     */
+    public function setArticle($article)
+    {
+        $this->article = $article;
 
         return $this;
     }
@@ -223,6 +245,16 @@ class Products extends \Phalcon\Mvc\Model
     }
 
     /**
+     * Returns the value of field article
+     *
+     * @return string
+     */
+    public function getArticle()
+    {
+        return $this->article;
+    }
+
+    /**
      * Returns the value of field product_name
      *
      * @return string
@@ -323,10 +355,24 @@ class Products extends \Phalcon\Mvc\Model
     }
 
     /**
+     * Validations and business logic
+     */
+    /*public function validation()
+    {
+        $this->validate(
+            new Uniqueness(
+                array(
+                    'field'  => 'article',
+                    'message' => 'This name already exists'
+                )));
+        return $this->validationHasFailed() != true;
+    }*/
+    /**
      * Initialize method for model.
      */
     public function initialize()
     {
+        $this->hasMany('product_id', '\ProductInOrder', 'productId', array('alias' => 'ProductInOrder'));
         $this->hasMany('product_id', '\Tabs', 'product_id', array('alias' => 'Tabs'));
         $this->belongsTo('category_id', '\Categories', 'category_id', array('alias' => 'Categories'));
         $this->belongsTo('kim', '\Kim', 'kim_id', array('alias' => 'Kim'));

@@ -8,9 +8,19 @@ class KimController extends \Phalcon\Mvc\Controller
         if ($this->request->isAjax() && $this->request->isPost()) {
             $kimK = $this->request->getPost('kim');
             $kimHard = $this->request->getPost('kimHard');
-            $kim = new Kim;
-            $kim->setKim($kimK)->setKimHard($kimHard);
+            $article = $this->request->getPost('kimArticle');
+
             $this->response->setContentType('application/json', 'UTF-8');
+
+            $checkArticle = Kim::findFirst("article_kim = '" . $article . "'");
+            if ($checkArticle) {
+                $this->response->setJsonContent('already');
+                return $this->response;
+            }
+            $kim = new Kim;
+            $kim->setKim($kimK)
+                ->setKimHard($kimHard)
+                ->setArticleKim($article);
             if ($kim->save() == false) {
                 $this->response->setJsonContent('already');
             } else {
@@ -27,20 +37,23 @@ class KimController extends \Phalcon\Mvc\Controller
     {
         if ($this->request->isAjax() && $this->request->isGet()) {
             $kim = Kim::find(array("order" => "kim ASC"));
-            $res = '<tr><th>Сложность изделия</th><th>КИМ</th><th class="editKimTable"></th></tr>';
+            $res = '<tr><th>Сложность изделия</th><th>КИМ</th><th>Артикул</th><th class="editKimTable"></th></tr>';
             $resObj = [];
+            $article = [];
             foreach ($kim as $val) {
                 $res .= '<tr>
                             <td><span class="kimHardName">' . $val->getKimHard() . '</span></td>
                             <td><span class="kimName">' . $val->getKim() . '</span></td>
+                            <td><span class="kimArticle">' . $val->getArticleKim() . '</span></td>
                             <td class="editKimTable">
                                 <span class="glyphicon glyphicon-pencil triggerKimPencil" aria-hidden="true" name="' . $val->getKimId() . '"></span>
                                 <span class="glyphicon glyphicon-remove triggerRemoveKim" aria-hidden="true" name="' . $val->getKimId() . '"></span>
                                 </td>
                         </tr>';
                 $resObj[ $val->getKim() ] = $val->getKimHard();
+                array_push($article, $val->getArticleKim());
             }
-
+            $resObj['articles'] = $article;
             $this->response->setContentType('application/json', 'UTF-8');
             $this->response->setJsonContent(array('html' => $res, 'kimTableContent' => (object)$resObj));
 
@@ -56,6 +69,15 @@ class KimController extends \Phalcon\Mvc\Controller
             $kimId = $this->request->getPost('kimId');
             $kim = $this->request->getPost('kim');
             $kimHard = $this->request->getPost('kimHard');
+            $article = $this->request->getPost('article');
+
+            $this->response->setContentType('application/json', 'UTF-8');
+
+            $checkArticle = Kim::findFirst("article_kim = '" . $article . "' AND kim_id != '" . $kimId . "'");
+            if ($checkArticle) {
+                $this->response->setJsonContent('already');
+                return $this->response;
+            }
             $kimQ = Kim::findFirst($kimId);
             if ($kimQ == false) {
                 echo "Мы не можем сохранить робота прямо сейчас: \n";
@@ -63,8 +85,9 @@ class KimController extends \Phalcon\Mvc\Controller
                     echo $message, "\n";
                 }
             } else {
-                $kimQ->setKim($kim)->setKimHard($kimHard);
-                $this->response->setContentType('application/json', 'UTF-8');
+                $kimQ->setKim($kim)
+                    ->setKimHard($kimHard)
+                    ->setArticleKim($article);
                 if ($kimQ->save() == false) {
                     $this->response->setJsonContent('already');
                 } else {
@@ -90,15 +113,9 @@ class KimController extends \Phalcon\Mvc\Controller
                 }
             } else {
                 $productKim = $product->getKim();
-                $kimList = '';
                 $kim = Kim::find(array("order" => "kim ASC"));
-                foreach ($kim as $val) {
-                    if ($productKim === $val->getKimId()) {
-                        $kimList .= '<option selected="selected" name="' . $val->getKimId() . '" kim="' . $val->getKim() . '">' . $val->getKimHard() . ': ' . $val->getKim() . ' </option>';
-                    } else {
-                        $kimList .= '<option name="' . $val->getKimId() . '" kim="' . $val->getKim() . '">' . $val->getKimHard() . ': ' . $val->getKim() . ' </option>';
-                    }
-                }
+                $kimList = $this->createKimList($productKim);
+
                 $this->response->setContentType('application/json', 'UTF-8');
                 $this->response->setJsonContent($kimList);
 
@@ -137,11 +154,10 @@ class KimController extends \Phalcon\Mvc\Controller
         $kimList = '';
         $kim = Kim::find(array("order" => "kim ASC"));
         foreach ($kim as $val) {
-            if ($productKim === $val->getKimId()) {
-                $kimList .= '<option selected="selected" name="' . $val->getKimId() . '" kim="' . $val->getKim() . '">' . $val->getKimHard() . ': ' . $val->getKim() . ' </option>';
-            } else {
-                $kimList .= '<option name="' . $val->getKimId() . '" kim="' . $val->getKim() . '">' . $val->getKimHard() . ': ' . $val->getKim() . ' </option>';
-            }
+            $productKim === $val->getKimId() ? $kimList .= '<option selected="selected" ' : $kimList .= '<option ';
+            $kimList .= 'name="' . $val->getKimId()
+                . '" kim="' . $val->getKim()
+                . '" article="' . $val->getArticleKim() . '">' . $val->getKimHard() . ': ' . $val->getKim() . ' </option>';
         }
 
         return $kimList;

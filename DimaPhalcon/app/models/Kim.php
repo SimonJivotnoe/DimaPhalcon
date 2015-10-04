@@ -3,7 +3,7 @@ use Phalcon\Mvc\Model,
     Phalcon\Validation,
     Phalcon\Mvc\Model\Validator\Uniqueness;
 
-class Kim extends Model
+class Kim extends \Phalcon\Mvc\Model
 {
 
     /**
@@ -23,6 +23,12 @@ class Kim extends Model
      * @var string
      */
     protected $kim;
+
+    /**
+     *
+     * @var string
+     */
+    protected $article_kim;
 
     /**
      * Method to set the value of field kim_id
@@ -64,6 +70,19 @@ class Kim extends Model
     }
 
     /**
+     * Method to set the value of field article_kim
+     *
+     * @param string $article_kim
+     * @return $this
+     */
+    public function setArticleKim($article_kim)
+    {
+        $this->article_kim = $article_kim;
+
+        return $this;
+    }
+
+    /**
      * Returns the value of field kim_id
      *
      * @return integer
@@ -94,6 +113,16 @@ class Kim extends Model
     }
 
     /**
+     * Returns the value of field article_kim
+     *
+     * @return string
+     */
+    public function getArticleKim()
+    {
+        return $this->article_kim;
+    }
+
+    /**
      * Validations and business logic
      */
     public function validation()
@@ -106,6 +135,7 @@ class Kim extends Model
                 )));
         return $this->validationHasFailed() != true;
     }
+
     /**
      * Initialize method for model.
      */
