@@ -61,10 +61,27 @@
     // alias to self.validation
     var VALIDATION;
 
+    // error messages obj
+    var ERR = {
+        ARTICLE: {
+            emptyTable: 'Заполните поля таблицы продукта',
+            checked: 'Нужно отметить от 2-х до 4-х значений в таблице'
+        }
+    }
+
+    // PRIVATE METHODS SECTION
 	function run() {
 		TABS.getLeftTabsList();
 		TABS.getRightTabsList();
 	}
+    // TABS
+
+    // PRODUCTS
+    function cancelArticleBtn () {
+        $('#createArticle').show();
+        $('#cancelArticleBtn' ).hide();
+        $('.checkToArticle, #saveArticle').hide();
+    }
 
 	var orderPlaceholder = {
 		"%FIO%": "",
@@ -205,6 +222,445 @@
 		return res;
 	}
 
+    function addLeftTabContentHandler(html) {
+        //console.log(html.find('#addFormulaBtnPr' ));
+        html
+            // edit & save categories list content
+            .filter('.blockNameAndCat')
+            .mouseover(function(){
+                $('#editCategoriesListContent' ).show();
+            })
+            .mouseleave(function(){
+                $('#editCategoriesListContent' ).css('display', 'none');
+            } ).end()
+
+            .filter('.tableContent')
+            .mouseover(function(){
+                $('#editTableContent' ).show();
+            })
+            .mouseleave(function(){
+                $('#editTableContent' ).css('display', 'none');
+            } ).end()
+
+            // edit & save Categories list
+            .on('click', '#editCategoriesListContent', function(){
+                cancelArticleBtn();
+                $(this ).attr({
+                    class: 'glyphicon glyphicon-floppy-disk',
+                    id: 'saveCategoriesListContent'
+                });
+                editDescriptionOfProduct(false);
+            } )
+
+            .on('click', '#saveCategoriesListContent', function(){
+                var obj;
+                $(this ).attr({
+                    class: 'glyphicon glyphicon-pencil leftTable',
+                    id: 'editCategoriesListContent'
+                });
+                obj = editDescriptionOfProduct(true);
+                if ('' === obj.prName) {
+                    obj.prName = 'Новое изделие';
+                    $(MAIN.curTabName).text('Новое изделие');
+                }
+                TABS.changeTabName(obj);
+                PRODUCT.saveTable();
+            })
+
+            .find('#createArticle' ).click(function(){
+                var check = 0,
+                    rowValueInput;
+                $.each($('.checkToArticle'), function(k, v){
+                    rowValueInput = $(v).closest('li').find('.rowValueInput');
+                    if(rowValueInput.val()) {
+                        check++;
+                        $(this).show();
+                    }
+                });
+                if (check) {
+                    $('#saveArticle, #cancelArticleBtn').show();
+                    $('#errorArticle' ).hide();
+                    $(this ).hide();
+                } else {
+                   $('#errorArticle' ).text(ERR.ARTICLE.emptyTable).show();
+                   setTimeout(function(){ $('#errorArticle' ).text('').hide('slow'); }, 2000);
+                }
+
+            }).end()
+
+            .find('#saveArticle' ).click(function(){
+                var article = '',
+                    check = 0,
+                    rowValueInput;
+                $.each($('.checkToArticle'), function(k, v){
+                    rowValueInput = $(v).closest('li').find('.rowValueInput');
+                    if ($(v ).prop('checked')) {
+                        check++;
+                        article += rowValueInput.val();
+                    }
+                })
+                if (2 <= check && 4 >= check) {
+                    $(this ).hide();
+                    $('.checkToArticle, #cancelArticleBtn').hide();
+                    if (!$('#saveInDB').size()) {
+                        PRODUCT.saveProductInDB();
+                    }
+                } else {
+                    $('#errorArticle' ).text(ERR.ARTICLE.checked).show();
+                    setTimeout(function(){ $('#errorArticle' ).text('').hide('slow'); }, 2000);
+                }
+            }).end()
+
+            .find('#cancelArticleBtn').click(cancelArticleBtn)
+            .end()
+
+            .on('change', '.checkToArticle', function(){
+                console.log($(this).prop('checked'));
+            })
+            // edit & save TableContent
+            .on('click', '#editTableContent', function(){
+                cancelArticleBtn();
+                $(this ).attr(
+                    {
+                        class: 'glyphicon glyphicon-floppy-disk',
+                        id: 'saveTableContent'
+                    }
+                );
+                $('.checkToArticule').hide();
+                $('.removeRow').show();
+                $('#sortable').sortable({
+                    revert: true
+                });
+                $('#sortable').sortable("enable");
+                //$( "ul, li" ).disableSelection();
+            })
+
+            .on('click', '.checkToArticule', function(){
+                console.log($(this).prop('checked'));
+            })
+
+            .on('click', '#saveTableContent', function(){
+                $(this ).attr(
+                    {
+                        class: 'glyphicon glyphicon-pencil leftTable',
+                        id: 'editTableContent'
+                    }
+                );
+                $('.removeRow' ).hide();
+                $('.checkToArticule').show();
+                PRODUCT.saveTable();
+                $('#sortable').sortable({
+                    revert: false
+                });
+                $('#sortable').sortable('disable');
+            })
+
+            .find('#saveInDB' ).click(function() {
+                PRODUCT.saveProductInDB();
+            }).end()
+
+            .find('#addToOrderBtn').click(function () {
+                ORDER.addToOrder();
+            }).end()
+
+            // change left tab name
+            .find('.nameOfProduct').on('change, keyup', function(){
+                $(MAIN.curTabName).text($(this ).val());
+                ('' === $(this ).val()) ? $(MAIN.curTabName).text('Новое изделие') : 0;
+            }).end()
+
+            // change kim in table
+            .find('.listOfKim').change(function(){
+                var kim = $('option:selected', this ).attr('kim');
+                $('[data-cell="KIM1"]' ).val(kim);
+                $( '#calx' ).calx();
+            }).end()
+
+            // change metall in table
+            .find('.listOfMetalls').change(function(){
+                var metall = $('option:selected', this ).attr('metall');
+                var metallOut = $('.listOfMetalls option:selected' ).attr('metallOut');
+                $('[data-cell="PR1"]' ).val(metall);
+                $('[data-cell="PR2"]' ).val(metallOut);
+                $( '#calx' ).calx();
+            }).end()
+
+            // add new row in product table
+            .find('#addNewRow').click(function () {
+                var numbersOfRows = $('#duration').val(),
+                    tableContent = {},
+                    temp,
+                    alwaysInTable,
+                    arr = [],
+                    max = 0,
+                    i;
+                cancelArticleBtn();
+                if (0 === $('#sortable li').size()) {
+                    for (i = 0; i < numbersOfRows; i++) {
+                        temp = _.clone(tempTable);
+                        temp['%ROW_NUMBER%'] = 'A' + (i + 1);
+                        temp['%DATA_CELL%'] = 'A' + (i + 1);
+                        tableContent[i] = temp;
+                    }
+                    alwaysInTable = PRODUCT.getTableContent('#alwaysInTable li');
+                    PRODUCT.createTable(tableContent, alwaysInTable);
+                } else {
+                    $.each($('#sortable .rowNumber'), function (key, val) {
+                        ('' !== $(val).text()) ? arr.push(parseInt($(val).text().substring(1))) : 0;
+                    });
+                    (0 !== arr.length) ? max = Math.max.apply(Math, arr) : 0;
+
+                    tableContent = PRODUCT.getTableContent('#sortable li');
+                    for (var i = 0; i < numbersOfRows; i++) {
+                        temp = _.clone(tempTable);
+                        temp['%ROW_NUMBER%'] = 'A' + (max + 1);
+                        temp['%DATA_CELL%'] = 'A' + (max + 1);
+                        tableContent[max] = temp;
+                        max++;
+                    }
+                    alwaysInTable = PRODUCT.getTableContent('#alwaysInTable li');
+                    PRODUCT.createTable(tableContent, alwaysInTable);
+                }
+            }).end()
+
+            // remove tr in product table
+            .on('click', '.removeRow', function () {
+                var rowName = $(this).parent().find('.rowValueInput').attr('data-cell'),
+                    checkBinding = $('.list-group-item').find('.glyphicon:contains(' + rowName + ')');
+                checkBinding.length ? checkBinding.remove() : 0;
+                $(this).parent().hide('drop');
+                $(this).parent().find('.rowNumber').text('');
+                $(this).parent().find('.rowValueInput').attr('data-cell', '');
+                setTimeout(function () {
+                    $(this).parent().remove();
+                }, 500);
+            })
+
+            // change row name in product table
+            .on('keyup', '.rowNameInput', function () {
+                $(this).attr('value', $(this).val());
+                PRODUCT.saveTable();
+            })
+
+            // change value in product table by mouse wheel
+            .on('mousewheel', '.rowValueInput', function (e) {
+                var thisVal = Number($(this).val());
+                if (1 === e.deltaY) {
+                    $(this).val((thisVal + 0.01).toFixed(2)).attr('value', (thisVal + 0.01).toFixed(2));
+                } else if (-1 === e.deltaY) {
+                    $(this).val((thisVal - 0.01).toFixed(2)).attr('value', (thisVal - 0.01).toFixed(2));
+                }
+                $('#calx').calx();
+                PRODUCT.saveTable();
+            })
+
+            // change value in product table by keys
+            .on('keydown', '.rowValueInput', function (e) {
+                switch (e.keyCode) {
+                    case 38: // UP
+                        PRODUCT.catchKey(this, '+', 1);
+                        e.preventDefault();
+                        break;
+                    case 40: // DOWN
+                        PRODUCT.catchKey(this, '-', 1);
+                        e.preventDefault();
+                        break;
+                    case 191: // /
+                        PRODUCT.catchKey(this, '+', 10);
+                        e.preventDefault();
+                        break;
+                    case 17: // Ctrl
+                        PRODUCT.catchKey(this, '-', 10);
+                        e.preventDefault();
+                        break;
+                    case 190: // >
+                        PRODUCT.catchKey(this, '+', 100);
+                        e.preventDefault();
+                        break;
+                    case 18: // Alt
+                        PRODUCT.catchKey(this, '-', 100);
+                        e.preventDefault();
+                        break;
+                    case 32: // Space
+                        e.preventDefault();
+                        break;
+                }
+            })
+
+            // prevent space and comma default action
+            .on('keyup', '.rowValueInput', function (e) {
+                var notToReact = [17, 18, 32, 37, 38, 39, 40, 110, 188, 190, 191],
+                    text = $(this).val(),
+                    caretPos;
+                if (text.indexOf(',') !== -1) {
+                    text = text.replace(',', '.');
+                    $(this).val(text);
+                }
+                $(this).attr('value', text);
+                if (-1 === $.inArray(e.keyCode, notToReact)) {
+                    caretPos = this.selectionStart;
+                    if (96 === e.keyCode && '.' === text.charAt((text.length - 2))) {
+
+                    } else {
+                        $('#calx').calx();
+                        text = '' + $(this).val();
+                        $(this).caret(caretPos);
+                        ('.' === text.charAt((text.length - 2))) ? $(this).caret((text.length - 1)) : 0;
+                        PRODUCT.saveTable();
+                    }
+                }
+            })
+
+            // add new formula
+            .find('#addFormulaBtnPr').click(function(){
+                if ('' !== $('#addFormulaInputPr').val()) {
+                    $( '#formulasList' )
+                        .append('<li class="list-group-item formula"><span class="formulaValue">'
+                        + $( '#addFormulaInputPr' ).val() + '</span></li>');
+                    PRODUCT.cancelInputFormula();
+                    $( '#addFormulaInputPr' ).val('');
+                    PRODUCT.addNewFormula(PRODUCT.getFormulasList);
+                }
+            }).end()
+
+            // create formula
+            .find('#addFormulaInputPr')
+            .click(function(){
+                var currentVal, ls;
+                $('.removeFhBtn').hide();
+                $('#addFormulaInputPr' ).css('border-color', 'rgba(82, 168, 236, 0.8)');
+                $('#formulasHelper' ).show('scale');
+                $('#addFormulaBtnPr' ).hide();
+                $('.formulaBtnGroupPr' ).show('drop');
+                if ('auto' === $('body').css('cursor')) {
+                    $('body').css('cursor', 'pointer');
+                    $(document )
+                        .off('keydown')
+                        .keydown(function (e) {
+                            if (!$('#addFormulaInputPr').is(":focus")  && 'pointer' === $('body').css('cursor')) {
+                                if (e.keyCode === 8) {
+                                    currentVal =  $('#addFormulaInputPr').val();
+                                    ls = localStorage.currentCaretPos;
+                                    currentVal = PRODUCT.removeChar(currentVal, ls - 1);
+                                    $('#addFormulaInputPr').val(currentVal);
+                                    localStorage.currentCaretPos--;
+                                    e.preventDefault();
+                                }
+                            }
+                        });
+                    $('body')
+                        .off('keypress')
+                        .keypress(function(e) {
+                            if (!$('#addFormulaInputPr').is(":focus") && 'pointer' === $('body').css('cursor')) {
+                                if (32 !== e.keyCode) {
+                                    PRODUCT.addWhereCaret(localStorage.currentCaretPos, String.fromCharCode(e.keyCode));
+                                    localStorage.currentCaretPos++;
+                                }
+                            }
+                        });
+                    $('body')
+                        .off('keyup')
+                        .keyup(function() {
+                            PRODUCT.toggleAddFormula();
+                        });
+                    $('body').on('click', '.rowNumber', function(){console.log('here');
+                        PRODUCT.addElementToFormulaInput(this);
+                    });
+                }
+            })
+            .keydown(function(e){
+                if (32 === e.keyCode) {
+                    return false;
+                }
+            })
+            .mouseleave(function(){
+                localStorage.currentCaretPos = document.getElementById('addFormulaInputPr').selectionStart;
+            } ).end()
+
+            //cancel create new formula
+            .find('#cancelFormulaBtnPr' ).click(function(){
+                PRODUCT.cancelInputFormula();
+            }).end()
+
+            // add formulas helper to formula input
+            .on('click', '.fhBtn', function(){
+                PRODUCT.addElementToFormulaInput(this);
+            })
+
+            // show remove formulas helper
+            .on('mouseover', '.fhBtn', function() {
+                $( '.removeFhBtn', this).show('fast');
+            })
+
+            // hide remove formulas helper
+            .on('mouseleave', '.fhBtn', function() {
+                $( '.removeFhBtn', this).hide('fast');
+            })
+
+            // remove formulas helper
+            .on('click', '.removeFhBtn', function(e) {
+                e.stopPropagation();
+                e.preventDefault();
+                var fhText = $(this ).parent().text();
+                PRODUCT.removeFormulasHelper(this, fhText);
+                $(this ).parent().fadeOut('slow');
+            })
+
+            // add new formula helper
+            .on('click', '.addNewFhBtn', function(){
+                $('body').css('cursor', 'pointer');
+                var newFl = $('#addNewFhBtnInput' ).val();
+                PRODUCT.addBtnToFormulasHelper(newFl);
+            })
+
+            // focus on formula helper input
+            .on('click', '#addNewFhBtnInput', function(){
+                $('#addFormulaInputPr, .rowNumber').off('click');
+                $('body').off('keypress');
+                $('body').off('click', '.rowNumber');
+                $('body').css('cursor', 'auto');
+            })
+
+            .on('mouseover', '.list-group-item', function(){
+                $(this ).addClass('list-group-item-info');
+            })
+
+            .on('mouseleave', '.list-group-item', function(){
+                $(this ).removeClass('list-group-item-info');
+            })
+
+            .on('mouseover', '.glyphicon-retweet', function(){
+                $(this ).removeClass('glyphicon glyphicon-retweet' ).addClass('glyphicon glyphicon-resize-full');
+            })
+
+            .on('mouseleave', '.glyphicon-resize-full', function(){
+                $(this ).removeClass('glyphicon glyphicon-resize-full' ).addClass('glyphicon glyphicon-retweet');
+            })
+
+            .on('click', '.glyphicon-resize-full', function(e){
+                var bindCell = $(this ).text(),
+                    tableContent, alwaysInTable;
+                e.stopPropagation();
+                e.preventDefault();
+
+                $('.rowValueInput[data-cell=' +bindCell + ']' )
+                    .removeAttr('color' ).val('' )
+                    .attr('value', '')
+                    .attr('data-formula', '')
+                    .css('color', '' );
+                $('.rowValueInput[data-cell=' +bindCell + ']' ).parent().parent().find('.rowNameInput').css('color', '' );
+                $('.rowValueInput[data-cell=' +bindCell + ']' ).parent().parent().css({'background' : '', 'color' : ''});
+                $(this ).parent().removeClass('list-group-item-info');
+                $(this ).remove();
+                $( '#calx' ).calx();
+                PRODUCT.addNewFormula(PRODUCT.getFormulasList, false);
+                tableContent = PRODUCT.getTableContent('#sortable li');
+                alwaysInTable = PRODUCT.getTableContent('#alwaysInTable li');
+                PRODUCT.createTable(tableContent, alwaysInTable);
+            });
+        return html;
+    }
+
 	function saveOrderMap(map, refresh) {
 		$.ajax( {
 			url   : URL_MENU + 'saveOrderMap',
@@ -243,393 +699,6 @@
 				$(this ).attr('class', 'glyphicon glyphicon-remove');
 				TABS.closeLeftTab(idDb, currentID);
 			});
-	}
-
-	function addLeftTabContentHandler(html) {
-		//console.log(html.find('#addFormulaBtnPr' ));
-		html
-			// edit & save categories list content
-			.filter('.blockNameAndCat')
-				.mouseover(function(){
-					$('#editCategoriesListContent' ).show();
-				})
-				.mouseleave(function(){
-					$('#editCategoriesListContent' ).css('display', 'none');
-				} ).end()
-
-			.filter('.tableContent')
-				.mouseover(function(){
-					$('#editTableContent' ).show();
-				})
-				.mouseleave(function(){
-					$('#editTableContent' ).css('display', 'none');
-				} ).end()
-
-			// edit & save Categories list
-			.on('click', '#editCategoriesListContent', function(){
-				$(this ).attr({
-							class: 'glyphicon glyphicon-floppy-disk',
-							id: 'saveCategoriesListContent' 
-						});
-				editDescriptionOfProduct(false);
-			} )
-
-			.on('click', '#saveCategoriesListContent', function(){
-				var obj;
-				$(this ).attr({
-							class: 'glyphicon glyphicon-pencil leftTable',
-							id: 'editCategoriesListContent'
-						});
-				obj = editDescriptionOfProduct(true);
-				if ('' === obj.prName) {
-					obj.prName = 'Новое изделие';
-					$(MAIN.curTabName).text('Новое изделие');
-				}
-				TABS.changeTabName(obj);
-				PRODUCT.saveTable();
-			})
-
-			// edit & save TableContent
-			.on('click', '#editTableContent', function(){
-				$(this ).attr(
-					{
-						class: 'glyphicon glyphicon-floppy-disk',
-						id: 'saveTableContent' 
-					}
-				);
-                $('.checkToArticule').hide();
-                $('.removeRow').show();
-				$('#sortable').sortable({
-					revert: true
-				});
-				$('#sortable').sortable("enable");
-				//$( "ul, li" ).disableSelection();
-			})
-
-            .on('click', '.checkToArticule', function(){
-                console.log($(this).prop('checked'));
-            })
-
-			.on('click', '#saveTableContent', function(){
-				$(this ).attr(
-					{
-						class: 'glyphicon glyphicon-pencil leftTable',
-						id: 'editTableContent' 
-					}
-				);
-				$('.removeRow' ).hide();
-                $('.checkToArticule').show();
-				PRODUCT.saveTable();
-				$('#sortable').sortable({
-					revert: false
-				});
-				$('#sortable').sortable('disable');
-			})
-
-			.find('#saveInDB' ).click(function() {
-				PRODUCT.saveProductInDB();
-			}).end()
-
-			.find('#addToOrderBtn').click(function () {
-				ORDER.addToOrder();
-			}).end()
-
-			// change left tab name
-			.find('.nameOfProduct').on('change, keyup', function(){
-				$(MAIN.curTabName).text($(this ).val());
-				('' === $(this ).val()) ? $(MAIN.curTabName).text('Новое изделие') : 0;
-			}).end()
-
-			// change kim in table
-			.find('.listOfKim').change(function(){
-				var kim = $('option:selected', this ).attr('kim');
-				$('[data-cell="KIM1"]' ).val(kim);
-				$( '#calx' ).calx();
-			}).end()
-
-			// change metall in table
-			.find('.listOfMetalls').change(function(){
-				var metall = $('option:selected', this ).attr('metall');
-				var metallOut = $('.listOfMetalls option:selected' ).attr('metallOut');
-				$('[data-cell="PR1"]' ).val(metall);
-				$('[data-cell="PR2"]' ).val(metallOut);
-				$( '#calx' ).calx();
-			}).end()
-
-			// add new row in product table
-			.find('#addNewRow').click(function () {
-				var numbersOfRows = $('#duration').val(),
-					tableContent = {},
-					temp,
-					alwaysInTable,
-					arr = [],
-					max = 0,
-					i;
-
-				if (0 === $('#sortable li').size()) {
-					for (i = 0; i < numbersOfRows; i++) {
-						temp = _.clone(tempTable);
-						temp['%ROW_NUMBER%'] = 'A' + (i + 1);
-						temp['%DATA_CELL%'] = 'A' + (i + 1);
-						tableContent[i] = temp;
-					}
-					alwaysInTable = PRODUCT.getTableContent('#alwaysInTable li');
-					PRODUCT.createTable(tableContent, alwaysInTable);
-				} else {
-					$.each($('#sortable .rowNumber'), function (key, val) {
-						('' !== $(val).text()) ? arr.push(parseInt($(val).text().substring(1))) : 0;
-					});
-					(0 !== arr.length) ? max = Math.max.apply(Math, arr) : 0;
-
-					tableContent = PRODUCT.getTableContent('#sortable li');
-					for (var i = 0; i < numbersOfRows; i++) {
-						temp = _.clone(tempTable);
-						temp['%ROW_NUMBER%'] = 'A' + (max + 1);
-						temp['%DATA_CELL%'] = 'A' + (max + 1);
-						tableContent[max] = temp;
-						max++;
-					}
-					alwaysInTable = PRODUCT.getTableContent('#alwaysInTable li');
-					PRODUCT.createTable(tableContent, alwaysInTable);
-				}
-			}).end()
-
-		// remove tr in product table
-		.on('click', '.removeRow', function () {
-			var rowName = $(this).parent().find('.rowValueInput').attr('data-cell'),
-				checkBinding = $('.list-group-item').find('.glyphicon:contains(' + rowName + ')');
-			checkBinding.length ? checkBinding.remove() : 0;
-			$(this).parent().hide('drop');
-			$(this).parent().find('.rowNumber').text('');
-			$(this).parent().find('.rowValueInput').attr('data-cell', '');
-			setTimeout(function () {
-				$(this).parent().remove();
-			}, 500);
-		})
-
-		// change row name in product table
-		.on('keyup', '.rowNameInput', function () {
-			$(this).attr('value', $(this).val());
-			PRODUCT.saveTable();
-		})
-
-		// change value in product table by mouse wheel
-		.on('mousewheel', '.rowValueInput', function (e) {
-			var thisVal = Number($(this).val());
-			if (1 === e.deltaY) {
-				$(this).val((thisVal + 0.01).toFixed(2)).attr('value', (thisVal + 0.01).toFixed(2));
-			} else if (-1 === e.deltaY) {
-				$(this).val((thisVal - 0.01).toFixed(2)).attr('value', (thisVal - 0.01).toFixed(2));
-			}
-			$('#calx').calx();
-			PRODUCT.saveTable();
-		})
-
-		// change value in product table by keys
-		.on('keydown', '.rowValueInput', function (e) {
-			switch (e.keyCode) {
-				case 38: // UP
-					PRODUCT.catchKey(this, '+', 1);
-					e.preventDefault();
-					break;
-				case 40: // DOWN
-					PRODUCT.catchKey(this, '-', 1);
-					e.preventDefault();
-					break;
-				case 191: // /
-					PRODUCT.catchKey(this, '+', 10);
-					e.preventDefault();
-					break;
-				case 17: // Ctrl
-					PRODUCT.catchKey(this, '-', 10);
-					e.preventDefault();
-					break;
-				case 190: // >
-					PRODUCT.catchKey(this, '+', 100);
-					e.preventDefault();
-					break;
-				case 18: // Alt
-					PRODUCT.catchKey(this, '-', 100);
-					e.preventDefault();
-					break;
-				case 32: // Space
-					e.preventDefault();
-					break;
-			}
-		})
-
-		// prevent space and comma default action
-		.on('keyup', '.rowValueInput', function (e) {
-			var notToReact = [17, 18, 32, 37, 38, 39, 40, 110, 188, 190, 191],
-				text = $(this).val(),
-				caretPos;
-			if (text.indexOf(',') !== -1) {
-				text = text.replace(',', '.');
-				$(this).val(text);
-			}
-			$(this).attr('value', text);
-			if (-1 === $.inArray(e.keyCode, notToReact)) {
-				caretPos = this.selectionStart;
-				if (96 === e.keyCode && '.' === text.charAt((text.length - 2))) {
-
-				} else {
-					$('#calx').calx();
-					text = '' + $(this).val();
-					$(this).caret(caretPos);
-					('.' === text.charAt((text.length - 2))) ? $(this).caret((text.length - 1)) : 0;
-					PRODUCT.saveTable();
-				}
-			}
-		})
-
-		// add new formula
-		.find('#addFormulaBtnPr').click(function(){
-			if ('' !== $('#addFormulaInputPr').val()) {
-				$( '#formulasList' )
-					.append('<li class="list-group-item formula"><span class="formulaValue">'
-					+ $( '#addFormulaInputPr' ).val() + '</span></li>');
-				PRODUCT.cancelInputFormula();
-				$( '#addFormulaInputPr' ).val('');
-				PRODUCT.addNewFormula(PRODUCT.getFormulasList);
-			}
-		}).end()
-
-		// create formula
-		.find('#addFormulaInputPr')
-			.click(function(){
-				var currentVal, ls;
-				$('.removeFhBtn').hide();
-				$('#addFormulaInputPr' ).css('border-color', 'rgba(82, 168, 236, 0.8)');
-				$('#formulasHelper' ).show('scale');
-				$('#addFormulaBtnPr' ).hide();
-				$('.formulaBtnGroupPr' ).show('drop');
-				if ('auto' === $('body').css('cursor')) {
-					$('body').css('cursor', 'pointer');
-					$(document )
-						.off('keydown')
-						.keydown(function (e) {
-							if (!$('#addFormulaInputPr').is(":focus")  && 'pointer' === $('body').css('cursor')) {
-								if (e.keyCode === 8) {
-									currentVal =  $('#addFormulaInputPr').val();
-									ls = localStorage.currentCaretPos;
-									currentVal = PRODUCT.removeChar(currentVal, ls - 1);
-									$('#addFormulaInputPr').val(currentVal);
-									localStorage.currentCaretPos--;
-									e.preventDefault();
-								}
-							}
-						});
-					$('body')
-						.off('keypress')
-						.keypress(function(e) {
-							if (!$('#addFormulaInputPr').is(":focus") && 'pointer' === $('body').css('cursor')) {
-								if (32 !== e.keyCode) {
-									PRODUCT.addWhereCaret(localStorage.currentCaretPos, String.fromCharCode(e.keyCode));
-									localStorage.currentCaretPos++;
-								}
-							}
-						});
-					$('body')
-						.off('keyup')
-						.keyup(function() {
-						PRODUCT.toggleAddFormula();
-					});
-					$('body').on('click', '.rowNumber', function(){console.log('here');
-						PRODUCT.addElementToFormulaInput(this);
-					});
-				}
-			})
-			.keydown(function(e){
-				if (32 === e.keyCode) {
-					return false;
-				}
-			})
-			.mouseleave(function(){
-				localStorage.currentCaretPos = document.getElementById('addFormulaInputPr').selectionStart;
-			} ).end()
-
-		//cancel create new formula
-		.find('#cancelFormulaBtnPr' ).click(function(){
-			PRODUCT.cancelInputFormula();
-		}).end()
-
-		// add formulas helper to formula input
-		.on('click', '.fhBtn', function(){
-			PRODUCT.addElementToFormulaInput(this);
-		})
-
-		// show remove formulas helper
-		.on('mouseover', '.fhBtn', function() {
-			$( '.removeFhBtn', this).show('fast');
-		})
-
-		// hide remove formulas helper
-		.on('mouseleave', '.fhBtn', function() {
-			$( '.removeFhBtn', this).hide('fast');
-		})
-
-		// remove formulas helper
-		.on('click', '.removeFhBtn', function(e) {
-			e.stopPropagation();
-			e.preventDefault();
-			var fhText = $(this ).parent().text();
-			PRODUCT.removeFormulasHelper(this, fhText);
-			$(this ).parent().fadeOut('slow');
-		})
-
-		// add new formula helper
-		.on('click', '.addNewFhBtn', function(){
-			$('body').css('cursor', 'pointer');
-			var newFl = $('#addNewFhBtnInput' ).val();
-			PRODUCT.addBtnToFormulasHelper(newFl);
-		})
-
-		// focus on formula helper input
-		.on('click', '#addNewFhBtnInput', function(){
-			$('#addFormulaInputPr, .rowNumber').off('click');
-			$('body').off('keypress');
-			$('body').off('click', '.rowNumber');
-			$('body').css('cursor', 'auto');
-		})
-
-		.on('mouseover', '.list-group-item', function(){
-			$(this ).addClass('list-group-item-info');
-		})
-
-		.on('mouseleave', '.list-group-item', function(){
-			$(this ).removeClass('list-group-item-info');
-		})
-
-		.on('mouseover', '.glyphicon-retweet', function(){
-			$(this ).removeClass('glyphicon glyphicon-retweet' ).addClass('glyphicon glyphicon-resize-full');
-		})
-
-		.on('mouseleave', '.glyphicon-resize-full', function(){
-			$(this ).removeClass('glyphicon glyphicon-resize-full' ).addClass('glyphicon glyphicon-retweet');
-		})
-
-		.on('click', '.glyphicon-resize-full', function(e){
-			var bindCell = $(this ).text(),
-				tableContent, alwaysInTable;
-			e.stopPropagation();
-			e.preventDefault();
-
-			$('.rowValueInput[data-cell=' +bindCell + ']' )
-				.removeAttr('color' ).val('' )
-				.attr('value', '')
-				.attr('data-formula', '')
-				.css('color', '' );
-			$('.rowValueInput[data-cell=' +bindCell + ']' ).parent().parent().find('.rowNameInput').css('color', '' );
-			$('.rowValueInput[data-cell=' +bindCell + ']' ).parent().parent().css({'background' : '', 'color' : ''});
-			$(this ).parent().removeClass('list-group-item-info');
-			$(this ).remove();
-			$( '#calx' ).calx();
-			PRODUCT.addNewFormula(PRODUCT.getFormulasList, false);
-			tableContent = PRODUCT.getTableContent('#sortable li');
-			alwaysInTable = PRODUCT.getTableContent('#alwaysInTable li');
-			PRODUCT.createTable(tableContent, alwaysInTable);
-		});
-		return html;
 	}
 
 	function addRightTabsHandler(html) {
@@ -764,7 +833,7 @@
 				}).end()
 
 			.on('click', '.removeKim', function(){
-				var kimId = $(this ).attr('name');;
+				var kimId = $(this ).attr('name');
 				KIM.removeKim(kimId);
 			})
 
@@ -949,6 +1018,7 @@
 					MAIN.curTabId = tabId;
 					MAIN.curTabName = 'a[href="#' + MAIN.curTabId + '"] .tabName';
 					MAIN.productId = productId;
+                    MAIN.detailsForArticle = data.detailsForArticle;console.log(MAIN);
 
 					kim = $('.listOfKim option:selected' ).attr('kim');
 					metall = $('.listOfMetalls option:selected' ).attr('metall');
@@ -1064,7 +1134,7 @@
 				} else {
 					$('[aria-controls=' + nextActiveTab + ']').parent().addClass('active');
 				}
-				nextActiveTab = KIM.validation(nextActiveTab);
+				nextActiveTab = VALIDATION.digitsOnly(nextActiveTab);
 				$.ajax({
 					url: URL_TABS + 'closeRightTab',
 					method: 'POST',
@@ -1552,6 +1622,7 @@
 			},
 
 			addKIMtoTable: function (kim, kimHard, kimArticle) {
+                cancelArticleBtn();
 				$.ajax({
 					url: URL_KIM + 'addKIMtoTable',
 					method: 'POST',
@@ -1573,6 +1644,7 @@
 			},
 
 			editKim: function (kimId, kim, kimHard, article, save) {
+                cancelArticleBtn();
 				$.ajax( {
 					url   : URL_KIM + 'editKim',
 					method: 'POST',
@@ -1600,6 +1672,7 @@
 			},
 
 			removeKim: function (kimId) {
+                cancelArticleBtn();
 				$.ajax({
 					url   : URL_KIM + 'removeKim',
 					method: 'POST',
@@ -1613,12 +1686,6 @@
 						KIM.getKimList();
 					}
 				});
-			},
-
-			validation: function (val) {
-				var res;
-				res = val.replace(/[A-Za-z]+/g, '').replace(/,/g, '.');
-				return res;
 			}
 		},
 
@@ -1635,6 +1702,7 @@
 			},
 
 			editMetall: function (obj, scope) {
+                cancelArticleBtn();
 				$.ajax({
 					url: URL_METALLS + 'editMetall',
 					method: 'POST',
@@ -1674,6 +1742,7 @@
 			},
 
 			addMetallToTable: function (obj) {
+                cancelArticleBtn();
 				$.ajax( {
 					url   : URL_METALLS + 'addMetallToTable',
 					method: 'POST',
@@ -1689,6 +1758,7 @@
 			},
 
 			removeMetall: function(metallId) {
+                cancelArticleBtn();
 				$.ajax( {
 					url   : URL_METALLS + 'removeMetall',
 					method: 'POST',

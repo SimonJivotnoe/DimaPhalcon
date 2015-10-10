@@ -374,8 +374,15 @@ ol li:hover {
     cursor: pointer;
     color: green;
 }
-.checkToArticule {
+.checkToArticle {
     margin-left: 5px !important;
+    display: none;
+}
+#saveArticle, #cancelArticleBtn{
+    display: none;
+}
+#errorArticle {
+    color: #000000;
     display: none;
 }
 .inputError {

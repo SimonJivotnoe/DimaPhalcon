@@ -91,10 +91,18 @@ class TabsController extends \Phalcon\Mvc\Controller
             } else {
                 $substObj = new Substitution();
                 $tabContent = '';
-
+                $addToOrder = '<span>Добавить в ордер можно только после создания артикула</span>';
                 $article = $product->getArticle();
                 if (!$article) {
-                    $article = '<p><button type="button" class="btn btn-info btn-sm" id="createArticle">Создать артикул</button></p>';
+                    $article = '<p>
+                                    <button type="button" class="btn btn-info btn-sm" id="createArticle">Создать артикул</button>
+                                    <button type="button" class="btn btn-success btn-sm" id="saveArticle">Сохранить</button>
+                                    <button type="button" class="btn btn-danger btn-sm" id="cancelArticleBtn">Отмена</button>
+                                    <span id="errorArticle" class="bg-danger"></span>
+                                </p>';
+                } else {
+                    $orderObj = new OrderController;
+                    $addToOrder = $orderObj->createAddToOrder();
                 }
                 $productCatId = $product->getCategoryId();
                 $productKim = $product->getKim();
@@ -107,7 +115,7 @@ class TabsController extends \Phalcon\Mvc\Controller
                 $kimObj = new KimController;
                 $metallsObj = new MetallsController;
                 $formulaHelperObj = new FormulasController;
-                $addToOrder = new OrderController;
+
 
                 $prName = $product->getProductName();
                 'Новое изделие' === $prName ? $prName = '' : true ;
@@ -123,26 +131,33 @@ class TabsController extends \Phalcon\Mvc\Controller
                     $prStatus = '' ;
                     $css = 'addedToOrder';
                 }
-
+                $categoriesList = $categoryObj->createCategoriesList($productCatId);
+                $kimList = $kimObj->createKimList($productKim);
+                $metallList = $metallsObj->createMetallsList($productMetall);
+                $detailsForArticle = array(
+                    'category' => $categoriesList['article'],
+                    'kim' => $kimList['article'],
+                    'metall' => $metallList['article']
+                );
                 $formulas = json_decode($product->getFormulas());
 
                 $productDetails = array(
                     '%PRODUCT_NAME%' => $prName,
                     '%ARTICLE%' => $article,
-                    '%CATEGORIES%' => $categoryObj->createCategoriesList($productCatId)['categoriesList'],
-                    '%KIM_LIST%' => $kimObj->createKimList($productKim),
-                    '%METALL_LIST%' => $metallsObj->createMetallsList($productMetall),
+                    '%CATEGORIES%' => $categoriesList['categoriesList'],
+                    '%KIM_LIST%' => $kimList['html'],
+                    '%METALL_LIST%' => $metallList['html'],
                     '%CREATED%' => $product->getCreated(),
                     '%SAVE_IN_DB%' => $prStatus,
                     '%TABLE_CONTENT%' => $productObj->createTableRes($table, 'tableContent.html'),
                     '%ALWAYS_IN_TABLE%' => $productObj->createTableRes($alwaysInTable, 'alwaysInTable.html'),
                     '%FORMULAS_HELPER%' => $formulaHelperObj->createFormulaHelperList(),
                     '%FORMULAS%' => $formulaHelperObj->createFormulasList($formulas),
-                    '%ADD_TO_ORDER%' => $addToOrder->createAddToOrder()
+                    '%ADD_TO_ORDER%' => $addToOrder
                 );
                 $tabContent .= $substObj->subHTMLReplace('tabContent.html', $productDetails);
                 $this->response->setContentType('application/json', 'UTF-8');
-                $this->response->setJsonContent(['html' => $tabContent, 'css' => $css]);
+                $this->response->setJsonContent(['html' => $tabContent, 'css' => $css, 'detailsForArticle' => (object)$detailsForArticle]);
 
                 return $this->response;
             }

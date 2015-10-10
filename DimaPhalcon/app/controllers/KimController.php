@@ -152,15 +152,21 @@ class KimController extends \Phalcon\Mvc\Controller
     public function createKimList($productKim)
     {
         $kimList = '';
+        $article = '';
         $kim = Kim::find(array("order" => "kim ASC"));
         foreach ($kim as $val) {
-            $productKim === $val->getKimId() ? $kimList .= '<option selected="selected" ' : $kimList .= '<option ';
+            if ($productKim === $val->getKimId()) {
+                $kimList .= '<option selected="selected" ';
+                $article = $val->getArticleKim();
+            } else {
+                $kimList .= '<option ';
+            }
             $kimList .= 'name="' . $val->getKimId()
                 . '" kim="' . $val->getKim()
                 . '" article="' . $val->getArticleKim() . '">' . $val->getKimHard() . ': ' . $val->getKim() . ' </option>';
         }
 
-        return $kimList;
+        return ['html' => $kimList, 'article' => $article];
     }
 
 }

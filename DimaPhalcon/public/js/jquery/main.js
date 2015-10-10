@@ -110,6 +110,7 @@ $( document ).ready( function ()
                 id: '#kimArticle',
                 unique: true
             });
+
         if (kim && kimHardInput && kimArticle) {
             KIM.addKIMtoTable(kim, kimHardInput, kimArticle);
         }
@@ -161,12 +162,6 @@ $( document ).ready( function ()
             'categoriesAll' === category ? 0 : $(this).attr('name') !== category ? $(this ).parent().hide() : 0 ;
         });
     });
-    
-    /*$('body').on('click', '.openProductTab .openProductTabSelected', function(e) {
-	e.stopPropagation();
-	    console.log('here');
-	$(this).removeClass('openProductTabSelected').addClass('openProductTab');
-    });*/
 
     $(function(){
         var self;
@@ -198,7 +193,9 @@ $( document ).ready( function ()
             
         });
         $('body').on('mouseleave', '.rowValue', function() {
-            $('.rowValueInput', this).css('background', '').prop('disabled', false);
+            if (undefined !== self){
+                $( '.rowValueInput', this ).css( 'background', '' ).prop( 'disabled', false );
+            }
         });
 
         $('body').on('click', '.rowValueInput', function(){

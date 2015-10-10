@@ -160,11 +160,13 @@ class MetallsController extends \Phalcon\Mvc\Controller
 
     public function createMetallsList ($productMetall) {
         $metallsList = '';
+        $article = '';
         $metalls = Metalls::find(array(
             "order" => "name ASC"));
         foreach ($metalls as $val) {
             if ($productMetall === $val->getId()) {
                 $metallsList .= '<option selected="selected" ';
+                $article = $val->getArticle();
             } else {
                 $metallsList .= '<option ';
             }
@@ -176,6 +178,6 @@ class MetallsController extends \Phalcon\Mvc\Controller
                 $val->getName().': '.$val->getPrice().' грн</option>';
         }
 
-        return $metallsList;
+        return ['html' => $metallsList, 'article' => $article];
     }
 } 
