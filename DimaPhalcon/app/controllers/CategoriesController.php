@@ -3,7 +3,7 @@
 class CategoriesController extends ControllerBase
 {
 
-    public function getCategoriesListAction(){
+    public function getCategoriesTableAction(){
         if ( $this->request->isAjax() && $this->request->isGet()) {
             $category = Categories::find();
             if ($category == false) {
@@ -12,12 +12,28 @@ class CategoriesController extends ControllerBase
                     echo $message, "\n";
                 }
             } else {
-                $categoriesList = array();
+                $categoriesList = '<tr>
+                                        <th>Список категорий</th>
+                                        <th>Артикул</th>
+                                        <th class="editCategoriesTable"></th>
+                                    </tr>';
+                $names = [];
+                $articles = [];
                 foreach ($category as $val) {
-                    $categoriesList[ ] = $val->getCategoryName();
+                    $categoriesList .= '<tr>
+                                            <td>' . $val->getCategoryName() . '</td>
+                                            <td>' . $val->getArticle() . '</td>
+                                            <td class="editMetallTable">
+                                                <span class="glyphicon glyphicon-pencil triggerCategoryPencil" aria-hidden="true" name="'. $val->getCategoryId() . '"></span>
+                                                <span class="glyphicon glyphicon-remove triggerRemoveCategory" aria-hidden="true" name="'. $val->getCategoryId() . '"></span>
+                                            </td>
+                                        </tr>';
+                    array_push($names, $val->getCategoryName());
+                    array_push($articles, $val->getArticle());
                 }
+                $resObj = ['names' => $names, 'articles' => $articles];
                 $this->response->setContentType('application/json', 'UTF-8');
-                $this->response->setJsonContent($categoriesList);
+                $this->response->setJsonContent(['html' => $categoriesList, 'categoriesTableContent' => (object)$resObj]);
                 return $this->response;
             }
         } else {
@@ -29,12 +45,23 @@ class CategoriesController extends ControllerBase
     {
         if ( $this->request->isAjax() && $this->request->isPost()) {
             $categoryName = $this->request->getPost('categoryName');
+            $article = $this->request->getPost('article');
+
+            $this->response->setContentType('application/json', 'UTF-8');
+
+            $checkArticle = Categories::findFirst("article = '" . $article . "'");
+            if ($checkArticle) {
+                $this->response->setJsonContent('already');
+                return $this->response;
+            }
+
             $category = new Categories();
-            $category->setCategoryName($categoryName);
+            $category->setCategoryName($categoryName)
+                     ->setArticle($article);
             if ($category->save() == false) {
                 $this->response->setJsonContent(array('already'));
             } else {
-                $this->response->setJsonContent(array('ok'));
+                $this->response->setJsonContent(true);
             }
             return $this->response;
         } else {
@@ -42,6 +69,26 @@ class CategoriesController extends ControllerBase
         }
     }
 
+    public function getCategoriesListAction() {
+        if ($this->request->isAjax() && $this->request->isGet()) {
+            $prId = $this->request->get('prId');
+            $product = Products::findFirst($prId);
+            if ($product == false) {
+                echo "Мы не можем сохранить робота прямо сейчас: \n";
+                foreach ($product->getMessages() as $message) {
+                    echo $message, "\n";
+                }
+            } else {
+                $productCategory = $product->getCategoryId();
+                $categoriesList = $this->createCategoriesList($productCategory);
+                $this->response->setContentType('application/json', 'UTF-8');
+                $this->response->setJsonContent($categoriesList);
+                return $this->response;
+            }
+        } else {
+            $this->response->redirect('');
+        }
+    }
     public function updateAction()
     {
         $category = Categories::findFirst(1);
@@ -59,6 +106,7 @@ class CategoriesController extends ControllerBase
     public function createCategoriesList($productCatId=null){
         $category = Categories::find();
         $categoriesList = '';
+        $article = '';
         $categoriesArr = array();
         if ($category == false) {
             echo "Мы не можем сохранить робота прямо сейчас: \n";
@@ -69,12 +117,14 @@ class CategoriesController extends ControllerBase
             foreach ($category as $val) {
                 $categoriesArr[$val->getCategoryId()] = $val->getCategoryName();
                 if ($val->getCategoryId() === $productCatId) {
-                    $categoriesList .= '<option selected="selected" name="'.$val->getCategoryId().'">'.$val->getCategoryName().'</option>';
+                    $categoriesList .= '<option selected="selected" ';
+                    $article = $val->getArticle();
                 } else {
-                    $categoriesList .= '<option name="'.$val->getCategoryId().'">'.$val->getCategoryName().'</option>';
+                    $categoriesList .= '<option ';
                 }
+                $categoriesList .= 'name="'.$val->getCategoryId().'">'.$val->getCategoryName().'</option>';
             }
-            return ['categoriesList' => $categoriesList, 'categoriesArr' => $categoriesArr];
+            return ['html' => $categoriesList, 'categoriesArr' => $categoriesArr, 'article' => $article];
         }
     }
 }

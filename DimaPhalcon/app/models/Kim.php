@@ -25,12 +25,6 @@ class Kim extends \Phalcon\Mvc\Model
     protected $kim;
 
     /**
-     *
-     * @var string
-     */
-    protected $article_kim;
-
-    /**
      * Method to set the value of field kim_id
      *
      * @param integer $kim_id
@@ -70,19 +64,6 @@ class Kim extends \Phalcon\Mvc\Model
     }
 
     /**
-     * Method to set the value of field article_kim
-     *
-     * @param string $article_kim
-     * @return $this
-     */
-    public function setArticleKim($article_kim)
-    {
-        $this->article_kim = $article_kim;
-
-        return $this;
-    }
-
-    /**
      * Returns the value of field kim_id
      *
      * @return integer
@@ -110,16 +91,6 @@ class Kim extends \Phalcon\Mvc\Model
     public function getKim()
     {
         return $this->kim;
-    }
-
-    /**
-     * Returns the value of field article_kim
-     *
-     * @return string
-     */
-    public function getArticleKim()
-    {
-        return $this->article_kim;
     }
 
     /**

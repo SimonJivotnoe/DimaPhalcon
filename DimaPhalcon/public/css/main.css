@@ -51,12 +51,12 @@ html, body {
     display: none;
 }
 
-#categoriesListTable {
-    width: 250px;
-    height: 200px;
+/*#categoriesListTable {
+    width: 255px;
+    height: 300px;
     overflow: auto;
 
-}
+}*/
 #fileManagerProductsWrapper {
     width: 100%;
     height: 200px;
@@ -73,10 +73,13 @@ html, body {
     text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.23);
     -webkit-font-smoothing: antialiased;
 }
-#kimListWrapper, #metallListWrapper {
+#kimListWrapper, #metallListWrapper, #categoriesListTable {
     max-height: 300px;
     overflow: auto;
     margin-top: 15px;
+}
+#kimIconColor {
+    color: darkcyan;
 }
 #categoriesListTable:hover {
     /*box-shadow: 5px 5px 10px #888888;*/
@@ -160,7 +163,13 @@ h4 {
 #editCategoriesListContent, #editTableContent{
     display: none;
 }
-.triggerKimPencil, .triggerRemoveKim, .triggerMetallPencil, .triggerRemoveMetall {
+.triggerKimPencil,
+.triggerRemoveKim,
+.triggerMetallPencil,
+.triggerRemoveMetall,
+.triggerCategoryPencil,
+.triggerRemoveCategory
+{
     display: none !important;
 }
 .leftTable {
@@ -183,7 +192,7 @@ h4 {
     opacity: 0.9;
     color: blue;
 }
-.editKimPencil, .editMetallPencil {
+.editKimPencil, .editMetallPencil, .editCategoryPencil {
     opacity: 0.5;
 }
 .created {
@@ -206,12 +215,12 @@ ol li:hover {
 #addFormulaBtnPr {
     display: none;
 }
-.removeRow, .removeKim, .removeMetall {
+.removeRow, .removeKim, .removeMetall, .removeCategory {
     opacity: 0.5;
     padding-left: 5px;
     font-size: 12px;
 }
-.removeRow:hover, .removeKim:hover, .removeMetall:hover {
+.removeRow:hover, .removeKim:hover, .removeMetall:hover, .removeCategory:hover {
     cursor: pointer;
     font-size: 15px;
     opacity: 0.9;
@@ -300,12 +309,7 @@ ol li:hover {
   text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.56);
   -webkit-font-smoothing: antialiased;
 }
-.editKimTable {
-    border: none !important;
-    background-color: white;
-    width: 60px;
-}
-.editMetallTable {
+.editKimTable, .editMetallTable, .editCategoriesTable {
     border: none !important;
     background-color: white;
     width: 60px;

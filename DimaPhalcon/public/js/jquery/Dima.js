@@ -49,6 +49,9 @@
 	// alias to self.order
 	var ORDER;
 
+	// alias to self.categories
+	var CATEGORIES;
+
 	// alias to self.kim
 	var KIM;
 
@@ -724,7 +727,7 @@
 					idDb = $(this ).attr('name');
 				$(this ).attr('class', 'glyphicon glyphicon-remove');
 				TABS.closeRightTab(idDb, currentID);
-			});
+			} ).end();
 
 		return html;
 	}
@@ -809,6 +812,64 @@
 		return html;
 	}
 
+    function addCategoriesTableHandler(html) {
+        html
+            .filter('tr')
+            .mouseover(function () {
+                var obj = {
+                    pencilRemove: 'triggerCategoryPencil',
+                    pencilAdd: 'editCategoryPencil',
+                    removeRemove: 'triggerRemoveCategory',
+                    removeAdd: 'removeCategory'
+                };
+                kimEditOver(obj, this);
+            })
+            .mouseleave(function () {
+                var obj = {
+                    pencilRemove: 'editCategoryPencil',
+                    pencilAdd: 'triggerCategoryPencil',
+                    removeRemove: 'removeCategory',
+                    removeAdd: 'triggerRemoveCategory'
+                };
+                kimEditOver(obj, this);
+            }).end()
+
+            .on('click', '.removeCategory', function(){
+                var catId = $(this ).attr('name');
+                CATEGORIES.removeCategory(kimId);
+            })
+
+            .on('click', '.editKimPencil', function(){
+                $(this )
+                    .attr('class', 'glyphicon glyphicon-floppy-disk saveEditKim' )
+                    .css('margin-left', '0');
+                $(this )
+                    .parents('tr')
+                    .find('.kimHardName, .kimName, .kimArticle')
+                    .attr('contenteditable', 'true')
+                    .css({
+                        'border': '1px solid hsl(195, 79%, 43%)',
+                        'border-radius': '2px'
+                    });
+            })
+
+            .on('click', '.saveEditKim', function(){
+                var kimId = $(this ).attr('name'),
+                    kim = VALIDATION.validateInputVal({
+                        val: $(this ).parents('tr').find('.kimName' ).text(),
+                        digitsOnly: true
+                    }),
+                    kimHard = VALIDATION.validateInputVal({
+                        val: $(this ).parents('tr').find('.kimHardName' ).text()
+                    }),
+                    self = this;
+                if (kim && kimHard) {
+                    CATEGORIES.editCategory(kimId, kim, kimHard, self);
+                }
+            });
+        return html;
+    }
+
 	function addKimTableHandler(html) {
 		//console.log(html.find('.editKimPencil'));
 		html
@@ -860,12 +921,9 @@
 					kimHard = VALIDATION.validateInputVal({
                         val: $(this ).parents('tr').find('.kimHardName' ).text()
                     }),
-					article = VALIDATION.validateInputVal({
-                        val: $(this ).parents('tr').find('.kimArticle' ).text()
-                    }),
 					self = this;
-                if (kim && kimHard && article) {
-                    KIM.editKim(kimId, kim, kimHard, article, self);
+                if (kim && kimHard) {
+                    KIM.editKim(kimId, kim, kimHard, self);
                 }
 			});
 
@@ -901,7 +959,7 @@
 						.css('margin-left', '0');
 				$(this)
 						.parents('tr')
-						.find('.metallName, .metallPrice, .metallMass, .metallOutPrice, .metallArticle')
+						.find('.metallName, .metallPrice, .metallMass, .metallOutPrice')
 						.attr('contenteditable', 'true')
 						.css({
 							'border': '1px solid hsl(195, 79%, 43%)',
@@ -925,18 +983,14 @@
                     metallOutPrice =  VALIDATION.validateInputVal({
                         val: scope.find('.metallOutPrice' ).text(),
                         digitsOnly: true
-                    }),
-                    article = VALIDATION.validateInputVal({
-                        val: scope.find('.metallArticle' ).text()
                     });
-                if (metallName && metallPrice && metallMass && metallOutPrice && article) {
+                if (metallName && metallPrice && metallMass && metallOutPrice) {
                     METALLS.editMetall({
                         metallId: $(this ).attr('name'),
                         metallName: metallName,
                         metallPrice: metallPrice,
                         metallMass: metallMass,
-                        metallOutPrice: metallOutPrice,
-                        article: article
+                        metallOutPrice: metallOutPrice
                     }, this);
                 }
 			})
@@ -1018,7 +1072,7 @@
 					MAIN.curTabId = tabId;
 					MAIN.curTabName = 'a[href="#' + MAIN.curTabId + '"] .tabName';
 					MAIN.productId = productId;
-                    MAIN.detailsForArticle = data.detailsForArticle;console.log(MAIN);
+                    MAIN.detailsForArticle = data.detailsForArticle;
 
 					kim = $('.listOfKim option:selected' ).attr('kim');
 					metall = $('.listOfMetalls option:selected' ).attr('metall');
@@ -1129,6 +1183,7 @@
 				if ('kim' === nextActiveTab || undefined === nextActiveTab) {
 					$('.currentTabRight').removeClass('active');
 					$('#kim, #kimTab').addClass('active');
+                    TABS.getCategoriesTable();
 					KIM.getKIMTable();
 					KIM.getKimList();
 				} else {
@@ -1261,6 +1316,7 @@
 			showKim: function() {
 				MAIN.tabsRightList.kim.active = '1';
 				MAIN.curTabRightId = 'kim';
+                CATEGORIES.getCategoriesTable();
 				KIM.getKIMTable();
 				METALLS.getMetallsTable();
 			},
@@ -1268,9 +1324,6 @@
 			loadPreferences: function() {
 				MAIN.tabsList['preferences1'].active = '1';
 				MAIN.curTabId = 'preferences1';
-				$('.bg-danger' ).fadeOut(10);
-				$(MAIN.addCategoryInput ).val('');
-				TABS.getCategoriesList();
 			},
 
 			showPreferences: function (){
@@ -1279,39 +1332,10 @@
 				showBody();
 			},
 
-			addCategory: function(categoryName) {
-				var objJSON;
-				$.ajax( {
-					url   :  URL_CATEG +'add',
-					method: 'POST',
-					data: {categoryName: categoryName}
-				} ).then( function ( data )
-				{
-					objJSON = JSON.parse( data );
-					$.each(objJSON, function(key, val){
-						if ('ok' === val) {
-							$('#addCategoryInput' ).val('');
-							$('.bg-danger' ).fadeOut();
-							TABS.getCategoriesList();
-						} else {
-							$('.bg-danger' ).fadeIn();
-						}
-					});
-				} );
-			},
-
-			getCategoriesList: function() {
-				$.ajax( {
-					url   : URL_CATEG + 'getCategoriesList',
-					method: 'GET'
-				} ).then( function ( data )
-				{
-					$('#categoriesListTable tbody' ).html('<tr><th>Список категорий</th></tr>');
-					$.each(data, function(key, val){
-						$('#categoriesListTable tbody' ).append('<tr><td>' + val + '</td></tr>');
-					});
-				} );
-			}
+            splitMonitor: function() {
+                $('#left-component').css('width', localStorage.split);
+                $('#divider, #right-component').css('left', localStorage.split);
+            }
 		},
 
 		// product section
@@ -1593,6 +1617,50 @@
 			}
 		},
 
+        // categories section
+        categories: {
+            addCategory: function(categoryName, article) {
+                $.ajax( {
+                    url   :  URL_CATEG +'add',
+                    method: 'POST',
+                    data: {
+                        categoryName: categoryName,
+                        article: article
+                    }
+                } ).then( function ( data )
+                {
+                    if (true === data) {
+                        $('#addCategoryInput, #addCategoryArticleInput').val('');
+                        CATEGORIES.getCategoriesTable();
+                        CATEGORIES.getCategoriesList();
+                    }
+                } );
+            },
+
+            getCategoriesTable: function() {
+                $.ajax( {
+                    url   : URL_CATEG + 'getCategoriesTable',
+                    method: 'GET'
+                } ).then( function ( data )
+                {
+                    MAIN.categoriesTableContent = data.categoriesTableContent;
+                    $('#categoriesListTable tbody' ).html(addCategoriesTableHandler($(data.html)));
+                } );
+            },
+
+            getCategoriesList: function () {
+                $.ajax({
+                    url: URL_CATEG + 'getCategoriesList',
+                    method: 'GET',
+                    data: {
+                        prId: MAIN.productId
+                    }
+                }).then(function (data) {console.log(data);
+                    $('.listOfCategories').html(data.html);
+                });
+            }
+        },
+
 		// kim section
 		kim: {
 			getKIMTable: function () {
@@ -1614,22 +1682,21 @@
 						prId: MAIN.productId
 					}
 				}).then(function (data) {
-					$('.listOfKim').html(data);
+					$('.listOfKim').html(data.html);
 					var kim = $('.listOfKim option:selected').attr('kim');
 					$('[data-cell="KIM1"]').val(kim);
 					$('#calx').calx();
 				});
 			},
 
-			addKIMtoTable: function (kim, kimHard, kimArticle) {
+			addKIMtoTable: function (kim, kimHard) {
                 cancelArticleBtn();
 				$.ajax({
 					url: URL_KIM + 'addKIMtoTable',
 					method: 'POST',
 					data: {
 						kim: kim,
-						kimHard: kimHard,
-                        kimArticle: kimArticle
+						kimHard: kimHard
 					}
 				}).then(function (data)
 				{
@@ -1643,7 +1710,7 @@
 				});
 			},
 
-			editKim: function (kimId, kim, kimHard, article, save) {
+			editKim: function (kimId, kim, kimHard, save) {
                 cancelArticleBtn();
 				$.ajax( {
 					url   : URL_KIM + 'editKim',
@@ -1651,8 +1718,7 @@
 					data: {
 						kimId: kimId,
 						kim: kim,
-						kimHard : kimHard,
-                        article: article
+						kimHard : kimHard
 					}
 				} ).then( function ( data )
 				{
@@ -1662,7 +1728,7 @@
 					} else {
 						$(save )
 							.parents('tr')
-							.find('.kimHardName, .kimName, .kimArticle')
+							.find('.kimHardName, .kimName')
 							.css({
 								'border': '3px solid hsl(0, 69%, 22%)',
 								'border-radius': '2px'
@@ -1708,14 +1774,14 @@
 					method: 'POST',
 					data: obj
 				}).then(function (data)
-				{console.log(data);
+				{
 					if (true === data) {
 						METALLS.getMetallsTable();
 						METALLS.getMetallsList();
 					} else {
 						$(scope)
 							.parents('tr')
-							.find('.metallName, .metallPrice, .metallMass, .metallOutPrice, .metallArticle')
+							.find('.metallName, .metallPrice, .metallMass, .metallOutPrice')
 							.css({
 								'border': '3px solid hsl(0, 69%, 22%)',
 								'border-radius': '2px'
@@ -1732,7 +1798,7 @@
 						prId: MAIN.productId
 					}
 				}).then(function (data) {
-					$('.listOfMetalls').html(data);
+					$('.listOfMetalls').html(data.html);
 					var metall = $('.listOfMetalls option:selected').attr('metall');
 					var metallOut = $('.listOfMetalls option:selected').attr('metallOut');
 					$('[data-cell="PR1"]').val(metall);
@@ -1750,7 +1816,7 @@
 				} ).then( function ( data )
 				{
 					if (true === data) {
-						$('#metallName, #metallPrice, #metallMass, #metallOutPrice').val('');
+						$('#metallName, #metallPrice, #metallMass, #metallOutPrice, #metallArticle').val('');
 						METALLS.getMetallsTable();
 						METALLS.getMetallsList();
 					}
@@ -1836,12 +1902,6 @@
             onUnique: function (val, id) {
                 var articles, names;
                 switch (id) {
-                    case '#kimArticle':
-                        articles = MAIN.kimTableContent.articles;
-                        if (0 < articles.length) {
-                            val = VALIDATION.parseArray(articles, val);
-                        }
-                        break;
                     case '#metallName':
                         names = MAIN.metallTableContent.names;
                         if (0 < names.length) {
@@ -1850,6 +1910,18 @@
                         break;
                     case '#metallArticle':
                         articles = MAIN.metallTableContent.articles;
+                        if (0 < articles.length) {
+                            val = VALIDATION.parseArray(articles, val);
+                        }
+                        break;
+                    case '#addCategoryInput':
+                        names = MAIN.categoriesTableContent.names;
+                        if (0 < names.length) {
+                            val = VALIDATION.parseArray(names, val);
+                        }
+                        break;
+                    case '#addCategoryArticleInput':
+                        articles = MAIN.categoriesTableContent.articles;console.log(MAIN);
                         if (0 < articles.length) {
                             val = VALIDATION.parseArray(articles, val);
                         }
@@ -1866,7 +1938,7 @@
             parseArray: function (arr, val) {
                 var i;
                 for (i = 0; i < arr.length; i++) {
-                    if (val === arr[i]) {
+                    if (val.toLowerCase() === arr[i].toLowerCase()) {
                         val = false;
                         break;
                     }
@@ -1877,7 +1949,7 @@
 	};
 
 	// the actual object is created here, allowing us to 'new' an object without calling 'new'
-	Dima.init = function(firstName, lastName, language) {
+	Dima.init = function() {
 
 		var self = this;
 		self.main = {};
@@ -1886,17 +1958,11 @@
 		TABS = this.tabs;
 		ORDER = this.order;
 		PRODUCT = this.product;
+        CATEGORIES = this.categories;
 		KIM = this.kim;
 		METALLS = this.metalls;
 		MENU = this.menu;
         VALIDATION = this.validation;
-		/*self.firstName = firstName || '';
-		self.lastName = lastName || '';
-		self.language = language || 'en';*/
-
-		$.fn.hasAttr = function(name) {
-			return this.attr(name) !== undefined;
-		};
 
 		run();
 

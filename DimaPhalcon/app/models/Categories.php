@@ -3,7 +3,7 @@ use Phalcon\Mvc\Model,
     Phalcon\Validation,
     Phalcon\Mvc\Model\Validator\Uniqueness;
 
-class Categories extends Model
+class Categories extends \Phalcon\Mvc\Model
 {
 
     /**
@@ -17,6 +17,12 @@ class Categories extends Model
      * @var string
      */
     protected $category_name;
+
+    /**
+     *
+     * @var string
+     */
+    protected $article;
 
     /**
      * Method to set the value of field category_id
@@ -45,6 +51,19 @@ class Categories extends Model
     }
 
     /**
+     * Method to set the value of field article
+     *
+     * @param string $article
+     * @return $this
+     */
+    public function setArticle($article)
+    {
+        $this->article = $article;
+
+        return $this;
+    }
+
+    /**
      * Returns the value of field category_id
      *
      * @return integer
@@ -65,6 +84,17 @@ class Categories extends Model
     }
 
     /**
+     * Returns the value of field article
+     *
+     * @return string
+     */
+    public function getArticle()
+    {
+        return $this->article;
+
+    }
+
+    /**
      * Validations and business logic
      */
     public function validation()
@@ -77,6 +107,7 @@ class Categories extends Model
                 )));
         return $this->validationHasFailed() != true;
     }
+
     /**
      * Initialize method for model.
      */

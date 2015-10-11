@@ -136,15 +136,14 @@ class TabsController extends \Phalcon\Mvc\Controller
                 $metallList = $metallsObj->createMetallsList($productMetall);
                 $detailsForArticle = array(
                     'category' => $categoriesList['article'],
-                    'kim' => $kimList['article'],
-                    'metall' => $metallList['article']
+                    'kim' => $kimList['article']
                 );
                 $formulas = json_decode($product->getFormulas());
 
                 $productDetails = array(
                     '%PRODUCT_NAME%' => $prName,
                     '%ARTICLE%' => $article,
-                    '%CATEGORIES%' => $categoriesList['categoriesList'],
+                    '%CATEGORIES%' => $categoriesList['html'],
                     '%KIM_LIST%' => $kimList['html'],
                     '%METALL_LIST%' => $metallList['html'],
                     '%CREATED%' => $product->getCreated(),

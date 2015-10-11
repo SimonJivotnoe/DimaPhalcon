@@ -11,7 +11,7 @@
 
     <div class="tab-content">
         <div role="tabpanel" class="tab-pane" id="preferences1">
-            <h4>Блок категорий</h4>
+           <!-- <h4>Категории</h4>
             <div class="col-md-6">
                 <input type="text" id="addCategoryInput" placeholder="Введите категорию">
                 <button type="button" class="btn btn-info btn-sm" id="addCategoryBtn">Добавить</button>
@@ -22,23 +22,7 @@
                     <tbody>
                     </tbody>
                 </table>
-            </div>
-            <h4 class="col-md-12">Блок формул</h4>
-            <div class="col-md-12">
-                <input type="text" class="col-md-12" id="addFormulaInput" placeholder="Введите формулу">
-                <button type="button" class="btn btn-info btn-sm" id="addFormulaBtn">Добавить</button>
-            </div>
-            <h4 class="col-md-12">Металлы</h4>
-            <div class="col-md-8">
-                <table class="table table-bordered">
-                    <tbody>
-                    <tr>
-                        <th>Толщина</th>
-                        <th>Размер</th>
-                        <th>Цена</th></tr>
-                    </tbody>
-                </table>
-            </div>
+            </div>-->
         </div>
 
         <div role="tabpanel" class="tab-pane currentTab" id=""></div>

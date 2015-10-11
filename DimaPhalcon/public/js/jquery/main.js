@@ -6,22 +6,40 @@ $( document ).ready( function ()
         TABS = d.tabs,
         ORDER = d.order,
         PRODUCT = d.product,
+        CATEGORIES = d.categories,
         KIM = d.kim,
         METALLS = d.metalls,
         MENU = d.menu,
-        VALID = d.validation;
+        VALID = d.validation,
+        defaultScreenSize = '60em',
+        maxScreenSize = (window.screen.availWidth - 5) + 'px',
+        minscreenSize = '5px';
 
-    // split monitor
+    // SPLIT MONITOR SECTION
+    // setting default value
     if (undefined === localStorage.split) {
-        localStorage.split = '60em';
+        localStorage.split = defaultScreenSize;
     }
-    $('#left-component').css('width', localStorage.split);
-    $('#divider, #right-component').css('left', localStorage.split);
+    TABS.splitMonitor();
     $('div.split-pane').splitPane();
+
+    // custom splitting by dragging splitter
     $('#divider').on('mouseleave', function(){
         localStorage.split = $('#divider').css('left');
     });
-    
+
+    // show / restore default by double clicking on right tab
+    $('#tabsRight').on('dblclick', '#rightTabs li', function(){
+        localStorage.split === minscreenSize ? localStorage.split = defaultScreenSize : localStorage.split = minscreenSize;
+        TABS.splitMonitor();
+    });
+
+    // show / restore default by double clicking on left tab
+    $('#tabs').on('dblclick', '#myTab li', function(){
+        localStorage.split === maxScreenSize ? localStorage.split = defaultScreenSize : localStorage.split = maxScreenSize;
+        TABS.splitMonitor();
+    });
+
     // MENU
     $( "#menuOpen" )
         .mouseenter(function() {
@@ -43,9 +61,7 @@ $( document ).ready( function ()
         .click(function(){
             MENU.createFileManager();
         });
-    /*----PREFERENCES_START----*/
-    
-    // handlers
+
     // cog spin on-off
     $('#preferences')
         .mouseover(function(){
@@ -58,23 +74,11 @@ $( document ).ready( function ()
             TABS.loadPreferences();
             TABS.changeActiveTab('', '', 'changeActiveLeftTab');
         });
-
-    // add new category
-    $('#addCategoryBtn').on('click', function(){
-        var newCategoryName = $('#addCategoryInput' ).val();
-        ('' !== newCategoryName) ? TABS.addCategory(newCategoryName) : 0;
-    });
-        
-    /*----PREFERENCES_END----*/
-
-    /*----NEW_TAB_START----*/
     
-    // creating new tab clicking on +
+    // creating new left tab by clicking on +
     $('#addNewTab').on('click', function(){
         TABS.getLastLeftTab();
     });
-    
-    /*----NEW_TAB_END----*/
 
     // RIGHT PART
 
@@ -83,8 +87,7 @@ $( document ).ready( function ()
         ORDER.createNewOrder();
     });
 
-    // kim tab
-    // kim table
+    // KIM TAB
     $('#kim').on('click', function(){
         if (false === $('#kim').hasClass('active')) {
             TABS.showKim();
@@ -95,7 +98,26 @@ $( document ).ready( function ()
     /**
      *
      */
-    $('#addKIM').on('click', function(){
+    $('#addCategoryBtn').click(function(){
+        var category = VALID.validateInputVal({
+                val: $('#addCategoryInput' ).val(),
+                id: '#addCategoryInput',
+                unique: true
+            }),
+            article = VALID.validateInputVal({
+                val: $('#addCategoryArticleInput' ).val(),
+                id: '#addCategoryArticleInput',
+                unique: true
+            });
+        if (category && article) {
+            CATEGORIES.addCategory(category, article);
+        }
+    });
+
+    /**
+     *
+     */
+    $('#addKIM').click(function(){
         var kim = VALID.validateInputVal({
                 val: $('#kimInput' ).val(),
                 id: '#kimInput',
@@ -104,20 +126,15 @@ $( document ).ready( function ()
             kimHardInput = VALID.validateInputVal({
                 val: $('#kimHardInput' ).val(),
                 id: '#kimHardInput'
-            }),
-            kimArticle = VALID.validateInputVal({
-                val: $('#kimArticle' ).val(),
-                id: '#kimArticle',
-                unique: true
             });
 
-        if (kim && kimHardInput && kimArticle) {
-            KIM.addKIMtoTable(kim, kimHardInput, kimArticle);
+        if (kim && kimHardInput) {
+            KIM.addKIMtoTable(kim, kimHardInput);
         }
     });
     
     // metalls table    
-    $('#addMetall').on('click', function(){console.log(MAIN.metallTableContent);
+    $('#addMetall').on('click', function(){;
         var metall = VALID.validateInputVal({
                 val: $('#metallName' ).val(),
                 id: '#metallName',

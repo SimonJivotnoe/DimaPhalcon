@@ -27,7 +27,7 @@ class MetallsController extends \Phalcon\Mvc\Controller
                             <td class="editMetallTable">
                                 <span class="glyphicon glyphicon-pencil triggerMetallPencil" aria-hidden="true" name="'. $val->getId() . '"></span>
                                 <span class="glyphicon glyphicon-remove triggerRemoveMetall" aria-hidden="true" name="'. $val->getId() . '"></span>
-                                </td>
+                            </td>
                         </tr>';
                 array_push($names, $val->getName());
                 array_push($article, $val->getArticle());
@@ -81,15 +81,9 @@ class MetallsController extends \Phalcon\Mvc\Controller
             $metallPrice = $this->request->getPost('metallPrice');
             $metallMass = $this->request->getPost('metallMass');
             $metallOutPrice = $this->request->getPost('metallOutPrice');
-            $article = $this->request->getPost('article');
 
             $this->response->setContentType('application/json', 'UTF-8');
 
-            $checkArticle = Metalls::findFirst("article = '" . $article . "' AND id != '" . $metallId . "'");
-            if ($checkArticle) {
-                $this->response->setJsonContent('already');
-                return $this->response;
-            }
             $metallQ = Metalls::findFirst($metallId);
             if ($metallQ == false) {
                 echo "Мы не можем сохранить робота прямо сейчас: \n";
@@ -100,8 +94,7 @@ class MetallsController extends \Phalcon\Mvc\Controller
                 $metallQ->setName($metallName)
                          ->setPrice($metallPrice)
                          ->setMass($metallMass)
-                         ->setOutPrice($metallOutPrice)
-                         ->setArticle($article);
+                         ->setOutPrice($metallOutPrice);
                 if ($metallQ->save() == false) {
                     $this->response->setJsonContent('already');
                 } else {
