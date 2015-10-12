@@ -61,10 +61,10 @@
 	// alias to self.menu
 	var MENU;
 
-    // alias to self.validation
-    var VALIDATION;
+	// alias to self.validation
+	var VALIDATION;
 
-    // error messages obj
+	// error messages obj
     var ERR = {
         ARTICLE: {
             emptyTable: 'Заполните поля таблицы продукта',
@@ -836,7 +836,7 @@
 
             .on('click', '.removeCategory', function(){
                 var catId = $(this ).attr('name');
-                CATEGORIES.removeCategory(kimId);
+                CATEGORIES.removeCategory(catId);
             })
 
             .on('click', '.editKimPencil', function(){
@@ -1657,6 +1657,23 @@
                     }
                 }).then(function (data) {console.log(data);
                     $('.listOfCategories').html(data.html);
+                });
+            },
+
+            removeCategory: function (id) {
+                cancelArticleBtn();
+                $.ajax({
+                    url   : URL_CATEG + 'removeCategory',
+                    method: 'POST',
+                    data: {
+                        id: id
+                    }
+                }).then(function (data)
+                {
+                    if (true === data) {
+                        CATEGORIES.getCategoriesTable();
+                        CATEGORIES.getCategoriesList();
+                    }
                 });
             }
         },

@@ -103,6 +103,27 @@ class CategoriesController extends ControllerBase
         }
     }
 
+    public function removeCategoryAction()
+    {
+        if ($this->request->isAjax() && $this->request->isPost()) {
+            $id = $this->request->getPost('id');
+            $this->response->setContentType('application/json', 'UTF-8');
+            $categoryObj = Categories::findFirst($id);
+            if ($categoryObj != false) {
+                try {
+                    $categoryObj->delete();
+                } catch (\Exception $e) {
+                    $this->response->setJsonContent(false);
+                    return $this->response;
+                }
+                $this->response->setJsonContent(true);
+                return $this->response;
+            }
+        } else {
+            $this->response->redirect('');
+        }
+    }
+
     public function createCategoriesList($productCatId=null){
         $category = Categories::find();
         $categoriesList = '';
