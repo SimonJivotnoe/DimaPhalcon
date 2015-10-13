@@ -11,18 +11,6 @@
 
     <div class="tab-content">
         <div role="tabpanel" class="tab-pane" id="preferences1">
-           <!-- <h4>Категории</h4>
-            <div class="col-md-6">
-                <input type="text" id="addCategoryInput" placeholder="Введите категорию">
-                <button type="button" class="btn btn-info btn-sm" id="addCategoryBtn">Добавить</button>
-                <p class="bg-danger">Такое имя уже существует</p>
-            </div>
-            <div class="col-md-6" id="categoriesListTable">
-                <table class="table table-bordered">
-                    <tbody>
-                    </tbody>
-                </table>
-            </div>-->
         </div>
 
         <div role="tabpanel" class="tab-pane currentTab" id=""></div>

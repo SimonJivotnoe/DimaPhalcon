@@ -21,7 +21,7 @@ class CategoriesController extends ControllerBase
                 $articles = [];
                 foreach ($category as $val) {
                     $categoriesList .= '<tr>
-                                            <td>' . $val->getCategoryName() . '</td>
+                                            <td><span class="categoryName">' . $val->getCategoryName() . '</span></td>
                                             <td>' . $val->getArticle() . '</td>
                                             <td class="editMetallTable">
                                                 <span class="glyphicon glyphicon-pencil triggerCategoryPencil" aria-hidden="true" name="'. $val->getCategoryId() . '"></span>
@@ -89,17 +89,33 @@ class CategoriesController extends ControllerBase
             $this->response->redirect('');
         }
     }
-    public function updateAction()
+
+    public function editCategoryAction()
     {
-        $category = Categories::findFirst(1);
-        $category->setCategoryName('утка2');
-        if ($category->save() == false) {
-            echo "Мы не можем сохранить робота прямо сейчас: \n";
-            foreach ($category->getMessages() as $message) {
-                echo $message, "\n";
+        if ($this->request->isAjax() && $this->request->isPost()) {
+            $id = $this->request->getPost('id');
+            $name = $this->request->getPost('name');
+
+            $this->response->setContentType('application/json', 'UTF-8');
+
+            $catQ = Categories::findFirst($id);
+            if ($catQ == false) {
+                echo "Мы не можем сохранить робота прямо сейчас: \n";
+                foreach ($catQ->getMessages() as $message) {
+                    echo $message, "\n";
+                }
+            } else {
+                $catQ->setCategoryName($name);
+                if ($catQ->save() == false) {
+                    $this->response->setJsonContent('already');
+                } else {
+                    $this->response->setJsonContent(true);
+                }
+
+                return $this->response;
             }
         } else {
-            echo "Отлично, новый робот был успешно сохранен!";
+            $this->response->redirect('');
         }
     }
 
@@ -143,7 +159,7 @@ class CategoriesController extends ControllerBase
                 } else {
                     $categoriesList .= '<option ';
                 }
-                $categoriesList .= 'name="'.$val->getCategoryId().'">'.$val->getCategoryName().'</option>';
+                $categoriesList .= 'name="'.$val->getCategoryId().'" article="' . $val->getArticle() . '">'.$val->getCategoryName().'</option>';
             }
             return ['html' => $categoriesList, 'categoriesArr' => $categoriesArr, 'article' => $article];
         }

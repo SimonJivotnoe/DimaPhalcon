@@ -142,7 +142,8 @@ class TabsController extends \Phalcon\Mvc\Controller
 
                 $productDetails = array(
                     '%PRODUCT_NAME%' => $prName,
-                    '%ARTICLE%' => $article,
+                    '%ARTICLE%' => '',
+                    '%ARTICLE_BTN%' => $article,
                     '%CATEGORIES%' => $categoriesList['html'],
                     '%KIM_LIST%' => $kimList['html'],
                     '%METALL_LIST%' => $metallList['html'],

@@ -74,8 +74,8 @@ html, body {
     -webkit-font-smoothing: antialiased;
 }
 #kimListWrapper, #metallListWrapper, #categoriesListTable {
-    max-height: 300px;
-    overflow: auto;
+    /*max-height: 300px;
+    overflow: auto;*/
     margin-top: 15px;
 }
 #kimIconColor {
@@ -225,6 +225,17 @@ ol li:hover {
     font-size: 15px;
     opacity: 0.9;
     color: red;
+}
+.glyphicon-th-list {
+    cursor: pointer;
+}
+.glyphicon-fire {
+    color: orangered;
+    cursor: pointer;
+}
+.glyphicon-oil {
+    color: blue;
+    cursor: pointer;
 }
 #formulasList {
     list-style: none;

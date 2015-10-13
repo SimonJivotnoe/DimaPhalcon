@@ -84,6 +84,7 @@
         $('#createArticle').show();
         $('#cancelArticleBtn' ).hide();
         $('.checkToArticle, #saveArticle').hide();
+        $('#productArticle' ).html('');
     }
 
 	var orderPlaceholder = {
@@ -272,7 +273,10 @@
 
             .find('#createArticle' ).click(function(){
                 var check = 0,
-                    rowValueInput;
+                    rowValueInput,
+                    categoryArticle = $('.listOfCategories option:selected').attr('article'),
+                    metallArticle = $('.listOfMetalls option:selected').attr('article');
+                $('#productArticle' ).html(categoryArticle + metallArticle);
                 $.each($('.checkToArticle'), function(k, v){
                     rowValueInput = $(v).closest('li').find('.rowValueInput');
                     if(rowValueInput.val()) {
@@ -318,7 +322,15 @@
             .end()
 
             .on('change', '.checkToArticle', function(){
-                console.log($(this).prop('checked'));
+                var val;
+                if ($(this).prop('checked')) {
+                    val = $(this ).closest('li' ).find('.rowValueInput' ).val();
+                    if (val) {
+                        $('#productArticle' ).append(VALIDATION.validateInputVal({
+                            val: val, digitsOnly: true
+                        }));
+                    }
+                }
             })
             // edit & save TableContent
             .on('click', '#editTableContent', function(){
@@ -839,13 +851,13 @@
                 CATEGORIES.removeCategory(catId);
             })
 
-            .on('click', '.editKimPencil', function(){
+            .on('click', '.editCategoryPencil', function(){
                 $(this )
-                    .attr('class', 'glyphicon glyphicon-floppy-disk saveEditKim' )
+                    .attr('class', 'glyphicon glyphicon-floppy-disk saveEditCategory' )
                     .css('margin-left', '0');
                 $(this )
                     .parents('tr')
-                    .find('.kimHardName, .kimName, .kimArticle')
+                    .find('.categoryName')
                     .attr('contenteditable', 'true')
                     .css({
                         'border': '1px solid hsl(195, 79%, 43%)',
@@ -853,18 +865,14 @@
                     });
             })
 
-            .on('click', '.saveEditKim', function(){
-                var kimId = $(this ).attr('name'),
-                    kim = VALIDATION.validateInputVal({
-                        val: $(this ).parents('tr').find('.kimName' ).text(),
-                        digitsOnly: true
-                    }),
-                    kimHard = VALIDATION.validateInputVal({
-                        val: $(this ).parents('tr').find('.kimHardName' ).text()
+            .on('click', '.saveEditCategory', function(){
+                var id = $(this ).attr('name'),
+                    name = VALIDATION.validateInputVal({
+                        val: $(this ).parents('tr').find('.categoryName' ).text()
                     }),
                     self = this;
-                if (kim && kimHard) {
-                    CATEGORIES.editCategory(kimId, kim, kimHard, self);
+                if (name) {
+                    CATEGORIES.editCategory(id, name, self);
                 }
             });
         return html;
@@ -1660,6 +1668,31 @@
                 });
             },
 
+            editCategory: function (id, name, save) {
+                cancelArticleBtn();
+                $.ajax( {
+                    url   : URL_CATEG + 'editCategory',
+                    method: 'POST',
+                    data: {
+                        id: id,
+                        name: name
+                    }
+                } ).then( function ( data )
+                {
+                    if (true === data) {
+                        CATEGORIES.getCategoriesTable();
+                        CATEGORIES.getCategoriesList();
+                    } else {
+                        $(save )
+                            .parents('tr')
+                            .find('.categoryName')
+                            .css({
+                                'border': '3px solid hsl(0, 69%, 22%)',
+                                'border-radius': '2px'
+                            });
+                    }
+                });
+            },
             removeCategory: function (id) {
                 cancelArticleBtn();
                 $.ajax({
