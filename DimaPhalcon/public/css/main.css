@@ -104,7 +104,10 @@ th {
 #addFormulaBtn {
     margin-left: 44%;
 }
-
+.removeFormula {
+   /* display: none !important;*/
+    padding-left: 20px;
+}
 h4 {
     text-align: center;
 }

@@ -552,6 +552,7 @@
                 .click(function(){
                     var currentVal, ls;
                     localStorage.currentCaretPos = document.getElementById('addFormulaInputPr').selectionStart;
+                    $('#addNewFhBtnInput' ).val('');
                     if (!clickOnFormulaInput) {
                         clickOnFormulaInput = true;
                         $('.removeFhBtn').hide();
@@ -632,23 +633,27 @@
             .on('click', '.addNewFhBtn', function(){
                 var newFl = $('#addNewFhBtnInput' ).val();
                 $('body').css('cursor', 'pointer');
+                $('#addFormulaInputPr' ).click();
                 PRODUCT.addBtnToFormulasHelper(newFl);
             })
 
             // focus on formula helper input
             .on('click', '#addNewFhBtnInput', function(){
+                clickOnFormulaInput = false;
                 $('.currentTab ')
                     .unbind('keydown keypress keyup');
                 $('body').off('keypress')
                          .css('cursor', 'auto');
             })
-
+            .find('.removeFormula' ).hide().end()
             .on('mouseover', '.list-group-item', function(){
                 $(this ).addClass('list-group-item-info');
+                $(this ).find('.removeFormula' ).show();
             })
 
             .on('mouseleave', '.list-group-item', function(){
                 $(this ).removeClass('list-group-item-info');
+                $(this ).find('.removeFormula' ).hide();
             })
 
             .on('mouseover', '.glyphicon-retweet', function(){
