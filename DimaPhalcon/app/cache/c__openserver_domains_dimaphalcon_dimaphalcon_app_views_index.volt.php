@@ -82,8 +82,6 @@
 <script src="js/jquery/jquery-calx-2.2.1.js"></script>
 <script src="js/jquery/main.js"></script>
 <script src="js/jquery/Dima.js"></script>
-<!--<script src="js/jquery/ajaxEvents.js"></script>-->
-<!--<script src="js/jquery/functions.js"></script>-->
 <script src="js/jquery/jquery.caret.js"></script>
 <script src="js/jquery/split-pane.js"></script>
 <script src="js/jquery/jquery.mousewheel.js"></script>
