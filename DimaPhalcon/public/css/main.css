@@ -108,6 +108,9 @@ th {
    /* display: none !important;*/
     padding-left: 20px;
 }
+.removeFormula:hover {
+    color: red;
+}
 h4 {
     text-align: center;
 }
