@@ -68,7 +68,8 @@
 	var ERR = {
 		ARTICLE: {
 			emptyTable: 'Заполните поля таблицы продукта',
-			checked: 'Нужно отметить от 2-х до 4-х значений в таблице'
+			checked: 'Нужно отметить от 2-х до 4-х значений в таблице',
+			already: 'Такой артикул уже существует!'
 		}
 	};
 	var clickOnFormulaInput = false;
@@ -83,7 +84,7 @@
 	// PRODUCTS
 	function cancelArticleBtn () {
 		$('#createArticle').show();
-		$('#cancelArticleBtn' ).hide();
+		$('#cancelArticleBtn, #errorArticle' ).hide();
 		$.each($('.checkToArticle'), function(key, val){
 			if($(val).prop('checked')) {
 				$(this).click();
@@ -320,22 +321,19 @@
 			}).end()
 
 			.find('#saveArticle' ).click(function(){
-				var article = '',
-					check = 0,
+				var check = 0,
 					rowValueInput;
 				$.each($('.checkToArticle'), function(k, v){
 					rowValueInput = $(v).closest('li').find('.rowValueInput');
 					if ($(v ).prop('checked')) {
 						check++;
-						article += rowValueInput.val();
 					}
 				});
 				if (2 <= check && 4 >= check) {
-					$(this ).hide();
-					$('.checkToArticle, #cancelArticleBtn').hide();
-					if (!$('#saveInDB').size()) {
+					if ($('#saveInDB').size()) {
 						PRODUCT.saveProductInDB();
 					}
+					PRODUCT.saveArticleOfProduct($('#productArticle').text());
 				} else {
 					$('#errorArticle' ).text(ERR.ARTICLE.checked).show();
 					setTimeout(function(){ $('#errorArticle' ).text('').hide('slow'); }, 2000);
@@ -346,17 +344,21 @@
 
 			.on('change', '.checkToArticle', function(){
 				var val = $(this ).closest('li' ).find('.rowValueInput' ).val(),
-					cell = $(this ).closest('li' ).find('.rowNumber' ).text();
+					cell = $(this ).closest('li' ).find('.rowNumber' ).text(),
+					appendSpan;
 				if ($(this).prop('checked')) {
 					if (val) {
-						$('#productArticle' ).append(
-								'<span articlepart="' + cell +'">' + 
-								VALIDATION.validateInputVal({val: val, digitsOnly: true})) + '</span>';
+						appendSpan = $('<span articlepart="' + cell +'" style="display: none;">' +
+							VALIDATION.validateInputVal({val: val, digitsOnly: true}) + '</span>');
+						$('#productArticle' ).append(appendSpan);
+						appendSpan.show('slow');
+
 					}
 				} else {
 					$.each($('#productArticle span'), function(key, val) {
 						if (cell === $(val).attr('articlepart')) {
-							$(val).remove();
+							$(val).slideUp();
+							setTimeout(function(){ $(val).remove(); }, 400);
 						}
 					});
 				}
@@ -1391,6 +1393,27 @@
 				} ).then( function ( data )
 				{
 					data ? $('#statusOfProductInDB' ).html('Сохранено в базе данных')  : false;
+				});
+			},
+
+			saveArticleOfProduct: function (article) {
+				$.ajax( {
+					url   : URL_PRODUCT + 'saveArticleOfProduct',
+					method: 'POST',
+					data: {
+						prId: MAIN.productId,
+						article: article
+					}
+				} ).then( function ( data )
+				{
+					if (true === data.status) {
+						$('.checkToArticle, #cancelArticleBtn, #saveArticle').remove();
+						TABS.getLeftTabContent(MAIN.productId, MAIN.curTabId);
+					} else if('already' === data.status) {
+						$('#errorArticle' )
+							.html(ERR.ARTICLE.already + '<a> Открыть в текущей вкладке</a> или <a> Открыть в новой вкладке</a>')
+							.show();
+					}
 				});
 			},
 

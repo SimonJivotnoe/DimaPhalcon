@@ -123,8 +123,8 @@ class CategoriesController extends ControllerBase
     {
         if ($this->request->isAjax() && $this->request->isPost()) {
             $id = $this->request->getPost('id');
-            $this->response->setContentType('application/json', 'UTF-8');
             $categoryObj = Categories::findFirst($id);
+            $this->response->setContentType('application/json', 'UTF-8');
             if ($categoryObj != false) {
                 try {
                     $categoryObj->delete();

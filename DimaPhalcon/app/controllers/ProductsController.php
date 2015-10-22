@@ -47,6 +47,32 @@ class ProductsController extends \Phalcon\Mvc\Controller
         }
     }
 
+    public function saveArticleOfProductAction() {
+        if ($this->request->isAjax() && $this->request->isPost()) {
+            $prId = $this->request->getPost('prId');
+            $article = $this->request->getPost('article');
+            $findArticle = Products::findFirst(array("article = '$article'"));
+            $this->response->setContentType('application/json', 'UTF-8');
+            if ($findArticle != false) {
+                $this->response->setJsonContent(['status' => 'already', 'id' => $findArticle->getProductId()]);
+                return $this->response;
+            }
+            $productObj = Products::findFirst($prId);
+            $productObj->setArticle($article);
+            try {
+                $productObj->save();
+            } catch (\Exception $e) {
+                $this->response->setJsonContent(['status' => 'error']);
+                return $this->response;
+            }
+            $this->response->setJsonContent(['status' => true]);
+            return $this->response;
+
+        } else {
+            $this->response->redirect('');
+        }
+    }
+
     public function changeTableContentAction(){
         if ($this->request->isAjax() && $this->request->isPost()) {
             $prId = $this->request->getPost('prId');
