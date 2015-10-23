@@ -67,9 +67,10 @@
 	// error messages obj
 	var ERR = {
 		ARTICLE: {
-			emptyTable: 'Заполните поля таблицы продукта',
-			checked: 'Нужно отметить от 2-х до 4-х значений в таблице',
-			already: 'Такой артикул уже существует!'
+			emptyTable: ' Заполните поля таблицы продукта! ',
+			checked: ' Нужно отметить от 2-х до 4-х значений в таблице! ',
+			already: 'Такой артикул уже существует!',
+			emptyName: ' Задайте имя продукта! '
 		}
 	};
 	var clickOnFormulaInput = false;
@@ -321,21 +322,32 @@
 			}).end()
 
 			.find('#saveArticle' ).click(function(){
-				var check = 0,
-					rowValueInput;
+				var checkCount = 0,
+					check = true,
+					productName = true,
+					rowValueInput,
+					errorMessage = '';
 				$.each($('.checkToArticle'), function(k, v){
 					rowValueInput = $(v).closest('li').find('.rowValueInput');
 					if ($(v ).prop('checked')) {
-						check++;
+						checkCount++;
 					}
 				});
-				if (2 <= check && 4 >= check) {
+				if (!$('.nameOfProduct').val()) {
+					productName = false;
+					errorMessage += ERR.ARTICLE.emptyName;
+				}
+				if (2 > checkCount || 4 < checkCount) {
+					check = false;
+					errorMessage += ERR.ARTICLE.checked;
+				}
+				if (check && productName) {
 					if ($('#saveInDB').size()) {
 						PRODUCT.saveProductInDB();
 					}
 					PRODUCT.saveArticleOfProduct($('#productArticle').text());
 				} else {
-					$('#errorArticle' ).text(ERR.ARTICLE.checked).show();
+					$('#errorArticle' ).text(errorMessage).show();
 					setTimeout(function(){ $('#errorArticle' ).text('').hide('slow'); }, 2000);
 				}
 			}).end()
@@ -1116,13 +1128,14 @@
 					MAIN.productId = productId;
                     MAIN.detailsForArticle = data.detailsForArticle;
 
-					kim = $('.listOfKim option:selected' ).attr('kim');
-					metall = $('.listOfMetalls option:selected' ).attr('metall');
-					metallOut = $('.listOfMetalls option:selected' ).attr('metallOut');
-
-					$('[data-cell="KIM1"]' ).val(kim);
-					$('[data-cell="PR1"]' ).val(metall);
-					$('[data-cell="PR2"]' ).val(metallOut);
+					if (!data.article){
+						kim = $('.listOfKim option:selected' ).attr('kim');
+						metall = $('.listOfMetalls option:selected' ).attr('metall');
+						metallOut = $('.listOfMetalls option:selected' ).attr('metallOut');
+						$('[data-cell="KIM1"]' ).val(kim);
+						$('[data-cell="PR1"]' ).val(metall);
+						$('[data-cell="PR2"]' ).val(metallOut);
+					}
 
 					$('#calx').calx();
 					showBody();

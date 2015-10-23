@@ -83,84 +83,84 @@ class TabsController extends \Phalcon\Mvc\Controller
     public function getLeftTabContentAction($productId) {
         if ($this->request->isAjax() && $this->request->isGet()) {
             $product = Products::findFirst($productId);
+            $this->response->setContentType('application/json', 'UTF-8');
             if ($product == false) {
-                echo "Мы не можем сохранить робота прямо сейчас: \n";
-                foreach ($product->getMessages() as $message) {
-                    echo $message, "\n";
-                }
-            } else {
-                $substObj = new Substitution();
-                $tabContent = '';
-                $addToOrder = '<span>Добавить в ордер можно только после создания артикула</span>';
-                $article = $product->getArticle();
-                if (!$article) {
-                    $article = '<p>
-                                    <button type="button" class="btn btn-info btn-sm" id="createArticle">Создать артикул</button>
-                                    <button type="button" class="btn btn-success btn-sm" id="saveArticle">Сохранить</button>
-                                    <button type="button" class="btn btn-danger btn-sm" id="cancelArticleBtn">Отмена</button>
-                                    <span id="errorArticle" class="bg-danger"></span>
-                                </p>';
-                } else {
-                    $orderObj = new OrderController;
-                    $addToOrder = $orderObj->createAddToOrder();
-                }
-                $productCatId = $product->getCategoryId();
-                $productKim = $product->getKim();
-                $productMetall = $product->getMetall();
-                $table = json_decode($product->getTableContent());
-                $alwaysInTable = json_decode($product->getAlwaysintable());
-
-                $productObj = new ProductsController;
-                $categoryObj = new CategoriesController;
-                $kimObj = new KimController;
-                $metallsObj = new MetallsController;
-                $formulaHelperObj = new FormulasController;
-
-
-                $prName = $product->getProductName();
-                'Новое изделие' === $prName ? $prName = '' : true ;
-
-                $css = '';
-                $prStatus = $product->getStatus();
-                if ('draft' === $prStatus) {
-                    $prStatus = '<button type="button" class="btn btn-danger btn-sm" id="saveInDB">Сохранить в БД</button>';
-                } else if ('save' === $prStatus){
-                    $prStatus = 'Сохранено в базе данных' ;
-                    $css = 'saveInDB';
-                } else if ('order') {
-                    $prStatus = '' ;
-                    $css = 'addedToOrder';
-                }
-                $categoriesList = $categoryObj->createCategoriesList($productCatId);
-                $kimList = $kimObj->createKimList($productKim);
-                $metallList = $metallsObj->createMetallsList($productMetall);
-                $detailsForArticle = array(
-                    'category' => $categoriesList['article'],
-                    'kim' => $kimList['article']
-                );
-                $formulas = json_decode($product->getFormulas());
-
-                $productDetails = array(
-                    '%PRODUCT_NAME%' => $prName,
-                    '%ARTICLE%' => '',
-                    '%ARTICLE_BTN%' => $article,
-                    '%CATEGORIES%' => $categoriesList['html'],
-                    '%KIM_LIST%' => $kimList['html'],
-                    '%METALL_LIST%' => $metallList['html'],
-                    '%CREATED%' => $product->getCreated(),
-                    '%SAVE_IN_DB%' => $prStatus,
-                    '%TABLE_CONTENT%' => $productObj->createTableRes($table, 'tableContent.html'),
-                    '%ALWAYS_IN_TABLE%' => $productObj->createTableRes($alwaysInTable, 'alwaysInTable.html'),
-                    '%FORMULAS_HELPER%' => $formulaHelperObj->createFormulaHelperList(),
-                    '%FORMULAS%' => $formulaHelperObj->createFormulasList($formulas),
-                    '%ADD_TO_ORDER%' => $addToOrder
-                );
-                $tabContent .= $substObj->subHTMLReplace('tabContent.html', $productDetails);
-                $this->response->setContentType('application/json', 'UTF-8');
-                $this->response->setJsonContent(['html' => $tabContent, 'css' => $css, 'detailsForArticle' => (object)$detailsForArticle]);
-
+                $this->response->setJsonContent(['status' => false]);
                 return $this->response;
             }
+
+            $articleFlag = true;
+            $tabContent = '';
+            $addToOrder = '<span>Добавить в ордер можно только после создания артикула</span>';
+            $mainTemplate = 'tabContent.html';
+            $tableTamplate = 'tableContent.html';
+            $alwaysInTableTemplate = 'alwaysInTable.html';
+            $substObj = new Substitution();
+            $article = $product->getArticle();
+            if (!$article) {
+                $articleFlag= false;
+                $article = $this->getArticleTemplate();
+            } else {
+                $orderObj = new OrderController;
+                $addToOrder = $orderObj->createAddToOrder();
+                $mainTemplate = 'leftTabContentArticle.html';
+                $tableTamplate = 'tableContentArticle.html';
+                $alwaysInTableTemplate = 'alwaysInTableArticle.html';
+            }
+
+            $prName = $product->getProductName();
+            if ('Новое изделие' === $prName) {
+                $prName = '';
+            }
+            $productCatId = $product->getCategoryId();
+            $productKim = $product->getKim();
+            $productMetall = $product->getMetall();
+            $table = json_decode($product->getTableContent());
+            $alwaysInTable = json_decode($product->getAlwaysintable());
+
+            $productObj = new ProductsController;
+            $categoryObj = new CategoriesController;
+            $kimObj = new KimController;
+            $metallsObj = new MetallsController;
+            $formulaHelperObj = new FormulasController;
+            $css = '';
+            $prStatus = $product->getStatus();
+            if ('draft' === $prStatus) {
+                $prStatus = '<button type="button" class="btn btn-danger btn-sm" id="saveInDB">Сохранить в БД</button>';
+            } else if ('save' === $prStatus){
+                $prStatus = 'Сохранено в базе данных' ;
+                $css = 'saveInDB';
+            } else if ('order') {
+                $prStatus = '' ;
+                $css = 'addedToOrder';
+            }
+            $categoriesList = $categoryObj->createCategoriesList($productCatId);
+            $kimList = $kimObj->createKimList($productKim);
+            $metallList = $metallsObj->createMetallsList($productMetall);
+            $detailsForArticle = array(
+                'category' => $categoriesList['article'],
+                'kim' => $kimList['article']
+            );
+            $formulas = json_decode($product->getFormulas());
+
+            $productDetails = array(
+                '%PRODUCT_NAME%' => $prName,
+                '%ARTICLE_BTN%' => $article,
+                '%CATEGORIES%' => $categoriesList['html'],
+                '%KIM_LIST%' => $kimList['html'],
+                '%METALL_LIST%' => $metallList['html'],
+                '%CREATED%' => $product->getCreated(),
+                '%SAVE_IN_DB%' => $prStatus,
+                '%TABLE_CONTENT%' => $productObj->createTableRes($table, 'tableContent.html'),
+                '%ALWAYS_IN_TABLE%' => $productObj->createTableRes($alwaysInTable, $alwaysInTableTemplate),
+                '%FORMULAS_HELPER%' => $formulaHelperObj->createFormulaHelperList(),
+                '%FORMULAS%' => $formulaHelperObj->createFormulasList($formulas),
+                '%ADD_TO_ORDER%' => $addToOrder
+            );
+
+            $tabContent .= $substObj->subHTMLReplace($mainTemplate, $productDetails);
+            $this->response->setJsonContent(['html' => $tabContent, 'article' => $articleFlag, 'css' => $css, 'detailsForArticle' => (object)$detailsForArticle]);
+            return $this->response;
         } else {
             $this->response->redirect('');
         }
@@ -526,6 +526,15 @@ class TabsController extends \Phalcon\Mvc\Controller
             $this->response->redirect('');
         }
     }    
+
+    private function getArticleTemplate() {
+        return '<p>
+                    <button type="button" class="btn btn-info btn-sm" id="createArticle">Создать артикул</button>
+                    <button type="button" class="btn btn-success btn-sm" id="saveArticle">Сохранить</button>
+                    <button type="button" class="btn btn-danger btn-sm" id="cancelArticleBtn">Отмена</button>
+                    <span id="errorArticle" class="bg-danger"></span>
+                </p>';
+    }
 
     public function addNewRightTab($order_id) {
         $tabActive = TabsRight::find(array("active = 1"));
