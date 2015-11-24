@@ -627,7 +627,7 @@
 								localStorage.currentCaretPos = document.getElementById('addFormulaInputPr').selectionStart;
 							})
 							.off('click')
-							.on('click', '.rowNumber', function(){console.log('here');
+							.on('click', '.rowNumber', function(){
 								PRODUCT.addElementToFormulaInput(this);
 							});
 					}
@@ -866,7 +866,28 @@
 				(count + 1)+ '"><th colspan="9"><span contenteditable="true">Раздел ' + (count + 1)+ '</span></th></tr>');
 				map = JSON.stringify(getOrderMap());
 				saveOrderMap(map, true);
-			});
+			}).end()
+
+			.find('.moveWithoutOrderUp' ).click(function() {
+				if ($(this ).closest('tr' ).prev().attr('name')) {
+					$($(this ).closest('tr' ) ).after( $($(this ).closest('tr' ).prev()) );
+					saveOrderMap(JSON.stringify(getOrderMap()), true);
+				}
+			} ).end()
+
+			.find('.moveWithoutOrderDown' ).click(function() {
+				if ($(this ).closest('tr' ).next().attr('name')) {
+					$($($(this ).closest('tr' ).next()) ).after( $(this ).closest('tr' ) );
+					saveOrderMap(JSON.stringify(getOrderMap()), true);
+				}
+			} ).end()
+
+			.find('.removeWithoutOrder' ).click(function() {
+				var productId = $(this ).attr('name');
+				$(this ).closest('tr' ).remove();
+				saveOrderMap(JSON.stringify(getOrderMap()), true);
+				ORDER.removeFromOrder(productId);
+			})
 		return html;
 	}
 
@@ -1502,7 +1523,7 @@
                         prId : MAIN.productId
 					}
 				} ).then( function ( data )
-				{console.log(data);
+				{
 					if (true === binding) {
 					   PRODUCT.saveTable();
 					}
@@ -1622,7 +1643,7 @@
 			},
 
 			addWhereCaret: function(caretPos, what) {
-				var currentVal =  $('#addFormulaInputPr').val();console.log(currentVal);
+				var currentVal =  $('#addFormulaInputPr').val();
 				$('#addFormulaInputPr').val(currentVal.substring(0, caretPos) + what + currentVal.substring(caretPos) );
 			},
 
@@ -1658,7 +1679,7 @@
 					method: 'POST',
 					data: {orderId: MAIN.orderId, productId: productId}
 				}).then(function (data)
-				{console.log(data);
+				{
 					if ('ok' === data.status) {
 						map = getOrderMap();
 						obj[productId] = 1;
@@ -1703,6 +1724,16 @@
 					console.log(data);
 				});
 			},
+
+			removeFromOrder: function (productId) {
+				$.ajax( {
+					url   : URL_ORDER + 'removeFromOrder',
+					method: 'POST',
+					data: {orderId: MAIN.orderId, productId: productId}
+				} ).then( function ( data ) {
+				});
+			},
+
 			createJSONFromOrderDescription: function() {
 				var obj = orderPlaceholder,
 					arr = _.keys(obj), i = 0;

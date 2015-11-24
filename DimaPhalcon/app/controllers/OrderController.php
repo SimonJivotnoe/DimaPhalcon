@@ -134,6 +134,31 @@ class OrderController  extends \Phalcon\Mvc\Controller
         }
     }
 
+    public function removeFromOrderAction ()
+    {
+        if ($this->request->isAjax() && $this->request->isPost()) {
+            $orderId = $this->request->getPost('orderId');
+            $productId = $this->request->getPost('productId');
+            $this->response->setContentType('application/json', 'UTF-8');
+            $orObj = Productinorder::findFirst(
+                "orderId = '" . $orderId . "' AND productId = '" . $productId . "'"
+            );
+            if ($orObj) {
+                if($orObj->delete() == true) {
+                    $this->response->setJsonContent(true);
+                } else {
+                    $this->response->setJsonContent(false);
+                }
+
+                return $this->response;
+            }
+            $this->response->setJsonContent('error');
+            return $this->response;
+        } else {
+            $this->response->redirect('');
+        }
+    }
+
     public function generateSectionArr ($arr, $orderId, $scope = true) {
         $productInOrderObj = Productinorder::find(array('orderId' => $orderId));
         if ($productInOrderObj == false) {

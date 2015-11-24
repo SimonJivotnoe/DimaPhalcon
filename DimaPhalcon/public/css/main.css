@@ -29,10 +29,12 @@ a {
     margin-left: 5px; /* same as divider width */
 }
 
-#addNewTab, #addNewTabRight {
+#addNewTab, #addNewTabRight, .moveWithoutOrderUp, .moveWithoutOrderDown, .removeWithoutOrder {
     cursor: pointer;
 }
-
+.removeWithoutOrder:hover {
+    color: red;
+}
 .closeTab, .closeTabRight {
     margin-left: 20px;
     margin-right: -5px;

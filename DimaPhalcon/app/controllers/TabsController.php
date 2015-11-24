@@ -397,7 +397,7 @@ class TabsController extends \Phalcon\Mvc\Controller
                         'orderId' => $orderId,
                         'obj' => (object) $tabArr,
                         'html' => $tabsLi
-                            ]
+                        ]
                     );
                     return $this->response;
                 }

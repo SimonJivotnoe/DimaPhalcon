@@ -186,7 +186,7 @@ class ProductsController extends \Phalcon\Mvc\Controller
         return $tableRes;
     }
     
-    public function createProductInOrder($productId, $quantity, $orderId, $discount = 0, $i) {
+    public function createProductInOrder($productId, $quantity, $orderId, $i) {
         $substObj = new Substitution();
         $productObj = Products::findFirst($productId);        
         $metallId = $productObj->getMetall();
@@ -194,7 +194,6 @@ class ProductsController extends \Phalcon\Mvc\Controller
         $orderObj = new OrderController;
         $alwaysInTable = json_decode($productObj->getAlwaysInTable());
         $actionRow = '';
-
         $res['%ROW_CLASS%'] = 'withoutSectionRow';
         $res['%NUM%'] = $i;
         $res['%ARTICLE%'] = $productObj->getArticle();
@@ -207,7 +206,7 @@ class ProductsController extends \Phalcon\Mvc\Controller
         $res['%PRICE%'] = $alwaysInTable->{'3'}->{'%INPUT_VALUE%'};
         $res['%SUM%'] = (float)$alwaysInTable->{'3'}->{'%INPUT_VALUE%'} * (int)$quantity;
         $res['%PRICE_OUT%'] = $alwaysInTable->{'5'}->{'%INPUT_VALUE%'};
-        $res['%SUM_OUT%'] = (float)$alwaysInTable->{'5'}->{'%INPUT_VALUE%'} * (int)$quantity - (int)$alwaysInTable->{'5'}->{'%INPUT_VALUE%'} * (int)$discount/100;
+        $res['%SUM_OUT%'] = (float)$alwaysInTable->{'5'}->{'%INPUT_VALUE%'} * (int)$quantity/* - (int)$alwaysInTable->{'5'}->{'%INPUT_VALUE%'} * (int)$discount/100*/;
         
         return $substObj->subHTMLReplace('orderRow.html', $res);
     }
