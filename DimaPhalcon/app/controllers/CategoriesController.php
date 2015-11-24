@@ -140,7 +140,7 @@ class CategoriesController extends ControllerBase
         }
     }
 
-    public function createCategoriesList($productCatId=null){
+    public function createCategoriesList($productCatId=null, $isArticle = false){
         $category = Categories::find();
         $categoriesList = '';
         $article = '';
@@ -153,13 +153,20 @@ class CategoriesController extends ControllerBase
         } else {
             foreach ($category as $val) {
                 $categoriesArr[$val->getCategoryId()] = $val->getCategoryName();
-                if ($val->getCategoryId() === $productCatId) {
-                    $categoriesList .= '<option selected="selected" ';
-                    $article = $val->getArticle();
+                if ($isArticle) {
+                    if ($val->getCategoryId() === $productCatId) {
+                        $categoriesList = $val->getCategoryName();
+                        $article = $val->getArticle();
+                    }
                 } else {
-                    $categoriesList .= '<option ';
+                    if ($val->getCategoryId() === $productCatId) {
+                        $categoriesList .= '<option selected="selected" ';
+                        $article = $val->getArticle();
+                    } else {
+                        $categoriesList .= '<option ';
+                    }
+                    $categoriesList .= 'name="'.$val->getCategoryId().'" article="' . $val->getArticle() . '">'.$val->getCategoryName().'</option>';
                 }
-                $categoriesList .= 'name="'.$val->getCategoryId().'" article="' . $val->getArticle() . '">'.$val->getCategoryName().'</option>';
             }
             return ['html' => $categoriesList, 'categoriesArr' => $categoriesArr, 'article' => $article];
         }

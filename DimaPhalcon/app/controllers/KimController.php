@@ -129,19 +129,25 @@ class KimController extends \Phalcon\Mvc\Controller
         }
     }
 
-    public function createKimList($productKim)
+    public function createKimList($productKim, $isArticle = false)
     {
         $kimList = '';
         $kim = Kim::find(array("order" => "kim ASC"));
         foreach ($kim as $val) {
-            if ($productKim === $val->getKimId()) {
-                $kimList .= '<option selected="selected" ';
+            if ($isArticle) {
+               if ($productKim === $val->getKimId()) {
+                    $kimList = $val->getKimHard() . ': ' . $val->getKim();
+                } 
             } else {
-                $kimList .= '<option ';
+                if ($productKim === $val->getKimId()) {
+                    $kimList .= '<option selected="selected" ';
+                } else {
+                    $kimList .= '<option ';
+                }
+                $kimList .= 'name="' . $val->getKimId()
+                    . '" kim="' . $val->getKim() . '">'
+                    . $val->getKimHard() . ': ' . $val->getKim() . ' </option>';
             }
-            $kimList .= 'name="' . $val->getKimId()
-                . '" kim="' . $val->getKim() . '">'
-                . $val->getKimHard() . ': ' . $val->getKim() . ' </option>';
         }
 
         return ['html' => $kimList];

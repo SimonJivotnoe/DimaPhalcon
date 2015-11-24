@@ -2,37 +2,55 @@
     <div class="col-md-8">Создано: %CREATED%</div>
     <div class="col-md-4">Сохранено в базе данных</div>
 </div>
-<div class="col-md-12" id="productArticleWrapper">
+<!--<div class="col-md-12" id="productArticleWrapper">
     Артикул : <span class="bg-primary">%ARTICLE_BTN%</span>
-</div>
-<div class="col-md-10 col-md-offset-0">
-    <span class="col-md-5 nameOfProduct">%PRODUCT_NAME%</span>
+</div>-->
+<div class="col-md-8 col-md-offset-0">
+    <table class="table table-bordered">
+        <tr>
+            <th>Артикул</th>
+            <th>Наименование продукта</th>
+            <th>Категория</th>
+            <th>КИМ</th>
+            <th>Металл</th>
+        </tr>
+        <tr>
+            <td>%ARTICLE_BTN%</td>
+            <td>%PRODUCT_NAME%</td>
+            <td>%CATEGORIES%</td>
+            <td>%KIM_LIST%</td>
+            <td>%METALL_LIST%</td>
+        </tr>
+    </table>
+    <!--<span class="col-md-5 nameOfProduct">%PRODUCT_NAME%</span>
     <div class="col-md-5" id="categoriesListContent">%CATEGORIES%</div>
     <div class="col-md-12"></div>
     <div class="col-md-5" id="kimList">%KIM_LIST%</div>
-    <div class="col-md-5" id="metallList">%METALL_LIST%</div>
+    <div class="col-md-5" id="metallList">%METALL_LIST%</div>-->
 </div>
 <div class="col-md-2">&nbsp</div>
 <div class="col-md-12"><hr /></div>
 <div class="col-md-12 createTableDiv">
     <div class="col-md-4 col-md-offset-0">%ADD_TO_ORDER%</div>
 </div>
-<div class="col-md-8" >
-    <div class="col-md-10">
+<div class="col-md-8">
+    <!--<div class="col-md-10">
         <form id="calx">
             <div class="col-md-12">
                 <ul id="sortable">
-                    %TABLE_CONTENT%
                 </ul>
             </div>
             <div class="col-md-12">
                 <ul id="alwaysInTable">
-                    %ALWAYS_IN_TABLE%
                 </ul>
             </div>
         </form>
 
-    </div>
+    </div>-->
+    <table class="table table-bordered">
+        %TABLE_CONTENT%
+        %ALWAYS_IN_TABLE%
+    </table>
 </div>
 <div class="col-md-10 list-group">
     <ul name="" id="formulasList">

@@ -186,7 +186,7 @@ class ProductsController extends \Phalcon\Mvc\Controller
         return $tableRes;
     }
     
-    public function createProductInOrder($productId, $quantity, $orderId, $discount = 0) {
+    public function createProductInOrder($productId, $quantity, $orderId, $discount = 0, $i) {
         $substObj = new Substitution();
         $productObj = Products::findFirst($productId);        
         $metallId = $productObj->getMetall();
@@ -196,6 +196,8 @@ class ProductsController extends \Phalcon\Mvc\Controller
         $actionRow = '';
 
         $res['%ROW_CLASS%'] = 'withoutSectionRow';
+        $res['%NUM%'] = $i;
+        $res['%ARTICLE%'] = $productObj->getArticle();
         $res['%PRODUCT_ID%'] = $productObj->getProductId();
         $res['%NAME%'] = $productObj->getProductName();
         $res['%NAME_METALL%'] = $metallObj->getName();

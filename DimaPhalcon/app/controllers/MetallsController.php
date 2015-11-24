@@ -151,24 +151,31 @@ class MetallsController extends \Phalcon\Mvc\Controller
         }
     }
 
-    public function createMetallsList ($productMetall) {
+    public function createMetallsList ($productMetall, $isArticle = false) {
         $metallsList = '';
         $article = '';
         $metalls = Metalls::find(array(
             "order" => "name ASC"));
         foreach ($metalls as $val) {
-            if ($productMetall === $val->getId()) {
-                $metallsList .= '<option selected="selected" ';
-                $article = $val->getArticle();
+            if ($isArticle) {
+               if ($productMetall === $val->getId()) {
+                    $metallsList = $val->getName().': '.$val->getPrice();
+                    $article = $val->getArticle();
+                } 
             } else {
-                $metallsList .= '<option ';
+                if ($productMetall === $val->getId()) {
+                    $metallsList .= '<option selected="selected" ';
+                    $article = $val->getArticle();
+                } else {
+                    $metallsList .= '<option ';
+                }
+                $metallsList .= 'name="' . $val->getId()
+                    .'" metall="' . $val->getPrice()
+                    .'" metallOut="' . $val->getOutPrice()
+                    . '" article="' . $val->getArticle()
+                    .'">'.
+                    $val->getName().': '.$val->getPrice().' грн</option>';
             }
-            $metallsList .= 'name="' . $val->getId()
-                .'" metall="' . $val->getPrice()
-                .'" metallOut="' . $val->getOutPrice()
-                . '" article="' . $val->getArticle()
-                .'">'.
-                $val->getName().': '.$val->getPrice().' грн</option>';
         }
 
         return ['html' => $metallsList, 'article' => $article];

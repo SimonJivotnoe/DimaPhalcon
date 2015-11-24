@@ -93,7 +93,7 @@ class TabsController extends \Phalcon\Mvc\Controller
             $tabContent = '';
             $addToOrder = '<span>Добавить в ордер можно только после создания артикула</span>';
             $mainTemplate = 'tabContent.html';
-            $tableTamplate = 'tableContent.html';
+            $tableTemplate = 'tableContent.html';
             $alwaysInTableTemplate = 'alwaysInTable.html';
             $substObj = new Substitution();
             $article = $product->getArticle();
@@ -104,7 +104,7 @@ class TabsController extends \Phalcon\Mvc\Controller
                 $orderObj = new OrderController;
                 $addToOrder = $orderObj->createAddToOrder();
                 $mainTemplate = 'leftTabContentArticle.html';
-                $tableTamplate = 'tableContentArticle.html';
+                $tableTemplate = 'alwaysInTableArticle.html';
                 $alwaysInTableTemplate = 'alwaysInTableArticle.html';
             }
 
@@ -134,9 +134,9 @@ class TabsController extends \Phalcon\Mvc\Controller
                 $prStatus = '' ;
                 $css = 'addedToOrder';
             }
-            $categoriesList = $categoryObj->createCategoriesList($productCatId);
-            $kimList = $kimObj->createKimList($productKim);
-            $metallList = $metallsObj->createMetallsList($productMetall);
+            $categoriesList = $categoryObj->createCategoriesList($productCatId, $articleFlag);
+            $kimList = $kimObj->createKimList($productKim, $articleFlag);
+            $metallList = $metallsObj->createMetallsList($productMetall, $articleFlag);
             $detailsForArticle = array(
                 'category' => $categoriesList['article'],
                 'kim' => $kimList['article']
@@ -144,22 +144,26 @@ class TabsController extends \Phalcon\Mvc\Controller
             $formulas = json_decode($product->getFormulas());
 
             $productDetails = array(
-                '%PRODUCT_NAME%' => $prName,
-                '%ARTICLE_BTN%' => $article,
-                '%CATEGORIES%' => $categoriesList['html'],
-                '%KIM_LIST%' => $kimList['html'],
-                '%METALL_LIST%' => $metallList['html'],
-                '%CREATED%' => $product->getCreated(),
-                '%SAVE_IN_DB%' => $prStatus,
-                '%TABLE_CONTENT%' => $productObj->createTableRes($table, 'tableContent.html'),
+                '%PRODUCT_NAME%'    => $prName,
+                '%ARTICLE_BTN%'     => $article,
+                '%CATEGORIES%'      => $categoriesList['html'],
+                '%KIM_LIST%'        => $kimList['html'],
+                '%METALL_LIST%'     => $metallList['html'],
+                '%CREATED%'         => $product->getCreated(),
+                '%SAVE_IN_DB%'      => $prStatus,
+                '%TABLE_CONTENT%'   => $productObj->createTableRes($table, $tableTemplate),
                 '%ALWAYS_IN_TABLE%' => $productObj->createTableRes($alwaysInTable, $alwaysInTableTemplate),
                 '%FORMULAS_HELPER%' => $formulaHelperObj->createFormulaHelperList(),
-                '%FORMULAS%' => $formulaHelperObj->createFormulasList($formulas),
-                '%ADD_TO_ORDER%' => $addToOrder
+                '%FORMULAS%'        => $formulaHelperObj->createFormulasList($formulas),
+                '%ADD_TO_ORDER%'    => $addToOrder
             );
 
             $tabContent .= $substObj->subHTMLReplace($mainTemplate, $productDetails);
-            $this->response->setJsonContent(['html' => $tabContent, 'article' => $articleFlag, 'css' => $css, 'detailsForArticle' => (object)$detailsForArticle]);
+            $this->response->setJsonContent([
+                'html'              => $tabContent,
+                'article'           => $articleFlag,
+                'css'               => $css,
+                'detailsForArticle' => (object)$detailsForArticle]);
             return $this->response;
         } else {
             $this->response->redirect('');
@@ -483,10 +487,12 @@ class TabsController extends \Phalcon\Mvc\Controller
                 }
             }
             if (count($withoutSectionArr)) {
+                $i = 1;
                 foreach ($withoutSectionArr as $key => $val) {
                     foreach ($val as $productId => $quantity) {
-                        $res['%WITHOUT_SECTIONS%'] .= $productObj->createProductInOrder($productId, $quantity, $orderId);
+                        $res['%WITHOUT_SECTIONS%'] .= $productObj->createProductInOrder($productId, $quantity, $orderId, $i);
                     }
+                    $i++;
                 }
             }
             $res = $substObj->subHTMLReplace('orderTable.html', $res);
