@@ -80,6 +80,15 @@
 		TABS.getLeftTabsList();
 		TABS.getRightTabsList();
 	}
+	
+	// STANDART METHODS
+	function swap(sourceObj, sourceKey, targetObj, targetKey) {
+		var temp = sourceObj[sourceKey];
+		sourceObj[sourceKey] = targetObj[targetKey];
+		targetObj[targetKey] = temp;
+	};
+	
+	
 	// TABS
 
 	// PRODUCTS
@@ -130,6 +139,40 @@
 		} );
 	}
 
+	function swapRows (scope, area, dirr) {
+		var map = getOrderMap(),
+			currentIndex = 	parseInt($(scope ).attr('data-number')),
+			swapIndex;
+		switch (dirr) {
+			case 'up':
+				swapIndex = currentIndex - 1;
+				if (0 === currentIndex) {
+					swapIndex = _.size(map[area]) - 1;
+				}
+				break;
+			case 'down':
+				swapIndex = currentIndex + 1;
+				if ((_.size(map[area]) - 1) === currentIndex) {
+					swapIndex = 0;
+				}
+				break;
+		}
+		swap(map[area], currentIndex, map[area], swapIndex);
+		return map;
+	}
+	
+	function countProductInOrder (productId) {
+		var count = 0;
+		$.each(getOrderMap(), function (rowName, obj) {
+			$.each(obj, function (num, object) {
+				if (productId === _.keys(object)[0]) {
+					count++;
+				}
+			});
+		});
+		return count;
+	}
+	
 	// logging errors
 	function log(php) {
 		if('undefined' !== typeof(console)) {
@@ -213,8 +256,8 @@
 	function getOrderMap() {
 		var res = {};
 		res.out = [];
+		var name;
 		$.each($('#orderTable tr'), function(key, val) {
-			var name;
 			switch ($(val ).attr('class')) {
 				case 'skip':
 					break;
@@ -222,7 +265,7 @@
 					name = $(val ).attr('name');
 					res[name] = [];
 					break;
-				case 'sectionRow orderRow':
+				case 'orderTableSection orderRow':
 					var productId = $(val ).attr('name' ),
 						obj = {};
 					$.each($('td', val), function(k, v) {
@@ -246,7 +289,7 @@
 					break;
 			}
 		});
-
+		console.log(res);
 		return res;
 	}
 
@@ -869,25 +912,24 @@
 			}).end()
 
 			.find('.moveWithoutOrderUp' ).click(function() {
-				if ($(this ).closest('tr' ).prev().attr('name')) {
-					$($(this ).closest('tr' ) ).after( $($(this ).closest('tr' ).prev()) );
-					saveOrderMap(JSON.stringify(getOrderMap()), true);
-				}
+				//swapRows(this, 'out', 'up');
+				saveOrderMap(JSON.stringify(swapRows(this, 'out', 'up')), true);
 			} ).end()
 
 			.find('.moveWithoutOrderDown' ).click(function() {
-				if ($(this ).closest('tr' ).next().attr('name')) {
-					$($($(this ).closest('tr' ).next()) ).after( $(this ).closest('tr' ) );
-					saveOrderMap(JSON.stringify(getOrderMap()), true);
-				}
+				//swapRows(this, 'out', 'down');
+				saveOrderMap(JSON.stringify(swapRows(this, 'out', 'down')), true);
 			} ).end()
 
 			.find('.removeWithoutOrder' ).click(function() {
 				var productId = $(this ).attr('name');
 				$(this ).closest('tr' ).remove();
+				countProductInOrder(productId);
 				saveOrderMap(JSON.stringify(getOrderMap()), true);
-				ORDER.removeFromOrder(productId);
-			})
+				if (1 < countProductInOrder(productId)) {
+					ORDER.removeFromOrder(productId);
+				}
+			});
 		return html;
 	}
 

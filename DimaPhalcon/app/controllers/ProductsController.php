@@ -186,15 +186,39 @@ class ProductsController extends \Phalcon\Mvc\Controller
         return $tableRes;
     }
     
-    public function createProductInOrder($productId, $quantity, $orderId, $i) {
+    public function createProductInOrder($productId, $quantity, $orderId, $i, $section, $moveTo) {
         $substObj = new Substitution();
-        $productObj = Products::findFirst($productId);        
+        $productObj = Products::findFirst($productId);
         $metallId = $productObj->getMetall();
         $metallObj = Metalls::findFirst($metallId);
         $orderObj = new OrderController;
         $alwaysInTable = json_decode($productObj->getAlwaysInTable());
-        $actionRow = '';
-        $res['%ROW_CLASS%'] = 'withoutSectionRow';
+        $actionArr = array('%ROWCLASS%' => 'Without', '%PRODUCT_ID%' => $productId, '%I%' => $i - 1);
+        $moveToCopyTo = '<div class="col-md-8" style="margin-right: -72px;"><select><option>Скопировать в </option><option>Переместить в </option></select>';
+        $moveCopyDropdown = '<select>';
+        if ('orderTableSection' === $section) {
+            $actionArr['%ROWCLASS%'] = '';
+        }
+        foreach ($moveTo as $key => $val) {
+            if (!count($val)) {
+                $moveCopyDropdown .= '<option>' . $key . '</option>';
+            } else {
+                $checkArr = array();
+                foreach ($val as $num => $obj) {
+                    foreach ($obj as $id => $quantity) {
+                        array_push($checkArr, $id);
+                    }
+                }
+                if (!in_array($productId, $checkArr)) {
+                    $moveCopyDropdown .= '<option>' . $key . '</option>';
+                }
+            }
+        }
+        $moveCopyDropdown .= '</select><span class="glyphicon glyphicon-circle-arrow-right moveToCopyTo" aria-hidden="true"></span></div>';
+        $actionArr['%MOVE_TO%'] = $moveToCopyTo . $moveCopyDropdown;
+        $actionRow = $substObj->subHTMLReplace('actionsInRow.html', $actionArr);
+        $res['%ROW_CLASS%'] = $section;
+        $res['%ACTIONS%'] = $actionRow;
         $res['%NUM%'] = $i;
         $res['%ARTICLE%'] = $productObj->getArticle();
         $res['%PRODUCT_ID%'] = $productObj->getProductId();

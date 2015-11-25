@@ -29,11 +29,17 @@ a {
     margin-left: 5px; /* same as divider width */
 }
 
-#addNewTab, #addNewTabRight, .moveWithoutOrderUp, .moveWithoutOrderDown, .removeWithoutOrder {
+#addNewTab, #addNewTabRight, .moveWithoutOrderUp, .moveWithoutOrderDown, .removeWithoutOrder, .moveToCopyTo {
     cursor: pointer;
 }
 .removeWithoutOrder:hover {
     color: red;
+}
+#addNewTab:hover, #addNewTabRight:hover, .moveWithoutOrderUp:hover, .moveWithoutOrderDown:hover {
+    color: blue;
+}
+.moveToCopyTo:hover {
+    color: green;
 }
 .closeTab, .closeTabRight {
     margin-left: 20px;
@@ -413,5 +419,9 @@ ol li:hover {
 .inputError {
     border: 1px solid hsla(360, 99%, 46%, 0.92);
     border-radius: 2px
+}
+.orderTableActionsWrapper {
+    width: 500px !important;
+    margin-left: -31px;
 }
 .clearer { clear: both; }

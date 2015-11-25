@@ -159,7 +159,7 @@ class OrderController  extends \Phalcon\Mvc\Controller
         }
     }
 
-    public function generateSectionArr ($arr, $orderId, $scope = true) {
+   /* public function generateSectionArr ($arr, $orderId, $scope = true) {
         $productInOrderObj = Productinorder::find(array('orderId' => $orderId));
         if ($productInOrderObj == false) {
             echo "Мы не можем сохранить робота прямо сейчас: \n";
@@ -187,7 +187,7 @@ class OrderController  extends \Phalcon\Mvc\Controller
         }
 
         return array('res' => $res, 'move' => $move);
-    }
+    }*/
 
     public function createAddToOrder() {
         //$substObj = new Substitution();

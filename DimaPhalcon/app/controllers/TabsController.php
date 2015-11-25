@@ -459,26 +459,28 @@ class TabsController extends \Phalcon\Mvc\Controller
             $moveWithout = array('out' => []);
             $productObj = new ProductsController;
             $substObj = new Substitution();
+            /*print_r($map);die();*/
             if ('' !== $map && null !== $map) {
                 $orderObj = new OrderController;
                 foreach ($map as $key => $val) {
                     if ('out' === $key && count($val)) {
-                        $sec = $orderObj->generateSectionArr($val, $orderId);
-                        $moveWithout['out'] = $sec['move'];
-                        $withoutSectionArr = $sec['res'];
+                        $i = 1;
+                        foreach ($val as $num => $obj) {
+                            foreach ($obj as $productId => $quantity) {
+                                $res['%WITHOUT_SECTIONS%'] .= $productObj->createProductInOrder($productId, $quantity, $orderId, $i, 'withoutSectionRow', $map);
+                            }
+                            $i++;
+                        }
                     } else if ('out' !== $key) {
                         $res['%SECTIONS%'] .= '<tr class="orderTableSection" name="' . $key . '">
                         <th colspan="9"><span contenteditable="true">' . $key . '</span></th></tr>';
                         if (count($val)) {
-                            $sec = $orderObj->generateSectionArr($val, $orderId);
-                            $moveTo[$key] = $sec['move'];
-                            $sectionArr = $sec['res'];
-                            if (count($sectionArr)) {
-                                foreach ($sectionArr as $key => $val) {
-                                    foreach ($val as $productId => $quantity) {
-                                        $res['%SECTIONS%'] .= $productObj->createProductInOrder($productId, $quantity, $orderId);
-                                    }
+                            $i = 1;
+                            foreach ($val as $num => $obj) {
+                                foreach ($obj as $productId => $quantity) {
+                                    $res['%SECTIONS%'] .= $productObj->createProductInOrder($productId, $quantity, $orderId, $i, 'orderTableSection', $map);
                                 }
+                                $i++;
                             }
                         } else if (!count($val)) {
                             $moveTo[$key] = array();
@@ -486,18 +488,8 @@ class TabsController extends \Phalcon\Mvc\Controller
                     }
                 }
             }
-            if (count($withoutSectionArr)) {
-                $i = 1;
-                foreach ($withoutSectionArr as $key => $val) {
-                    foreach ($val as $productId => $quantity) {
-                        $res['%WITHOUT_SECTIONS%'] .= $productObj->createProductInOrder($productId, $quantity, $orderId, $i);
-                    }
-                    $i++;
-                }
-            }
-            $res = $substObj->subHTMLReplace('orderTable.html', $res);
-            $this->response->setJsonContent(['html' => $res, 'success' => true]);
-
+            
+            $this->response->setJsonContent(['html' => $substObj->subHTMLReplace('orderTable.html', $res), 'success' => true]);
             return $this->response;
         } else {
             $this->response->redirect('');
