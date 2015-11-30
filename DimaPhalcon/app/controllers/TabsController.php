@@ -472,8 +472,8 @@ class TabsController extends \Phalcon\Mvc\Controller
                             $i++;
                         }
                     } else if ('out' !== $key) {
-                        $res['%SECTIONS%'] .= '<tr class="orderTableSection" name="' . $key . '">
-                        <th colspan="9"><span contenteditable="true">' . $key . '</span></th></tr>';
+                        $res['%SECTIONS%'] .= '<tr class="orderTableSectionName" name="' . $key . '">
+                        <th colspan="9"><span class="orderSectionName" contenteditable="true">' . $key . '</span></th><td><span class="glyphicon glyphicon-remove removeRowSection" name="' . $key . '" aria-hidden="true"></span></td></tr>';
                         if (count($val)) {
                             $i = 1;
                             foreach ($val as $num => $obj) {

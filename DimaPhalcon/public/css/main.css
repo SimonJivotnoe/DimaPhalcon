@@ -29,10 +29,10 @@ a {
     margin-left: 5px; /* same as divider width */
 }
 
-#addNewTab, #addNewTabRight, .moveWithoutOrderUp, .moveWithoutOrderDown, .removeWithoutOrder, .moveToCopyTo {
+#addNewTab, #addNewTabRight, .moveWithoutOrderUp, .moveWithoutOrderDown, .removeWithoutOrderRow, .removeOrderRow, .moveToCopyTo {
     cursor: pointer;
 }
-.removeWithoutOrder:hover {
+.removeWithoutOrder:hover, .removeOrderRow:hover,.removeRowSection:hover {
     color: red;
 }
 #addNewTab:hover, #addNewTabRight:hover, .moveWithoutOrderUp:hover, .moveWithoutOrderDown:hover {
@@ -41,18 +41,20 @@ a {
 .moveToCopyTo:hover {
     color: green;
 }
+.removeRowSection {
+    font-size: 12px;
+    cursor: pointer;
+}
 .closeTab, .closeTabRight {
     margin-left: 20px;
     margin-right: -5px;
     font-size: 10px;
 }
-
 .closeTab:hover, .closeTabRight:hover {
     border-radius: 20px;
     font-size: 12px;
     cursor: pointer;
 }
-
 /*input[type=number] {
     width: 50px;
 }*/

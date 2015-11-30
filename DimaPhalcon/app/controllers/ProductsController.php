@@ -191,11 +191,14 @@ class ProductsController extends \Phalcon\Mvc\Controller
         $productObj = Products::findFirst($productId);
         $metallId = $productObj->getMetall();
         $metallObj = Metalls::findFirst($metallId);
-        $orderObj = new OrderController;
         $alwaysInTable = json_decode($productObj->getAlwaysInTable());
         $actionArr = array('%ROWCLASS%' => 'Without', '%PRODUCT_ID%' => $productId, '%I%' => $i - 1);
-        $moveToCopyTo = '<div class="col-md-8" style="margin-right: -72px;"><select><option>Скопировать в </option><option>Переместить в </option></select>';
-        $moveCopyDropdown = '<select>';
+        $moveToCopyTo = '<div class="col-md-8" style="margin-right: -64px; margin-left: -32px;">'
+                        . '<select class="moveToAction">'
+                            . '<option value="copy">Скопировать в </option>'
+                            . '<option value="move">Переместить в </option>'
+                        . '</select>';
+        $moveCopyDropdown = '<select class="moveToPath">';
         if ('orderTableSection' === $section) {
             $actionArr['%ROWCLASS%'] = '';
         }
@@ -205,7 +208,7 @@ class ProductsController extends \Phalcon\Mvc\Controller
             } else {
                 $checkArr = array();
                 foreach ($val as $num => $obj) {
-                    foreach ($obj as $id => $quantity) {
+                    foreach ($obj as $id => $calc) {
                         array_push($checkArr, $id);
                     }
                 }
@@ -214,7 +217,7 @@ class ProductsController extends \Phalcon\Mvc\Controller
                 }
             }
         }
-        $moveCopyDropdown .= '</select><span class="glyphicon glyphicon-circle-arrow-right moveToCopyTo" aria-hidden="true"></span></div>';
+        $moveCopyDropdown .= '</select><span class="glyphicon glyphicon-circle-arrow-right moveToCopyTo" name="' . $productId . '" aria-hidden="true"></span></div>';
         $actionArr['%MOVE_TO%'] = $moveToCopyTo . $moveCopyDropdown;
         $actionRow = $substObj->subHTMLReplace('actionsInRow.html', $actionArr);
         $res['%ROW_CLASS%'] = $section;

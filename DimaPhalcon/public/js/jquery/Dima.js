@@ -173,6 +173,15 @@
 		return count;
 	}
 	
+	function removeRowFromOrder (scope) {
+		var productId = $(scope ).attr('name');
+		if (1 >= countProductInOrder(productId)) {
+			ORDER.removeFromOrder(productId);
+		}
+		$(scope ).closest('tr' ).remove();
+		saveOrderMap(JSON.stringify(getOrderMap()), true);
+	}
+	
 	// logging errors
 	function log(php) {
 		if('undefined' !== typeof(console)) {
@@ -261,7 +270,7 @@
 			switch ($(val ).attr('class')) {
 				case 'skip':
 					break;
-				case 'orderTableSection':
+				case 'orderTableSectionName':
 					name = $(val ).attr('name');
 					res[name] = [];
 					break;
@@ -289,7 +298,6 @@
 					break;
 			}
 		});
-		console.log(res);
 		return res;
 	}
 
@@ -903,33 +911,73 @@
 			} ).end()
 
 			.find('#addNewSection' ).click(function() {
-				var count = $('.orderTableSection').length,
+				var count = $('.orderTableSectionName').length,
 					map;
-				$('.withoutSectionInOrderTable' ).before('<tr class="orderTableSection" name="Раздел ' +
+				$('.withoutSectionInOrderTable' ).before('<tr class="orderTableSectionName" name="Раздел ' +
 				(count + 1)+ '"><th colspan="9"><span contenteditable="true">Раздел ' + (count + 1)+ '</span></th></tr>');
 				map = JSON.stringify(getOrderMap());
 				saveOrderMap(map, true);
 			}).end()
 
 			.find('.moveWithoutOrderUp' ).click(function() {
-				//swapRows(this, 'out', 'up');
 				saveOrderMap(JSON.stringify(swapRows(this, 'out', 'up')), true);
 			} ).end()
 
 			.find('.moveWithoutOrderDown' ).click(function() {
-				//swapRows(this, 'out', 'down');
 				saveOrderMap(JSON.stringify(swapRows(this, 'out', 'down')), true);
 			} ).end()
 
-			.find('.removeWithoutOrder' ).click(function() {
-				var productId = $(this ).attr('name');
-				$(this ).closest('tr' ).remove();
-				countProductInOrder(productId);
-				saveOrderMap(JSON.stringify(getOrderMap()), true);
-				if (1 < countProductInOrder(productId)) {
-					ORDER.removeFromOrder(productId);
+			.find('.removeWithoutOrderRow' ).click(function() {
+				removeRowFromOrder(this);
+			}).end()
+			
+			.find('.moveOrderUp').click(function(){
+				saveOrderMap(JSON.stringify(swapRows(this, $(this).closest('tr').prev('.orderTableSectionName').attr('name'), 'up')), true);
+			}).end()
+			
+			.find('.moveOrderDown').click(function(){
+				saveOrderMap(JSON.stringify(swapRows(this, $(this).closest('tr').prev('.orderTableSectionName').attr('name'), 'down')), true);
+			}).end()
+			
+			.find('.removeOrderRow' ).click(function() {
+				removeRowFromOrder(this);
+			}).end()
+			
+			.find('.moveToCopyTo' ).click(function() {
+				var action = $(this).closest('div').find('.moveToAction option:selected').val(),
+					path = $(this).closest('div').find('.moveToPath option:selected').text(),
+					productId = $(this).attr('name'),
+					map = getOrderMap(),
+					data = {},
+					quantity = 1,
+					currentPath = $(this).closest('tr').prev('.orderTableSectionName').attr('name');
+				if (!currentPath) {
+					currentPath = 'out';
 				}
+				if ('move' === action) {
+					quantity = $(this).closest('tr').find('.quantityInOrder').val();
+					$.each(map[currentPath], function (num, obj) {
+						if (productId === _.keys(obj)[0]) {
+							map[currentPath].splice(num, 1);
+						}
+					});
+				}
+				data[productId] = quantity;
+				map[path].push(data);
+				saveOrderMap(JSON.stringify(map), true);
+				
+			}).end()
+			
+			.find('.removeRowSection').click(function () {
+				var map = getOrderMap();
+				delete map[$(this).attr('name')];
+				saveOrderMap(JSON.stringify(map), true);
+			}).end()
+			
+			.find('.orderSectionName').blur(function () {
+			console.log('ok');
 			});
+			
 		return html;
 	}
 
@@ -1429,7 +1477,7 @@
 						$('#orderTableWrapper').html(addRightTabContentTableHandler($(data.html)));
 						$(function () {
 							$('[data-toggle="tooltip"]').tooltip();
-						})
+						});
 					}
 				});
 			},
