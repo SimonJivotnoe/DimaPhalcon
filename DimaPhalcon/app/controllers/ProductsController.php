@@ -186,7 +186,7 @@ class ProductsController extends \Phalcon\Mvc\Controller
         return $tableRes;
     }
     
-    public function createProductInOrder($productId, $quantity, $orderId, $i, $section, $moveTo) {
+    public function createProductInOrder($productId, $quantity, $orderId, $i, $map, $moveTo, $section) {
         $substObj = new Substitution();
         $productObj = Products::findFirst($productId);
         $metallId = $productObj->getMetall();
@@ -199,7 +199,7 @@ class ProductsController extends \Phalcon\Mvc\Controller
                             . '<option value="move">Переместить в </option>'
                         . '</select>';
         $moveCopyDropdown = '<select class="moveToPath">';
-        if ('orderTableSection' === $section) {
+        if ('orderTableSection' === $map) {
             $actionArr['%ROWCLASS%'] = '';
         }
         foreach ($moveTo as $key => $val) {
@@ -217,10 +217,11 @@ class ProductsController extends \Phalcon\Mvc\Controller
                 }
             }
         }
-        $moveCopyDropdown .= '</select><span class="glyphicon glyphicon-circle-arrow-right moveToCopyTo" name="' . $productId . '" aria-hidden="true"></span></div>';
+        $moveCopyDropdown .= '</select><span class="glyphicon glyphicon-circle-arrow-right moveToCopyTo" name="' . $productId . '" data-section="' . $section . '" aria-hidden="true"></span></div>';
         $actionArr['%MOVE_TO%'] = $moveToCopyTo . $moveCopyDropdown;
+        $actionArr['%SECTION%'] = $section;
         $actionRow = $substObj->subHTMLReplace('actionsInRow.html', $actionArr);
-        $res['%ROW_CLASS%'] = $section;
+        $res['%ROW_CLASS%'] = $map;
         $res['%ACTIONS%'] = $actionRow;
         $res['%NUM%'] = $i;
         $res['%ARTICLE%'] = $productObj->getArticle();

@@ -454,12 +454,10 @@ class TabsController extends \Phalcon\Mvc\Controller
             }
             $res = array('%SECTIONS%' => '', '%WITHOUT_SECTIONS%' => '');
             $map = json_decode($order->getMap());
-            $withoutSectionArr = array();
             $moveTo = array();
-            $moveWithout = array('out' => []);
             $productObj = new ProductsController;
             $substObj = new Substitution();
-            /*print_r($map);die();*/
+            $currentSection = '';
             if ('' !== $map && null !== $map) {
                 $orderObj = new OrderController;
                 foreach ($map as $key => $val) {
@@ -467,18 +465,21 @@ class TabsController extends \Phalcon\Mvc\Controller
                         $i = 1;
                         foreach ($val as $num => $obj) {
                             foreach ($obj as $productId => $quantity) {
-                                $res['%WITHOUT_SECTIONS%'] .= $productObj->createProductInOrder($productId, $quantity, $orderId, $i, 'withoutSectionRow', $map);
+                                $res['%WITHOUT_SECTIONS%'] .= $productObj->createProductInOrder($productId, $quantity, $orderId, $i, 'withoutSectionRow', $map, 'out');
                             }
                             $i++;
                         }
                     } else if ('out' !== $key) {
+                        if (!count($val)) {
+                            $currentSection = $key;
+                        }
                         $res['%SECTIONS%'] .= '<tr class="orderTableSectionName" name="' . $key . '">
                         <th colspan="9"><span class="orderSectionName" contenteditable="true">' . $key . '</span></th><td><span class="glyphicon glyphicon-remove removeRowSection" name="' . $key . '" aria-hidden="true"></span></td></tr>';
                         if (count($val)) {
                             $i = 1;
                             foreach ($val as $num => $obj) {
                                 foreach ($obj as $productId => $quantity) {
-                                    $res['%SECTIONS%'] .= $productObj->createProductInOrder($productId, $quantity, $orderId, $i, 'orderTableSection', $map);
+                                    $res['%SECTIONS%'] .= $productObj->createProductInOrder($productId, $quantity, $orderId, $i, 'orderTableSection', $map, $key);
                                 }
                                 $i++;
                             }

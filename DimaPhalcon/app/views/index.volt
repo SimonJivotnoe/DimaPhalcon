@@ -86,5 +86,7 @@
 <script src="js/jquery/split-pane.js"></script>
 <script src="js/jquery/jquery.mousewheel.js"></script>
 <script src="js/jquery/bootstrap-confirmation.js"></script>
+<script src='js/jquery/pdfmake/pdfmake.min.js'></script>
+<script src='js/jquery/pdfmake/vfs_fonts.js'></script>
 </body>
 </html>

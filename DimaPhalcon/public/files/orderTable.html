@@ -1,5 +1,26 @@
 <table class="table table-bordered" id="orderTable">
     <tbody>
+    <tr class="skip" id="orderHeadChecks">
+        <th><input type="checkbox" name="orderNumberTd" data-head="№" checked/></th>
+        <th><input type="checkbox" name="orderArticleTd" data-head="Артикул" checked/></th>
+        <th><input type="checkbox" name="orderProductNameTd" data-head="Наименование" checked/></th>
+        <th><input type="checkbox" name="orderUnitOfMeasureTd" data-head="Ед. измерения" checked/></th>
+        <th><input type="checkbox" name="quantityInOrderTd" data-head="Кол-во" checked/></th>
+        <th><input type="checkbox" name="inputPriceInOrder" data-head="Цена входящая" /></th>
+        <th><input type="checkbox" name="inputSumInOrder" data-head="Сумма входящая" /></th>
+        <th><input type="checkbox" name="outputPriceInOrder" data-head="Цена" checked/></th>
+        <th><input type="checkbox" name="outputSumInOrder" data-head="Сумма" checked/></th>
+        <th>
+            <div class="col-md-3">
+                <button class="btn btn-default btn-sm" id="checkAllInMainOrder">
+                    <span class="glyphicon glyphicon-check" aria-hidden="true"></span>
+                </button>
+                <button class="btn btn-default btn-sm" id="uncheckAllInMainOrder">
+                    <span class="glyphicon glyphicon-unchecked" aria-hidden="true"></span>
+                </button>
+            </div>
+        </th>
+    </tr>    
     <tr class="skip">
         <th>№</th>
         <th>Артикул</th>
@@ -15,7 +36,17 @@
     %SECTIONS%
     <tr class="withoutSectionInOrderTable">
         <th colspan="9"></th>
-    %WITHOUT_SECTIONS%
+        %WITHOUT_SECTIONS%
     </tr>
     </tbody>
 </table>
+<div class="col-md-6">
+    <table class="table table-bordered">
+        <tr>
+            <th><input type="checkbox" name="orderSum" data-head="Сумма ордера" checked/></th>
+            <th><input type="checkbox" name="orderSumWithDiscount" data-head="Сумма ордера с дисконтом" checked/></th>
+        </tr>
+        <tr><th>Сумма ордера</th><th>Сумма ордера с дисконтом</th></tr>
+        <tr><td id="orderSum"></td><td id="orderSumWithDiscount"></td></tr>
+    </table>
+</div>

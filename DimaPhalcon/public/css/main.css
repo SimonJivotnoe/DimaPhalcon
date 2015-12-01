@@ -29,13 +29,13 @@ a {
     margin-left: 5px; /* same as divider width */
 }
 
-#addNewTab, #addNewTabRight, .moveWithoutOrderUp, .moveWithoutOrderDown, .removeWithoutOrderRow, .removeOrderRow, .moveToCopyTo {
+#addNewTab, #addNewTabRight, .moveWithoutOrderUp, .moveWithoutOrderDown, .removeWithoutOrderRow, .removeOrderRow, .moveToCopyTo, .moveOrderUp, .moveOrderDown {
     cursor: pointer;
 }
 .removeWithoutOrder:hover, .removeOrderRow:hover,.removeRowSection:hover {
     color: red;
 }
-#addNewTab:hover, #addNewTabRight:hover, .moveWithoutOrderUp:hover, .moveWithoutOrderDown:hover {
+#addNewTab:hover, #addNewTabRight:hover, .moveWithoutOrderUp:hover, .moveWithoutOrderDown:hover, .moveOrderUp:hover, .moveOrderDown:hover {
     color: blue;
 }
 .moveToCopyTo:hover {
