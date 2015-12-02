@@ -211,7 +211,6 @@ class TabsController extends \Phalcon\Mvc\Controller
                 $categoryId = Categories::minimum(array("column" => "category_id"));
             }
             $kimId = Kim::minimum(array("column" => "kim_id"));
-            var_dump($kimId);
             if (empty($kimId)) {
                 $kim = new Kim();
                 $kim->setKimHard('Прямой участок')
@@ -266,7 +265,46 @@ class TabsController extends \Phalcon\Mvc\Controller
             $this->response->redirect('');
         }
     }
-
+    
+    public function openSavedProductAction() {
+        if ($this->request->isAjax() && $this->request->isPost()) {
+            $prId = $this->request->getPost('prId');
+            $tab = $this->request->getPost('tab');
+            $active = $this->request->getPost('active');
+            $this->response->setContentType('application/json', 'UTF-8');
+            $tabs = Tabs::findFirst(array("product_id = '$prId'"));
+            if ($tabs) {
+               $this->response->setJsonContent(false);
+               return $this->response; 
+            }
+            if ('new' === $tab) {
+                $tabObj = new Tabs();
+                $tabId = Tabs::maximum(array("column" => "id"));
+                $tabs = Tabs::find("active = 1");
+                $activeMark = 0;
+                if ('true' === $active) {
+                    foreach ($tabs as $val) {
+                        $val->setActive(0);
+                        $val->save();
+                    }
+                    $activeMark = 1;
+                }
+                    $tabObj->setTabId('pr' . $tabId)
+                           ->setProductId($prId)
+                           ->setActive($activeMark)
+                           ->save();
+            } else {
+                $tabs = Tabs::findFirst(array("tab_id = '$tab'"));
+                $tabs->setProductId($prId)
+                     ->save();
+            }
+            $this->response->setJsonContent(true);
+            return $this->response;
+        } else {
+            $this->response->redirect('');
+        }
+    }
+    
     public function closeTabAction() {
         if ($this->request->isAjax() && $this->request->isPost()) {
             $id = $this->request->getPost('id');

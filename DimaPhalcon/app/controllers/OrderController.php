@@ -159,35 +159,42 @@ class OrderController  extends \Phalcon\Mvc\Controller
         }
     }
 
-   /* public function generateSectionArr ($arr, $orderId, $scope = true) {
-        $productInOrderObj = Productinorder::find(array('orderId' => $orderId));
-        if ($productInOrderObj == false) {
-            echo "Мы не можем сохранить робота прямо сейчас: \n";
-            foreach ($productInOrderObj->getMessages() as $message) {
-                echo $message, "\n";
+   public function openSavedOrderAction() {
+       if ($this->request->isAjax() && $this->request->isPost()) {
+            $orderId = $this->request->getPost('orderId');
+            $tab = $this->request->getPost('tab');
+            $active = $this->request->getPost('active');
+            $this->response->setContentType('application/json', 'UTF-8');
+            $tabs = TabsRight::findFirst(array("order_id = '$orderId'"));
+            if ($tabs) {
+               $this->response->setJsonContent(false);
+               return $this->response; 
             }
-            return false;
-        }
-        $productsArr = array();
-        $res = array();
-        $move = array();
-        foreach ($productInOrderObj as $val) {
-            array_push($productsArr, $val->getProductid());
-        }
-        $productObj = new ProductsController;
-        foreach ($arr as $key => $val) {
-            foreach ((array)$val as $productId => $quantity) {
-                array_push($move, $productId);
-                if (in_array($productId, $productsArr) && $scope) {
-                    array_push($res, [$productId => $quantity]);
-                } else if (!$scope){
-                    array_push($res, [$productId => $quantity]);
+            if ('new' === $tab) {
+                $tabObj = new TabsRight();
+                $tabs = TabsRight::find("active = 1");
+                $activeMark = 0;
+                if ('true' === $active) {
+                    foreach ($tabs as $val) {
+                        $val->setActive(0);
+                        $val->save();
+                    }
+                    $activeMark = 1;
                 }
+                    $tabObj->setOrderId($orderId)
+                           ->setActive($activeMark)
+                           ->save();
+            } else {
+                $tabs = TabsRight::findFirst(array("order_id = '$orderId'"));
+                $tabs->setOrderId($orderId)
+                     ->save();
             }
+            $this->response->setJsonContent(true);
+            return $this->response;
+        } else {
+            $this->response->redirect('');
         }
-
-        return array('res' => $res, 'move' => $move);
-    }*/
+   }
 
     public function createAddToOrder() {
         //$substObj = new Substitution();

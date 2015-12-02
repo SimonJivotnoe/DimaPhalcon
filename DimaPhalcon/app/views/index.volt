@@ -39,12 +39,17 @@
 
                         </select>
                     </div>
+                    <div class="col-md-4">
+                        <button class="btn btn-warning btn-sm" id="showItemFromFileManager">
+                            <span class="glyphicon glyphicon-play" aria-hidden="true"></span>
+                        </button>
+                    </div>
                     <table class="table table-bordered">
                         <tbody id="fileManagerProductsTable">
                         </tbody>
                     </table>
                 </div>
-                <h4 class="well" style="margin-top: -15px; height: 43px;">Ордера</h4>
+                <h4 class="well" style="height: 43px;">Ордера</h4>
                 <div id="fileManagerOrdersWrapper">
                     <table class="table table-bordered">
                         <tbody id="fileManagerOrdersTable">

@@ -46,9 +46,18 @@ class MenuController extends \Phalcon\Mvc\Controller
             $arr['%ORDERS%'] = '';
             $arr['%ACTIONS%'] = '';
             $productID = $val->getProductId();
+            $prInOrderObj = Productinorder::find(array("productId = '$productID'"));
+            foreach ($prInOrderObj as $data) {
+                $orderId = $data->getOrderId();
+                $prObj = Orders::findFirst(array("id = '$orderId'"));
+                if (!empty($arr['%ORDERS%'])) {
+                    $arr['%ORDERS%'] .= ', ';
+                }
+                $arr['%ORDERS%'] .= $prObj->getArticle();
+            }
             $tabsObj = Tabs::findFirst(array("product_id = '$productID'"));
             if (!$tabsObj) {
-                $arr['%ACTIONS%'] = '<span class="glyphicon glyphicon-eye-open openProductTab" aria-hidden="true" data-selected=""></span>';
+                $arr['%ACTIONS%'] = '<span class="glyphicon glyphicon-eye-open openProductTab" data-id="' . $productID . '" data-type="product" aria-hidden="true" data-selected=""></span>';
             }
             $productsTable .= $substObj->subHTMLReplace('menuProductTableRow.html', $arr);
         }
@@ -72,8 +81,20 @@ class MenuController extends \Phalcon\Mvc\Controller
         $substObj = new Substitution();
         foreach ($orders as $val) {
             $arr['%NAME%'] = $val->getArticle();
-            $arr['%PRODUCTS%'] = '';
+            $orderId = $val->getId();
+            $arr['%PRODUCTS%'] = '<table class="table table-bordered">';
             $arr['%ACTIONS%'] = '';
+            $products = Productinorder::find(array("orderId = '$orderId'"));
+            foreach ($products as $data) {
+                $productId = $data->getProductId();
+                $prObj = Products::findFirst(array("product_id = '$productId'"));
+                $arr['%PRODUCTS%'] .= '<tr><td>' . $prObj->getArticle() . '</td><td>' . $prObj->getProductName() . '</td></tr>';
+            }
+            $arr['%PRODUCTS%'] .= '</table>';
+            $orderTabsObj = TabsRight::findFirst(array("order_id = '$orderId'"));
+            if (!$orderTabsObj) {
+                $arr['%ACTIONS%'] = '<span class="glyphicon glyphicon-eye-open openProductTab" data-id="' . $orderId . '" data-type="order" aria-hidden="true" data-selected=""></span>';
+            }
             $ordersTable .= $substObj->subHTMLReplace('menuOrderTableRow.html', $arr);
         }
 

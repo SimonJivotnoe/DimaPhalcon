@@ -1,4 +1,5 @@
 <?php
+use Phalcon\Db\RawValue;
 
 class ProductsController extends \Phalcon\Mvc\Controller
 {
@@ -157,12 +158,11 @@ class ProductsController extends \Phalcon\Mvc\Controller
         if ($this->request->isAjax() && $this->request->isPost()) {
             $prId = $this->request->getPost('prId');
             $pr = Products::findFirst(array("product_id = '$prId'"));
+            $this->response->setContentType('application/json', 'UTF-8');
             $pr->setStatus('save');
             if ($pr->save() == false) {
-                $this->response->setContentType('application/json', 'UTF-8');
                 $this->response->setJsonContent(false);
             } else {
-                $this->response->setContentType('application/json', 'UTF-8');
                 $this->response->setJsonContent(true);
             }
             return $this->response;
@@ -170,7 +170,57 @@ class ProductsController extends \Phalcon\Mvc\Controller
             $this->response->redirect('');
         }
     }
-
+    
+    public function createProductFromTemplateAction() {
+        if ($this->request->isAjax() && $this->request->isPost()) {
+            $prId = $this->request->getPost('prId');
+            $tab = $this->request->getPost('tab');
+            $productId = '';
+            $pr = Products::findFirst(array("product_id = '$prId'"));
+            $this->response->setContentType('application/json', 'UTF-8');
+            $product = new Products();
+            $product->setProductName($pr->getProductName())
+                    ->setArticle(new RawValue('default'))
+                    ->setCategoryId($pr->getCategoryId())
+                    ->setKim($pr->getKim())
+                    ->setMetall($pr->getMetall())
+                    ->setTableContent($pr->getTableContent())
+                    ->setAlwaysintable($pr->getAlwaysintable())
+                    ->setFormulas($pr->getFormulas())
+                    ->setCreated(new RawValue('default'))
+                    ->setStatus(new RawValue('default'))
+                    ->setTemplate(new RawValue('default'));
+            if ($product->save() == false) {
+                $message = $product->getMessages();
+                $this->response->setJsonContent(false);
+                return $this->response;
+            } else {
+                $productId = $product->getProductId();
+            }
+            if ('new' === $tab) {
+                $tabObj = new Tabs();
+                $tabId = Tabs::maximum(array("column" => "id"));
+                $tabs = Tabs::find("active = 1");
+                foreach ($tabs as $val) {
+                    $val->setActive(0);
+                    $val->save();
+                }
+                $tabObj->setTabId('pr' . $tabId)
+                        ->setProductId($productId)
+                        ->setActive(1)
+                        ->save();
+            } else {
+                $tabs = Tabs::findFirst(array("tab_id = '$tab'"));
+                $tabs->setProductId($productId)
+                     ->save();
+            }
+            $this->response->setJsonContent(true);
+            return $this->response;
+        } else {
+            $this->response->redirect('');
+        }
+    }
+    
     public function createTableRes($table, $template){
         $substObj = new Substitution();
         $tabContArr = [];
