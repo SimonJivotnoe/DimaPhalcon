@@ -161,34 +161,36 @@ class OrderController  extends \Phalcon\Mvc\Controller
 
    public function openSavedOrderAction() {
        if ($this->request->isAjax() && $this->request->isPost()) {
-            $orderId = $this->request->getPost('orderId');
+            $arr = $this->request->getPost('arr');
             $tab = $this->request->getPost('tab');
             $active = $this->request->getPost('active');
             $this->response->setContentType('application/json', 'UTF-8');
-            $tabs = TabsRight::findFirst(array("order_id = '$orderId'"));
-            if ($tabs) {
-               $this->response->setJsonContent(false);
-               return $this->response; 
-            }
-            if ('new' === $tab) {
-                $tabObj = new TabsRight();
-                $tabs = TabsRight::find("active = 1");
-                $activeMark = 0;
-                if ('true' === $active) {
-                    foreach ($tabs as $val) {
-                        $val->setActive(0);
-                        $val->save();
-                    }
-                    $activeMark = 1;
-                }
-                    $tabObj->setOrderId($orderId)
-                           ->setActive($activeMark)
-                           ->save();
-            } else {
-                $tabs = TabsRight::findFirst(array("order_id = '$orderId'"));
-                $tabs->setOrderId($orderId)
-                     ->save();
-            }
+           foreach ($arr as $id) {
+               $orderId = $id;
+               $tabs = TabsRight::findFirst(array("order_id = '$orderId'"));
+               if ($tabs) {
+                   continue;
+               }
+               if ('new' === $tab) {
+                   $tabObj = new TabsRight();
+                   $tabs = TabsRight::find("active = 1");
+                   $activeMark = 0;
+                   if ('true' === $active) {
+                       foreach ($tabs as $val) {
+                           $val->setActive(0);
+                           $val->save();
+                       }
+                       $activeMark = 1;
+                   }
+                   $tabObj->setOrderId($orderId)
+                       ->setActive($activeMark)
+                       ->save();
+               } else {
+                   $tabs = TabsRight::findFirst(array("order_id = '$orderId'"));
+                   $tabs->setOrderId($orderId)
+                       ->save();
+               }
+           }
             $this->response->setJsonContent(true);
             return $this->response;
         } else {

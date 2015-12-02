@@ -692,6 +692,12 @@
 			}).end()
 
 			.find('#addToOrderBtn').click(function () {
+				console.log(MAIN.orderId);
+				if (!MAIN.orderId) {
+					localStorage.addToOrder = MAIN.productId;
+					ORDER.createNewOrder();
+					return true;
+				}
 				ORDER.addToOrder();
 			}).end()
 			
@@ -1522,6 +1528,10 @@
 
 					$('#calx').calx();
 					showBody();
+					if (localStorage.addToOrder) {
+						ORDER.addToOrder();
+						delete localStorage.addToOrder;
+					}
 					$(function () {
 						$('[data-toggle="tooltip"]').tooltip();
 					});
@@ -1600,6 +1610,7 @@
 
 				if (2 === elemInObj.length) {
 					nextActiveTab = 'kim';
+					delete MAIN.orderId;
 				} else {
 					ifActive = MAIN.tabsRightList[orderId].active;
 					if ('1' === ifActive) {
@@ -1684,18 +1695,18 @@
 				});
 			},
 
-			openSavedProduct: function (prId, tab, active, refresh) {
+			openSavedProduct: function (arr, tab, active, refresh) {
 				var refresh = (refresh === undefined) ? refresh = true : refresh;
 				$.ajax( {
 					url   : URL_TABS + 'openSavedProduct',
 					method: 'POST',
 					data: {
-						prId: prId,
+						arr: arr,
 						tab: tab,
 						active: active
 					}
 				} ).then( function ( data )
-				{
+				{console.log(data);
 					if (true === data && refresh) {
 						window.location.href = LOCATION;
 					}
@@ -2056,15 +2067,17 @@
 
 		// order section
 		order: {
-			createNewOrder: function () {
+			createNewOrder: function (refresh) {
+				var refresh = (refresh=== undefined) ? refresh = true : refresh;
 				$.ajax({
 					url: URL_ORDER + 'createNewOrder',
 					method: 'POST'
 				}).then(function (data)
 				{
-					if (false !== data) {
+					if (false !== data && refresh) {
 						window.location.href = LOCATION;
 					}
+					return data;
 				});
 			},
 			addToOrder: function () {
@@ -2084,6 +2097,7 @@
 						saveOrderMap(JSON.stringify(map), true);
 					}
 				});
+
 			},
 			saveOrderInDB: function() {
 				$.ajax({
@@ -2132,13 +2146,13 @@
 				});
 			},
 			
-			openSavedOrder: function (orderId, tab, active, refresh) {
+			openSavedOrder: function (arr, tab, active, refresh) {
 				var refresh = (refresh === undefined) ? refresh = true : refresh;
 				$.ajax( {
 					url   : URL_ORDER + 'openSavedOrder',
 					method: 'POST',
 					data: {
-						orderId: orderId,
+						arr: arr,
 						tab: tab,
 						active: active
 					}

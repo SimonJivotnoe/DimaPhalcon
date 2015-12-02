@@ -63,14 +63,17 @@ $( document ).ready( function ()
 		});
 	$('#showItemFromFileManager').click(function() {
 		$(this).hide();
-		$.when($.each($('.openProductTabSelected'), function (num, obj) {
+		var product = [];
+		var order = [];
+		$.each($('.openProductTabSelected'), function (num, obj) {
 			if ('product' === $(obj).attr('data-type')) {
-				TABS.openSavedProduct($(obj).attr('data-id'), 'new', false, false);
+				product.push($(obj).attr('data-id'));
 			}
 			if ('order' === $(obj).attr('data-type')) {
-				ORDER.openSavedOrder($(obj).attr('data-id'), 'new', false, false);
+				order.push($(obj).attr('data-id'));
 			}
-		})).done(function(){
+		});
+		$.when(TABS.openSavedProduct(product, 'new', false, false), ORDER.openSavedOrder(order, 'new', false, false)).done(function(){
 			window.location.href = 'http://DimaPhalcon/DimaPhalcon/';
 		});
 	});

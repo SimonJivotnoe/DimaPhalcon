@@ -49,12 +49,12 @@ class TabsController extends \Phalcon\Mvc\Controller
                 }                
             }
             $this->response->setJsonContent([
-                                    'html' => $html,
-                                    'active' => $active,
-                                    'productId' => $prodId,
-                                    'tabsList' => (object)$tabArr,
-                                    'kim' => (object)$resObj
-                                ]
+                    'html' => $html,
+                    'active' => $active,
+                    'productId' => $prodId,
+                    'tabsList' => (object)$tabArr,
+                    'kim' => (object)$resObj
+                ]
             );
 
             return $this->response;
@@ -268,36 +268,39 @@ class TabsController extends \Phalcon\Mvc\Controller
     
     public function openSavedProductAction() {
         if ($this->request->isAjax() && $this->request->isPost()) {
-            $prId = $this->request->getPost('prId');
+            $arr = $this->request->getPost('arr');
             $tab = $this->request->getPost('tab');
             $active = $this->request->getPost('active');
             $this->response->setContentType('application/json', 'UTF-8');
-            $tabs = Tabs::findFirst(array("product_id = '$prId'"));
-            if ($tabs) {
-               $this->response->setJsonContent(false);
-               return $this->response; 
-            }
-            if ('new' === $tab) {
-                $tabObj = new Tabs();
-                $tabId = Tabs::maximum(array("column" => "id"));
-                $tabs = Tabs::find("active = 1");
-                $activeMark = 0;
-                if ('true' === $active) {
-                    foreach ($tabs as $val) {
-                        $val->setActive(0);
-                        $val->save();
-                    }
-                    $activeMark = 1;
+            foreach ($arr as $id) {
+                $prId = $id;
+                $tabs = Tabs::findFirst(array("product_id = '$prId'"));
+                if ($tabs) {
+                    continue;
                 }
+                if ('new' === $tab) {
+                    $tabObj = new Tabs();
+                    $tabId = Tabs::maximum(array("column" => "id"));
+                    $tabs = Tabs::find("active = 1");
+                    $activeMark = 0;
+                    if ('true' === $active) {
+                        foreach ($tabs as $val) {
+                            $val->setActive(0);
+                            $val->save();
+                        }
+                        $activeMark = 1;
+                    }
                     $tabObj->setTabId('pr' . $tabId)
-                           ->setProductId($prId)
-                           ->setActive($activeMark)
-                           ->save();
-            } else {
-                $tabs = Tabs::findFirst(array("tab_id = '$tab'"));
-                $tabs->setProductId($prId)
-                     ->save();
+                        ->setProductId($prId)
+                        ->setActive($activeMark)
+                        ->save();
+                } else {
+                    $tabs = Tabs::findFirst(array("tab_id = '$tab'"));
+                    $tabs->setProductId($prId)
+                         ->save();
+                }
             }
+
             $this->response->setJsonContent(true);
             return $this->response;
         } else {
@@ -337,6 +340,7 @@ class TabsController extends \Phalcon\Mvc\Controller
             $id = $this->request->getPost('tabId');
             $orderID = $this->request->getPost('orderID');
             $nextActive = $this->request->getPost('nextActiveTab');
+            $this->response->setContentType('application/json', 'UTF-8');
             $tabs = TabsRight::findFirst(array("id = '$id'", "order_id = '$orderID'"));
             $orderObj = Orders::findFirst($orderID);
             if ($tabs != false) {
@@ -347,9 +351,16 @@ class TabsController extends \Phalcon\Mvc\Controller
                     return $this->response;
                 } else {
                     $changeActiveStatus = TabsRight::findFirst(array("id = '$nextActive'"));
-                    $changeActiveStatus->setActive(1)->save();
-                    'draft' === $orderObj->getStatus() ? $orderObj->delete() : true ;
-                    $this->response->setContentType('application/json', 'UTF-8');
+                    if (false !== $changeActiveStatus) {
+                        $changeActiveStatus->setActive(1)->save();
+                    }
+                    if ('draft' === $orderObj->getStatus()) {
+                        $prInOrderObj = Productinorder::find(array("orderId = '$orderID'"));
+                        foreach ($prInOrderObj as $obj) {
+                            $obj->delete();
+                        }
+                        $orderObj->delete();
+                    }
                     $this->response->setJsonContent('ok');
                     return $this->response;
                 }
@@ -595,7 +606,7 @@ class TabsController extends \Phalcon\Mvc\Controller
             return false;
         }
 
-        return true;
+        return $order_id;
     }
 
 }
