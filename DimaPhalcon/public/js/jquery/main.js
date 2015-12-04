@@ -109,7 +109,7 @@ $( document ).ready( function ()
 			TABS.changeActiveTab('', '', 'changeActiveRightTab');
 		}
 	});
-
+	
 	/**
 	 *
 	 */

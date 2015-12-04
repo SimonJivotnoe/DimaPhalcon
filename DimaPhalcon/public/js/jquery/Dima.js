@@ -1153,7 +1153,7 @@
 				saveOrderMap(map, false);
 				setOrderSum();
 			} ).end()
-
+			
 			.find('#addNewSection' ).click(function() {
 				var map, sectionsNames = [], sectionsNamesNumbers = [], biggestNumber = 1;
 				$.each($('.orderTableSectionName'), function (num, obj) {
@@ -1710,7 +1710,7 @@
 					if (true === data && refresh) {
 						window.location.href = LOCATION;
 					}
-				});
+				})
 			},
 			
 			getRightTabsList: function ()
@@ -1761,6 +1761,7 @@
 						$(function () {
 							$('[data-toggle="tooltip"]').tooltip();
 						});
+						
 						return this;
 					}
 					log(data.error);
@@ -1776,10 +1777,14 @@
 				{
 					if (data.success) {
 						$('#orderTableWrapper').html(addRightTabContentTableHandler($(data.html)));
-						$(function () {
-							$('[data-toggle="tooltip"]').tooltip();
-						});
 						setOrderSum();
+						showBody();
+						$(function () {
+							$('[data-toggle="tooltip"]').tooltip({ my: "left+15 center", at: "right center" });
+							$('#orderTable').resizableColumns({
+								  store: window.store
+								});
+						});
 					}
 				});
 			},

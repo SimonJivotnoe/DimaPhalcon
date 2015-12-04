@@ -76,38 +76,6 @@
     </div>
     <div role="tabpanel" class="tab-pane currentTabRight" id="">
         <div id="orderDetailsWrapper"></div>
-        <div class="col-md-8" id="orderTableWrapper"></div>
+        <div class="" id="orderTableWrapper"></div>
     </div>
 </div>
-
-<!--<div class="col-md-8">
-    <table class="table table-bordered">
-        <tbody>
-        <tr>
-            <th>№</th>
-            <th>Артикул</th>
-            <th>Наименование</th>
-            <th>Ед. измерения</th>
-            <th>Кол-во</th>
-            <th>Цена входящая</th>
-            <th>Сумма входящая</th>
-            <th>Цена</th>
-            <th>Сумма</th>
-        </tr>
-        <tr>
-            <th colspan="9" id="colspan">Раздел 1</th>
-        </tr>
-        <tr>
-            <td>1</td>
-            <td>В-ОЦ-У-0001</td>
-            <td>Утка из оц. Стали 0.55 300х200 h=100 a=100</td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-        </tr>
-        </tbody>
-    </table>
-</div>-->
