@@ -7,7 +7,7 @@
     <link href="css/pretty-split-pane.css" rel="stylesheet" type="text/css"/>
     <link href="css/main.css" rel="stylesheet" type="text/css"/>
     <link href="css/jquery-ui.css" rel="stylesheet" type="text/css"/>
-    <!--<link rel="shortcut icon" href="favicon.ico" />-->
+    <link rel="shortcut icon" type="image/x-icon" href="favicon.ico" />
     <!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">-->
 
 
@@ -93,5 +93,7 @@
 <script src="js/jquery/bootstrap-confirmation.js"></script>
 <script src='js/jquery/pdfmake/pdfmake.min.js'></script>
 <script src='js/jquery/pdfmake/vfs_fonts.js'></script>
+<script src='js/jquery/store+json2.min.js'></script>
+<script src="js/jquery/jquery.resizableColumns.min.js"></script>
 </body>
 </html>

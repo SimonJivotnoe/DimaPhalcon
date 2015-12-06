@@ -16,8 +16,8 @@ class TabsController extends \Phalcon\Mvc\Controller
             $active = false;
             $prodId = false;
             $tabArr['preferences1'] = (object)[
-                                                'active' => '',
-                                                'productId' => 'preferences1'
+                'active' => '',
+                'productId' => 'preferences1'
             ];
             $resObj = [];
             if (count($tabs)) {
@@ -40,8 +40,9 @@ class TabsController extends \Phalcon\Mvc\Controller
                     $html .= $substObj->subHTMLReplace('tab_li.html', $tabsList);
 
                     $tabArr[$val->getTabId()] = (object)[
-                                'active' => $val->getActive(),
-                                'productId' => $val->getProductId()];
+                        'active' => $val->getActive(),
+                        'productId' => $val->getProductId()
+                    ];
                 }
                 $kim = Kim::find();
                 foreach ($kim as $val) {
@@ -89,6 +90,7 @@ class TabsController extends \Phalcon\Mvc\Controller
                 return $this->response;
             }
 
+            $productMetall = $product->getMetall();
             $articleFlag = true;
             $tabContent = '';
             $addToOrder = '<span>Добавить в ордер можно только после создания артикула</span>';
@@ -106,6 +108,8 @@ class TabsController extends \Phalcon\Mvc\Controller
                 $mainTemplate = 'leftTabContentArticle.html';
                 $tableTemplate = 'alwaysInTableArticle.html';
                 $alwaysInTableTemplate = 'alwaysInTableArticle.html';
+                $metallHistoryObj = new MetallsController();
+                $metallHistory = $metallHistoryObj->getMetallHistory($productMetall);
             }
 
             $prName = $product->getProductName();
@@ -114,7 +118,6 @@ class TabsController extends \Phalcon\Mvc\Controller
             }
             $productCatId = $product->getCategoryId();
             $productKim = $product->getKim();
-            $productMetall = $product->getMetall();
             $table = json_decode($product->getTableContent());
             $alwaysInTable = json_decode($product->getAlwaysintable());
 
@@ -155,7 +158,8 @@ class TabsController extends \Phalcon\Mvc\Controller
                 '%ALWAYS_IN_TABLE%' => $productObj->createTableRes($alwaysInTable, $alwaysInTableTemplate),
                 '%FORMULAS_HELPER%' => $formulaHelperObj->createFormulaHelperList(),
                 '%FORMULAS%'        => $formulaHelperObj->createFormulasList($formulas),
-                '%ADD_TO_ORDER%'    => $addToOrder
+                '%ADD_TO_ORDER%'    => $addToOrder,
+                '%METALL_HISTORY%'  => $metallHistory
             );
 
             $tabContent .= $substObj->subHTMLReplace($mainTemplate, $productDetails);

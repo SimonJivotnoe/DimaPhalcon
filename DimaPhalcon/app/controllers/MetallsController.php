@@ -1,5 +1,6 @@
 <?php
 
+use Phalcon\Db\RawValue;
 
 class MetallsController extends \Phalcon\Mvc\Controller
 {
@@ -66,6 +67,7 @@ class MetallsController extends \Phalcon\Mvc\Controller
             if ($metalls->save() == false) {
                 $this->response->setJsonContent('already');
             } else {
+                $this->addToMetallHistory($metalls->getId(), $metalls->getPrice(), $metalls->getOutPrice());
                 $this->response->setJsonContent(TRUE);
             }
             return $this->response;
@@ -98,6 +100,7 @@ class MetallsController extends \Phalcon\Mvc\Controller
                 if ($metallQ->save() == false) {
                     $this->response->setJsonContent('already');
                 } else {
+                    $this->addToMetallHistory($metallId, $metallPrice, $metallOutPrice);
                     $this->response->setJsonContent(true);
                 }
 
@@ -177,7 +180,33 @@ class MetallsController extends \Phalcon\Mvc\Controller
                     $val->getName().': '.$val->getPrice().' грн</option>';
             }
         }
-
         return ['html' => $metallsList, 'article' => $article];
+    }
+
+    private function addToMetallHistory($id, $price, $outPrice) {
+        $historyObj = new MetallPricesHistory();
+        $history = MetallPricesHistory::findFirst(
+            "price = '" . $price . "' AND out_price = '" . $outPrice . "' AND metall_id = '" . $id . "'"
+        );
+        if ($history) {
+            $history->setDate(new RawValue('default'))->save();
+        } else {
+            $historyObj
+                ->setPrice($price)
+                ->setOutPrice($outPrice)
+                ->setDate(new RawValue('default'))
+                ->setMetallId($id)
+                ->save();
+        }
+    }
+
+    public function getMetallHistory($id) {
+        $history = MetallPricesHistory::find(array("metall_id = '$id'"));
+        $res = '<select>';
+        foreach ($history as $val) {
+            $res .= '<option>' . $val->getPrice() . '-' . $val->getOutPrice() . '-' . $val->getDate() . '</option>';
+        }
+        $res .= '</select>';
+        return $res;
     }
 } 
