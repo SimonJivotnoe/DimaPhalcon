@@ -7,6 +7,7 @@
     <link href="css/pretty-split-pane.css" rel="stylesheet" type="text/css"/>
     <link href="css/main.css" rel="stylesheet" type="text/css"/>
     <link href="css/jquery-ui.css" rel="stylesheet" type="text/css"/>
+    <link href="js/jquery/colorpicker/dist/css/bootstrap-colorpicker.min.css" rel="stylesheet" type="text/css"/>
     <link rel="shortcut icon" type="image/x-icon" href="favicon.ico" />
     <!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">-->
 
@@ -32,17 +33,17 @@
                 <h3 class="modal-title" id="myLargeModalLabel">Файловый менеджер</h3>
             </div>
             <div class="modal-body">
-                <h4 class="well" style="margin-top: -15px; height: 43px;">Продукты</h4>
+                <div class="col-md-12">
+                    <button class="btn btn-warning btn-sm" id="showItemFromFileManager" disabled>
+                        <span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span>
+                    </button>
+                </div>
+                <h4>Продукты</h4>
                 <div id="fileManagerProductsWrapper">
                     <div class="col-md-4 col-md-offset-4">
                         <select class="form-control input-sm" id="fileManagerCatogoriesSelect">
 
                         </select>
-                    </div>
-                    <div class="col-md-4">
-                        <button class="btn btn-warning btn-sm" id="showItemFromFileManager">
-                            <span class="glyphicon glyphicon-play" aria-hidden="true"></span>
-                        </button>
                     </div>
                     <table class="table table-bordered">
                         <tbody id="fileManagerProductsTable">
@@ -95,5 +96,7 @@
 <script src='js/jquery/pdfmake/vfs_fonts.js'></script>
 <script src='js/jquery/store+json2.min.js'></script>
 <script src="js/jquery/jquery.resizableColumns.min.js"></script>
+<script src="js/jquery/jquery.fontselect.min.js"></script>
+<script src="js/jquery/colorpicker/dist/js/bootstrap-colorpicker.min.js"></script>
 </body>
 </html>

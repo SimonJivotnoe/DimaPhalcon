@@ -60,6 +60,9 @@
 
 	// alias to self.menu
 	var MENU;
+	
+	// alias to self.preferences
+	var PREFERENCES;
 
 	// alias to self.validation
 	var VALIDATION;
@@ -1455,6 +1458,9 @@
 			.find('.openProductTab').click(function () {
 				if ('' === $(this).attr('data-selected')) {
 					$(this).addClass('openProductTabSelected').attr('data-selected', 'selected');
+					if (true) {
+						
+					}
 				} else if ('selected' === $(this).attr('data-selected')) {
 					$(this).removeClass('openProductTabSelected').attr('data-selected', '');
 				}
@@ -2471,6 +2477,20 @@
 			}
 		},
 
+		preferences: {
+			insertFontSizes: function (arr) {
+				var i = 1;
+				var option = '';
+				for (i; i <= 60; i++) {
+					option += 14 === i ? '<option selected>' : '<option>';
+					option += i + 'px</option>';
+				}
+				$.each(arr, function (num, target) {
+					$(target).append(option);
+				});
+			}
+		},
+		
         validation: {
             validateInputVal: function (obj) {
                 var val = obj.val.trim();
@@ -2568,6 +2588,7 @@
 		KIM = this.kim;
 		METALLS = this.metalls;
 		MENU = this.menu;
+		PREFERENCES = this.preferences;
         VALIDATION = this.validation;
 
 		run();

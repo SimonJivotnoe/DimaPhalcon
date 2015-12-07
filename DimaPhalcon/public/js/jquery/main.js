@@ -10,6 +10,7 @@ $( document ).ready( function ()
 		KIM = d.kim,
 		METALLS = d.metalls,
 		MENU = d.menu,
+		PREFERENCES = d.preferences,
 		VALID = d.validation,
 		defaultScreenSize = '60em',
 		maxScreenSize = (window.screen.availWidth - 5) + 'px',
@@ -40,6 +41,37 @@ $( document ).ready( function ()
 		TABS.splitMonitor();
 	});
 
+	$('#fontFamilyTabs').fontselect().change(function(){
+        
+		// replace + signs with spaces for css
+		var font = $(this).val().replace(/\+/g, ' ');
+
+		// split font into family and weight
+		font = font.split(':');
+
+		// set family on paragraphs 
+		$('#testTab').css('font-family', font[0]);
+	});
+	
+	$('#fontSizeTabs').change(function () {
+		$('#testTab').css('font-size', $('#fontSizeTabs :selected').text());
+	});
+	$('#globalBodyColor').colorpicker({
+		color: $('body')[0].style.backgroundColor
+    }).on('changeColor', function(ev) {
+		$('body')[0].style.backgroundColor = ev.color.toHex();
+	});
+	$('#prefTabFontColor').colorpicker().on('changeColor', function(ev) {
+		$('#testTab li a').css('color', ev.color.toHex());
+	});
+	$('#prefActiveTabColor').colorpicker().on('changeColor', function(ev) {
+		$('#testTab .active a')[0].style.backgroundColor = ev.color.toHex();
+	});
+	$('#prefInactiveTabColor').colorpicker().on('changeColor', function(ev) {
+		$('#testTab')[0].style.backgroundColor = ev.color.toHex();
+	});
+	
+	PREFERENCES.insertFontSizes(['.fontSizeSelect']);
 	// MENU
 	$( "#menuOpen" )
 		.mouseenter(function() {
