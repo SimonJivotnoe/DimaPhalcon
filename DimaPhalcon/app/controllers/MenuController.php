@@ -5,7 +5,9 @@ class MenuController extends \Phalcon\Mvc\Controller
     public function createFileManagerAction(){
         if ($this->request->isAjax() && $this->request->isGet()) {
             $products = $this->getProducts();
-            $products['orders'] = $this->getOrders();
+            $orders = $this->getOrders();
+            $products['orders'] = $orders['ordersTable'];
+            $products['orderDescription'] = $orders['orderDescription'];
             $this->response->setContentType('application/json', 'UTF-8');
             $this->response->setJsonContent($products);
 
@@ -30,7 +32,7 @@ class MenuController extends \Phalcon\Mvc\Controller
                             <th>Дата создания</th>
                             <th>Ордера</th>
                             <th>Действия</th>
-                            </tr>';
+                          </tr>';
         $substObj = new Substitution();
 
         $categoriesObj = new CategoriesController;
@@ -77,9 +79,28 @@ class MenuController extends \Phalcon\Mvc\Controller
                             <th>Артикул</th>
                             <th>Продукты</th>
                             <th>Действия</th>
-                            </tr>';
+                        </tr>';
         $substObj = new Substitution();
+        $orderDescription = [
+            '%ACC_NUMBER%'    => [],
+            '%ADDRES%'        => [],
+            '%APPEAL%'        => [],
+            '%CITY%'          => [],
+            '%COMPANY_NAME%'  => [],
+            '%DATE%'          => [],
+            '%ESTIMATE%'      => [],
+            '%FIO%'           => [],
+            '%PROJECT_DESCR%' => [],
+            '%PROJECT_NAME%'  => [],
+            '%ORDER_NAME%'    => []
+        ];
         foreach ($orders as $val) {
+            foreach (json_decode($val->getOrderDescription()) as $key => $text) {
+                if(!in_array($text, $orderDescription[$key], true)){
+                    array_push($orderDescription[$key], $text);
+                }
+            }
+            array_push($orderDescription['%ORDER_NAME%'], $val->getArticle());
             $arr['%NAME%'] = $val->getArticle();
             $orderId = $val->getId();
             $arr['%PRODUCTS%'] = '<table class="table table-bordered">';
@@ -98,7 +119,7 @@ class MenuController extends \Phalcon\Mvc\Controller
             $ordersTable .= $substObj->subHTMLReplace('menuOrderTableRow.html', $arr);
         }
 
-        return $ordersTable;
+        return ['ordersTable' => $ordersTable, 'orderDescription' => $orderDescription];
     }
 
     public function saveOrderMapAction(){

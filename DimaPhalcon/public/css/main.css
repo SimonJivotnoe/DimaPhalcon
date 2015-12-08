@@ -71,7 +71,7 @@ a {
 }*/
 #fileManagerProductsWrapper {
     width: 100%;
-    height: 200px;
+    /*height: 1000px;*/
     overflow: auto;
 }
 #myLargeModalLabel {
@@ -278,6 +278,14 @@ ol li:hover {
 .glyphicon-retweet {
     color: #31708f;
     margin: 0 10px;
+}
+.bindFormulaWithCell {
+    color: #31708f;
+    margin: 0 10px;
+    font-size: 17px;
+}
+.bindFormulaWithCell:hover {
+    color: green;
 }
 .addNewFhBtn {
     margin-left: -5px;

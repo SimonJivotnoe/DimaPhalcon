@@ -38,25 +38,135 @@
                         <span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span>
                     </button>
                 </div>
-                <h4>Продукты</h4>
-                <div id="fileManagerProductsWrapper">
-                    <div class="col-md-4 col-md-offset-4">
-                        <select class="form-control input-sm" id="fileManagerCatogoriesSelect">
-
-                        </select>
+                <div class="col-md-12">
+                    <h4>
+                        Продукты
+                        <span class="glyphicon glyphicon-shopping-cart toCollapse" aria-hidden="true" data-toggle="collapse" data-target="#fileManagerProductsWrapper" aria-expanded="true" aria-controls="fileManagerProductsWrapper">
+                    </span>
+                    </h4>
+                </div>
+                <div id="fileManagerProductsWrapper" class="collapse in">
+                    <div class="col-md-4 col-md-offset-2">
+                        <form class="form-inline">
+                            <div class="form-group">
+                              <label for="fileManagerCatogoriesSelect">Категории: </label>
+                              <select class="form-control input-sm" id="fileManagerCatogoriesSelect"></select>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="col-md-4">
+                        <input type="text" class="form-control" id="FMsearchInProducts" placeholder="Поиск">
                     </div>
                     <table class="table table-bordered">
                         <tbody id="fileManagerProductsTable">
                         </tbody>
                     </table>
                 </div>
-                <h4 class="well" style="height: 43px;">Ордера</h4>
+                <div class="col-md-12">
+                    <h4>
+                        Ордера
+                        <span class="glyphicon glyphicon-tasks toCollapse" aria-hidden="true" data-toggle="collapse" data-target="#fileManagerOrdersWrapper" aria-expanded="true" aria-controls="fileManagerOrdersWrapper">
+                    </span>
+                    </h4>
+                </div>
                 <div id="fileManagerOrdersWrapper">
+                    <div class="col-md-4">
+                        <input type="text" class="form-control" id="FMsearchInOrders" placeholder="Поиск">
+                    </div>
+                    <div class="col-md-4">
+                        <form class="form-inline">
+                            <div class="form-group" data-section="FIO">
+                              <label for="FMfioSelect">Вниманию(Ф.И.О.): </label>
+                              <select class="form-control input-sm" id="FMfioSelect"></select>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="col-md-4">
+                        <form class="form-inline">
+                            <div class="form-group" data-section="PROJECT_NAME">
+                              <label for="FMprojectNameSelect">Название проэкта: </label>
+                              <select class="form-control input-sm" id="FMprojectNameSelect"></select>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="col-md-4">
+                        <form class="form-inline">
+                            <div class="form-group" data-section="APPEAL">
+                              <label for="FMappealSelect">Обращение: </label>
+                              <select class="form-control input-sm" id="FMappealSelect"></select>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="col-md-4">
+                        <form class="form-inline">
+                            <div class="form-group" data-section="PROJECT_DESCR">
+                              <label for="FMprojectDescrSelect">Описание проэкта: </label>
+                              <select class="form-control input-sm" id="FMprojectDescrSelect"></select>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="col-md-4">
+                        <form class="form-inline">
+                            <div class="form-group" data-section="COMPANY_NAME">
+                              <label for="FMcompanyNameSelect">Название компании: </label>
+                              <select class="form-control input-sm" id="FMcompanyNameSelect"></select>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="col-md-4">
+                        <form class="form-inline">
+                            <div class="form-group" data-section="ORDER_NAME">
+                              <label for="FMorderNumberSelect">Номер заказа: </label>
+                              <select class="form-control input-sm" id="FMorderNumberSelect"></select>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="col-md-4">
+                        <form class="form-inline">
+                            <div class="form-group" data-section="ADDRES">
+                              <label for="FMadressSelect">Почтовый адрес: </label>
+                              <select class="form-control input-sm" id="FMadressSelect"></select>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="col-md-4">
+                        <form class="form-inline">
+                            <div class="form-group" data-section="ACC_NUMBER">
+                              <label for="FMaccNumberSelect">Номер счета: </label>
+                              <select class="form-control input-sm" id="FMaccNumberSelect"></select>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="col-md-4">
+                        <form class="form-inline">
+                            <div class="form-group" data-section="CITY">
+                              <label for="FMcitySelect">Город: </label>
+                              <select class="form-control input-sm" id="FMcitySelect"></select>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="col-md-4">
+                        <form class="form-inline">
+                            <div class="form-group" data-section="ESTIMATE">
+                              <label for="estimate">Срок: </label>
+                              <select class="form-control input-sm" id="FMestimateSelect"></select>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="col-md-4">
+                        <form class="form-inline">
+                            <div class="form-group" data-section="DATE">
+                              <label for="FMdateSelect">Дата: </label>
+                              <select class="form-control input-sm" id="FMdateSelect"></select>
+                            </div>
+                        </form>
+                    </div>
                     <table class="table table-bordered">
                         <tbody id="fileManagerOrdersTable">
                         </tbody>
                     </table>
                 </div>
+                <div class="clearer"></div>
             </div>
         </div><!-- /.modal-content -->
     </div><!-- /.modal-dialog -->

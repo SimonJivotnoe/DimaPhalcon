@@ -217,17 +217,30 @@ $( document ).ready( function ()
 			});
 		}
 	});
-
 	// menu modal
 	$('#fileManagerCatogoriesSelect' ).on('change', function() {
 		var category = $('option:selected', this ).attr('name' );
 		$.each($('.prManProductTableCategory'), function(){
 			$(this ).parent().show();
-			'categoriesAll' === category ? 0 : $(this).attr('name') !== category ? $(this ).parent().hide() : 0 ;
+			if ($(this).attr('name') !== category && 'categoriesAll' !== category) {
+				$(this ).parent().hide();
+			}
 		});
 	});
+	
+	$('#FMsearchInProducts').keyup(function() {
+		var text = $(this).val(),
+			rows = $('#fileManagerProductsTable tr:gt(0)');
+		MENU.searchInTable(rows, text);
+	});
+	
+	$('#FMsearchInOrders').keyup(function() {
+		var text = $(this).val(),
+			rows = $('#fileManagerOrdersTable tr:gt(0)');
+		MENU.searchInTable(rows, text);
+	});
 
-	$(function(){
+	/*$(function(){
 		var self;
 		var formula;
 		var cell;
@@ -278,5 +291,5 @@ $( document ).ready( function ()
 				}
 			}
 		});
-	});
+	});*/
 } );

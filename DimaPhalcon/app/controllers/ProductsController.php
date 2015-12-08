@@ -140,13 +140,13 @@ class ProductsController extends \Phalcon\Mvc\Controller
             $formulas = $this->request->getPost('formulas');
             $prId = $this->request->getPost('prId');
             $pr = Products::findFirst(array("product_id = '$prId'"));
+            $this->response->setContentType('application/json', 'UTF-8');
             $pr->setFormulas($formulas);
             if ($pr->save() == false) {
-                $this->response->setContentType('application/json', 'UTF-8');
                 $this->response->setJsonContent('already');
             } else {
-                $this->response->setContentType('application/json', 'UTF-8');
-                $this->response->setJsonContent(true);
+                $formulaHelperObj = new FormulasController;
+                $this->response->setJsonContent(['status' => true, 'formulasList' => $formulaHelperObj->createFormulasList(json_decode($pr->getFormulas()))]);
             }
             return $this->response;
         } else {
