@@ -76,8 +76,10 @@ class MenuController extends \Phalcon\Mvc\Controller
             return false;
         }
         $ordersTable = '<tr>
+                            <th>Название проэкта</th>
+                            <th>Название компании</th>
                             <th>Артикул</th>
-                            <th>Продукты</th>
+                            <th>Город</th>
                             <th>Действия</th>
                         </tr>';
         $substObj = new Substitution();
@@ -95,16 +97,20 @@ class MenuController extends \Phalcon\Mvc\Controller
             '%ORDER_NAME%'    => []
         ];
         foreach ($orders as $val) {
+            $arr['%FULL_INFO%'] = [];
             foreach (json_decode($val->getOrderDescription()) as $key => $text) {
                 if(!in_array($text, $orderDescription[$key], true)){
                     array_push($orderDescription[$key], $text);
                 }
+                $arr[$key] = $text;
+                array_push($arr['%FULL_INFO%'], '"' . str_replace("%", "", $key) . '": "' . $text . '"');
             }
             array_push($orderDescription['%ORDER_NAME%'], $val->getArticle());
             $arr['%NAME%'] = $val->getArticle();
             $orderId = $val->getId();
             $arr['%PRODUCTS%'] = '<table class="table table-bordered">';
             $arr['%ACTIONS%'] = '';
+            $arr['%FULL_INFO%'] = implode(",", $arr['%FULL_INFO%']);
             $products = Productinorder::find(array("orderId = '$orderId'"));
             foreach ($products as $data) {
                 $productId = $data->getProductId();

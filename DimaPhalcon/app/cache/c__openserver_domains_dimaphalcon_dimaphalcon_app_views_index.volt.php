@@ -70,97 +70,41 @@
                     </h4>
                 </div>
                 <div id="fileManagerOrdersWrapper">
-                    <div class="col-md-4">
-                        <input type="text" class="form-control" id="FMsearchInOrders" placeholder="Поиск">
-                    </div>
-                    <div class="col-md-4">
-                        <form class="form-inline">
-                            <div class="form-group" data-section="FIO">
-                              <label for="FMfioSelect">Вниманию(Ф.И.О.): </label>
-                              <select class="form-control input-sm" id="FMfioSelect"></select>
-                            </div>
-                        </form>
-                    </div>
-                    <div class="col-md-4">
-                        <form class="form-inline">
-                            <div class="form-group" data-section="PROJECT_NAME">
-                              <label for="FMprojectNameSelect">Название проэкта: </label>
-                              <select class="form-control input-sm" id="FMprojectNameSelect"></select>
-                            </div>
-                        </form>
-                    </div>
-                    <div class="col-md-4">
-                        <form class="form-inline">
-                            <div class="form-group" data-section="APPEAL">
-                              <label for="FMappealSelect">Обращение: </label>
-                              <select class="form-control input-sm" id="FMappealSelect"></select>
-                            </div>
-                        </form>
-                    </div>
-                    <div class="col-md-4">
-                        <form class="form-inline">
-                            <div class="form-group" data-section="PROJECT_DESCR">
-                              <label for="FMprojectDescrSelect">Описание проэкта: </label>
-                              <select class="form-control input-sm" id="FMprojectDescrSelect"></select>
-                            </div>
-                        </form>
-                    </div>
-                    <div class="col-md-4">
-                        <form class="form-inline">
-                            <div class="form-group" data-section="COMPANY_NAME">
-                              <label for="FMcompanyNameSelect">Название компании: </label>
-                              <select class="form-control input-sm" id="FMcompanyNameSelect"></select>
-                            </div>
-                        </form>
-                    </div>
-                    <div class="col-md-4">
-                        <form class="form-inline">
-                            <div class="form-group" data-section="ORDER_NAME">
-                              <label for="FMorderNumberSelect">Номер заказа: </label>
-                              <select class="form-control input-sm" id="FMorderNumberSelect"></select>
-                            </div>
-                        </form>
-                    </div>
-                    <div class="col-md-4">
-                        <form class="form-inline">
-                            <div class="form-group" data-section="ADDRES">
-                              <label for="FMadressSelect">Почтовый адрес: </label>
-                              <select class="form-control input-sm" id="FMadressSelect"></select>
-                            </div>
-                        </form>
-                    </div>
-                    <div class="col-md-4">
-                        <form class="form-inline">
-                            <div class="form-group" data-section="ACC_NUMBER">
-                              <label for="FMaccNumberSelect">Номер счета: </label>
-                              <select class="form-control input-sm" id="FMaccNumberSelect"></select>
-                            </div>
-                        </form>
-                    </div>
-                    <div class="col-md-4">
-                        <form class="form-inline">
-                            <div class="form-group" data-section="CITY">
-                              <label for="FMcitySelect">Город: </label>
-                              <select class="form-control input-sm" id="FMcitySelect"></select>
-                            </div>
-                        </form>
-                    </div>
-                    <div class="col-md-4">
-                        <form class="form-inline">
-                            <div class="form-group" data-section="ESTIMATE">
-                              <label for="estimate">Срок: </label>
-                              <select class="form-control input-sm" id="FMestimateSelect"></select>
-                            </div>
-                        </form>
-                    </div>
-                    <div class="col-md-4">
-                        <form class="form-inline">
-                            <div class="form-group" data-section="DATE">
-                              <label for="FMdateSelect">Дата: </label>
-                              <select class="form-control input-sm" id="FMdateSelect"></select>
-                            </div>
-                        </form>
-                    </div>
+                    <table border="0">
+                        <tr>
+                            <td colspan="2">
+                                <input type="text" class="form-control" id="FMsearchInOrders" placeholder="Поиск">
+                            </td>
+                            <td> Вниманию(Ф.И.О.): </td>
+                            <td><select class="form-control input-sm FMorderFilter" id="FMfioSelect" data-section="FIO"></select></td>
+                            <td> Название проэкта: </td>
+                            <td><select class="form-control input-sm FMorderFilter" id="FMprojectNameSelect" data-section="PROJECT_NAME"></select></td>
+                        </tr>
+                        <tr>
+                            <td> Обращение: </td>
+                            <td><select class="form-control input-sm FMorderFilter" id="FMappealSelect" data-section="APPEAL"></select></td>
+                            <td> Описание проэкта: </td>
+                            <td><select class="form-control input-sm FMorderFilter" id="FMprojectDescrSelect" data-section="PROJECT_DESCR"></select></td>
+                            <td> Название компании: </td>
+                            <td><select class="form-control input-sm FMorderFilter" id="FMcompanyNameSelect" data-section="COMPANY_NAME"></select></td>
+                        </tr>
+                        <tr>
+                            <td>Номер заказа:</td>
+                            <td><select class="form-control input-sm FMorderFilter" id="FMorderNumberSelect" data-section="ORDER_NAME"></select></td>
+                            <td>Почтовый адрес:</td>
+                            <td><select class="form-control input-sm FMorderFilter" id="FMadressSelect" data-section="ADDRES"></select></td>
+                            <td>Номер счета:</td>
+                            <td><select class="form-control input-sm FMorderFilter" id="FMaccNumberSelect" data-section="ACC_NUMBER"></select></td>
+                        </tr>
+                        <tr>
+                            <td>Город:</td>
+                            <td><select class="form-control input-sm FMorderFilter" id="FMcitySelect" data-section="CITY"></select></td>
+                            <td>Срок:</td>
+                            <td><select class="form-control input-sm FMorderFilter" id="FMestimateSelect" data-section="ESTIMATE"></select></td>
+                            <td>Дата:</td>
+                            <td><select class="form-control input-sm FMorderFilter" id="FMdateSelect" data-section="DATE"></select></td>
+                        </tr>
+                    </table>
                     <table class="table table-bordered">
                         <tbody id="fileManagerOrdersTable">
                         </tbody>

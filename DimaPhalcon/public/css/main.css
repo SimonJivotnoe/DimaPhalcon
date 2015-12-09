@@ -178,7 +178,7 @@ h4 {
 }
 
 /* EDIT & SAVE CATEGORIES LIST CONTENT */
-#editCategoriesListContent, #editTableContent{
+#editCategoriesListContent, #editTableContent, .FMorderFullInfo{
     display: none;
 }
 .triggerKimPencil,

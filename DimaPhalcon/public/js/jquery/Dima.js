@@ -1482,7 +1482,7 @@
 				} else if ('selected' === $(this).attr('data-selected')) {
 					$(this).removeClass('openProductTabSelected').attr('data-selected', '');
 				}
-		}).end();
+			}).end();
 		
 		return html;
 	}
@@ -2188,7 +2188,6 @@
 					method: 'POST',
 					data: obj
 				} ).then( function ( data ) {
-					console.log(data);
 				});
 			},
 
@@ -2514,10 +2513,17 @@
 					url   : URL_MENU + 'createFileManager',
 					method: 'GET'
 				} ).then( function ( data )
-				{console.log(data);
+				{
 					$('#fileManagerCatogoriesSelect' ).html(data.categories);
 					$('#fileManagerProductsTable' ).html(addMenuProductHandler($(data.products)));
 					$('#fileManagerOrdersTable' ).html(addMenuOrdersHandler($(data.orders)));
+					$.each(data.orderDescription, function(name, arr) {
+						var option = '<option></option>';
+						$.each(arr, function(num, val) {
+							option += '<option>' + val + '</option>';
+						});
+						$('[data-section="' + name.replace(/%/g, '') + '"]').html(option);
+					});
 					$('#openMenuModal').modal('show');
 				});
 			},
