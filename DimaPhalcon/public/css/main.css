@@ -406,7 +406,7 @@ ol li:hover {
     padding-top: 15px;
     margin-bottom: 15px;
 }
-.openProductTab:hover {
+.openProductTab:hover, .consolidateOrder:hover {
     font-size: 15px;
     cursor: pointer;
 }
@@ -414,6 +414,11 @@ ol li:hover {
     font-size: 15px;
     cursor: pointer;
     color: green;
+}
+.consolidateOrderSelected {
+    font-size: 15px;
+    cursor: pointer;
+    color: #eb9316;
 }
 .checkToArticle {
     margin-left: 5px !important;

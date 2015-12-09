@@ -228,28 +228,34 @@ $( document ).ready( function ()
 		});
 	});
 	$('.FMorderFilter').change(function() {
-		var compareObj = {};
-		$.each($('.FMorderFullInfo'), function(num, obj){
-			console.log(JSON.parse($(obj).text()));
+		var compareObj = {},
+			rows = $('#fileManagerOrdersTable tr:gt(0)' ),
+			searchText = '';
+		$.each($('.FMorderFilter'), function(num, obj){
+			if ($('option:selected', obj).text()) {
+				compareObj[$(obj).attr('data-section')] = $('option:selected', obj).text();
+			}
 		});
-		var text = $('option:selected', this).text(),
-			section = $(this).attr('data-section'),
-			rows = $('#fileManagerOrdersTable tr:gt(0)');
-		if (!text) {
+		searchText = _.values(compareObj).join('');
+		if (!searchText) {
 			rows.show();
 		} else {
 			rows.hide();
-			$.each(rows, function(num, tr) {
-				$.each($(tr), function(key, td) {
-					if (-1 !== $(td).text().search(text)) {
-						$(td).closest('tr').show();
-						return true;
+			$.each($('.FMorderFullInfo'), function(num, obj){
+				var infoOnj = JSON.parse($(obj ).text()),
+					compareText = '';
+				$.each(compareObj, function(section, text){
+					if (text === infoOnj[section]) {
+						compareText += text;
 					}
 				});
+				console.log(compareText);
+				console.log(searchText);
+				if (compareText === searchText) {
+					$(obj ).closest('tr' ).show();
+				}
 			});
 		}
-		console.log($('option:selected', this).text());
-
 	});
 	
 	$('#FMsearchInProducts').keyup(function() {

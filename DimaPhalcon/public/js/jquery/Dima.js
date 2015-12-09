@@ -1482,6 +1482,17 @@
 				} else if ('selected' === $(this).attr('data-selected')) {
 					$(this).removeClass('openProductTabSelected').attr('data-selected', '');
 				}
+			}).end()
+
+			.find('.consolidateOrder').click(function () {
+				if ('' === $(this).attr('data-selected')) {
+					$(this).addClass('consolidateOrderSelected').attr('data-selected', 'selected');
+					if (true) {
+
+					}
+				} else if ('selected' === $(this).attr('data-selected')) {
+					$(this).removeClass('consolidateOrderSelected').attr('data-selected', '');
+				}
 			}).end();
 		
 		return html;

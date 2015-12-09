@@ -99,13 +99,18 @@ class MenuController extends \Phalcon\Mvc\Controller
         foreach ($orders as $val) {
             $arr['%FULL_INFO%'] = [];
             foreach (json_decode($val->getOrderDescription()) as $key => $text) {
-                if(!in_array($text, $orderDescription[$key], true)){
-                    array_push($orderDescription[$key], $text);
+                if (trim($text)) {
+                    if(!in_array($text, $orderDescription[$key], true)){
+                        array_push($orderDescription[$key], $text);
+                    }
                 }
                 $arr[$key] = $text;
-                array_push($arr['%FULL_INFO%'], '"' . str_replace("%", "", $key) . '": "' . $text . '"');
+                if (trim($text)) {
+                    array_push($arr['%FULL_INFO%'], '"' . str_replace("%", "", $key) . '": "' . $text . '"');
+                }
             }
             array_push($orderDescription['%ORDER_NAME%'], $val->getArticle());
+            array_push($arr['%FULL_INFO%'], '"ORDER_NAME": "' . $val->getArticle() . '"');
             $arr['%NAME%'] = $val->getArticle();
             $orderId = $val->getId();
             $arr['%PRODUCTS%'] = '<table class="table table-bordered">';
@@ -122,6 +127,7 @@ class MenuController extends \Phalcon\Mvc\Controller
             if (!$orderTabsObj) {
                 $arr['%ACTIONS%'] = '<span class="glyphicon glyphicon-eye-open openProductTab" data-id="' . $orderId . '" data-type="order" aria-hidden="true" data-selected=""></span>';
             }
+            $arr['%ACTIONS%'] .= '<span class="glyphicon glyphicon-search emptyGlyphSpan" aria-hidden="true"></span><span class="glyphicon glyphicon-list-alt consolidateOrder" aria-hidden="true" data-id="' . $orderId . '" data-selected=""></span>';
             $ordersTable .= $substObj->subHTMLReplace('menuOrderTableRow.html', $arr);
         }
 

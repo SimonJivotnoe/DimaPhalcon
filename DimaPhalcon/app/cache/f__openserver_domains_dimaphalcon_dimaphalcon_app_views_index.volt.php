@@ -7,6 +7,7 @@
     <link href="css/pretty-split-pane.css" rel="stylesheet" type="text/css"/>
     <link href="css/main.css" rel="stylesheet" type="text/css"/>
     <link href="css/jquery-ui.css" rel="stylesheet" type="text/css"/>
+    <link href="js/jquery/colorpicker/dist/css/bootstrap-colorpicker.min.css" rel="stylesheet" type="text/css"/>
     <link rel="shortcut icon" type="image/x-icon" href="favicon.ico" />
     <!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">-->
 
@@ -32,30 +33,87 @@
                 <h3 class="modal-title" id="myLargeModalLabel">Файловый менеджер</h3>
             </div>
             <div class="modal-body">
-                <h4 class="well" style="margin-top: -15px; height: 43px;">Продукты</h4>
-                <div id="fileManagerProductsWrapper">
-                    <div class="col-md-4 col-md-offset-4">
-                        <select class="form-control input-sm" id="fileManagerCatogoriesSelect">
-
-                        </select>
+                <div class="col-md-12">
+                    <button class="btn btn-warning btn-sm" id="showItemFromFileManager" disabled>
+                        <span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span>
+                    </button>
+                    <button class="btn btn-info btn-sm" id="FMconsolidatedOrdersBtn" disabled>
+                        <span class="glyphicon glyphicon-list-alt" aria-hidden="true"></span>
+                    </button>
+                </div>
+                <div class="col-md-12">
+                    <h4>
+                        Продукты
+                        <span class="glyphicon glyphicon-shopping-cart toCollapse" aria-hidden="true" data-toggle="collapse" data-target="#fileManagerProductsWrapper" aria-expanded="true" aria-controls="fileManagerProductsWrapper">
+                    </span>
+                    </h4>
+                </div>
+                <div id="fileManagerProductsWrapper" class="collapse in">
+                    <div class="col-md-4 col-md-offset-2">
+                        <form class="form-inline">
+                            <div class="form-group">
+                              <label for="fileManagerCatogoriesSelect">Категории: </label>
+                              <select class="form-control input-sm" id="fileManagerCatogoriesSelect"></select>
+                            </div>
+                        </form>
                     </div>
                     <div class="col-md-4">
-                        <button class="btn btn-warning btn-sm" id="showItemFromFileManager">
-                            <span class="glyphicon glyphicon-play" aria-hidden="true"></span>
-                        </button>
+                        <input type="text" class="form-control" id="FMsearchInProducts" placeholder="Поиск">
                     </div>
                     <table class="table table-bordered">
                         <tbody id="fileManagerProductsTable">
                         </tbody>
                     </table>
                 </div>
-                <h4 class="well" style="height: 43px;">Ордера</h4>
-                <div id="fileManagerOrdersWrapper">
+                <div class="col-md-12">
+                    <h4>
+                        Ордера
+                        <span class="glyphicon glyphicon-tasks toCollapse" aria-hidden="true" data-toggle="collapse" data-target="#fileManagerOrdersWrapper" aria-expanded="true" aria-controls="fileManagerOrdersWrapper">
+                    </span>
+                    </h4>
+                </div>
+                <div id="fileManagerOrdersWrapper" class="collapse in">
+                    <table border="0">
+                        <tr>
+                            <td colspan="2">
+                                <input type="text" class="form-control" id="FMsearchInOrders" placeholder="Поиск">
+                            </td>
+                            <td> Вниманию(Ф.И.О.): </td>
+                            <td><select class="form-control input-sm FMorderFilter" id="FMfioSelect" data-section="FIO"></select></td>
+                            <td> Название проэкта: </td>
+                            <td><select class="form-control input-sm FMorderFilter" id="FMprojectNameSelect" data-section="PROJECT_NAME"></select></td>
+                        </tr>
+                        <tr>
+                            <td> Обращение: </td>
+                            <td><select class="form-control input-sm FMorderFilter" id="FMappealSelect" data-section="APPEAL"></select></td>
+                            <td> Описание проэкта: </td>
+                            <td><select class="form-control input-sm FMorderFilter" id="FMprojectDescrSelect" data-section="PROJECT_DESCR"></select></td>
+                            <td> Название компании: </td>
+                            <td><select class="form-control input-sm FMorderFilter" id="FMcompanyNameSelect" data-section="COMPANY_NAME"></select></td>
+                        </tr>
+                        <tr>
+                            <td>Номер заказа:</td>
+                            <td><select class="form-control input-sm FMorderFilter" id="FMorderNumberSelect" data-section="ORDER_NAME"></select></td>
+                            <td>Почтовый адрес:</td>
+                            <td><select class="form-control input-sm FMorderFilter" id="FMadressSelect" data-section="ADDRES"></select></td>
+                            <td>Номер счета:</td>
+                            <td><select class="form-control input-sm FMorderFilter" id="FMaccNumberSelect" data-section="ACC_NUMBER"></select></td>
+                        </tr>
+                        <tr>
+                            <td>Город:</td>
+                            <td><select class="form-control input-sm FMorderFilter" id="FMcitySelect" data-section="CITY"></select></td>
+                            <td>Срок:</td>
+                            <td><select class="form-control input-sm FMorderFilter" id="FMestimateSelect" data-section="ESTIMATE"></select></td>
+                            <td>Дата:</td>
+                            <td><select class="form-control input-sm FMorderFilter" id="FMdateSelect" data-section="DATE"></select></td>
+                        </tr>
+                    </table>
                     <table class="table table-bordered">
                         <tbody id="fileManagerOrdersTable">
                         </tbody>
                     </table>
                 </div>
+                <div class="clearer"></div>
             </div>
         </div><!-- /.modal-content -->
     </div><!-- /.modal-dialog -->
@@ -95,5 +153,7 @@
 <script src='js/jquery/pdfmake/vfs_fonts.js'></script>
 <script src='js/jquery/store+json2.min.js'></script>
 <script src="js/jquery/jquery.resizableColumns.min.js"></script>
+<script src="js/jquery/jquery.fontselect.min.js"></script>
+<script src="js/jquery/colorpicker/dist/js/bootstrap-colorpicker.min.js"></script>
 </body>
 </html>
