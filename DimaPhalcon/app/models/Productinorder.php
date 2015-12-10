@@ -22,6 +22,12 @@ class Productinorder extends \Phalcon\Mvc\Model
     protected $productId;
 
     /**
+     *
+     * @var string
+     */
+    protected $always_in_table;
+
+    /**
      * Method to set the value of field id
      *
      * @param integer $id
@@ -61,6 +67,19 @@ class Productinorder extends \Phalcon\Mvc\Model
     }
 
     /**
+     * Method to set the value of field always_in_table
+     *
+     * @param string $always_in_table
+     * @return $this
+     */
+    public function setAlwaysInTable($always_in_table)
+    {
+        $this->always_in_table = $always_in_table;
+
+        return $this;
+    }
+
+    /**
      * Returns the value of field id
      *
      * @return integer
@@ -88,6 +107,16 @@ class Productinorder extends \Phalcon\Mvc\Model
     public function getProductid()
     {
         return $this->productId;
+    }
+
+    /**
+     * Returns the value of field always_in_table
+     *
+     * @return string
+     */
+    public function getAlwaysInTable()
+    {
+        return $this->always_in_table;
     }
 
     /**

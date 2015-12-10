@@ -45,6 +45,7 @@ class OrderController  extends \Phalcon\Mvc\Controller
         if ($this->request->isAjax() && $this->request->isPost()) {
             $orderId = $this->request->getPost('orderId');
             $prId = $this->request->getPost('productId');
+            $alwaysInTable = $this->request->getPost('alwaysInTable');
             $this->response->setContentType('application/json', 'UTF-8');
             $orObj = Productinorder::findFirst(
                 "orderId = '" . $orderId . "' AND productId = '" . $prId . "'"
@@ -52,7 +53,8 @@ class OrderController  extends \Phalcon\Mvc\Controller
             if (!$orObj) {
                 $prInOrder = new Productinorder;
                 $prInOrder->setOrderid($orderId)
-                          ->setProductid($prId);
+                          ->setProductid($prId)
+                          ->setAlwaysInTable($alwaysInTable);
                 if ($prInOrder->save() == false) {
                     $this->response->setJsonContent('error');
                     return $this->response;

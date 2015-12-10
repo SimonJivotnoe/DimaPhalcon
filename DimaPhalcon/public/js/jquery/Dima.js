@@ -137,6 +137,17 @@
 		$('#productArticle' ).html('');
 	}
 
+	function recalculateArticleTable () {
+		var selected = $('#metallHistorySelect option:selected');
+		$('[data-cell="PR1"]' ).val(selected.attr('data-price'));
+		$('[data-cell="PR2"]' ).val(selected.attr('data-outprice'));
+		$('#calx' ).calx();
+		$.each($('.rowValue input'), function(num, obj){
+			var cell = $(obj).attr('data-cell');
+			$('[data-cellarticle="' + cell + '"]').text($(obj).val());
+		})
+	}
+
 	var orderPlaceholder = {
 		"%FIO%": "",
 		"%PROJECT_NAME%": "",
@@ -646,7 +657,9 @@
 			}).end()
 
 			.find('#cancelArticleBtn').click(cancelArticleBtn).end()
-
+			
+			.find('#metallHistorySelect').change(recalculateArticleTable).end()
+	
 			.on('change', '.checkToArticle', function(){
 				var val = $(this ).closest('li' ).find('.rowValueInput' ).val(),
 					cell = $(this ).closest('li' ).find('.rowNumber' ).text(),
@@ -706,9 +719,11 @@
 			}).end()
 
 			.find('#addToOrderBtn').click(function () {
-				console.log(MAIN.orderId);
 				if (!MAIN.orderId) {
 					localStorage.addToOrder = MAIN.productId;
+					$('.rowValue input' ).addClass('rowValueInput');
+					localStorage.alwaysInTable = JSON.stringify(PRODUCT.getTableContent('#alwaysInTable li'));;
+					$('.rowValueInput').removeClass('rowValueInput');
 					ORDER.createNewOrder();
 					return true;
 				}
@@ -1569,6 +1584,8 @@
 						$('[data-cell="PR2"]' ).val(metallOut);
 					} else {
 						$('.rowValueInput').removeClass('rowValueInput');
+						$('#metallHistorySelect option:last-child' ).prop('selected', true);
+						recalculateArticleTable();
 					}
 					$.each($('.bindFormulaWithCell'), function(num, obj){
 						var li = $(obj).closest('li');
@@ -1579,6 +1596,7 @@
 					if (localStorage.addToOrder) {
 						ORDER.addToOrder();
 						delete localStorage.addToOrder;
+						delete localStorage.alwaysInTable;
 					}
 					$(function () {
 						$('[data-toggle="tooltip"]').tooltip();
@@ -2159,11 +2177,23 @@
 			addToOrder: function () {
 				var map,
 					productId = MAIN.productId,
+					alwaysInTable = '',
 					obj = {};
+				if (localStorage.addToOrder) {
+					alwaysInTable = localStorage.alwaysInTable;
+				} else {
+					$('.rowValue input' ).addClass('rowValueInput');
+					alwaysInTable = JSON.stringify(PRODUCT.getTableContent('#alwaysInTable li'));
+					$('.rowValueInput').removeClass('rowValueInput');
+				}
 				$.ajax({
 					url: URL_ORDER + 'addProductToOrder',
 					method: 'POST',
-					data: {orderId: MAIN.orderId, productId: productId}
+					data: {
+						orderId: 	   MAIN.orderId,
+						productId: 	   productId,
+						alwaysInTable: alwaysInTable
+					}
 				}).then(function (data)
 				{
 					if ('ok' === data.status) {

@@ -202,9 +202,9 @@ class MetallsController extends \Phalcon\Mvc\Controller
 
     public function getMetallHistory($id) {
         $history = MetallPricesHistory::find(array("metall_id = '$id'"));
-        $res = '<select>';
+        $res = '<select id="metallHistorySelect">';
         foreach ($history as $val) {
-            $res .= '<option>' . $val->getPrice() . '-' . $val->getOutPrice() . '-' . $val->getDate() . '</option>';
+            $res .= '<option data-price="' . $val->getPrice() . '" data-outprice="' . $val->getOutPrice() . '">' . $val->getPrice() . '-' . $val->getOutPrice() . '-' . $val->getDate() . '</option>';
         }
         $res .= '</select>';
         return $res;

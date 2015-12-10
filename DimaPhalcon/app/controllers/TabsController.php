@@ -99,6 +99,7 @@ class TabsController extends \Phalcon\Mvc\Controller
             $alwaysInTableTemplate = 'alwaysInTable.html';
             $substObj = new Substitution();
             $article = $product->getArticle();
+            $alwaysInTable = json_decode($product->getAlwaysintable());
             if (!$article) {
                 $articleFlag= false;
                 $article = $this->getArticleTemplate();
@@ -119,7 +120,6 @@ class TabsController extends \Phalcon\Mvc\Controller
             $productCatId = $product->getCategoryId();
             $productKim = $product->getKim();
             $table = json_decode($product->getTableContent());
-            $alwaysInTable = json_decode($product->getAlwaysintable());
 
             $productObj = new ProductsController;
             $categoryObj = new CategoriesController;

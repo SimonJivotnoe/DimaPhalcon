@@ -241,7 +241,10 @@ class ProductsController extends \Phalcon\Mvc\Controller
         $productObj = Products::findFirst($productId);
         $metallId = $productObj->getMetall();
         $metallObj = Metalls::findFirst($metallId);
-        $alwaysInTable = json_decode($productObj->getAlwaysInTable());
+        $orObj = Productinorder::findFirst(
+            "orderId = '" . $orderId . "' AND productId = '" . $productId . "'"
+        );
+        $alwaysInTable = json_decode($orObj->getAlwaysInTable());
         $actionArr = array('%ROWCLASS%' => 'Without', '%PRODUCT_ID%' => $productId, '%I%' => $i - 1);
         $moveToCopyTo = '<div class="col-md-8" style="margin-right: -64px; margin-left: -32px;">'
                         . '<select class="moveToAction">'
