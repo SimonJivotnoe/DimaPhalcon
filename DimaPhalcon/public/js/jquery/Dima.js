@@ -533,6 +533,16 @@
 		return res;
 	}
 	
+	function enableDisableButton (id, button) {
+		if (0 < id.size()) {
+			if (button.prop('disabled')) {
+				button.prop('disabled', false);
+			}
+		} else {
+			button.prop('disabled', true);
+		}
+	}
+	
 	function addLeftTabContentHandler(html) {
 		//console.log(html.find('#addFormulaBtnPr' ));
 		html
@@ -1456,7 +1466,8 @@
 
 		return html;
 	}
-
+	
+	
 	function addMenuProductHandler(html) {
 
 		html
@@ -1466,6 +1477,7 @@
 				} else if('selected' === $(this ).attr('data-selected')){
 					$(this).removeClass('openProductTabSelected').attr('data-selected', '' );
 				}
+				enableDisableButton($('.openProductTabSelected'), $('#showItemFromFileManager'));
 			}).end();
 
 		return html;
@@ -1476,23 +1488,19 @@
 			.find('.openProductTab').click(function () {
 				if ('' === $(this).attr('data-selected')) {
 					$(this).addClass('openProductTabSelected').attr('data-selected', 'selected');
-					if (true) {
-						
-					}
 				} else if ('selected' === $(this).attr('data-selected')) {
 					$(this).removeClass('openProductTabSelected').attr('data-selected', '');
 				}
+				enableDisableButton($('.openProductTabSelected'), $('#showItemFromFileManager'));
 			}).end()
 
 			.find('.consolidateOrder').click(function () {
 				if ('' === $(this).attr('data-selected')) {
 					$(this).addClass('consolidateOrderSelected').attr('data-selected', 'selected');
-					if (true) {
-
-					}
 				} else if ('selected' === $(this).attr('data-selected')) {
 					$(this).removeClass('consolidateOrderSelected').attr('data-selected', '');
 				}
+				enableDisableButton($('.consolidateOrderSelected'), $('#FMconsolidatedOrdersBtn'));
 			}).end();
 		
 		return html;
@@ -1559,6 +1567,8 @@
 						$('[data-cell="KIM1"]' ).val(kim);
 						$('[data-cell="PR1"]' ).val(metall);
 						$('[data-cell="PR2"]' ).val(metallOut);
+					} else {
+						$('.rowValueInput').removeClass('rowValueInput');
 					}
 					$.each($('.bindFormulaWithCell'), function(num, obj){
 						var li = $(obj).closest('li');
@@ -1820,7 +1830,7 @@
 						$(function () {
 							$('[data-toggle="tooltip"]').tooltip({ my: "left+15 center", at: "right center" });
 							$('#orderTable').resizableColumns({
-								  store: window.store
+								  //store: window.store
 								});
 						});
 					}

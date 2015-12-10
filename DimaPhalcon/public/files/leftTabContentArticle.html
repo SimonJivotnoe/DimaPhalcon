@@ -2,9 +2,6 @@
     <div class="col-md-8">Создано: %CREATED%</div>
     <div class="col-md-4">Сохранено в базе данных</div>
 </div>
-<!--<div class="col-md-12" id="productArticleWrapper">
-    Артикул : <span class="bg-primary">%ARTICLE_BTN%</span>
-</div>-->
 <div class="col-md-8 col-md-offset-0">
     <table class="table table-bordered">
         <tr>
@@ -24,11 +21,6 @@
             <td>%METALL_HISTORY%</td>
         </tr>
     </table>
-    <!--<span class="col-md-5 nameOfProduct">%PRODUCT_NAME%</span>
-    <div class="col-md-5" id="categoriesListContent">%CATEGORIES%</div>
-    <div class="col-md-12"></div>
-    <div class="col-md-5" id="kimList">%KIM_LIST%</div>
-    <div class="col-md-5" id="metallList">%METALL_LIST%</div>-->
 </div>
 <div class="col-md-2">&nbsp</div>
 <div class="col-md-12"><hr /></div>
@@ -45,27 +37,32 @@
     </div>
 </div>
 <div class="col-md-8">
-    <!--<div class="col-md-10">
-        <form id="calx">
-            <div class="col-md-12">
-                <ul id="sortable">
-                </ul>
-            </div>
-            <div class="col-md-12">
-                <ul id="alwaysInTable">
-                </ul>
-            </div>
-        </form>
-
-    </div>-->
     <table class="table table-bordered">
         %TABLE_CONTENT%
         %ALWAYS_IN_TABLE%
     </table>
 </div>
-<div class="col-md-10 list-group">
+<!--<div class="col-md-10 list-group">
     <ul name="" id="formulasList">
         %FORMULAS%
     </ul>
+</div>style="display:none;"-->
+<div >
+    <div class="col-md-8 tableContent" >
+        <div class="col-md-10 productTableWrapper">
+            <form id="calx">
+                <div class="col-md-12">
+                    <ul id="sortable">
+                        %TABLE_CONTENT_A%
+                    </ul>
+                </div>
+                <div class="col-md-12">
+                    <ul id="alwaysInTable">
+                        %ALWAYS_IN_TABLE_A%
+                    </ul>
+                </div>
+            </form>
+        </div>
+    </div>
 </div>
 <div class="clearer"></div>

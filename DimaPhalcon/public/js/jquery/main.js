@@ -94,9 +94,9 @@ $( document ).ready( function ()
 			MENU.createFileManager();
 		});
 	$('#showItemFromFileManager').click(function() {
-		$(this).hide();
 		var product = [];
 		var order = [];
+		$(this).hide();
 		$.each($('.openProductTabSelected'), function (num, obj) {
 			if ('product' === $(obj).attr('data-type')) {
 				product.push($(obj).attr('data-id'));
@@ -109,6 +109,16 @@ $( document ).ready( function ()
 			window.location.href = 'http://DimaPhalcon/DimaPhalcon/';
 		});
 	});
+	
+	$('#FMconsolidatedOrdersBtn').click(function () {
+		var orderId = [];
+		//$(this).hide();
+		$.each($('.consolidateOrderSelected'), function (num, obj) {
+			orderId.push($(obj).attr('data-id'));
+		});
+		console.log(orderId);
+	});
+	
 	// cog spin on-off
 	$('#preferences')
 		.mouseover(function(){
@@ -249,8 +259,6 @@ $( document ).ready( function ()
 						compareText += text;
 					}
 				});
-				console.log(compareText);
-				console.log(searchText);
 				if (compareText === searchText) {
 					$(obj ).closest('tr' ).show();
 				}

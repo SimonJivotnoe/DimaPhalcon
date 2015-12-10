@@ -406,6 +406,9 @@ ol li:hover {
     padding-top: 15px;
     margin-bottom: 15px;
 }
+.consolidateOrder {
+    margin-left: 5px;
+}
 .openProductTab:hover, .consolidateOrder:hover {
     font-size: 15px;
     cursor: pointer;
@@ -436,8 +439,8 @@ ol li:hover {
     border-radius: 2px
 }
 .orderTableActionsWrapper {
-    width: 500px !important;
-    margin-left: -31px;
+    /*width: 500px !important;
+    margin-left: -31px;*/
 }
 .rc-handle-container {
   position: relative;
@@ -632,5 +635,8 @@ table.rc-table-resizing thead > th > a {
 }
 .toCollapse {
     cursor: pointer;
+}
+.emptyGlyphSpan {
+    color: white;
 }
 .clearer { clear: both; }

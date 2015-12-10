@@ -37,6 +37,9 @@
                     <button class="btn btn-warning btn-sm" id="showItemFromFileManager" disabled>
                         <span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span>
                     </button>
+                    <button class="btn btn-info btn-sm" id="FMconsolidatedOrdersBtn" disabled>
+                        <span class="glyphicon glyphicon-list-alt" aria-hidden="true"></span>
+                    </button>
                 </div>
                 <div class="col-md-12">
                     <h4>
@@ -69,7 +72,7 @@
                     </span>
                     </h4>
                 </div>
-                <div id="fileManagerOrdersWrapper">
+                <div id="fileManagerOrdersWrapper" class="collapse in">
                     <table border="0">
                         <tr>
                             <td colspan="2">
