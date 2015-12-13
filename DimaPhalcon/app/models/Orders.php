@@ -46,6 +46,12 @@ class Orders extends \Phalcon\Mvc\Model
     protected $status;
 
     /**
+     *
+     * @var string
+     */
+    protected $consolidate;
+
+    /**
      * Method to set the value of field id
      *
      * @param integer $id
@@ -137,6 +143,19 @@ class Orders extends \Phalcon\Mvc\Model
     }
 
     /**
+     * Method to set the value of field consolidate
+     *
+     * @param string $consolidate
+     * @return $this
+     */
+    public function setConsolidate($consolidate)
+    {
+        $this->consolidate = $consolidate;
+
+        return $this;
+    }
+
+    /**
      * Returns the value of field id
      *
      * @return integer
@@ -204,6 +223,16 @@ class Orders extends \Phalcon\Mvc\Model
     public function getStatus()
     {
         return $this->status;
+    }
+
+    /**
+     * Returns the value of field consolidate
+     *
+     * @return string
+     */
+    public function getConsolidate()
+    {
+        return $this->consolidate;
     }
 
     /**

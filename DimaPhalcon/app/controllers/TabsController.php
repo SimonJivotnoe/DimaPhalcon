@@ -485,9 +485,11 @@ class TabsController extends \Phalcon\Mvc\Controller
             $rows['%ORDER_NAME%'] = $order->getArticle();
             $discount = $order->getDiscount();
             $rows['%DISCOUNT%'] = $discount;
+            $orderObj = new OrderController();
+            $orderDescription = $orderObj->getOrderDescriptionObj();
 
             $res = $substObj->subHTMLReplace('rightTabContent.html', $rows);
-            $this->response->setJsonContent(['success' => true, 'html' => $res]);
+            $this->response->setJsonContent(['success' => true, 'html' => $res, 'orderDescription' => $orderDescription]);
 
             return $this->response;
         } else {
@@ -507,46 +509,50 @@ class TabsController extends \Phalcon\Mvc\Controller
                 }
                 return false;
             }
-            $res = array('%SECTIONS%' => '', '%WITHOUT_SECTIONS%' => '');
-            $map = json_decode($order->getMap());
-            $moveTo = array();
-            $productObj = new ProductsController;
             $substObj = new Substitution();
-            $currentSection = '';
-            if ('' !== $map && null !== $map) {
-                $orderObj = new OrderController;
-                foreach ($map as $key => $val) {
-                    if ('out' === $key && count($val)) {
-                        $i = 1;
-                        foreach ($val as $num => $obj) {
-                            foreach ($obj as $productId => $quantity) {
-                                $res['%WITHOUT_SECTIONS%'] .= $productObj->createProductInOrder($productId, $quantity, $orderId, $i, 'withoutSectionRow', $map, 'out');
-                            }
-                            $i++;
-                        }
-                    } else if ('out' !== $key) {
-                        if (!count($val)) {
-                            $currentSection = $key;
-                        }
-                        $res['%SECTIONS%'] .= '<tr class="orderTableSectionName" name="' . $key . '">
-                        <th colspan="9"><span class="orderSectionName" contenteditable="true">' . $key . '</span></th><td><span class="glyphicon glyphicon-remove removeRowSection" name="' . $key . '" aria-hidden="true"></span></td></tr>';
-                        if (count($val)) {
+            if ('FALSE' === $order->getConsolidate()) {
+                $res = array('%SECTIONS%' => '', '%WITHOUT_SECTIONS%' => '');
+                $map = json_decode($order->getMap());
+                $moveTo = array();
+                $productObj = new ProductsController;
+                $currentSection = '';
+                if ('' !== $map && null !== $map) {
+                    $orderObj = new OrderController;
+                    foreach ($map as $key => $val) {
+                        if ('out' === $key && count($val)) {
                             $i = 1;
                             foreach ($val as $num => $obj) {
                                 foreach ($obj as $productId => $quantity) {
-                                    $res['%SECTIONS%'] .= $productObj->createProductInOrder($productId, $quantity, $orderId, $i, 'orderTableSection', $map, $key);
+                                    $res['%WITHOUT_SECTIONS%'] .= $productObj->createProductInOrder($productId, $quantity, $orderId, $i, 'withoutSectionRow', $map, 'out');
                                 }
                                 $i++;
                             }
-                        } else if (!count($val)) {
-                            $moveTo[$key] = array();
+                        } else if ('out' !== $key) {
+                            if (!count($val)) {
+                                $currentSection = $key;
+                            }
+                            $res['%SECTIONS%'] .= '<tr class="orderTableSectionName" name="' . $key . '">
+                        <th colspan="9"><span class="orderSectionName" contenteditable="true">' . $key . '</span></th><td><span class="glyphicon glyphicon-remove removeRowSection" name="' . $key . '" aria-hidden="true"></span></td></tr>';
+                            if (count($val)) {
+                                $i = 1;
+                                foreach ($val as $num => $obj) {
+                                    foreach ($obj as $productId => $quantity) {
+                                        $res['%SECTIONS%'] .= $productObj->createProductInOrder($productId, $quantity, $orderId, $i, 'orderTableSection', $map, $key);
+                                    }
+                                    $i++;
+                                }
+                            } else if (!count($val)) {
+                                $moveTo[$key] = array();
+                            }
                         }
                     }
                 }
+                $this->response->setJsonContent(['html' => $substObj->subHTMLReplace('orderTable.html', $res), 'success' => true]);
+            } else {
+                $this->response->setJsonContent(['html' => 'test', 'success' => true]);
             }
-            
-            $this->response->setJsonContent(['html' => $substObj->subHTMLReplace('orderTable.html', $res), 'success' => true]);
             return $this->response;
+
         } else {
             $this->response->redirect('');
         }

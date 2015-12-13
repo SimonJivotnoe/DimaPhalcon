@@ -5,6 +5,7 @@ class OrderController  extends \Phalcon\Mvc\Controller
     public function createNewOrderAction() {
         if ($this->request->isAjax() && $this->request->isPost()) {
             $orderMax = Orders::maximum(array("column" => "order_number"));
+            $consolidate = $this->request->getPost('consolidate');
             $orderNumber = 1;
             if ($orderMax) {
                 $orderNumber = (int)($orderMax) + 1;
@@ -23,6 +24,7 @@ class OrderController  extends \Phalcon\Mvc\Controller
                 ->setOrderDescription(json_encode((object)$descr))
                 ->setMap(new RawValue('default'))
                 ->setStatus(new RawValue('default'))
+                ->setConsolidate($consolidate)
                 ->save();
 
             $this->response->setContentType('application/json', 'UTF-8');
@@ -68,6 +70,30 @@ class OrderController  extends \Phalcon\Mvc\Controller
             $this->response->redirect('');
         }
     }
+
+    public function addToConsolidateOrderAction() {
+        if ($this->request->isAjax() && $this->request->isPost()) {
+            $orderId = $this->request->getPost('orderId');
+            $arr = $this->request->getPost('arr');
+            $this->response->setContentType('application/json', 'UTF-8');
+            foreach ($arr as $val) {
+                $orObj = ConsolidateOrders::findFirst(
+                    "order_id = '" . $orderId . "' AND cons_order_id = '" . $val . "'"
+                );
+                if (!$orObj) {
+                    $consOrder = new ConsolidateOrders;
+                    $consOrder->setOrderId($orderId)
+                              ->setConsOrderId($val)
+                              ->save();
+                }
+            }
+            $this->response->setJsonContent(true);
+            return $this->response;
+        } else {
+            $this->response->redirect('');
+        }
+    }
+
     public function saveOrderInDBAction(){
         if ($this->request->isAjax() && $this->request->isPost()) {
             $orderId = $this->request->getPost('orderId');
@@ -214,5 +240,36 @@ class OrderController  extends \Phalcon\Mvc\Controller
             $zero = '';
         }
         return date('y') . '-' . $zero . strval($number) . '-' . date('d') . date('m') . date('o');
+    }
+
+    public function getOrderDescriptionObj(){
+        $orders = Orders::find(array("status = 'save'"));
+        if ($orders == false) {
+            return false;
+        }
+        $orderDescription = [
+            '%ACC_NUMBER%'    => [],
+            '%ADDRES%'        => [],
+            '%APPEAL%'        => [],
+            '%CITY%'          => [],
+            '%COMPANY_NAME%'  => [],
+            '%DATE%'          => [],
+            '%ESTIMATE%'      => [],
+            '%FIO%'           => [],
+            '%PROJECT_DESCR%' => [],
+            '%PROJECT_NAME%'  => [],
+            '%ORDER_NAME%'    => []
+        ];
+        foreach ($orders as $val) {
+            foreach (json_decode($val->getOrderDescription()) as $key => $text) {
+                if (trim($text)) {
+                    if(!in_array($text, $orderDescription[$key], true)){
+                        array_push($orderDescription[$key], $text);
+                    }
+                }
+            }
+            array_push($orderDescription['%ORDER_NAME%'], $val->getArticle());
+        }
+        return $orderDescription;
     }
 }

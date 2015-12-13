@@ -639,4 +639,7 @@ table.rc-table-resizing thead > th > a {
 .emptyGlyphSpan {
     color: white;
 }
+.inputOrderDetails {
+    width: 75%;
+}
 .clearer { clear: both; }

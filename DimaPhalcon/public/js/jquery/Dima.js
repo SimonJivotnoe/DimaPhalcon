@@ -286,10 +286,10 @@
 			var itemText = $(obj).find('label').text();
 			var itemName = $(obj).find('label input').attr('name');
 			var check = $(obj).find('label input').prop('checked');
-			var itemDetails = $(obj).find('.inputOrderDetails').text();
-			if ('date' === itemName || 'estimate' === itemName) {
+			var itemDetails = $(obj).find('.inputOrderDetails').val();
+			/*if ('date' === itemName || 'estimate' === itemName) {
 				itemDetails = $(obj).find('.inputOrderDetails').val();
-			}
+			}*/
 			if (check) {
 				tempObj.columns.push({text: itemText + itemDetails});
 				i++;
@@ -1584,6 +1584,9 @@
 						$('[data-cell="PR2"]' ).val(metallOut);
 					} else {
 						$('.rowValueInput').removeClass('rowValueInput');
+						$('.cellBind').removeClass('cellBind');
+						$('.glyphicon-retweet').removeClass('glyphicon-retweet');
+						$('.removeFormula').remove();
 						$('#metallHistorySelect option:last-child' ).prop('selected', true);
 						recalculateArticleTable();
 					}
@@ -1813,7 +1816,7 @@
 					method: 'GET',
 					data: {orderId: orderId}
 				} ).then( function ( data )
-				{
+				{console.log(data);
 					if (true === data.success) {
 						$('#kimTab, #kim').removeClass('active');
 						$('.currentTabRight' )
@@ -1826,6 +1829,21 @@
 						MAIN.orderId = orderId;
 						$(function () {
 							$('[data-toggle="tooltip"]').tooltip();
+							$.each(data.orderDescription, function(name, arr) {
+								$('[data-orderdetails="' + name.replace(/%/g, '') + '"]').autocomplete({
+									source: arr,
+									select: function (event, ui) {
+										$('[data-orderdetails="' + name.replace(/%/g, '') + '"]').attr('value', ui.item.value ).val(ui.item.value);
+										var obj = ORDER.createJSONFromOrderDescription();
+										ORDER.changeOrderDetails(
+											{
+												orderId: MAIN.orderId,
+												orderDescr: obj
+											}
+										);
+									}
+								});
+							});
 						});
 						
 						return this;
@@ -2161,11 +2179,13 @@
 
 		// order section
 		order: {
-			createNewOrder: function (refresh) {
+			createNewOrder: function (refresh, consolidate) {
 				var refresh = (refresh=== undefined) ? refresh = true : refresh;
-				$.ajax({
+				var consolidate = (consolidate=== undefined) ? consolidate = false : consolidate;
+				return $.ajax({
 					url: URL_ORDER + 'createNewOrder',
-					method: 'POST'
+					method: 'POST',
+					data: {consolidate: consolidate}
 				}).then(function (data)
 				{
 					if (false !== data && refresh) {
@@ -2205,19 +2225,33 @@
 				});
 
 			},
+
+			addToConsolidateOrder: function (orderId, arr) {
+				return $.ajax({
+					url: URL_ORDER + 'addToConsolidateOrder',
+					method: 'POST',
+					data: {orderId: orderId, arr: arr}
+				}).then(function (data)
+				{
+					window.location.href = LOCATION;
+				});
+			},
+
 			saveOrderInDB: function() {
 				$.ajax({
 					url: URL_ORDER + 'saveOrderInDB',
 					method: 'POST',
 					data: {orderId: MAIN.orderId}
 				}).then(function (data)
-				{console.log(data);
-					data ? $('#saveOrderInDBWrapper' ).html('Сохранено в базе данных') : false;
+				{
+					if (data) {
+						$('#saveOrderInDBWrapper' ).html('Сохранено в базе данных');
+					}
 				});
 			},
 
 			checkAllInOrderDetails:  function(param, id) {
-				var id = (id=== undefined) ? id = '#orderDetails input' : id;
+				var id = (id === undefined) ? id = '#orderDetails input' : id;
 				$.each($(id), function (key, val) {
 					$(val).prop('checked', param);
 				});
@@ -2273,7 +2307,7 @@
 					arr = _.keys(obj), i = 0;
 				$.each($('.inputOrderDetails'), function(key, val){
 					if (!$(val).hasClass('skip')) {
-						obj[arr[i]] = $(val).text();
+						obj[arr[i]] = $(val).val();
 						i++;
 					}
 				});

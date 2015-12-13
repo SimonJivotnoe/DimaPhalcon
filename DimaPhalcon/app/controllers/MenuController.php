@@ -83,33 +83,16 @@ class MenuController extends \Phalcon\Mvc\Controller
                             <th>Действия</th>
                         </tr>';
         $substObj = new Substitution();
-        $orderDescription = [
-            '%ACC_NUMBER%'    => [],
-            '%ADDRES%'        => [],
-            '%APPEAL%'        => [],
-            '%CITY%'          => [],
-            '%COMPANY_NAME%'  => [],
-            '%DATE%'          => [],
-            '%ESTIMATE%'      => [],
-            '%FIO%'           => [],
-            '%PROJECT_DESCR%' => [],
-            '%PROJECT_NAME%'  => [],
-            '%ORDER_NAME%'    => []
-        ];
+        $orderObj = new OrderController();
+        $orderDescription = $orderObj->getOrderDescriptionObj();
         foreach ($orders as $val) {
             $arr['%FULL_INFO%'] = [];
             foreach (json_decode($val->getOrderDescription()) as $key => $text) {
-                if (trim($text)) {
-                    if(!in_array($text, $orderDescription[$key], true)){
-                        array_push($orderDescription[$key], $text);
-                    }
-                }
                 $arr[$key] = $text;
                 if (trim($text)) {
                     array_push($arr['%FULL_INFO%'], '"' . str_replace("%", "", $key) . '": "' . $text . '"');
                 }
             }
-            array_push($orderDescription['%ORDER_NAME%'], $val->getArticle());
             array_push($arr['%FULL_INFO%'], '"ORDER_NAME": "' . $val->getArticle() . '"');
             $arr['%NAME%'] = $val->getArticle();
             $orderId = $val->getId();

@@ -116,7 +116,12 @@ $( document ).ready( function ()
 		$.each($('.consolidateOrderSelected'), function (num, obj) {
 			orderId.push($(obj).attr('data-id'));
 		});
-		console.log(orderId);
+		$.when( ORDER.createNewOrder(false, true) ).then(function(data){
+			console.log(data);
+			if (false !== data) {
+				ORDER.addToConsolidateOrder(data, orderId);
+			}
+		});
 	});
 	
 	// cog spin on-off
