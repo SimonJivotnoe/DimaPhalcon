@@ -647,4 +647,8 @@ table.rc-table-resizing thead > th > a {
     margin-top: 10px;
     margin-bottom: 10px;
 }
+.nameOfProduct {
+    width: 236px !important;
+    height: 30px !important;
+}
 .clearer { clear: both; }

@@ -299,11 +299,11 @@
 							if (!consolidateObj.sections[section][prId].outPrices) {
 								consolidateObj.sections[section][prId].outPrices = [];
 							}
+							if (!consolidateObj.sections[section][prId].sum) {
+								consolidateObj.sections[section][prId].sum = [];
+							}
 							if (!consolidateObj.sections[section][prId].inSum) {
 								consolidateObj.sections[section][prId].inSum = [];
-							}
-							if (!consolidateObj.sections[section][prId].outSum) {
-								consolidateObj.sections[section][prId].outSum = [];
 							}
 							if (!consolidateObj.withoutSection[prId]) {
 								consolidateObj.withoutSection[prId] = {};
@@ -317,23 +317,27 @@
 							if (!consolidateObj.withoutSection[prId].outPrices) {
 								consolidateObj.withoutSection[prId].outPrices = [];
 							}
+							if (!consolidateObj.withoutSection[prId].sum) {
+								consolidateObj.withoutSection[prId].sum = [];
+							}
 							if (!consolidateObj.withoutSection[prId].inSum) {
 								consolidateObj.withoutSection[prId].inSum = [];
-							}
-							if (!consolidateObj.withoutSection[prId].outSum) {
-								consolidateObj.withoutSection[prId].outSum = [];
 							}
 							consolidateObj.sections[section][prId].quantity += parseInt(quantity);
 							consolidateObj.withoutSection[prId].quantity += parseInt(quantity);
 							for (var i = 1; i <= parseInt(quantity); i++) {
+								var data = {};
+								data[parseInt(consolidateData[orderId].products[prId].inSum)] =  parseInt(consolidateData[orderId].products[prId].outSum);
+								consolidateObj.sections[section][prId].inSum.push(parseInt(consolidateData[orderId].products[prId].inSum));
 								consolidateObj.sections[section][prId].inPrices.push(parseInt(consolidateData[orderId].products[prId].inPrice));
 								consolidateObj.sections[section][prId].outPrices.push(parseInt(consolidateData[orderId].products[prId].outPrice));
-								consolidateObj.sections[section][prId].inSum.push(parseInt(consolidateData[orderId].products[prId].inSum));
-								consolidateObj.sections[section][prId].outSum.push(parseInt(consolidateData[orderId].products[prId].outSum));
+								consolidateObj.sections[section][prId].sum.push(data);
 								consolidateObj.withoutSection[prId].inPrices.push(parseInt(consolidateData[orderId].products[prId].inPrice));
 								consolidateObj.withoutSection[prId].outPrices.push(parseInt(consolidateData[orderId].products[prId].outPrice));
+								data = {};
+								data[parseInt(consolidateData[orderId].products[prId].inSum)] = parseInt(consolidateData[orderId].products[prId].outSum);
 								consolidateObj.withoutSection[prId].inSum.push(parseInt(consolidateData[orderId].products[prId].inSum));
-								consolidateObj.withoutSection[prId].outSum.push(parseInt(consolidateData[orderId].products[prId].outSum));
+								consolidateObj.withoutSection[prId].sum.push(data);
 							}
 						});
 					});
@@ -347,27 +351,36 @@
 				consolidateObj.productsDetails[prId].productName = obj.productName;
 			});
 		});
-		$('#addNewSection').remove();
-		
+		$('#addNewSection').parent().remove();
+		console.log(consolidateObj);
 		if (consolidateObj.sections) {
 			$.each(consolidateObj.sections, function (name, obj) {
 				if ('out' === name) {
+					$(buildConsolidateAverageOrderTr(obj)).insertAfter('.withoutSectionInOrderTable');
 					$(buildConsolidateOrderTr(obj)).insertAfter('.withoutSectionInOrderTable');
 				} else {
 					$('<tr class="orderTableSectionName" name="' + name + '"><th colspan="9">' + name + '</th></tr>').insertBefore('.withoutSectionInOrderTable');
+					$(buildConsolidateAverageOrderTr(obj)).insertAfter('[name="' + name + '"]');
 					$(buildConsolidateOrderTr(obj)).insertAfter('[name="' + name + '"]');
 				}
 			});
 		}
 	}
 	
-	function buildConsolidateOrderTr (obj) {
+	function buildConsolidateAverageOrderTr (obj) {
 		var count = 1, rows = $();
 		$.each(obj, function (prId, prObj) {
 			var product = consolidateObj.productsDetails[prId];
-			var inPrice = prObj.inPrices.sum() / prObj.inPrices.length;
-			var outPrice = prObj.outPrices.sum() / prObj.outPrices.length;
-			var tr = $('<tr></tr>');
+			var inPricesSum = 0;
+			var outPricesSum = 0;
+			var quantity = prObj.sum.length;
+			$.each(prObj.sum, function(num, obj) {
+				inPricesSum += parseInt(_.keys(obj)[0]);
+				outPricesSum += parseInt(obj[_.keys(obj)[0]]);
+			});
+			var inPrice = (inPricesSum / quantity).toFixed(2);
+			var outPrice = (outPricesSum / quantity).toFixed(2);
+			var tr = $('<tr></tr>' ).addClass('consAverageTr');
 			tr.append('<td>' + count + '</td><td>' + product.article + '</td><td>' + product.productName + '</td>');
 			tr.append('<td>шт</td><td>' + prObj.quantity + '</td><td>' + inPrice + '</td>');
 			tr.append('<td>' + parseInt(prObj.quantity) * inPrice + '</td>');
@@ -375,6 +388,29 @@
 			tr.append('<td>' + parseInt(prObj.quantity) * outPrice + '</td>');
 			rows.push.apply(rows, tr);
 			count++;
+		});
+		return rows;
+	}
+
+	function buildConsolidateOrderTr (obj) {
+		var rows = $();
+		$.each(obj, function (prId, prObj) {
+			var product = consolidateObj.productsDetails[prId];
+			var count = 1
+			var inSumArr = _.groupBy(prObj.inSum, function(num){ return num; });
+			$.each(prObj.sum, function(num, obj) {
+				var tr = $('<tr></tr>' ).addClass('consTr');
+				var quantity = 1;
+				var inPrice = parseInt(_.keys(obj)[0]);
+				var outPrice = obj[inPrice];
+				tr.append('<td>' + count + '</td><td>' + product.article + '</td><td>' + product.productName + '</td>');
+				tr.append('<td>шт</td><td>' + quantity + '</td><td>' + inPrice + '</td>');
+				tr.append('<td>' + quantity * inPrice + '</td>');
+				tr.append('<td>' + outPrice + '</td>');
+				tr.append('<td>' + quantity * outPrice + '</td>');
+				rows.push.apply(rows, tr);
+				count++;
+			});
 		});
 		return rows;
 	}
