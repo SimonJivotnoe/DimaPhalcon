@@ -77,6 +77,10 @@
 		}
 	};
 	var clickOnFormulaInput = false;
+	
+	Array.prototype.sum = function() {
+		return this.reduce(function(a,b){return a+b;});
+	};
 
 	// PRIVATE METHODS SECTION
 	function run() {
@@ -145,7 +149,7 @@
 		$.each($('.rowValue input'), function(num, obj){
 			var cell = $(obj).attr('data-cell');
 			$('[data-cellarticle="' + cell + '"]').text($(obj).val());
-		})
+		});
 	}
 
 	var orderPlaceholder = {
@@ -171,6 +175,12 @@
 	
 	var notIncludeInCell = ['KIM1', 'PR1', 'SUM1', 'PR2', 'SUM2'];
 	// ORDERS
+	
+	var consolidateObj = {
+		sections: {},
+		withoutSection: {},
+		productsDetails: {}
+	};
 	/*
 	 * 
 	 * @param {type} map
@@ -261,6 +271,112 @@
 		}
 		$(scope ).closest('tr' ).remove();
 		saveOrderMap(JSON.stringify(getOrderMap()), true);
+	}
+	
+	function buildConsolidateOrder (consolidateData) {
+		consolidateObj = {
+			sections: {},
+			withoutSection: {},
+			productsDetails: {}
+		};
+		$.each(consolidateData, function (orderId, obj) {
+			$.each(obj.map, function (section, secObj) {
+				if (_.size(secObj)) {
+					$.each(secObj, function (num, detSec) {
+						$.each(detSec, function (prId, quantity) {
+							if (!consolidateObj.sections[section]) {
+								consolidateObj.sections[section] = {};
+							}
+							if (!consolidateObj.sections[section][prId]) {
+								consolidateObj.sections[section][prId] = {};
+							}
+							if (!consolidateObj.sections[section][prId].quantity) {
+								consolidateObj.sections[section][prId].quantity = 0;
+							}
+							if (!consolidateObj.sections[section][prId].inPrices) {
+								consolidateObj.sections[section][prId].inPrices = [];
+							}
+							if (!consolidateObj.sections[section][prId].outPrices) {
+								consolidateObj.sections[section][prId].outPrices = [];
+							}
+							if (!consolidateObj.sections[section][prId].inSum) {
+								consolidateObj.sections[section][prId].inSum = [];
+							}
+							if (!consolidateObj.sections[section][prId].outSum) {
+								consolidateObj.sections[section][prId].outSum = [];
+							}
+							if (!consolidateObj.withoutSection[prId]) {
+								consolidateObj.withoutSection[prId] = {};
+							}
+							if (!consolidateObj.withoutSection[prId].quantity) {
+								consolidateObj.withoutSection[prId].quantity = 0;
+							}
+							if (!consolidateObj.withoutSection[prId].inPrices) {
+								consolidateObj.withoutSection[prId].inPrices = [];
+							}
+							if (!consolidateObj.withoutSection[prId].outPrices) {
+								consolidateObj.withoutSection[prId].outPrices = [];
+							}
+							if (!consolidateObj.withoutSection[prId].inSum) {
+								consolidateObj.withoutSection[prId].inSum = [];
+							}
+							if (!consolidateObj.withoutSection[prId].outSum) {
+								consolidateObj.withoutSection[prId].outSum = [];
+							}
+							consolidateObj.sections[section][prId].quantity += parseInt(quantity);
+							consolidateObj.withoutSection[prId].quantity += parseInt(quantity);
+							for (var i = 1; i <= parseInt(quantity); i++) {
+								consolidateObj.sections[section][prId].inPrices.push(parseInt(consolidateData[orderId].products[prId].inPrice));
+								consolidateObj.sections[section][prId].outPrices.push(parseInt(consolidateData[orderId].products[prId].outPrice));
+								consolidateObj.sections[section][prId].inSum.push(parseInt(consolidateData[orderId].products[prId].inSum));
+								consolidateObj.sections[section][prId].outSum.push(parseInt(consolidateData[orderId].products[prId].outSum));
+								consolidateObj.withoutSection[prId].inPrices.push(parseInt(consolidateData[orderId].products[prId].inPrice));
+								consolidateObj.withoutSection[prId].outPrices.push(parseInt(consolidateData[orderId].products[prId].outPrice));
+								consolidateObj.withoutSection[prId].inSum.push(parseInt(consolidateData[orderId].products[prId].inSum));
+								consolidateObj.withoutSection[prId].outSum.push(parseInt(consolidateData[orderId].products[prId].outSum));
+							}
+						});
+					});
+				}
+			});
+			$.each(obj.products, function (prId, obj) {
+				if (!consolidateObj.productsDetails[prId]) {
+					consolidateObj.productsDetails[prId] = {};
+				}
+				consolidateObj.productsDetails[prId].article = obj.article;
+				consolidateObj.productsDetails[prId].productName = obj.productName;
+			});
+		});
+		$('#addNewSection').remove();
+		
+		if (consolidateObj.sections) {
+			$.each(consolidateObj.sections, function (name, obj) {
+				if ('out' === name) {
+					$(buildConsolidateOrderTr(obj)).insertAfter('.withoutSectionInOrderTable');
+				} else {
+					$('<tr class="orderTableSectionName" name="' + name + '"><th colspan="9">' + name + '</th></tr>').insertBefore('.withoutSectionInOrderTable');
+					$(buildConsolidateOrderTr(obj)).insertAfter('[name="' + name + '"]');
+				}
+			});
+		}
+	}
+	
+	function buildConsolidateOrderTr (obj) {
+		var count = 1, rows = $();
+		$.each(obj, function (prId, prObj) {
+			var product = consolidateObj.productsDetails[prId];
+			var inPrice = prObj.inPrices.sum() / prObj.inPrices.length;
+			var outPrice = prObj.outPrices.sum() / prObj.outPrices.length;
+			var tr = $('<tr></tr>');
+			tr.append('<td>' + count + '</td><td>' + product.article + '</td><td>' + product.productName + '</td>');
+			tr.append('<td>шт</td><td>' + prObj.quantity + '</td><td>' + inPrice + '</td>');
+			tr.append('<td>' + parseInt(prObj.quantity) * inPrice + '</td>');
+			tr.append('<td>' + outPrice + '</td>');
+			tr.append('<td>' + parseInt(prObj.quantity) * outPrice + '</td>');
+			rows.push.apply(rows, tr);
+			count++;
+		});
+		return rows;
 	}
 	
 	/*
@@ -1816,7 +1932,7 @@
 					method: 'GET',
 					data: {orderId: orderId}
 				} ).then( function ( data )
-				{console.log(data);
+				{
 					if (true === data.success) {
 						$('#kimTab, #kim').removeClass('active');
 						$('.currentTabRight' )
@@ -1858,9 +1974,15 @@
 					method: 'GET',
 					data: {orderId: orderId}
 				} ).then( function ( data )
-				{
+				{console.log(data.consolidateData);
 					if (data.success) {
 						$('#orderTableWrapper').html(addRightTabContentTableHandler($(data.html)));
+						if (data.consolidateData) {
+							$('#saveOrderInDBWrapper').hide();
+							$('#consOrderButtonsWrapper').show();
+							buildConsolidateOrder(data.consolidateData);
+							console.log(consolidateObj);
+						}
 						setOrderSum();
 						showBody();
 						$(function () {

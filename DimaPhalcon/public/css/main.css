@@ -642,4 +642,9 @@ table.rc-table-resizing thead > th > a {
 .inputOrderDetails {
     width: 75%;
 }
+#consOrderButtonsWrapper {
+    display: none;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
 .clearer { clear: both; }

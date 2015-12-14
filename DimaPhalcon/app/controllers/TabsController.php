@@ -510,47 +510,83 @@ class TabsController extends \Phalcon\Mvc\Controller
                 return false;
             }
             $substObj = new Substitution();
-            if ('FALSE' === $order->getConsolidate()) {
-                $res = array('%SECTIONS%' => '', '%WITHOUT_SECTIONS%' => '');
-                $map = json_decode($order->getMap());
-                $moveTo = array();
-                $productObj = new ProductsController;
-                $currentSection = '';
-                if ('' !== $map && null !== $map) {
-                    $orderObj = new OrderController;
-                    foreach ($map as $key => $val) {
-                        if ('out' === $key && count($val)) {
-                            $i = 1;
-                            foreach ($val as $num => $obj) {
-                                foreach ($obj as $productId => $quantity) {
-                                    $res['%WITHOUT_SECTIONS%'] .= $productObj->createProductInOrder($productId, $quantity, $orderId, $i, 'withoutSectionRow', $map, 'out');
-                                }
-                                $i++;
-                            }
-                        } else if ('out' !== $key) {
-                            if (!count($val)) {
-                                $currentSection = $key;
-                            }
-                            $res['%SECTIONS%'] .= '<tr class="orderTableSectionName" name="' . $key . '">
-                        <th colspan="9"><span class="orderSectionName" contenteditable="true">' . $key . '</span></th><td><span class="glyphicon glyphicon-remove removeRowSection" name="' . $key . '" aria-hidden="true"></span></td></tr>';
-                            if (count($val)) {
-                                $i = 1;
-                                foreach ($val as $num => $obj) {
-                                    foreach ($obj as $productId => $quantity) {
-                                        $res['%SECTIONS%'] .= $productObj->createProductInOrder($productId, $quantity, $orderId, $i, 'orderTableSection', $map, $key);
+            $consolidateData = false;
+            if ('TRUE' === $order->getConsolidate()) {
+                $consolidateData = [];
+                if (null === $order->getMap()) {
+                    
+                }
+                $consolidateOrdersObj = ConsolidateOrders::find(array("order_id = '$orderId'"));
+                if (false !== $consolidateOrdersObj) {
+                    foreach ($consolidateOrdersObj as $val) {
+                        $consOrderId = $val->getConsOrderId();
+                        $orderObj = Orders::findFirst($consOrderId);
+                        if (false !== $orderObj) {
+                            $consolidateData[$consOrderId] = ['map' => json_decode($orderObj->getMap())];
+                            $consolidateData[$consOrderId]['products'] = [];
+                            $prInOrder = Productinorder::find(array("orderId = '$consOrderId'"));
+                            if (false !== $prInOrder) {
+                                foreach ($prInOrder as $obj) {
+                                    $alwaysInTable = json_decode($obj->getAlwaysInTable());
+                                    $prId = $obj->getProductId();
+                                    $consolidateData[$consOrderId]['products'][$prId] = [
+                                        'inSum' => $alwaysInTable->{'3'}->{'%INPUT_VALUE%'},
+                                        'outSum' => $alwaysInTable->{'5'}->{'%INPUT_VALUE%'},
+                                        'inPrice' => $alwaysInTable->{'2'}->{'%INPUT_VALUE%'},
+                                        'outPrice' => $alwaysInTable->{'4'}->{'%INPUT_VALUE%'}
+                                    ];
+                                    $prDetObj = Products::findFirst(array("product_id = '$prId'"));
+                                    if (false !== $prDetObj) {
+                                        $consolidateData[$consOrderId]['products'][$prId]['article'] = $prDetObj->getArticle();
+                                        $consolidateData[$consOrderId]['products'][$prId]['productName'] = $prDetObj->getProductName();
                                     }
-                                    $i++;
                                 }
-                            } else if (!count($val)) {
-                                $moveTo[$key] = array();
                             }
                         }
                     }
                 }
-                $this->response->setJsonContent(['html' => $substObj->subHTMLReplace('orderTable.html', $res), 'success' => true]);
+            } 
+            $res = array('%SECTIONS%' => '', '%WITHOUT_SECTIONS%' => '');
+            $map = json_decode($order->getMap());
+            $moveTo = array();
+            $productObj = new ProductsController;
+            $currentSection = '';
+            if ('' !== $map && null !== $map) {
+                $orderObj = new OrderController;
+                foreach ($map as $key => $val) {
+                    if ('out' === $key && count($val)) {
+                        $i = 1;
+                        foreach ($val as $num => $obj) {
+                            foreach ($obj as $productId => $quantity) {
+                                $res['%WITHOUT_SECTIONS%'] .= $productObj->createProductInOrder($productId, $quantity, $orderId, $i, 'withoutSectionRow', $map, 'out');
+                            }
+                            $i++;
+                        }
+                    } else if ('out' !== $key) {
+                        if (!count($val)) {
+                            $currentSection = $key;
+                        }
+                        $res['%SECTIONS%'] .= '<tr class="orderTableSectionName" name="' . $key . '">
+                    <th colspan="9"><span class="orderSectionName" contenteditable="true">' . $key . '</span></th><td><span class="glyphicon glyphicon-remove removeRowSection" name="' . $key . '" aria-hidden="true"></span></td></tr>';
+                        if (count($val)) {
+                            $i = 1;
+                            foreach ($val as $num => $obj) {
+                                foreach ($obj as $productId => $quantity) {
+                                    $res['%SECTIONS%'] .= $productObj->createProductInOrder($productId, $quantity, $orderId, $i, 'orderTableSection', $map, $key);
+                                }
+                                $i++;
+                            }
+                        } else if (!count($val)) {
+                            $moveTo[$key] = array();
+                        }
+                    }
+                }
+            }
+            $this->response->setJsonContent(['html' => $substObj->subHTMLReplace('orderTable.html', $res), 'success' => true, 'consolidateData' => $consolidateData]);
+            /*if ('FALSE' === $order->getConsolidate()) {
             } else {
                 $this->response->setJsonContent(['html' => 'test', 'success' => true]);
-            }
+            }*/
             return $this->response;
 
         } else {
