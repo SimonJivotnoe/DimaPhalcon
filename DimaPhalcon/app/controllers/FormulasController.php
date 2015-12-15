@@ -24,10 +24,14 @@ class FormulasController extends \Phalcon\Mvc\Controller
                 if ('cell' === $k) {
                     if ('' !== $v) {
                         $formulasRes .= '<span class="glyphicon glyphicon-retweet cellBind" aria-hidden="true"> '.$v.'</span>
-                        <span class="glyphicon glyphicon-remove removeFormula" aria-hidden="true"></span></li>';
+                        <span class="glyphicon glyphicon-pencil editFormula" aria-hidden="true"></span>
+                        <span class="glyphicon glyphicon-remove removeFormula" aria-hidden="true"></span>
+                        </li>';
                     } else {
                         $formulasRes .= '<span class="glyphicon glyphicon-resize-small bindFormulaWithCell" aria-hidden="true"></span><span class="addAvailableCellList"></span>'
-                                . '<span class="glyphicon glyphicon-remove removeFormula" aria-hidden="true"></span></li>';
+                            .'<span class="glyphicon glyphicon-pencil editFormula" aria-hidden="true"></span>'
+                                . '<span class="glyphicon glyphicon-remove removeFormula" aria-hidden="true"></span>
+                                </li>';
                     }
                 }
             }

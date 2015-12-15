@@ -348,22 +348,24 @@
 			});
 		});
 		$('#addNewSection').parent().remove();
-		console.log(consolidateObj);
 		if (consolidateObj.sections) {
 			$.each(consolidateObj.sections, function (name, obj) {
 				if ('out' === name) {
-					$(buildConsolidateAverageOrderTr(obj)).insertAfter('.withoutSectionInOrderTable');
-					$(buildConsolidateOrderTr(obj)).insertAfter('.withoutSectionInOrderTable');
+					$(buildConsolidateAverageOrderTr(obj, 'consAverageTr')).insertAfter('.withoutSectionInOrderTable');
+					$(buildConsolidateOrderTr(obj, 'consTr')).insertAfter('.withoutSectionInOrderTable');
 				} else {
 					$('<tr class="orderTableSectionName" name="' + name + '"><th colspan="9">' + name + '</th></tr>').insertBefore('.withoutSectionInOrderTable');
-					$(buildConsolidateAverageOrderTr(obj)).insertAfter('[name="' + name + '"]');
-					$(buildConsolidateOrderTr(obj)).insertAfter('[name="' + name + '"]');
+					$(buildConsolidateAverageOrderTr(obj, 'consAverageTr')).insertAfter('[name="' + name + '"]');
+					$(buildConsolidateOrderTr(obj, 'consTr')).insertAfter('[name="' + name + '"]');
 				}
 			});
+			$(buildConsolidateAverageOrderTr(consolidateObj.withoutSection, 'consWithoutSectionAverageTr')).insertAfter('.withoutSectionInOrderTable');
+			$(buildConsolidateOrderTr(consolidateObj.withoutSection, 'consWithoutSectionTr')).insertAfter('.withoutSectionInOrderTable');
+
 		}
 	}
 	
-	function buildConsolidateAverageOrderTr (obj) {
+	function buildConsolidateAverageOrderTr (obj, trClass) {
 		var count = 1, rows = $();
 		$.each(obj, function (prId, prObj) {
 			var product = consolidateObj.productsDetails[prId];
@@ -376,7 +378,7 @@
 			});
 			var inPrice = (inPricesSum / quantity).toFixed(2);
 			var outPrice = (outPricesSum / quantity).toFixed(2);
-			var tr = $('<tr></tr>' ).addClass('consAverageTr');
+			var tr = $('<tr></tr>' ).addClass(trClass);
 			tr.append('<td>' + count + '</td><td>' + product.article + '</td><td>' + product.productName + '</td>');
 			tr.append('<td>шт</td><td>' + prObj.quantity + '</td><td>' + inPrice + '</td>');
 			tr.append('<td>' + parseInt(prObj.quantity) * inPrice + '</td>');
@@ -388,7 +390,7 @@
 		return rows;
 	}
 
-	function buildConsolidateOrderTr (obj) {
+	function buildConsolidateOrderTr (obj, trClass) {
 		var rows = $();
 		var count = 1;
 		$.each(obj, function (prId, prObj) {
@@ -401,9 +403,9 @@
 				sum.splice(0, 1);
 				var compare = _.clone(sum);
 				$.each(compare, function(i, iObj){
-					if (parseInt(_.keys(iObj)[0]) === parseInt(_.keys(temp)[0]) && parseInt(obj[_.keys(iObj)[0]]) === parseInt(obj[_.keys(temp)[0]])) {
+					if (parseInt(_.keys(iObj)[0]) === parseInt(_.keys(temp)[0]) && parseInt(iObj[_.keys(iObj)[0]]) === parseInt(temp[_.keys(temp)[0]])) {
 						quantity++;
-						sum.splice(i, 1);
+						sum.splice(0, 1);
 					}
 				});
 				if (!sumRes[quantity]) {
@@ -415,7 +417,7 @@
 			});
 			$.each(sumRes, function(quantity, arr) {
 				$.each(arr, function(num, obj) {
-					var tr = $('<tr></tr>' ).addClass('consTr');
+					var tr = $('<tr></tr>' ).addClass(trClass);
 					var inPrice = parseInt(_.keys(obj)[0]);
 					var outPrice = obj[inPrice];
 					tr.append('<td>' + count + '</td><td>' + product.article + '</td><td>' + product.productName + '</td>');
@@ -1064,8 +1066,9 @@
 					$( '#formulasList' )
 						.append('<li class="list-group-item formula"><span class="formulaValue">'
 						+ $( '#addFormulaInputPr' ).val() + '<span class="glyphicon glyphicon-resize-small bindFormulaWithCell" aria-hidden="true"></span></span><span class="addAvailableCellList">' + PRODUCT.addAvailableCellList($( '#addFormulaInputPr' ).val()) + '</span>' +
-						'<span class="glyphicon glyphicon-remove removeFormula" aria-hidden="true"></span></li>');
+						'<span class="glyphicon glyphicon-pencil editFormula" aria-hidden="true"></span><span class="glyphicon glyphicon-remove removeFormula" aria-hidden="true"></span></li>');
 					$('.removeFormula' ).hide();
+					$('.editFormula' ).hide();
 					PRODUCT.cancelInputFormula();
 					$( '#addFormulaInputPr' ).val('');
 					PRODUCT.addNewFormula(PRODUCT.getFormulasList, true);
@@ -1172,7 +1175,9 @@
 			
 			// hide all removeFormula icons
 			.find('.removeFormula' ).hide().end()
-			
+
+			.find('.editFormula' ).hide().end()
+
 			.find('.bindFormulaWithCell').click(function() {
 				var li = $(this).closest('li'),
 					cellStatus = li.find('.addAvailableCellList option:selected').attr('val'),
@@ -1204,15 +1209,24 @@
 					setTimeout(function(){ PRODUCT.addNewFormula(PRODUCT.getFormulasList, flag); }, 400);
 				});
 			})
-	
+
+			.on('click', '.editFormula', function() {
+				var formula = $(this ).closest('li' ).find('.formulaValue' ).text();
+				$(this ).closest('li' ).find('.removeFormula' ).click();
+				$('#addFormulaInputPr' ).click().val(formula);
+				PRODUCT.toggleAddFormula();
+			})
+
 			.on('mouseover', '.list-group-item', function(){
 				$(this ).addClass('list-group-item-info');
 				$(this ).find('.removeFormula' ).show();
+				$(this ).find('.editFormula' ).show();
 			})
 
 			.on('mouseleave', '.list-group-item', function(){
 				$(this ).removeClass('list-group-item-info');
 				$(this ).find('.removeFormula' ).hide();
+				$(this ).find('.editFormula' ).hide();
 			})
 
 			.on('mouseover', '.glyphicon-retweet', function(){
@@ -1335,16 +1349,52 @@
 				if ($(this).hasClass('uniquePrices')) {
 					$(this).removeClass('uniquePrices');
 					$(this).text('Уникальные цены');
-					$('.consAverageTr').show();
-					$('.consTr').hide();
+					if ($('#consRemoveSections').hasClass('showSections')) {
+						$('.consTr, .consAverageTr, .consWithoutSectionTr').hide();
+						$('.consWithoutSectionAverageTr').show();
+					} else {
+						$('.consTr, .consWithoutSectionTr, .consWithoutSectionAverageTr').hide();
+						$('.consAverageTr').show();
+					}
 				} else {
 					$(this).addClass('uniquePrices');
 					$(this).text('Средние цены');
-					$('.consAverageTr').hide();
-					$('.consTr').show();
+					if ($('#consRemoveSections').hasClass('showSections')) {
+						$('.consTr, .consAverageTr, .consWithoutSectionAverageTr').hide();
+						$('.consWithoutSectionTr').show();
+					} else {
+						$('.consAverageTr, .consWithoutSectionTr, .consWithoutSectionAverageTr').hide();
+						$('.consTr').show();
+					}
 				}
 			}).end()
-			
+
+			.find('#consRemoveSections').click(function () {
+				if ($(this).hasClass('showSections')) {
+					$(this).removeClass('showSections');
+					$(this).text('Убрать разделы');
+					$('.orderTableSectionName' ).show();
+					if ($('#consAveragePrices').hasClass('uniquePrices')) {
+						$('.consWithoutSectionTr, .consAverageTr, .consWithoutSectionAverageTr').hide();
+						$('.consTr').show();
+					} else {
+						$('.consWithoutSectionTr, .consTr, .consWithoutSectionAverageTr').hide();
+						$('.consAverageTr').show();
+					}
+				} else {
+					$(this).addClass('showSections');
+					$(this).text('Показать разделы');
+					$('.orderTableSectionName' ).hide();
+					if ($('#consAveragePrices').hasClass('uniquePrices')) {
+						$('.consAverageTr, .consTr, .consWithoutSectionAverageTr').hide();
+						$('.consWithoutSectionTr').show();
+					} else {
+						$('.consWithoutSectionTr, .consTr, .consAverageTr').hide();
+						$('.consWithoutSectionAverageTr').show();
+					}
+				}
+			}).end()
+
 			.find('#orderEstimateInput, #orderDateInput').on('keyup, click, change', function() {
 				var obj = ORDER.createJSONFromOrderDescription();
 				ORDER.changeOrderDetails(
@@ -1756,6 +1806,8 @@
 					MAIN.curTabName = 'a[href="#' + MAIN.curTabId + '"] .tabName';
 					MAIN.productId = productId;
                     MAIN.detailsForArticle = data.detailsForArticle;
+					MAIN.isArticle = data.article;
+					MAIN.metallId = data.metallId;
 
 					if (!data.article){
 						kim = $('.listOfKim option:selected' ).attr('kim');
@@ -1768,7 +1820,7 @@
 						$('.rowValueInput').removeClass('rowValueInput');
 						$('.cellBind').removeClass('cellBind');
 						$('.glyphicon-retweet').removeClass('glyphicon-retweet');
-						$('.removeFormula').remove();
+						$('.removeFormula, .editFormula').remove();
 						$('#metallHistorySelect option:last-child' ).prop('selected', true);
 						recalculateArticleTable();
 					}
@@ -1786,6 +1838,8 @@
 					$(function () {
 						$('[data-toggle="tooltip"]').tooltip();
 					});
+					console.log(data);
+					console.log(MAIN);
 				});
 			},
 
@@ -1903,7 +1957,7 @@
 				}).then(function (  )
 				{
 					if ('kim' !== nextActiveTab) {
-						 TABS.getRightTabContentOrderDetails(productId, nextActiveTab);
+						 TABS.getRightTabContentOrderDetails(productId, 'or' + nextActiveTab);
 						 TABS.getRightTabContentTable(productId);
 					}
 				});
@@ -2040,14 +2094,13 @@
 					method: 'GET',
 					data: {orderId: orderId}
 				} ).then( function ( data )
-				{console.log(data.consolidateData);
+				{
 					if (data.success) {
 						$('#orderTableWrapper').html(addRightTabContentTableHandler($(data.html)));
 						if (data.consolidateData) {
 							$('#saveOrderInDBWrapper').hide();
 							$('#consOrderButtonsWrapper').show();
 							buildConsolidateOrder(data.consolidateData);
-							console.log(consolidateObj);
 						}
 						setOrderSum();
 						showBody();
@@ -2716,6 +2769,9 @@
 								'border': '3px solid hsl(0, 69%, 22%)',
 								'border-radius': '2px'
 							});
+					}
+					if (MAIN.isArticle && (obj.metallId === MAIN.metallId)) {
+						TABS.getLeftTabContent(MAIN.productId, MAIN.curTabId);
 					}
 				});
 			},

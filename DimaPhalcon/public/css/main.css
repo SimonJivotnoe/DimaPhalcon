@@ -651,7 +651,7 @@ table.rc-table-resizing thead > th > a {
     width: 236px !important;
     height: 30px !important;
 }
-.consTr {
+.consTr, .consWithoutSectionAverageTr, .consWithoutSectionTr {
     display: none;
 }
 .clearer { clear: both; }

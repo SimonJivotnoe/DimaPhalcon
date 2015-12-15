@@ -169,7 +169,10 @@ class TabsController extends \Phalcon\Mvc\Controller
                 'html'              => $tabContent,
                 'article'           => $articleFlag,
                 'css'               => $css,
-                'detailsForArticle' => (object)$detailsForArticle]);
+                'detailsForArticle' => (object)$detailsForArticle,
+                'metallId'          => $productMetall
+                ]
+            );
             return $this->response;
         } else {
             $this->response->redirect('');
@@ -361,9 +364,16 @@ class TabsController extends \Phalcon\Mvc\Controller
                         $changeActiveStatus->setActive(1)->save();
                     }
                     if ('draft' === $orderObj->getStatus()) {
-                        $prInOrderObj = Productinorder::find(array("orderId = '$orderID'"));
-                        foreach ($prInOrderObj as $obj) {
-                            $obj->delete();
+                        if ('TRUE' === $orderObj->getConsolidate()) {
+                            $consObj = ConsolidateOrders::find(array("order_id = '$orderID'"));
+                            foreach ($consObj as $obj) {
+                                $obj->delete();
+                            }
+                        } else {
+                            $prInOrderObj = Productinorder::find(array("orderId = '$orderID'"));
+                            foreach ($prInOrderObj as $obj) {
+                                $obj->delete();
+                            }
                         }
                         $orderObj->delete();
                     }
