@@ -651,4 +651,7 @@ table.rc-table-resizing thead > th > a {
     width: 236px !important;
     height: 30px !important;
 }
+.consTr {
+    display: none;
+}
 .clearer { clear: both; }

@@ -77,10 +77,6 @@
 		}
 	};
 	var clickOnFormulaInput = false;
-	
-	Array.prototype.sum = function() {
-		return this.reduce(function(a,b){return a+b;});
-	};
 
 	// PRIVATE METHODS SECTION
 	function run() {
@@ -394,22 +390,42 @@
 
 	function buildConsolidateOrderTr (obj) {
 		var rows = $();
+		var count = 1;
 		$.each(obj, function (prId, prObj) {
 			var product = consolidateObj.productsDetails[prId];
-			var count = 1
-			var inSumArr = _.groupBy(prObj.inSum, function(num){ return num; });
-			$.each(prObj.sum, function(num, obj) {
-				var tr = $('<tr></tr>' ).addClass('consTr');
+			var sumRes = {};
+			var sum = _.clone(prObj.sum);
+			$.each(sum, function(num, obj) {
+				var temp = _.clone(sum[0]);
 				var quantity = 1;
-				var inPrice = parseInt(_.keys(obj)[0]);
-				var outPrice = obj[inPrice];
-				tr.append('<td>' + count + '</td><td>' + product.article + '</td><td>' + product.productName + '</td>');
-				tr.append('<td>шт</td><td>' + quantity + '</td><td>' + inPrice + '</td>');
-				tr.append('<td>' + quantity * inPrice + '</td>');
-				tr.append('<td>' + outPrice + '</td>');
-				tr.append('<td>' + quantity * outPrice + '</td>');
-				rows.push.apply(rows, tr);
-				count++;
+				sum.splice(0, 1);
+				var compare = _.clone(sum);
+				$.each(compare, function(i, iObj){
+					if (parseInt(_.keys(iObj)[0]) === parseInt(_.keys(temp)[0]) && parseInt(obj[_.keys(iObj)[0]]) === parseInt(obj[_.keys(temp)[0]])) {
+						quantity++;
+						sum.splice(i, 1);
+					}
+				});
+				if (!sumRes[quantity]) {
+					sumRes[quantity] = [];
+				}
+				if (_.size(temp)) {
+					sumRes[quantity].push(temp);
+				}
+			});
+			$.each(sumRes, function(quantity, arr) {
+				$.each(arr, function(num, obj) {
+					var tr = $('<tr></tr>' ).addClass('consTr');
+					var inPrice = parseInt(_.keys(obj)[0]);
+					var outPrice = obj[inPrice];
+					tr.append('<td>' + count + '</td><td>' + product.article + '</td><td>' + product.productName + '</td>');
+					tr.append('<td>шт</td><td>' + quantity + '</td><td>' + inPrice + '</td>');
+					tr.append('<td>' + quantity * inPrice + '</td>');
+					tr.append('<td>' + outPrice + '</td>');
+					tr.append('<td>' + quantity * outPrice + '</td>');
+					rows.push.apply(rows, tr);
+					count++;
+				});
 			});
 		});
 		return rows;
@@ -1314,7 +1330,21 @@
 					}
 				);
 			}).end()
-
+			
+			.find('#consAveragePrices').click(function () {
+				if ($(this).hasClass('uniquePrices')) {
+					$(this).removeClass('uniquePrices');
+					$(this).text('Уникальные цены');
+					$('.consAverageTr').show();
+					$('.consTr').hide();
+				} else {
+					$(this).addClass('uniquePrices');
+					$(this).text('Средние цены');
+					$('.consAverageTr').hide();
+					$('.consTr').show();
+				}
+			}).end()
+			
 			.find('#orderEstimateInput, #orderDateInput').on('keyup, click, change', function() {
 				var obj = ORDER.createJSONFromOrderDescription();
 				ORDER.changeOrderDetails(
