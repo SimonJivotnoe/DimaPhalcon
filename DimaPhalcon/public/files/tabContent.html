@@ -6,6 +6,15 @@
         %SAVE_IN_DB%
     </div>
 </div>
+<div class="col-md-12">
+    <div class="upload-wrapper">
+        <button type="button" class="btn btn-success btn-sm" id="uploadImageProduct"><span class="glyphicon glyphicon-upload" aria-hidden="true"></span>  Загрузить картинку</button>
+        <div class="upload-image" style="display:none"></div>
+        <input type="file" id="input-file-upload" style="display:none" />
+    </div>
+    <div id="productPicture"></div>
+</div>
+<div id="server-response"><!-- Json response from server --></div>
 <div class="col-md-12" id="productArticleWrapper">
 Артикул : <span id="productArticle"></span><span class="bg-primary">%ARTICLE_BTN%</span>
 </div>

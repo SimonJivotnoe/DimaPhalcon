@@ -221,6 +221,26 @@ class ProductsController extends \Phalcon\Mvc\Controller
         }
     }
     
+    public function uploadImageAction () {
+        if ($this->request->isAjax() && $this->request->isPost()) {
+            $tmp_name = $_FILES['image_data']['tmp_name'];
+            $this->response->setContentType('application/json', 'UTF-8');
+            //$this->response->setJsonContent(base64_encode(file_get_contents($prId['tmp_name'])));
+            move_uploaded_file($tmp_name, 'img/test.jpg');
+            $this->response->setJsonContent($_FILES['image_data']);
+            return $this->response;
+            $pr->setStatus('save');
+            if ($pr->save() == false) {
+                $this->response->setJsonContent(false);
+            } else {
+                $this->response->setJsonContent(true);
+            }
+            return $this->response;
+        } else {
+            $this->response->redirect('');
+        }
+    }
+    
     public function createTableRes($table, $template){
         $substObj = new Substitution();
         $tabContArr = [];

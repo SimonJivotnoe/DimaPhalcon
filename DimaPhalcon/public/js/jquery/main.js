@@ -282,7 +282,6 @@ $( document ).ready( function ()
 			rows = $('#fileManagerOrdersTable tr:gt(0)');
 		MENU.searchInTable(rows, text);
 	});
-
 	/*$(function(){
 		var self;
 		var formula;

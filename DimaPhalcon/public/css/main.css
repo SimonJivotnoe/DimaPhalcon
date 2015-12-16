@@ -654,4 +654,8 @@ table.rc-table-resizing thead > th > a {
 .consTr, .consWithoutSectionAverageTr, .consWithoutSectionTr {
     display: none;
 }
+#previewPDFModal .modal-dialog  {
+    width:595px;
+    height: 842px;
+}
 .clearer { clear: both; }

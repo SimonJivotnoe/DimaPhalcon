@@ -554,6 +554,10 @@
 		pdfMake.createPdf(docDefinition).download(pdfName);
 	}
 	
+	function previewPDF () {
+		$('#previewPDFModal').modal('show');
+	}
+	
 	/*
 	 * logging errors
 	 * @param {type} php
@@ -727,6 +731,64 @@
 	function addLeftTabContentHandler(html) {
 		//console.log(html.find('#addFormulaBtnPr' ));
 		html
+			.find('#uploadImageProduct').click(function (e) {
+				$('#input-file-upload').trigger('click');
+			}).end()
+			
+			.find('#input-file-upload').change(function () {
+				if(!window.File || !window.FileReader || !window.FileList || !window.Blob){
+					window.alert("Can't upload! Your browser does not support File API!");
+					return;
+				}
+				
+				var fileReader = new FileReader();
+				var filter = /^(?:image\/bmp|image\/cis\-cod|image\/gif|image\/ief|image\/jpeg|image\/jpeg|image\/jpeg|image\/pipeg|image\/png|image\/svg\+xml|image\/tiff|image\/x\-cmu\-raster|image\/x\-cmx|image\/x\-icon|image\/x\-portable\-anymap|image\/x\-portable\-bitmap|image\/x\-portable\-graymap|image\/x\-portable\-pixmap|image\/x\-rgb|image\/x\-xbitmap|image\/x\-xpixmap|image\/x\-xwindowdump)$/i;
+				if (this.files.length == 0) {
+					window.alert('Нужно выбрать файл');
+					return;
+				}
+				var file = this.files[0];
+				var size = file.size;
+				var type = file.type;
+				
+				if (!filter.test(type)) {
+					window.alert('Формат файла не поддерживается');
+					return;
+				}
+				
+				var max = 2000000;
+				if (size > max) {
+					window.alert('Файл больше чем 2 MB');
+					return;
+				}
+				
+				$('.upload-image').show();
+				
+				$('#uploadImageProduct').hide();
+				
+				var formData = new FormData();
+				formData.append('image_data', file);
+				
+				$.ajax({
+					type: 'POST',
+					processData: false,
+					contentType: false,
+					url: URL_PRODUCT + 'uploadImage',
+					data: formData,
+					dataType: 'json',
+					success: function(responce) {
+						$('.upload-image').hide();
+						$('#uploadImageProduct').show();
+						
+						if ('success' === responce) {
+							$('#productPicture').html(responce.msg);
+						} else {
+							$('#productPicture').html(responce.msg);
+						}
+					}
+				});
+			}).end()
+			
 			// edit & save categories list content
 			.filter('.blockNameAndCat')
 				.mouseover(function(){
@@ -1315,7 +1377,7 @@
 				ORDER.saveOrderInDB();
 			} ).end()
 			
-			.find('#saveOrderToPDF').click(saveOrderToPDF).end()
+			.find('#previewPDF').click(previewPDF).end()
 			
 			.find('#checkAllInOrder').click(function () {
 				ORDER.checkAllInOrderDetails(true);
