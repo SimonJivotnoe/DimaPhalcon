@@ -189,7 +189,8 @@ class ProductsController extends \Phalcon\Mvc\Controller
                     ->setFormulas($pr->getFormulas())
                     ->setCreated(new RawValue('default'))
                     ->setStatus(new RawValue('default'))
-                    ->setTemplate(new RawValue('default'));
+                    ->setTemplate(new RawValue('default'))
+                    ->setImage(new RawValue('default'));
             if ($product->save() == false) {
                 $message = $product->getMessages();
                 $this->response->setJsonContent(false);
@@ -221,21 +222,39 @@ class ProductsController extends \Phalcon\Mvc\Controller
         }
     }
     
-    public function uploadImageAction () {
+    public function uploadImageAction ($productId) {
         if ($this->request->isAjax() && $this->request->isPost()) {
-            $tmp_name = $_FILES['image_data']['tmp_name'];
+            $prObj = Products::findFirst(array("product_id = '$productId'"));
             $this->response->setContentType('application/json', 'UTF-8');
-            //$this->response->setJsonContent(base64_encode(file_get_contents($prId['tmp_name'])));
-            move_uploaded_file($tmp_name, 'img/test.jpg');
-            $this->response->setJsonContent($_FILES['image_data']);
-            return $this->response;
-            $pr->setStatus('save');
-            if ($pr->save() == false) {
+            if ($prObj == false) {
                 $this->response->setJsonContent(false);
-            } else {
-                $this->response->setJsonContent(true);
+                return $this->response;
             }
-            return $this->response;
+            if(isset($_POST) && isset($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest'){
+                if(!isset($_FILES['image_data']) || !is_uploaded_file($_FILES['image_data']['tmp_name'])){
+                    $this->response->setJsonContent(false);
+                    return $this->response;
+                }
+                $tmp_name = $_FILES['image_data']['tmp_name'];
+
+                //get mime type from valid image
+                if(!getimagesize($tmp_name)){
+                    $this->response->setJsonContent(false);
+                    return $this->response;
+                }
+                move_uploaded_file($tmp_name, 'img/' . $productId . '.jpg');
+                $prObj->setImage($productId . '.jpg');
+                if ($prObj->save()) {
+                    $this->response->setJsonContent(true);
+                    return $this->response;
+                } else {
+                    $this->response->setJsonContent(false);
+                    return $this->response;
+                }
+            } else {
+                $this->response->setJsonContent(false);
+                return $this->response;
+            }
         } else {
             $this->response->redirect('');
         }

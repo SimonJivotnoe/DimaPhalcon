@@ -137,6 +137,11 @@ class TabsController extends \Phalcon\Mvc\Controller
                 $prStatus = '' ;
                 $css = 'addedToOrder';
             }
+            $image = '';
+            if (null !== $product->getImage()) {
+                $date = new DateTime();
+                $image = '<div id="productPicture"><img src="img/' . $product->getImage() . '?' . $date->getTimestamp() .'" style="max-width: 100%; max-height: 100%;"></div>';
+            }
             $categoriesList = $categoryObj->createCategoriesList($productCatId, $articleFlag);
             $kimList = $kimObj->createKimList($productKim, $articleFlag);
             $metallList = $metallsObj->createMetallsList($productMetall, $articleFlag);
@@ -149,6 +154,7 @@ class TabsController extends \Phalcon\Mvc\Controller
             $productDetails = array(
                 '%PRODUCT_NAME%'    => $prName,
                 '%ARTICLE_BTN%'     => $article,
+                '%IMAGE%'           => $image,
                 '%CATEGORIES%'      => $categoriesList['html'],
                 '%KIM_LIST%'        => $kimList['html'],
                 '%METALL_LIST%'     => $metallList['html'],
@@ -170,7 +176,8 @@ class TabsController extends \Phalcon\Mvc\Controller
                 'article'           => $articleFlag,
                 'css'               => $css,
                 'detailsForArticle' => (object)$detailsForArticle,
-                'metallId'          => $productMetall
+                'metallId'          => $productMetall,
+                'image'             => $image
                 ]
             );
             return $this->response;
@@ -248,7 +255,8 @@ class TabsController extends \Phalcon\Mvc\Controller
                     ->setAlwaysintable($alwaysInTable)
                     ->setCreated(new RawValue('default'))
                     ->setStatus(new RawValue('default'))
-                    ->setTemplate(new RawValue('default'));
+                    ->setTemplate(new RawValue('default'))
+                    ->setImage(new RawValue('default'));
             //$product->setTableContent(new RawValue('default'));
             if ($product->save() == false) {
                 $message = $product->getMessages();
@@ -452,16 +460,16 @@ class TabsController extends \Phalcon\Mvc\Controller
                             'orderId' => 'kim'
                         ];
                         $tabArr['or' . $val->getId()] = (object) [
-                                    'active' => $val->getActive(),
-                                    'orderId' => $val->getOrderId()
-                                ];
+                            'active'  => $val->getActive(),
+                            'orderId' => $val->getOrderId()
+                        ];
                     }
                     $this->response->setJsonContent([
-                        'tabs' => true,
-                        'tabId' => $active,
+                        'tabs'    => true,
+                        'tabId'   => $active,
                         'orderId' => $orderId,
-                        'obj' => (object) $tabArr,
-                        'html' => $tabsLi
+                        'obj'     => (object) $tabArr,
+                        'html'    => $tabsLi
                         ]
                     );
                     return $this->response;
@@ -499,7 +507,7 @@ class TabsController extends \Phalcon\Mvc\Controller
             $orderDescription = $orderObj->getOrderDescriptionObj();
 
             $res = $substObj->subHTMLReplace('rightTabContent.html', $rows);
-            $this->response->setJsonContent(['success' => true, 'html' => $res, 'orderDescription' => $orderDescription]);
+            $this->response->setJsonContent(['success' => true, 'html' => $res, 'orderDescription' => $orderDescription, 'consolidate' => $order->getConsolidate()]);
 
             return $this->response;
         } else {
@@ -547,8 +555,10 @@ class TabsController extends \Phalcon\Mvc\Controller
                                     ];
                                     $prDetObj = Products::findFirst(array("product_id = '$prId'"));
                                     if (false !== $prDetObj) {
+                                        $metallId = $prDetObj->getMetall();
+                                        $metallObj = Metalls::findFirst($metallId);
                                         $consolidateData[$consOrderId]['products'][$prId]['article'] = $prDetObj->getArticle();
-                                        $consolidateData[$consOrderId]['products'][$prId]['productName'] = $prDetObj->getProductName();
+                                        $consolidateData[$consOrderId]['products'][$prId]['productName'] = $prDetObj->getProductName() . ' из ' . $metallObj->getName();
                                     }
                                 }
                             }

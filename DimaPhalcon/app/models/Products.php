@@ -1,7 +1,4 @@
 <?php
-use Phalcon\Mvc\Model,
-    Phalcon\Validation,
-    Phalcon\Mvc\Model\Validator\Uniqueness;
 
 class Products extends \Phalcon\Mvc\Model
 {
@@ -77,6 +74,12 @@ class Products extends \Phalcon\Mvc\Model
      * @var string
      */
     protected $template;
+
+    /**
+     *
+     * @var string
+     */
+    protected $image;
 
     /**
      * Method to set the value of field product_id
@@ -235,6 +238,19 @@ class Products extends \Phalcon\Mvc\Model
     }
 
     /**
+     * Method to set the value of field image
+     *
+     * @param string $image
+     * @return $this
+     */
+    public function setImage($image)
+    {
+        $this->image = $image;
+
+        return $this;
+    }
+
+    /**
      * Returns the value of field product_id
      *
      * @return integer
@@ -355,18 +371,15 @@ class Products extends \Phalcon\Mvc\Model
     }
 
     /**
-     * Validations and business logic
+     * Returns the value of field image
+     *
+     * @return string
      */
-    /*public function validation()
+    public function getImage()
     {
-        $this->validate(
-            new Uniqueness(
-                array(
-                    'field'  => 'article',
-                    'message' => 'This name already exists'
-                )));
-        return $this->validationHasFailed() != true;
-    }*/
+        return $this->image;
+    }
+
     /**
      * Initialize method for model.
      */

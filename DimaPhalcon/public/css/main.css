@@ -658,4 +658,10 @@ table.rc-table-resizing thead > th > a {
     width:595px;
     height: 842px;
 }
+#productPicture {
+    height: 300px;
+    margin-top: 5px;
+    margin-bottom: 5px;
+    text-align: center;
+}
 .clearer { clear: both; }

@@ -383,7 +383,7 @@
 			tr.append('<td>шт</td><td>' + prObj.quantity + '</td><td>' + inPrice + '</td>');
 			tr.append('<td>' + parseInt(prObj.quantity) * inPrice + '</td>');
 			tr.append('<td>' + outPrice + '</td>');
-			tr.append('<td>' + parseInt(prObj.quantity) * outPrice + '</td>');
+			tr.append('<td class="outputSumInOrder">' + parseInt(prObj.quantity) * outPrice + '</td>');
 			rows.push.apply(rows, tr);
 			count++;
 		});
@@ -424,7 +424,7 @@
 					tr.append('<td>шт</td><td>' + quantity + '</td><td>' + inPrice + '</td>');
 					tr.append('<td>' + quantity * inPrice + '</td>');
 					tr.append('<td>' + outPrice + '</td>');
-					tr.append('<td>' + quantity * outPrice + '</td>');
+					tr.append('<td class="outputSumInOrder">' + quantity * outPrice + '</td>');
 					rows.push.apply(rows, tr);
 					count++;
 				});
@@ -686,11 +686,11 @@
 		res.out = [];
 		var name;
 		$.each($('#orderTable tr'), function(key, val) {
-			switch ($(val ).attr('class')) {
+			switch ($(val).attr('class')) {
 				case 'skip':
 					break;
 				case 'orderTableSectionName':
-					name = $(val ).attr('name');
+					name = $(val).attr('name');
 					res[name] = [];
 					break;
 				case 'orderTableSection orderRow':
@@ -717,7 +717,7 @@
 		});
 		return res;
 	}
-	
+
 	function enableDisableButton (id, button) {
 		if (0 < id.size()) {
 			if (button.prop('disabled')) {
@@ -750,7 +750,7 @@
 				var file = this.files[0];
 				var size = file.size;
 				var type = file.type;
-				
+
 				if (!filter.test(type)) {
 					window.alert('Формат файла не поддерживается');
 					return;
@@ -768,22 +768,18 @@
 				
 				var formData = new FormData();
 				formData.append('image_data', file);
-				
 				$.ajax({
 					type: 'POST',
 					processData: false,
 					contentType: false,
-					url: URL_PRODUCT + 'uploadImage',
+					url: URL_PRODUCT + 'uploadImage/' + MAIN.productId,
 					data: formData,
 					dataType: 'json',
-					success: function(responce) {
+					success: function(data) {
 						$('.upload-image').hide();
-						$('#uploadImageProduct').show();
-						
-						if ('success' === responce) {
-							$('#productPicture').html(responce.msg);
-						} else {
-							$('#productPicture').html(responce.msg);
+						$('#uploadImageProduct, #productPicture').show();
+						if (data) {
+							TABS.getLeftTabContent(MAIN.productId, MAIN.curTabId);
 						}
 					}
 				});
@@ -1414,9 +1410,11 @@
 					if ($('#consRemoveSections').hasClass('showSections')) {
 						$('.consTr, .consAverageTr, .consWithoutSectionTr').hide();
 						$('.consWithoutSectionAverageTr').show();
+						store.set('consOrder', 'consWithoutSectionAverageTr');
 					} else {
 						$('.consTr, .consWithoutSectionTr, .consWithoutSectionAverageTr').hide();
 						$('.consAverageTr').show();
+						store.set('consOrder', 'consAverageTr');
 					}
 				} else {
 					$(this).addClass('uniquePrices');
@@ -1424,9 +1422,11 @@
 					if ($('#consRemoveSections').hasClass('showSections')) {
 						$('.consTr, .consAverageTr, .consWithoutSectionAverageTr').hide();
 						$('.consWithoutSectionTr').show();
+						store.set('consOrder', 'consWithoutSectionTr');
 					} else {
 						$('.consAverageTr, .consWithoutSectionTr, .consWithoutSectionAverageTr').hide();
 						$('.consTr').show();
+						store.set('consOrder', 'consTr');
 					}
 				}
 			}).end()
@@ -1439,9 +1439,11 @@
 					if ($('#consAveragePrices').hasClass('uniquePrices')) {
 						$('.consWithoutSectionTr, .consAverageTr, .consWithoutSectionAverageTr').hide();
 						$('.consTr').show();
+						store.set('consOrder', 'consTr');
 					} else {
 						$('.consWithoutSectionTr, .consTr, .consWithoutSectionAverageTr').hide();
 						$('.consAverageTr').show();
+						store.set('consOrder', 'consAverageTr');
 					}
 				} else {
 					$(this).addClass('showSections');
@@ -1450,9 +1452,11 @@
 					if ($('#consAveragePrices').hasClass('uniquePrices')) {
 						$('.consAverageTr, .consTr, .consWithoutSectionAverageTr').hide();
 						$('.consWithoutSectionTr').show();
+						store.set('consOrder', 'consWithoutSectionTr');
 					} else {
 						$('.consWithoutSectionTr, .consTr, .consAverageTr').hide();
 						$('.consWithoutSectionAverageTr').show();
+						store.set('consOrder', 'consWithoutSectionAverageTr');
 					}
 				}
 			}).end()
@@ -2114,7 +2118,7 @@
 					method: 'GET',
 					data: {orderId: orderId}
 				} ).then( function ( data )
-				{
+				{console.log(data);
 					if (true === data.success) {
 						$('#kimTab, #kim').removeClass('active');
 						$('.currentTabRight' )
@@ -2125,6 +2129,11 @@
 						MAIN.curTabRightId = tabId;
 						MAIN.curTabRightName = 'a[href="#' + MAIN.curTabRightId + '"] .tabName';
 						MAIN.orderId = orderId;
+						if ('TRUE' === data.consolidate) {
+							store.set('consOrder', 'consAverageTr');
+						} else {
+							store.remove('consOrder')
+						}
 						$(function () {
 							$('[data-toggle="tooltip"]').tooltip();
 							$.each(data.orderDescription, function(name, arr) {
