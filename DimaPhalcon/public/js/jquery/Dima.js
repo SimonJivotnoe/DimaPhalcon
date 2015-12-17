@@ -429,16 +429,16 @@
 	function buildConsOrderTr (trClass, count, article, productName, quantity, inPrice, outPrice) {
 		var tr = $('<tr></tr>' ).addClass(trClass);
 		tr.append('<td class="orderNumberTd">' + count + '</td><td class="orderArticleTd">' + article + '</td><td class="orderProductNameTd">' + productName + '</td>');
-		tr.append('<td class="orderUnitOfMeasureTd">шт</td><td class="quantityInOrderTd">' + quantity + '</td><td class="inputPriceInOrder">' + inPrice + '</td>');
-		tr.append('<td class="inputSumInOrder">' + quantity * inPrice + '</td>');
-		tr.append('<td class="outputPriceInOrder">' + outPrice + '</td>');
-		tr.append('<td class="outputSumInOrder">' + quantity * outPrice + '</td>');
+		tr.append('<td class="orderUnitOfMeasureTd">шт</td><td class="quantityInOrderTd">' + quantity + '</td><td class="inputPriceInOrder" data-uah="' + inPrice + '">' + inPrice + '</td>');
+		tr.append('<td class="inputSumInOrder" data-uah="' + quantity * inPrice + '">' + quantity * inPrice + '</td>');
+		tr.append('<td class="outputPriceInOrder" data-uah="' + outPrice + '">' + outPrice + '</td>');
+		tr.append('<td class="outputSumInOrder" data-uah="' + quantity * outPrice + '">' + quantity * outPrice + '</td>');
 		return tr;
 	}
-	
+
 	function buildOrderDetailsPDF () {
 		var i = -1;
-		var tempObj = {widths: [ 300, 300 ],table: {body: []}, layout: 'noBorders', fontSize: 11};
+		var tempObj = {widths: [ '50%', '50%' ],table: {body: []}, layout: 'noBorders', fontSize: 11};
 		var body = tempObj.table.body; 
 		var tempDetArr = [];
 		$.each($('.orderDetailsItem'), function(num, obj) {
@@ -447,7 +447,11 @@
 			var check = $(obj).find('label input').prop('checked');
 			var itemDetails = $(obj).find('.inputOrderDetails').val();
 			if (check) {
-				tempDetArr.push(itemText + itemDetails);
+				if ('orderNumber' === itemName) {
+					tempDetArr.push(itemText + $('[aria-controls=' + MAIN.curTabRightId + ']').find('.tabNameRight').text());
+				} else {
+					tempDetArr.push(itemText + itemDetails);
+				}
 				i++;
 			}
 			if ((0 < i && 1 === (i % 2)) || num === $('.orderDetailsItem').length - 1) {
@@ -513,7 +517,10 @@
 		$.each(preWidths, function (num, px) {
 			tempObj.table.widths.push(px / hundredWidth * 100 + '%');
 		});
-		$.each(getExtendedOrderMap(), function (section, arr) {
+		var totalProducts = 0;
+		var totalQuantity = 0;
+		var orderMap = getExtendedOrderMap();
+		$.each(orderMap, function (section, arr) {
 			if ('out' !== section) {
 				body.push(
 					[
@@ -526,16 +533,24 @@
 				);
 				$.each(arr, function (id, obj) {
 					var tr = [];
+					totalProducts++;
 					$.each(obj, function (td, text) {
 						if (-1 !== checkedOrderHead.indexOf(td)) {
-							tr.push(text);	
+							if ('orderProductNameTd' === td) {
+								tr.push({text: text, alignment: 'left'});
+							} else {
+								tr.push(text);
+							}
+							if ('quantityInOrderTd' === td) {
+								totalQuantity += parseInt(text);
+							}
 						}
 					});
 					body.push(tr);
 				});
 			}
 		});
-		$.each(getExtendedOrderMap(), function (section, arr) {
+		$.each(orderMap, function (section, arr) {
 			if ('out' === section) {
 				body.push(
 					[
@@ -548,16 +563,35 @@
 				);
 				$.each(arr, function (id, obj) {
 					var tr = [];
+					totalProducts++;
 					$.each(obj, function (td, text) {
 						if (-1 !== checkedOrderHead.indexOf(td)) {
-							tr.push(text);	
+							if ('orderProductNameTd' === td) {
+								tr.push({text: text, alignment: 'left'});
+							} else {
+								tr.push(text);
+							}
+							if ('quantityInOrderTd' === td) {
+								totalQuantity += parseInt(text);
+							}
 						}
 					});
 					body.push(tr);
 				});
 			}
 		});
-		
+		content.push({
+			table: {
+				body: [
+					[{text: 'Итого: ', style: {bold: true}}, {text: $('#orderSum' ).text()}],
+					[{text: 'Сумма с дисконтом: ', style: {bold: true}}, {text: $('#orderSumWithDiscount' ).text()}],
+					[{text: 'Количество изделий: ', style: {bold: true}}, {text: '' + totalQuantity + 'шт'}]
+				],
+				alignment: 'right'
+			},
+			margin: [315, 20, 0, 0],
+			layout: 'noBorders'
+		});
 		var docDefinition = {
 			//pageOrientation: 'landscape',
 			//pageMargins: [ 20, 5, 20, 0 ],
@@ -727,7 +761,15 @@
 					var obj = {}, data = {};
 					$.each($('td', val), function(k, v) {
 						if ('orderTableActions' !== $(v).attr('class')) {
-							data[$(v).attr('class')] = $(v).text();
+							if (!extraClass) {
+								if ('quantityInOrderTd' === $(v).attr('class')) {
+									data[$(v).attr('class')] = $('input', v).val();
+								} else {
+									data[$(v).attr('class')] = $(v).text();
+								}
+							} else {
+								data[$(v).attr('class')] = $(v).text();
+							}
 						}
 					});
 					res[name].push(data);
@@ -736,7 +778,15 @@
 					var obj = {}, data = {};
 					$.each($('td', val), function(k, v) {
 						if ('orderTableActions' !== $(v).attr('class')) {
-							data[$(v).attr('class')] = $(v).text();
+							if (!extraClass) {
+								if ('quantityInOrderTd' === $(v).attr('class')) {
+									data[$(v).attr('class')] = $('input', v).val();
+								} else {
+									data[$(v).attr('class')] = $(v).text();
+								}
+							} else {
+								data[$(v).attr('class')] = $(v).text();
+							}
 						}
 					});
 					res.out.push(data);
@@ -1542,9 +1592,9 @@
 				outPrice = parseFloat(row.find('.outputPriceInOrder').text());
 				inSum = quantity * inPrice;
 				outSum = quantity * outPrice;
-				row.find('.inputSumInOrder').html(inSum.toFixed(2)).
+				row.find('.inputSumInOrder' ).attr('data-uah', inSum.toFixed(2)).html(inSum.toFixed(2)).
 					end().
-					find('.outputSumInOrder').html(outSum.toFixed(2));
+					find('.outputSumInOrder').attr('data-uah', outSum.toFixed(2)).html(outSum.toFixed(2));
 				map = JSON.stringify(getOrderMap());
 				saveOrderMap(map, false);
 				setOrderSum();
