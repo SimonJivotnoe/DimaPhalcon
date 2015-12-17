@@ -664,4 +664,7 @@ table.rc-table-resizing thead > th > a {
     margin-bottom: 5px;
     text-align: center;
 }
+#orderCurrenciesWrapper {
+    margin-bottom: 5px;
+}
 .clearer { clear: both; }

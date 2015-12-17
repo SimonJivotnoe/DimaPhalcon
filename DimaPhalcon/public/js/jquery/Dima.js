@@ -202,11 +202,16 @@
 	 */
 	function setOrderSum () {
 		var orderSum = 0;
+		var currency = ' грн';
 		$.each($('.outputSumInOrder'), function(num, obj) {
 			orderSum += parseInt($(obj).text());
 		});
-		$('#orderSum').text(orderSum);
-		$('#orderSumWithDiscount').text(orderSum - orderSum * parseInt($('#changeDiscount').val())/100);
+		
+		if ($('#orderCurrencyUSDToggle').hasClass('activeCurrency')) {
+			currency = ' USD';
+		}
+		$('#orderSum').text(orderSum + currency);
+		$('#orderSumWithDiscount').text(orderSum - orderSum * parseInt($('#changeDiscount').val())/100 + currency);
 	}
 	
 	/*
@@ -351,16 +356,16 @@
 		if (consolidateObj.sections) {
 			$.each(consolidateObj.sections, function (name, obj) {
 				if ('out' === name) {
-					$(buildConsolidateAverageOrderTr(obj, 'consAverageTr')).insertAfter('.withoutSectionInOrderTable');
-					$(buildConsolidateOrderTr(obj, 'consTr')).insertAfter('.withoutSectionInOrderTable');
+					$(buildConsolidateAverageOrderTr(obj, 'withoutSectionRow orderRow consAverageTr')).insertAfter('.withoutSectionInOrderTable');
+					$(buildConsolidateOrderTr(obj, 'withoutSectionRow orderRow consTr')).insertAfter('.withoutSectionInOrderTable');
 				} else {
 					$('<tr class="orderTableSectionName" name="' + name + '"><th colspan="9">' + name + '</th></tr>').insertBefore('.withoutSectionInOrderTable');
-					$(buildConsolidateAverageOrderTr(obj, 'consAverageTr')).insertAfter('[name="' + name + '"]');
-					$(buildConsolidateOrderTr(obj, 'consTr')).insertAfter('[name="' + name + '"]');
+					$(buildConsolidateAverageOrderTr(obj, 'orderTableSection orderRow consAverageTr')).insertAfter('[name="' + name + '"]');
+					$(buildConsolidateOrderTr(obj, 'orderTableSection orderRow consTr')).insertAfter('[name="' + name + '"]');
 				}
 			});
-			$(buildConsolidateAverageOrderTr(consolidateObj.withoutSection, 'consWithoutSectionAverageTr')).insertAfter('.withoutSectionInOrderTable');
-			$(buildConsolidateOrderTr(consolidateObj.withoutSection, 'consWithoutSectionTr')).insertAfter('.withoutSectionInOrderTable');
+			$(buildConsolidateAverageOrderTr(consolidateObj.withoutSection, 'withoutSectionRow orderRow consWithoutSectionAverageTr')).insertAfter('.withoutSectionInOrderTable');
+			$(buildConsolidateOrderTr(consolidateObj.withoutSection, 'withoutSectionRow orderRow consWithoutSectionTr')).insertAfter('.withoutSectionInOrderTable');
 
 		}
 	}
@@ -378,13 +383,7 @@
 			});
 			var inPrice = (inPricesSum / quantity).toFixed(2);
 			var outPrice = (outPricesSum / quantity).toFixed(2);
-			var tr = $('<tr></tr>' ).addClass(trClass);
-			tr.append('<td>' + count + '</td><td>' + product.article + '</td><td>' + product.productName + '</td>');
-			tr.append('<td>шт</td><td>' + prObj.quantity + '</td><td>' + inPrice + '</td>');
-			tr.append('<td>' + parseInt(prObj.quantity) * inPrice + '</td>');
-			tr.append('<td>' + outPrice + '</td>');
-			tr.append('<td class="outputSumInOrder">' + parseInt(prObj.quantity) * outPrice + '</td>');
-			rows.push.apply(rows, tr);
+			rows.push.apply(rows, buildConsOrderTr(trClass, count, product.article, product.productName, parseInt(prObj.quantity), inPrice, outPrice));
 			count++;
 		});
 		return rows;
@@ -417,20 +416,49 @@
 			});
 			$.each(sumRes, function(quantity, arr) {
 				$.each(arr, function(num, obj) {
-					var tr = $('<tr></tr>' ).addClass(trClass);
 					var inPrice = parseInt(_.keys(obj)[0]);
 					var outPrice = obj[inPrice];
-					tr.append('<td>' + count + '</td><td>' + product.article + '</td><td>' + product.productName + '</td>');
-					tr.append('<td>шт</td><td>' + quantity + '</td><td>' + inPrice + '</td>');
-					tr.append('<td>' + quantity * inPrice + '</td>');
-					tr.append('<td>' + outPrice + '</td>');
-					tr.append('<td class="outputSumInOrder">' + quantity * outPrice + '</td>');
-					rows.push.apply(rows, tr);
+					rows.push.apply(rows, buildConsOrderTr(trClass, count, product.article, product.productName, quantity, inPrice, outPrice));
 					count++;
 				});
 			});
 		});
 		return rows;
+	}
+	
+	function buildConsOrderTr (trClass, count, article, productName, quantity, inPrice, outPrice) {
+		var tr = $('<tr></tr>' ).addClass(trClass);
+		tr.append('<td class="orderNumberTd">' + count + '</td><td class="orderArticleTd">' + article + '</td><td class="orderProductNameTd">' + productName + '</td>');
+		tr.append('<td class="orderUnitOfMeasureTd">шт</td><td class="quantityInOrderTd">' + quantity + '</td><td class="inputPriceInOrder">' + inPrice + '</td>');
+		tr.append('<td class="inputSumInOrder">' + quantity * inPrice + '</td>');
+		tr.append('<td class="outputPriceInOrder">' + outPrice + '</td>');
+		tr.append('<td class="outputSumInOrder">' + quantity * outPrice + '</td>');
+		return tr;
+	}
+	
+	function buildOrderDetailsPDF () {
+		var i = -1;
+		var tempObj = {widths: [ 300, 300 ],table: {body: []}, layout: 'noBorders', fontSize: 11};
+		var body = tempObj.table.body; 
+		var tempDetArr = [];
+		$.each($('.orderDetailsItem'), function(num, obj) {
+			var itemText = $(obj).find('label').text();
+			var itemName = $(obj).find('label input').attr('name');
+			var check = $(obj).find('label input').prop('checked');
+			var itemDetails = $(obj).find('.inputOrderDetails').val();
+			if (check) {
+				tempDetArr.push(itemText + itemDetails);
+				i++;
+			}
+			if ((0 < i && 1 === (i % 2)) || num === $('.orderDetailsItem').length - 1) {
+				body.push(tempDetArr);
+				tempDetArr = [];
+			}
+		});
+		if (1 === body[body.length - 1].length) {
+			body[body.length - 1].push('');
+		}
+		return tempObj;
 	}
 	
 	/*
@@ -443,46 +471,47 @@
 		if (!pdfName) {
 			pdfName = 'Ордер.pdf';
 		}
-		var content = [{ 
-				text: 'Счет-фактура №' + orderName, 
+		var content = [{
+				text: 'Счет-фактура №' + orderName,
 				style: 'header',
 				alignment: 'center',
 				margin: [0, 0, 0, 50]
 			}
 		];
-		var i = -1;
-		var tempObj = {alignment: 'justify', columns: []};
-		$.each($('.orderDetailsItem'), function(num, obj) {
-			var itemText = $(obj).find('label').text();
-			var itemName = $(obj).find('label input').attr('name');
-			var check = $(obj).find('label input').prop('checked');
-			var itemDetails = $(obj).find('.inputOrderDetails').val();
-			/*if ('date' === itemName || 'estimate' === itemName) {
-				itemDetails = $(obj).find('.inputOrderDetails').val();
-			}*/
-			if (check) {
-				tempObj.columns.push({text: itemText + itemDetails});
-				i++;
-			}
-			if ((0 < i && 1 === (i % 2)) || num === $('.orderDetailsItem').length - 1) {
-				content.push(_.clone(tempObj));
-				tempObj = {alignment: 'justify', columns: []};
-			}
-		});
-		tempObj = {table: {body: [[]]}, margin: [0, 30, 0, 30], alignment: 'center'};
+		
+		content.push(buildOrderDetailsPDF());
+		
+		var tempObj = {
+			table: {
+				body: [[]]
+			},
+			margin: [0, 30, 0, 30],
+			alignment: 'center',
+			style: {fontSize: 11}
+		};
 		var checkedOrderHead = [];
 		var body = tempObj.table.body;
+		var preWidths = [];
+		
 		$.each($('#orderHeadChecks input'), function(num, obj) {
 			var thText = $(obj).attr('data-head');
 			var thName = $(obj).attr('name');
 			var check = $(obj).prop('checked');
+			var width = $(obj).closest('th').width();
 			if (check) {
-				body[0].push(thText);
+				body[0].push({ text: thText, style: {bold: true, fontSize: 11, color: 'black'} });
 				checkedOrderHead.push(thName);
+				preWidths.push(width);
 			}
 			if (num === $('#orderHeadChecks input').length - 1) {
 				content.push(_.clone(tempObj));
 			}
+		});
+		
+		tempObj.table.widths = [];
+		var hundredWidth  =_.reduce(preWidths, function(memo, num){ return memo + num; }, 0);
+		$.each(preWidths, function (num, px) {
+			tempObj.table.widths.push(px / hundredWidth * 100 + '%');
 		});
 		$.each(getExtendedOrderMap(), function (section, arr) {
 			if ('out' !== section) {
@@ -528,6 +557,7 @@
 				});
 			}
 		});
+		
 		var docDefinition = {
 			//pageOrientation: 'landscape',
 			//pageMargins: [ 20, 5, 20, 0 ],
@@ -552,10 +582,6 @@
 			}
 		};
 		pdfMake.createPdf(docDefinition).download(pdfName);
-	}
-	
-	function previewPDF () {
-		$('#previewPDFModal').modal('show');
 	}
 	
 	/*
@@ -683,8 +709,12 @@
 	
 	function getExtendedOrderMap() {
 		var res = {};
-		res.out = [];
-		var name;
+		res.out = [];			
+		var name,
+			extraClass = '';
+		if (store.get('consOrder')) {
+			extraClass = ' ' + store.get('consOrder');
+		}
 		$.each($('#orderTable tr'), function(key, val) {
 			switch ($(val).attr('class')) {
 				case 'skip':
@@ -693,7 +723,7 @@
 					name = $(val).attr('name');
 					res[name] = [];
 					break;
-				case 'orderTableSection orderRow':
+				case 'orderTableSection orderRow' + extraClass:
 					var obj = {}, data = {};
 					$.each($('td', val), function(k, v) {
 						if ('orderTableActions' !== $(v).attr('class')) {
@@ -702,7 +732,7 @@
 					});
 					res[name].push(data);
 					break;
-				case 'withoutSectionRow orderRow':
+				case 'withoutSectionRow orderRow' + extraClass:
 					var obj = {}, data = {};
 					$.each($('td', val), function(k, v) {
 						if ('orderTableActions' !== $(v).attr('class')) {
@@ -1373,7 +1403,7 @@
 				ORDER.saveOrderInDB();
 			} ).end()
 			
-			.find('#previewPDF').click(previewPDF).end()
+			.find('#createPDF').click(saveOrderToPDF).end()
 			
 			.find('#checkAllInOrder').click(function () {
 				ORDER.checkAllInOrderDetails(true);
@@ -1436,11 +1466,15 @@
 					$(this).removeClass('showSections');
 					$(this).text('Убрать разделы');
 					$('.orderTableSectionName' ).show();
+					setTimeout(function () {
+						$('.orderTableSectionName').removeClass('skip');
+					}, 10);
 					if ($('#consAveragePrices').hasClass('uniquePrices')) {
 						$('.consWithoutSectionTr, .consAverageTr, .consWithoutSectionAverageTr').hide();
 						$('.consTr').show();
 						store.set('consOrder', 'consTr');
 					} else {
+						$('.orderTableSectionName' ).addClass('skip');
 						$('.consWithoutSectionTr, .consTr, .consWithoutSectionAverageTr').hide();
 						$('.consAverageTr').show();
 						store.set('consOrder', 'consAverageTr');
@@ -1448,7 +1482,7 @@
 				} else {
 					$(this).addClass('showSections');
 					$(this).text('Показать разделы');
-					$('.orderTableSectionName' ).hide();
+					$('.orderTableSectionName' ).addClass('skip').hide();
 					if ($('#consAveragePrices').hasClass('uniquePrices')) {
 						$('.consAverageTr, .consTr, .consWithoutSectionAverageTr').hide();
 						$('.consWithoutSectionTr').show();
@@ -1469,7 +1503,25 @@
 						orderDescr: obj
 					}
 				);
-			});
+			}).end()
+			
+			.find('#orderCurrencyUAHToggle').click(function () {
+				$('#orderCurrencyUAHToggle').addClass('activeCurrency');
+				$('#orderCurrencyUSDToggle').removeClass('activeCurrency');
+				$.each($('[data-uah]'), function (num, td) {
+					$(td).text($(td).attr('data-uah'));
+				});
+				setOrderSum();
+			}).end()
+			
+			.find('#orderCurrencyUSDToggle').click(function () {
+				$('#orderCurrencyUSDToggle').addClass('activeCurrency');
+				$('#orderCurrencyUAHToggle').removeClass('activeCurrency');
+				$.each($('[data-uah]'), function (num, td) {
+					$(td).text((parseInt($(td).attr('data-uah')) / parseInt($('#usdSet').val())).toFixed(2));
+				});
+				setOrderSum();
+			}).end();
 
 		return html;
 	}
@@ -1904,8 +1956,6 @@
 					$(function () {
 						$('[data-toggle="tooltip"]').tooltip();
 					});
-					console.log(data);
-					console.log(MAIN);
 				});
 			},
 
@@ -2118,7 +2168,7 @@
 					method: 'GET',
 					data: {orderId: orderId}
 				} ).then( function ( data )
-				{console.log(data);
+				{
 					if (true === data.success) {
 						$('#kimTab, #kim').removeClass('active');
 						$('.currentTabRight' )
