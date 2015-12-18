@@ -54,12 +54,18 @@ $( document ).ready( function ()
 	});
 	
 	$('#fontSizeTabs').change(function () {
+		var css = checkStorageCSS('.nav-tabs');
 		$('#testTab').css('font-size', $('#fontSizeTabs :selected').text());
+		css['.nav-tabs']['font-size'] = $('#fontSizeTabs :selected').text();
+		localStorage.customCSS = JSON.stringify(css);
 	});
 	$('#globalBodyColor').colorpicker({
 		color: $('body')[0].style.backgroundColor
     }).on('changeColor', function(ev) {
+		var css = checkStorageCSS('body');
 		$('body')[0].style.backgroundColor = ev.color.toHex();
+		css.body.backgroundColor = ev.color.toHex();
+		localStorage.customCSS = JSON.stringify(css);
 	});
 	$('#prefTabFontColor').colorpicker().on('changeColor', function(ev) {
 		$('#testTab li a').css('color', ev.color.toHex());
@@ -70,6 +76,18 @@ $( document ).ready( function ()
 	$('#prefInactiveTabColor').colorpicker().on('changeColor', function(ev) {
 		$('#testTab')[0].style.backgroundColor = ev.color.toHex();
 	});
+	
+	function checkStorageCSS (elem) {
+		if (!localStorage.customCSS) {
+			localStorage.customCSS = JSON.stringify({});
+		}
+		var css = JSON.parse(localStorage.customCSS);
+		if (!css[elem]) {
+			css[elem] = {};
+			localStorage.customCSS = JSON.stringify(css);
+		}
+		return JSON.parse(localStorage.customCSS);
+	}
 	
 	PREFERENCES.insertFontSizes(['.fontSizeSelect']);
 	// MENU

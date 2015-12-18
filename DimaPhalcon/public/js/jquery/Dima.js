@@ -601,6 +601,13 @@
 	 * @returns {boolean}
 	 */
 	function showBody() {
+		if (localStorage.customCSS) {
+			$.each(JSON.parse(localStorage.customCSS), function (elem, obj) {
+				$.each(obj, function (key, val) {
+					$(elem).css(key, val);
+				});
+			});
+		}
 		if ($('body').is(":visible")) {
 			return false;
 		}
