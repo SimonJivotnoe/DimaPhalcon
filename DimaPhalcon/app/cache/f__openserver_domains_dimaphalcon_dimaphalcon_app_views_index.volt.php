@@ -118,21 +118,6 @@
         </div><!-- /.modal-content -->
     </div><!-- /.modal-dialog -->
 </div>
-<div class="modal fade" id="previewPDFModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-      </div>
-      <div class="modal-body"  style="height: 842px;">
-        <p>One fine body&hellip;</p>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-danger btn-sm" id=""><span class="glyphicon glyphicon-print" aria-hidden="true"></span>  PDF</button>
-      </div>
-    </div>
-  </div>
-</div>
 <script src="js/jquery/jquery-1.11.2.min.js"></script>
 <script src="js/jquery/jquery-ui.js"></script>
 <script src="js/jquery/underscore.js"></script>
