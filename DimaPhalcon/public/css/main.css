@@ -2,6 +2,126 @@ body {
     display: none;
 }
 
+/* MENU ICONS */
+
+#menuIconsRight, #menuIconsBottom, #menuIconsLeft {
+    display: none;
+}
+
+#menuIconsTop {
+    
+}
+
+#creatingProductsWrapper {
+    display: none;
+}
+
+/* MAIN MENU */
+
+#mainMenuWrapper {
+    height: 100vh;
+    background-color: steelblue;
+}
+.mainMenuIcon {
+    height: 130px;
+    width: 210px !important;
+    text-align: center;
+    background-color: #2aabd2;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 20px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.5);
+    margin-right: 5px;
+}
+.mainMenuIcon span {
+    font-size: 70px;
+    margin-top: 5px;
+}
+
+#backIcon {
+    position: absolute;
+    left: 12%;
+    z-index: 5000;
+    opacity: 0.3;
+    background-color: #265a88;
+    width: 31px;
+    padding: 3px;
+    border-radius: 3px;
+    cursor: pointer;
+    font-size: 20px;
+    margin-top: -40px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.5);
+}
+#backIcon:hover {
+    opacity: 1;
+    color: aliceblue;
+}
+
+#prefIcon {
+    position: absolute;
+    left: 38%;
+    z-index: 5000;
+    opacity: 0.3;
+    background-color: steelblue;
+    width: 31px;
+    padding: 3px;
+    border-radius: 3px;
+    cursor: pointer;
+    font-size: 20px;
+    margin-top: -40px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.5);
+}
+#prefIcon:hover {
+    opacity: 1;
+    color: aliceblue;
+}
+
+#dbIcon {
+    position: absolute;
+    left: 44%;
+    z-index: 5000;
+    opacity: 0.3;
+    background-color: #eb9316;
+    width: 31px;
+    padding: 3px;
+    border-radius: 3px;
+    cursor: pointer;
+    font-size: 20px;
+    margin-top: -40px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.5);
+}
+#dbIcon:hover {
+    opacity: 1;
+    color: aliceblue;
+}
+
+#menuOpen {
+    position: absolute;
+    left: 50%;
+    z-index: 5000;
+    opacity: 0.3;
+    background-color: #2aabd2;
+    width: 31px;
+    padding: 3px;
+    border-radius: 3px;
+    cursor: pointer;
+    font-size: 20px;
+    margin-top: -40px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.5);
+}
+#menuOpen:hover {
+    opacity: 1;
+    color: aliceblue;
+}
+#runPreferences span{
+    /*font-size: 70px;
+    margin-top: 5px;*/
+}
+
+/* ORDER TABS*/
+#myTab, #rightTabs, #rightTabsContent, #leftTabsContent {
+    display: none;
+}
 html, body {
     height: 100%;
     min-height: 100%;
@@ -384,24 +504,7 @@ ol li:hover {
 #addNewSection:hover {
     color: green;
 }
-#menuOpen {
-    position: absolute;
-    left: 49%;
-    z-index: 5000;
-    opacity: 0.3;
-    background-color: #2aabd2;
-    width: 31px;
-    padding: 3px;
-    border-radius: 3px;
-    cursor: pointer;
-    font-size: 20px;
-    margin-top: -8px;
-    box-shadow: 0 0 10px rgba(0,0,0,0.5);
-}
-#menuOpen:hover {
-    opacity: 1;
-    color: aliceblue;
-}
+
 #orderDetailsWrapper {
     padding-top: 15px;
     margin-bottom: 15px;

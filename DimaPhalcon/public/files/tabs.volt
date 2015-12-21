@@ -9,7 +9,7 @@
         <li role="presentation" id="addNewTab"><a>+</a></li>
     </ul>
 
-    <div class="tab-content">
+    <div class="tab-content" id="leftTabsContent">
         <div role="tabpanel" class="tab-pane" id="preferences1">
             <div class="col-md-12">
                 <h4>

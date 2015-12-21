@@ -7,6 +7,7 @@
     <link href="css/pretty-split-pane.css" rel="stylesheet" type="text/css"/>
     <link href="css/main.css" rel="stylesheet" type="text/css"/>
     <link href="css/jquery-ui.css" rel="stylesheet" type="text/css"/>
+    <link href="css/hover-min.css" rel="stylesheet" type="text/css"/>
     <link href="js/jquery/colorpicker/dist/css/bootstrap-colorpicker.min.css" rel="stylesheet" type="text/css"/>
     <link rel="shortcut icon" type="image/x-icon" href="favicon.ico" />
     <!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">-->
@@ -14,16 +15,54 @@
 
 </head>
 <body>
-<div id="menuOpen"><span class="glyphicon glyphicon-folder-close" aria-hidden="true"></span></div>
-<div id="split-pane-1" class="split-pane fixed-left">
-    <div class="split-pane-component" id="left-component">
-        <div id="tabs"><?php echo $tabs; ?></div>
+    <div id="waitSpinner"></div>
+    <div class="col-md-12" id="mainMenuWrapper">
+        <div class="col-md-8 col-md-offset-4" style="margin-top: 25%;">
+            <div class="col-md-6 mainMenuIcon hvr-float-shadow btn-primary" id="runPreferences">
+                <span class="glyphicon glyphicon-cog" aria-hidden="true"></span>
+                <h4>Найстройки</h4>
+            </div>
+            <div class="col-md-6 mainMenuIcon hvr-float-shadow btn-warning" id="runDB">
+                <span class="glyphicon glyphicon-folder-open" aria-hidden="true"></span>
+                <h4>База Данных</h4>
+            </div>
+        </div>
+        <div class="col-md-8 col-md-offset-4" style="margin-top: 5px;">
+            <div class="col-md-6 mainMenuIcon hvr-float-shadow btn-info" id="runFM">
+                <span class="glyphicon glyphicon-duplicate" aria-hidden="true"></span>
+                <h4>Файловый Менеджер</h4>
+            </div>
+            <div class="col-md-6 mainMenuIcon hvr-float-shadow btn-success" id="runPR">
+                <span class="glyphicon glyphicon-check" aria-hidden="true"></span>
+                <h4>Создать заказ</h4>
+            </div>
+        </div>
     </div>
-    <div class="split-pane-divider" id="divider"></div>
-    <div class="split-pane-component" id="right-component">
-        <div id="tabsRight"><?php echo $tabsRight; ?></div>
+    <div id="menuIconsTop">
+        <div id="backIcon"><span class="glyphicon glyphicon-th-large" aria-hidden="true"></span></div>
+        <div id="prefIcon"><span class="glyphicon glyphicon-cog" aria-hidden="true"></span></div>
+        <div id="dbIcon"><span class="glyphicon glyphicon-folder-close" aria-hidden="true"></span></div>
+        <div id="menuOpen"><span class="glyphicon glyphicon-duplicate" aria-hidden="true"></span></div>
+       <!-- <div id="prIcon"><span class="glyphicon glyphicon-folder-close" aria-hidden="true"></span></div>-->
+        <div class="clearer"></div>
     </div>
-</div>
+        <div id="split-pane-1" class="split-pane fixed-left">
+            <div class="split-pane-component" id="left-component">
+                <div id="tabs">
+                    <div id="leftTabsSpinner"></div>
+                    <?php echo $tabs; ?>
+                </div>
+            </div>
+            <div class="split-pane-divider" id="divider"></div>
+            <div class="split-pane-component" id="right-component">
+                <div id="tabsRight">
+                    <div id="rightTabsSpinner"></div>
+                    <?php echo $tabsRight; ?>
+                </div>
+            </div>
+        </div>
+    <div id="creatingProductsWrapper">
+    </div>
 
 <div class="modal fade bs-example-modal-lg in" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" id="openMenuModal">
     <div class="modal-dialog modal-lg">
@@ -155,5 +194,6 @@
 <script src="js/jquery/jquery.resizableColumns.min.js"></script>
 <script src="js/jquery/jquery.fontselect.min.js"></script>
 <script src="js/jquery/colorpicker/dist/js/bootstrap-colorpicker.min.js"></script>
+<script src="js/jquery/spin.min.js"></script>
 </body>
 </html>

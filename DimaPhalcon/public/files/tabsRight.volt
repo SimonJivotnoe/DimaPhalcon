@@ -8,7 +8,7 @@
     </ul>
 </div>
 
-<div class="tab-content">
+<div class="tab-content" id="rightTabsContent">
     <div role="rightTabs" class="tab-pane active" id="kimTab">
         <div class="col-md-12">
             <h4>Категории <span class="glyphicon glyphicon-th-list" aria-hidden="true" data-toggle="collapse"

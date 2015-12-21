@@ -91,7 +91,54 @@ $( document ).ready( function ()
 	
 	PREFERENCES.insertFontSizes(['.fontSizeSelect']);
 	// MENU
-	$( "#menuOpen" )
+	$('#runPR').click(function () {
+		$('#mainMenuWrapper').fadeOut();
+		$('#creatingProductsWrapper').show();
+		setTimeout(function () {
+			TABS.getLeftTabsList();
+			TABS.getRightTabsList();
+		}, 500);
+		setTimeout(function(){ $('#backIcon, #prefIcon, #dbIcon, #menuOpen').animate( { "marginTop": "-8px" }, 300 ); }, 1000);
+	});
+	
+	// ICONS TOP MENU
+	$( "#backIcon" )
+		.mouseenter(function() {
+			MENU.onHoverElement({
+				scope: this,
+				css: { "marginTop": "0px" },
+				speed: 200
+			});
+		})
+		.mouseleave(function() {
+			MENU.onHoverElement({
+				scope: this,
+				css: { "marginTop": "-8px" },
+				speed: 200
+			});
+		})
+		.click(function(){
+		});
+
+	$( "#prefIcon" )
+		.mouseenter(function() {
+			MENU.onHoverElement({
+				scope: this,
+				css: { "marginTop": "0px" },
+				speed: 200
+			});
+		})
+		.mouseleave(function() {
+			MENU.onHoverElement({
+				scope: this,
+				css: { "marginTop": "-8px" },
+				speed: 200
+			});
+		})
+		.click(function(){
+		});
+
+	$( "#dbIcon" )
 		.mouseenter(function() {
 			MENU.onHoverElement({
 				scope: this,
@@ -107,6 +154,23 @@ $( document ).ready( function ()
 				speed: 200
 			});
 			$('span', this ).removeClass().addClass('glyphicon glyphicon-folder-close');
+		})
+		.click(function(){
+		});
+	$( "#menuOpen" )
+		.mouseenter(function() {
+			MENU.onHoverElement({
+				scope: this,
+				css: { "marginTop": "0px" },
+				speed: 200
+			});
+		})
+		.mouseleave(function() {
+			MENU.onHoverElement({
+				scope: this,
+				css: { "marginTop": "-8px" },
+				speed: 200
+			});
 		})
 		.click(function(){
 			MENU.createFileManager();

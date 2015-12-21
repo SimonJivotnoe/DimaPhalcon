@@ -76,12 +76,65 @@
 			emptyName: ' Задайте имя продукта! '
 		}
 	};
+	
 	var clickOnFormulaInput = false;
-
+	
+	var spinnerSettings = {
+		lines: 15 // The number of lines to draw
+		, length: 0 // The length of each line
+		, width: 10 // The line thickness
+		, radius: 23 // The radius of the inner circle
+		, scale: 1 // Scales overall size of the spinner
+		, corners: 1 // Corner roundness (0..1)
+		, color: '#000' // #rgb or #rrggbb or array of colors
+		, opacity: 0 // Opacity of the lines
+		, rotate: 0 // The rotation offset
+		, direction: 1 // 1: clockwise, -1: counterclockwise
+		, speed: 2.2 // Rounds per second
+		, trail: 47 // Afterglow percentage
+		, fps: 20 // Frames per second when using setTimeout() as a fallback for CSS
+		, zIndex: 2e9 // The z-index (defaults to 2000000000)
+		, className: 'spinner' // The CSS class to assign to the spinner
+		, top: '50%' // Top position relative to parent
+		, left: '50%' // Left position relative to parent
+		, shadow: false // Whether to render a shadow
+		, hwaccel: false // Whether to use hardware acceleration
+		, position: 'absolute' // Element positioning
+	};
+	var spinnerLeft;
+	var spinnerRight;
+	
 	// PRIVATE METHODS SECTION
 	function run() {
-		TABS.getLeftTabsList();
-		TABS.getRightTabsList();
+		spinnerLeft = new Spinner(spinnerSettings);
+		spinnerRight = new Spinner(spinnerSettings);
+		spinnerLeft.spin(document.getElementById('leftTabsSpinner'));
+		spinnerRight.spin(document.getElementById('rightTabsSpinner'));
+		var sector = localStorage.siteSector;
+		if (!sector) {
+			localStorage.siteSector = 'MENU';
+			/*TABS.getLeftTabsList();
+			TABS.getRightTabsList();*/
+		} else {
+			switch (sector) {
+				case 'MENU':
+					MENU.showMainMenu();
+					break;
+				case 'PR':
+					break;
+				case 'DB':
+					break;
+				case 'FM':
+					break;
+				case 'OR':
+					TABS.getLeftTabsList();
+					TABS.getRightTabsList();
+					break;
+				default:
+					TABS.getLeftTabsList();
+					TABS.getRightTabsList();
+			}
+		}
 	}
 	
 	/*
@@ -1952,6 +2005,8 @@
 					if (data.active && data.html) {
 						TABS.getLeftTabContent(data.productId, data.active);
 					} else {
+						$('#myTab, #leftTabsContent').fadeIn('slow');
+						setTimeout(function(){ spinnerLeft.stop(document.getElementById('leftTabsSpinner')); }, 200);
 						TABS.showPreferences();
 					}
 					$(function () {
@@ -2013,6 +2068,8 @@
 					$(function () {
 						$('[data-toggle="tooltip"]').tooltip();
 					});
+					$('#myTab, #leftTabsContent').fadeIn('slow');
+					setTimeout(function(){ spinnerLeft.stop(document.getElementById('leftTabsSpinner')); }, 200);
 				});
 			},
 
@@ -2188,11 +2245,10 @@
 					if (true === data && refresh) {
 						window.location.href = LOCATION;
 					}
-				})
+				});
 			},
 			
-			getRightTabsList: function ()
-			{
+			getRightTabsList: function () {
 				$.ajax( {
 					url   : URL_TABS + 'getRightTabsList',
 					method: 'GET'
@@ -2213,6 +2269,8 @@
 						return true;
 					}
 					TABS.showKim();
+					$('#rightTabs, #rightTabsContent').fadeIn('slow');
+					setTimeout(function(){ spinnerRight.stop(document.getElementById('orderSpinner')); }, 200);
 					$(function () {
 						$('[data-toggle="tooltip"]').tooltip();
 					});
@@ -2239,7 +2297,7 @@
 						if ('TRUE' === data.consolidate) {
 							store.set('consOrder', 'consAverageTr');
 						} else {
-							store.remove('consOrder')
+							store.remove('consOrder');
 						}
 						$(function () {
 							$('[data-toggle="tooltip"]').tooltip();
@@ -2288,6 +2346,8 @@
 								  //store: window.store
 								});
 						});
+						$('#rightTabs, #rightTabsContent').fadeIn('slow');
+						setTimeout(function(){ spinnerRight.stop(document.getElementById('orderSpinner')); }, 200);
 					}
 				});
 			},
@@ -3007,6 +3067,12 @@
 		},
 
 		menu: {
+			showMainMenu: function () {
+				showBody();
+				$('#creatingProductsWrapper, #menuIconsRight, #menuIconsBottom, #menuIconsLeft').hide();
+				$('#mainMenuWrapper').fadeIn();
+			},
+			
 			onHoverElement: function(obj){
 				var scope = obj.scope,
 					css = obj.css,
