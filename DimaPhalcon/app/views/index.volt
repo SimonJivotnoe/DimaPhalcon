@@ -17,7 +17,7 @@
 <body>
     <div id="waitSpinner"></div>
     <div class="col-md-12" id="mainMenuWrapper">
-        <div class="col-md-8 col-md-offset-4" style="margin-top: 25%;">
+        <div class="col-md-8 col-md-offset-4" style="margin-top: 18%;">
             <div class="col-md-6 mainMenuIcon hvr-float-shadow btn-primary" id="runPreferences">
                 <span class="glyphicon glyphicon-cog" aria-hidden="true"></span>
                 <h4>Найстройки</h4>
@@ -46,7 +46,7 @@
        <!-- <div id="prIcon"><span class="glyphicon glyphicon-folder-close" aria-hidden="true"></span></div>-->
         <div class="clearer"></div>
     </div>
-        <div id="split-pane-1" class="split-pane fixed-left">
+        <div id="creatingProductsWrapper" class="split-pane fixed-left">
             <div class="split-pane-component" id="left-component">
                 <div id="tabs">
                     <div id="leftTabsSpinner"></div>
@@ -61,8 +61,6 @@
                 </div>
             </div>
         </div>
-    <div id="creatingProductsWrapper">
-    </div>
 
 <div class="modal fade bs-example-modal-lg in" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" id="openMenuModal">
     <div class="modal-dialog modal-lg">

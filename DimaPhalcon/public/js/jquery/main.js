@@ -92,11 +92,11 @@ $( document ).ready( function ()
 	PREFERENCES.insertFontSizes(['.fontSizeSelect']);
 	// MENU
 	$('#runPR').click(function () {
+		localStorage.siteSector = 'OR';
 		$('#mainMenuWrapper').fadeOut();
 		$('#creatingProductsWrapper').show();
 		setTimeout(function () {
-			TABS.getLeftTabsList();
-			TABS.getRightTabsList();
+			TABS.openProductCreation();
 		}, 500);
 		setTimeout(function(){ $('#backIcon, #prefIcon, #dbIcon, #menuOpen').animate( { "marginTop": "-8px" }, 300 ); }, 1000);
 	});
@@ -111,13 +111,17 @@ $( document ).ready( function ()
 			});
 		})
 		.mouseleave(function() {
-			MENU.onHoverElement({
-				scope: this,
-				css: { "marginTop": "-8px" },
-				speed: 200
-			});
+			if ('MENU' !== localStorage.siteSector) {
+				MENU.onHoverElement({
+					scope: this,
+					css: { "marginTop": "-8px" },
+					speed: 200
+				});
+			}
 		})
 		.click(function(){
+			localStorage.siteSector = 'MENU';
+			MENU.showMainMenu();
 		});
 
 	$( "#prefIcon" )
