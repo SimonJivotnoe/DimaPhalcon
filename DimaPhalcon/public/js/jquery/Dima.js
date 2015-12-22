@@ -2260,6 +2260,8 @@
 						CATEGORIES.getCategoriesTable();
 						KIM.getKIMTable();
 						METALLS.getMetallsTable();
+						$('#rightTabs, #rightTabsContent').fadeIn('slow');
+						setTimeout(function(){ spinnerRight.stop(document.getElementById('orderSpinner')); }, 200);
 						return true;
 					}
 

@@ -154,6 +154,30 @@ $( document ).ready( function ()
 	});
 	
 	// PRODUCTS
+	$('#prefDynProductTableColor').colorpicker({
+		color: $('#prefSortable li').css('backgroundColor')
+    }).on('changeColor', function(ev) {
+		$('#sortable li, #prefSortable li').css('backgroundColor', ev.color.toHex());
+		var cssArr = ['#sortable li, #prefSortable li'];
+		for (var i = 0; i < cssArr.length; i++) {
+			var css = checkStorageCSS(cssArr[i]);
+			css[cssArr[i]].backgroundColor = ev.color.toHex();
+			localStorage.customCSS = JSON.stringify(css);
+		}
+	});
+	
+	$('#prefDynProductFontColor').colorpicker({
+		color: $('#prefSortable li .prefRowNumber').css('color')
+    }).on('changeColor', function(ev) {
+		$('#prefSortable li .prefRowNumber, #sortable li .rowNumber').css('color', ev.color.toHex());
+		var cssArr = ['#prefSortable li .prefRowNumber', '#sortable li .rowNumber'];
+		for (var i = 0; i < cssArr.length; i++) {
+			var css = checkStorageCSS(cssArr[i]);
+			css[cssArr[i]].color = ev.color.toHex();
+			localStorage.customCSS = JSON.stringify(css);
+		}
+	});
+
 	$('#prefProductTableColor').colorpicker({
 		color: $('#prefAlwaysInTable li').css('backgroundColor')
     }).on('changeColor', function(ev) {
@@ -165,12 +189,12 @@ $( document ).ready( function ()
 			localStorage.customCSS = JSON.stringify(css);
 		}
 	});
-	
+
 	$('#prefProductFontColor').colorpicker({
-		color: $('#prefAlwaysInTable li').css('color')
+		color: $('#prefAlwaysInTable li .prefRowNumber').css('color')
     }).on('changeColor', function(ev) {
-		$('.prefRowNumber, .rowNumber').css('color', ev.color.toHex());
-		var cssArr = ['.prefRowNumber', '.rowNumber'];
+		$('#prefAlwaysInTable li .prefRowNumber, #alwaysInTable li .rowNumber').css('color', ev.color.toHex());
+		var cssArr = ['#prefAlwaysInTable li .prefRowNumber', '#alwaysInTable li .rowNumber'];
 		for (var i = 0; i < cssArr.length; i++) {
 			var css = checkStorageCSS(cssArr[i]);
 			css[cssArr[i]].color = ev.color.toHex();

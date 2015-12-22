@@ -39,11 +39,11 @@
         </div>
     </div>
     <div id="menuIconsTop">
-        <div id="backIcon"><span class="glyphicon glyphicon-th-large" aria-hidden="true"></span></div>
-        <div id="prefIcon"><span class="glyphicon glyphicon-cog" aria-hidden="true"></span></div>
-        <div id="dbIcon"><span class="glyphicon glyphicon-folder-close" aria-hidden="true"></span></div>
-        <div id="menuOpen"><span class="glyphicon glyphicon-duplicate" aria-hidden="true"></span></div>
-       <div id="prIcon"><span class="glyphicon glyphicon-check" aria-hidden="true"></span></div>
+        <div id="backIcon"><span class="glyphicon glyphicon-th-large centerIcon" aria-hidden="true"></span></div>
+        <div id="prefIcon"><span class="glyphicon glyphicon-cog centerIcon" aria-hidden="true"></span></div>
+        <div id="dbIcon"><span class="glyphicon glyphicon-folder-close centerIcon" aria-hidden="true"></span></div>
+        <div id="menuOpen"><span class="glyphicon glyphicon-duplicate centerIcon" aria-hidden="true"></span></div>
+       <div id="prIcon"><span class="glyphicon glyphicon-check centerIcon" aria-hidden="true"></span></div>
         <div class="clearer"></div>
     </div>
         <div id="creatingProductsWrapper" class="split-pane fixed-left">
@@ -71,7 +71,7 @@
             </h4>
         </div>
         <div class="col-md-12 collapse in" id="prefGeneralWrapper">
-            <div class="col-md-8">
+            <div class="col-md-8 col-md-offset-2">
                 <div class="col-md-8">
                     <table border="0" class="stylesTable">
                         <tr>
@@ -109,7 +109,7 @@
             </h4>
         </div>
         <div class="col-md-12 collapse in" id="prefTabsWrapper">
-            <div class="col-md-8">
+            <div class="col-md-8 col-md-offset-2">
                 <div class="col-md-8">
                     <table border="0" class="stylesTable">
                         <tr>
@@ -134,23 +134,23 @@
                         </tr>
                     </table>
                 </div>
-            </div>
-            <div class="col-md-4">
-                <div role="tabpanel">
-                    <ul class="nav nav-tabs" role="tablist" id="testTab">
-                        <li role="presentation" class="active">
-                            <a href="#" aria-controls="test" role="tab" data-toggle="tab">
-                                <span class="tabName">Active</span>
-                                <span class="closeTab glyphicon glyphicon-remove" aria-hidden="true"></span>
-                            </a>
-                        </li>
-                        <li role="presentation" class="">
-                            <a href="#" aria-controls="test" role="tab" data-toggle="tab">
-                                <span class="tabName">Inactive</span>
-                                <span class="closeTab glyphicon glyphicon-remove" aria-hidden="true"></span>
-                            </a>
-                        </li>
-                    </ul>
+                <div class="col-md-4">
+                    <div role="tabpanel">
+                        <ul class="nav nav-tabs" role="tablist" id="testTab">
+                            <li role="presentation" class="active">
+                                <a href="#" aria-controls="test" role="tab" data-toggle="tab">
+                                    <span class="tabName">Active</span>
+                                    <span class="closeTab glyphicon glyphicon-remove" aria-hidden="true"></span>
+                                </a>
+                            </li>
+                            <li role="presentation" class="">
+                                <a href="#" aria-controls="test" role="tab" data-toggle="tab">
+                                    <span class="tabName">Inactive</span>
+                                    <span class="closeTab glyphicon glyphicon-remove" aria-hidden="true"></span>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
                 </div>
             </div>
         </div>
@@ -165,32 +165,69 @@
             </h4>
         </div>
         <div class="col-md-12 collapse in" id="prefProductsWrapper">
-            <div class="col-md-8">
+            <div class="col-md-10 col-md-offset-1">
                 <div class="col-md-8">
                     <table border="0" class="stylesTable">
                         <tr>
-                            <th>Цвет таблицы: </th>
+                            <th colspan="2">Динамическая Таблица</th>
+                            <th>Статическая Таблица</th>
+                        </tr>
+                        <tr>
+                            <th>Фона: </th>
+                            <td><input type="text" class="form-control" id="prefDynProductTableColor"></td>
                             <td><input type="text" class="form-control" id="prefProductTableColor"></td>
                         </tr>
                         <tr>
-                            <th>Цвет шрифта Ячейки: </th>
+                            <th>Цвет Имени Ячейки: </th>
+                            <td><input type="text" class="form-control" id="prefDynProductFontColor"></td>
+                            <td><input type="text" class="form-control" id="prefProductFontColor"></td>
+                        </tr>
+                        <tr>
+                            <th>Цвет Названия Ячейки: </th>
+                            <td><input type="text" class="form-control" id="prefDynProductFontColor"></td>
+                            <td><input type="text" class="form-control" id="prefProductFontColor"></td>
+                        </tr>
+                        <tr>
+                            <th>Фон Названия Ячейки: </th>
+                            <td><input type="text" class="form-control" id="prefDynProductFontColor"></td>
+                            <td><input type="text" class="form-control" id="prefProductFontColor"></td>
+                        </tr>
+                        <tr>
+                            <th>Цвет Количества Ячейки: </th>
+                            <td><input type="text" class="form-control" id="prefDynProductFontColor"></td>
+                            <td><input type="text" class="form-control" id="prefProductFontColor"></td>
+                        </tr>
+                        <tr>
+                            <th>Фон Количества Ячейки: </th>
+                            <td><input type="text" class="form-control" id="prefDynProductFontColor"></td>
                             <td><input type="text" class="form-control" id="prefProductFontColor"></td>
                         </tr>
                     </table>
                 </div>
-            </div>
-            <div class="col-md-4">
-                <ul id="prefAlwaysInTable">
-                    <li>
-                        <span class="prefRowNumber col-md-2">KIM1</span>
+                <div class="col-md-4" id="prefProductsTableWrapper">
+                    <ul id="prefSortable">
+                        <li class="">
+                            <span class="prefRowNumber col-md-2">A1</span>
                         <span class="prefRowName">
-                            <input class="refRowNameInput" type="text" value="КИМ">
+                            <input class="prefRowNameInput" type="text" value="Название">
                         </span>
-                        <span class="refRowValue">
-                            <input class="refRowValueInput" data-cell="KIM1" data-formula="" data-format="0[.]00" type="tel" style="width: 5em;" value="1.21">
+                        <span class="prefRowValue">
+                            <input class="refRowValueInput" data-cell="A1" data-formula="" data-format="0[.]00" type="tel" style="width: 5em;" value="100">
                         </span>
-                    </li>
-                </ul>
+                        </li>
+                    </ul>
+                    <ul id="prefAlwaysInTable">
+                        <li>
+                            <span class="prefRowNumber col-md-2">KIM1</span>
+                        <span class="prefRowName">
+                            <input class="prefRowNameInput" type="text" value="КИМ">
+                        </span>
+                        <span class="prefRowValue">
+                            <input class="refRowValueInput" data-cell="KIM1" data-formula="" data-format="0[.]00" type="tel" style="width: 5em;" value="200">
+                        </span>
+                        </li>
+                    </ul>
+                </div>
             </div>
         </div>
         <div class="col-md-12">
