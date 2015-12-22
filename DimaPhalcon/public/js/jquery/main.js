@@ -16,6 +16,7 @@ $( document ).ready( function ()
 		maxScreenSize = (window.screen.availWidth - 5) + 'px',
 		minscreenSize = '5px';
 
+	PREFERENCES.applyCss();
 	// SPLIT MONITOR SECTION
 	// setting default value
 	if (undefined === localStorage.split) {
@@ -40,25 +41,9 @@ $( document ).ready( function ()
 		localStorage.split === maxScreenSize ? localStorage.split = defaultScreenSize : localStorage.split = maxScreenSize;
 		TABS.splitMonitor();
 	});
-
-	$('#fontFamilyTabs').fontselect().change(function(){
-        
-		// replace + signs with spaces for css
-		var font = $(this).val().replace(/\+/g, ' ');
-
-		// split font into family and weight
-		font = font.split(':');
-
-		// set family on paragraphs 
-		$('#testTab').css('font-family', font[0]);
-	});
 	
-	$('#fontSizeTabs').change(function () {
-		var css = checkStorageCSS('.nav-tabs');
-		$('#testTab').css('font-size', $('#fontSizeTabs :selected').text());
-		css['.nav-tabs']['font-size'] = $('#fontSizeTabs :selected').text();
-		localStorage.customCSS = JSON.stringify(css);
-	});
+	// PREFERENCES
+	// GLOBAL
 	$('#globalBodyColor').colorpicker({
 		color: $('body')[0].style.backgroundColor
     }).on('changeColor', function(ev) {
@@ -67,14 +52,130 @@ $( document ).ready( function ()
 		css.body.backgroundColor = ev.color.toHex();
 		localStorage.customCSS = JSON.stringify(css);
 	});
-	$('#prefTabFontColor').colorpicker().on('changeColor', function(ev) {
+	
+	$('#globalFontFamily').fontselect().change(function(){
+		var font = $(this).val().replace(/\+/g, ' ');
+		font = font.split(':');
+		$('body').css('font-family', font[0]);
+		var cssArr = ['body'];
+		for (var i = 0; i < cssArr.length; i++) {
+			var css = checkStorageCSS(cssArr[i]);
+			css[cssArr[i]]['fontFamily'] = font[0];
+			localStorage.customCSS = JSON.stringify(css);
+		}
+	});
+	
+	PREFERENCES.insertFontSizes(['#globalFontSize'], 'body');
+	
+	$('#globalFontSize').change(function () {
+		var css = checkStorageCSS('body');
+		$('body').css('font-size', $('#globalFontSize :selected').text());
+		css.body['font-size'] = $('#globalFontSize :selected').text();
+		localStorage.customCSS = JSON.stringify(css);
+	});
+	
+	$('#globalHRColor').colorpicker({
+		color: $('hr').css('border-color')
+    }).on('changeColor', function(ev) {
+		$('hr').css('border-color', ev.color.toHex());
+		var css = checkStorageCSS('hr');
+		css.hr['border-color'] = ev.color.toHex();
+		localStorage.customCSS = JSON.stringify(css);
+	});
+	
+	$('#globalFontColor').colorpicker({
+		color: $('body')[0].style.color
+    }).on('changeColor', function(ev) {
+		$('body').css('color', ev.color.toHex());
+		var cssArr = ['body'];
+		for (var i = 0; i < cssArr.length; i++) {
+			var css = checkStorageCSS(cssArr[i]);
+			css[cssArr[i]].color = ev.color.toHex();
+			localStorage.customCSS = JSON.stringify(css);
+		}
+	});
+	
+	//TABS
+	$('#fontFamilyTabs').fontselect().change(function(){
+		var font = $(this).val().replace(/\+/g, ' ');
+		font = font.split(':');
+		$('#testTab').css('font-family', font[0]);
+		var cssArr = ['.tabName', '.tabNameRight', '#testTab'];
+		for (var i = 0; i < cssArr.length; i++) {
+			var css = checkStorageCSS(cssArr[i]);
+			css[cssArr[i]]['fontFamily'] = font[0];
+			localStorage.customCSS = JSON.stringify(css);
+		}
+	});
+	
+	PREFERENCES.insertFontSizes(['#fontSizeTabs'], '.nav-tabs');
+	
+	$('#fontSizeTabs').change(function () {
+		var css = checkStorageCSS('.nav-tabs');
+		$('#testTab').css('font-size', $('#fontSizeTabs :selected').text());
+		css['.nav-tabs']['font-size'] = $('#fontSizeTabs :selected').text();
+		localStorage.customCSS = JSON.stringify(css);
+	});
+	
+	$('#prefTabFontColor').colorpicker({
+		color: $('#myTab li a')[0].style.color
+    }).on('changeColor', function(ev) {
 		$('#testTab li a').css('color', ev.color.toHex());
+		var cssArr = ['#myTab li a', '#rightTabs li a', '#testTab li a'];
+		for (var i = 0; i < cssArr.length; i++) {
+			var css = checkStorageCSS(cssArr[i]);
+			css[cssArr[i]].color = ev.color.toHex();
+			localStorage.customCSS = JSON.stringify(css);
+		}
 	});
-	$('#prefActiveTabColor').colorpicker().on('changeColor', function(ev) {
-		$('#testTab .active a')[0].style.backgroundColor = ev.color.toHex();
+	
+	$('#prefActiveTabColor').colorpicker({
+		color: $('#testTab .active a')[0].style.backgroundColor
+    }).on('changeColor', function(ev) {
+		$('#testTab .active a').css('backgroundColor', ev.color.toHex());
+		var cssArr = ['#myTab .active a', '#rightTabs .active a', '#testTab .active a'];
+		for (var i = 0; i < cssArr.length; i++) {
+			var css = checkStorageCSS(cssArr[i]);
+			css[cssArr[i]].backgroundColor = ev.color.toHex();
+			localStorage.customCSS = JSON.stringify(css);
+		}
 	});
-	$('#prefInactiveTabColor').colorpicker().on('changeColor', function(ev) {
-		$('#testTab')[0].style.backgroundColor = ev.color.toHex();
+	
+	$('#prefInactiveTabColor').colorpicker({
+		color: $('#testTab li:not(.active) a').css('backgroundColor')
+    }).on('changeColor', function(ev) {
+		$('#testTab').css('backgroundColor', ev.color.toHex());
+		var cssArr = ['#myTab li:not(.active) a', '#rightTabs li:not(.active) a', '#testTab li:not(.active) a'];
+		for (var i = 0; i < cssArr.length; i++) {
+			var css = checkStorageCSS(cssArr[i]);
+			css[cssArr[i]].backgroundColor = ev.color.toHex();
+			localStorage.customCSS = JSON.stringify(css);
+		}
+	});
+	
+	// PRODUCTS
+	$('#prefProductTableColor').colorpicker({
+		color: $('#prefAlwaysInTable li').css('backgroundColor')
+    }).on('changeColor', function(ev) {
+		$('#alwaysInTable li, #prefAlwaysInTable li').css('backgroundColor', ev.color.toHex());
+		var cssArr = ['#alwaysInTable li, #prefAlwaysInTable li'];
+		for (var i = 0; i < cssArr.length; i++) {
+			var css = checkStorageCSS(cssArr[i]);
+			css[cssArr[i]].backgroundColor = ev.color.toHex();
+			localStorage.customCSS = JSON.stringify(css);
+		}
+	});
+	
+	$('#prefProductFontColor').colorpicker({
+		color: $('#prefAlwaysInTable li').css('color')
+    }).on('changeColor', function(ev) {
+		$('.prefRowNumber, .rowNumber').css('color', ev.color.toHex());
+		var cssArr = ['.prefRowNumber', '.rowNumber'];
+		for (var i = 0; i < cssArr.length; i++) {
+			var css = checkStorageCSS(cssArr[i]);
+			css[cssArr[i]].color = ev.color.toHex();
+			localStorage.customCSS = JSON.stringify(css);
+		}
 	});
 	
 	function checkStorageCSS (elem) {
@@ -89,26 +190,32 @@ $( document ).ready( function ()
 		return JSON.parse(localStorage.customCSS);
 	}
 	
-	PREFERENCES.insertFontSizes(['.fontSizeSelect']);
 	// MENU
 	$('#runPR').click(function () {
-		localStorage.siteSector = 'OR';
 		$('#mainMenuWrapper').fadeOut();
-		$('#creatingProductsWrapper').show();
-		setTimeout(function () {
-			TABS.openProductCreation();
-		}, 500);
-		setTimeout(function(){ $('#backIcon, #prefIcon, #dbIcon, #menuOpen').animate( { "marginTop": "-8px" }, 300 ); }, 1000);
+		if (!MAIN.prRequested) {
+			setTimeout(MENU.runProductCreation, 500);
+		} else {
+			setTimeout(MENU.runProductCreation, 300);
+		}
+	});
+	
+	$('#runPreferences').click(function () {
+		$('#mainMenuWrapper').fadeOut();
+		setTimeout(MENU.runPreferences, 300);
 	});
 	
 	// ICONS TOP MENU
-	$( "#backIcon" )
+	$( '#backIcon, #dbIcon, #prefIcon, #menuOpen, #prIcon' )
 		.mouseenter(function() {
 			MENU.onHoverElement({
 				scope: this,
 				css: { "marginTop": "0px" },
 				speed: 200
 			});
+			if ('dbIcon' === $(this).attr('id')) {
+				$('span', this ).removeClass().addClass('glyphicon glyphicon-folder-open');
+			}
 		})
 		.mouseleave(function() {
 			if ('MENU' !== localStorage.siteSector) {
@@ -117,68 +224,24 @@ $( document ).ready( function ()
 					css: { "marginTop": "-8px" },
 					speed: 200
 				});
+				if ('dbIcon' === $(this).attr('id')) {
+					$('span', this ).removeClass().addClass('glyphicon glyphicon-folder-close');
+				}
 			}
-		})
-		.click(function(){
-			localStorage.siteSector = 'MENU';
-			MENU.showMainMenu();
 		});
+		
+	$( '#backIcon').click(MENU.showMainMenu);
 
-	$( "#prefIcon" )
-		.mouseenter(function() {
-			MENU.onHoverElement({
-				scope: this,
-				css: { "marginTop": "0px" },
-				speed: 200
-			});
-		})
-		.mouseleave(function() {
-			MENU.onHoverElement({
-				scope: this,
-				css: { "marginTop": "-8px" },
-				speed: 200
-			});
-		})
-		.click(function(){
-		});
+	$( "#prefIcon" ).click(MENU.runPreferences);
 
-	$( "#dbIcon" )
-		.mouseenter(function() {
-			MENU.onHoverElement({
-				scope: this,
-				css: { "marginTop": "0px" },
-				speed: 200
-			});
-			$('span', this ).removeClass().addClass('glyphicon glyphicon-folder-open');
-		})
-		.mouseleave(function() {
-			MENU.onHoverElement({
-				scope: this,
-				css: { "marginTop": "-8px" },
-				speed: 200
-			});
-			$('span', this ).removeClass().addClass('glyphicon glyphicon-folder-close');
-		})
-		.click(function(){
-		});
-	$( "#menuOpen" )
-		.mouseenter(function() {
-			MENU.onHoverElement({
-				scope: this,
-				css: { "marginTop": "0px" },
-				speed: 200
-			});
-		})
-		.mouseleave(function() {
-			MENU.onHoverElement({
-				scope: this,
-				css: { "marginTop": "-8px" },
-				speed: 200
-			});
-		})
-		.click(function(){
-			MENU.createFileManager();
-		});
+	$( "#dbIcon" ).click(function(){
+		
+	});
+	
+	$( "#menuOpen" ).click(MENU.createFileManager);
+	
+	$( '#prIcon').click(MENU.runProductCreation);
+	
 	$('#showItemFromFileManager').click(function() {
 		var product = [];
 		var order = [];
@@ -420,4 +483,5 @@ $( document ).ready( function ()
 			}
 		});
 	});*/
+	PREFERENCES.applyCss();
 } );

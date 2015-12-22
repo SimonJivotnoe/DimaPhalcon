@@ -43,7 +43,7 @@
         <div id="prefIcon"><span class="glyphicon glyphicon-cog" aria-hidden="true"></span></div>
         <div id="dbIcon"><span class="glyphicon glyphicon-folder-close" aria-hidden="true"></span></div>
         <div id="menuOpen"><span class="glyphicon glyphicon-duplicate" aria-hidden="true"></span></div>
-       <!-- <div id="prIcon"><span class="glyphicon glyphicon-folder-close" aria-hidden="true"></span></div>-->
+       <div id="prIcon"><span class="glyphicon glyphicon-check" aria-hidden="true"></span></div>
         <div class="clearer"></div>
     </div>
         <div id="creatingProductsWrapper" class="split-pane fixed-left">
@@ -61,7 +61,143 @@
                 </div>
             </div>
         </div>
-
+    
+    <div id="preferencesWrapper">
+        <div class="col-md-12">
+            <h4>
+                Основные
+                <span class="glyphicon glyphicon-cog toCollapse" aria-hidden="true" data-toggle="collapse"
+                      data-target="#prefGeneralWrapper" aria-expanded="true" aria-controls="prefGeneralWrapper"></span>
+            </h4>
+        </div>
+        <div class="col-md-12 collapse in" id="prefGeneralWrapper">
+            <div class="col-md-8">
+                <div class="col-md-8">
+                    <table border="0" class="stylesTable">
+                        <tr>
+                            <th>Основной Фон:</th>
+                            <td><input type="text" class="form-control" id="globalBodyColor"></td>
+                        </tr>
+                         <tr>
+                            <th>Шрифт:</th>
+                            <td><input id="globalFontFamily" type="text" /></td>
+                        </tr>
+                        <tr>
+                            <th>Размер шрифта:</th>
+                            <td><select id="globalFontSize" class="fontSizeSelect" style="width: 210px;border-radius: 4px;height: 34px;"></select></td>
+                        </tr>
+                        <tr>
+                            <th>Цвет шрифта:</th>
+                            <td><input type="text" class="form-control" id="globalFontColor"></td>
+                        </tr>
+                        <tr>
+                            <th>Разделительные линии: </th>
+                            <td><input type="text" class="form-control" id="globalHRColor"></td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-12">
+            <hr>
+        </div>
+        <div class="col-md-12">
+            <h4>
+                Вкладки
+                <span class="glyphicon glyphicon-duplicate toCollapse" aria-hidden="true" data-toggle="collapse"
+                      data-target="#prefTabsWrapper" aria-expanded="true" aria-controls="prefTabsWrapper"></span>
+            </h4>
+        </div>
+        <div class="col-md-12 collapse in" id="prefTabsWrapper">
+            <div class="col-md-8">
+                <div class="col-md-8">
+                    <table border="0" class="stylesTable">
+                        <tr>
+                            <th>Шрифт:</th>
+                            <td><input id="fontFamilyTabs" type="text" /></td>
+                        </tr>
+                        <tr>
+                            <th>Размер шрифта:</th>
+                            <td><select id="fontSizeTabs" class="fontSizeSelect" style="width: 210px;border-radius: 4px;height: 34px;"></select></td>
+                        </tr>
+                        <tr>
+                            <th>Цвет шрифта:</th>
+                            <td><input type="text" class="form-control" id="prefTabFontColor"></td>
+                        </tr>
+                        <tr>
+                            <th>Фон активной вкладки:</th>
+                            <td><input type="text" class="form-control" id="prefActiveTabColor"></td>
+                        </tr>
+                        <tr>
+                            <th>Фон неактивной вкладки:</th>
+                            <td><input type="text" class="form-control" id="prefInactiveTabColor"></td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div role="tabpanel">
+                    <ul class="nav nav-tabs" role="tablist" id="testTab">
+                        <li role="presentation" class="active">
+                            <a href="#" aria-controls="test" role="tab" data-toggle="tab">
+                                <span class="tabName">Active</span>
+                                <span class="closeTab glyphicon glyphicon-remove" aria-hidden="true"></span>
+                            </a>
+                        </li>
+                        <li role="presentation" class="">
+                            <a href="#" aria-controls="test" role="tab" data-toggle="tab">
+                                <span class="tabName">Inactive</span>
+                                <span class="closeTab glyphicon glyphicon-remove" aria-hidden="true"></span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-12">
+            <hr>
+        </div>
+        <div class="col-md-12">
+            <h4>
+                Изделия
+                <span class="glyphicon glyphicon-compressed toCollapse" aria-hidden="true" data-toggle="collapse"
+                      data-target="#prefProductsWrapper" aria-expanded="true" aria-controls="prefTabsWrapper"></span>
+            </h4>
+        </div>
+        <div class="col-md-12 collapse in" id="prefProductsWrapper">
+            <div class="col-md-8">
+                <div class="col-md-8">
+                    <table border="0" class="stylesTable">
+                        <tr>
+                            <th>Цвет таблицы: </th>
+                            <td><input type="text" class="form-control" id="prefProductTableColor"></td>
+                        </tr>
+                        <tr>
+                            <th>Цвет шрифта Ячейки: </th>
+                            <td><input type="text" class="form-control" id="prefProductFontColor"></td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <ul id="prefAlwaysInTable">
+                    <li>
+                        <span class="prefRowNumber col-md-2">KIM1</span>
+                        <span class="prefRowName">
+                            <input class="refRowNameInput" type="text" value="КИМ">
+                        </span>
+                        <span class="refRowValue">
+                            <input class="refRowValueInput" data-cell="KIM1" data-formula="" data-format="0[.]00" type="tel" style="width: 5em;" value="1.21">
+                        </span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="col-md-12">
+            <hr>
+        </div>
+        <div class="clearer"></div>
+    </div>
 <div class="modal fade bs-example-modal-lg in" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" id="openMenuModal">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">

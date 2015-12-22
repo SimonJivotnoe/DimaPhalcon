@@ -38,12 +38,10 @@ body {
     margin-top: 5px;
 }
 
-#backIcon {
-    position: absolute;
-    left: 12%;
+#backIcon, #prefIcon, #dbIcon, #menuOpen, #prIcon {
+    position: fixed;
     z-index: 5000;
     opacity: 0.3;
-    background-color: #265a88;
     width: 31px;
     padding: 3px;
     border-radius: 3px;
@@ -51,73 +49,68 @@ body {
     font-size: 20px;
     margin-top: -40px;
     box-shadow: 0 0 10px rgba(0,0,0,0.5);
+}
+#backIcon {
+    left: 12%;
+    background-color: #265a88;
 }
 #backIcon:hover {
     opacity: 1;
     color: aliceblue;
 }
-
 #prefIcon {
-    position: absolute;
     left: 38%;
-    z-index: 5000;
-    opacity: 0.3;
     background-color: steelblue;
-    width: 31px;
-    padding: 3px;
-    border-radius: 3px;
-    cursor: pointer;
-    font-size: 20px;
-    margin-top: -40px;
-    box-shadow: 0 0 10px rgba(0,0,0,0.5);
 }
 #prefIcon:hover {
     opacity: 1;
     color: aliceblue;
 }
-
 #dbIcon {
-    position: absolute;
     left: 44%;
-    z-index: 5000;
-    opacity: 0.3;
     background-color: #eb9316;
-    width: 31px;
-    padding: 3px;
-    border-radius: 3px;
-    cursor: pointer;
-    font-size: 20px;
-    margin-top: -40px;
-    box-shadow: 0 0 10px rgba(0,0,0,0.5);
 }
 #dbIcon:hover {
     opacity: 1;
     color: aliceblue;
 }
-
 #menuOpen {
-    position: absolute;
     left: 50%;
-    z-index: 5000;
-    opacity: 0.3;
     background-color: #2aabd2;
-    width: 31px;
-    padding: 3px;
-    border-radius: 3px;
-    cursor: pointer;
-    font-size: 20px;
-    margin-top: -40px;
-    box-shadow: 0 0 10px rgba(0,0,0,0.5);
 }
 #menuOpen:hover {
     opacity: 1;
     color: aliceblue;
 }
+#prIcon {
+    left: 56%;
+    background-color: #3e8f3e;
+}
+#prIcon:hover {
+    opacity: 1;
+    color: aliceblue;
+}
+#prefAlwaysInTable .prefRowName {
+    margin-right: -4px;
+}
+#prefAlwaysInTable .refRowValue {
+    margin-left: 5px;
+    color: #1c94c4;
+}
+#prefAlwaysInTable .prefRowName {
+    color: #1c94c4;
+}
+/* PREFERENCES */
+#preferencesWrapper {
+    display: none;
+}
 #runPreferences span{
     /*font-size: 70px;
     margin-top: 5px;*/
 }
-
+.stylesTable th{
+    background-color: white;
+}
 /* ORDER TABS*/
 #myTab, #rightTabs, #rightTabsContent, #leftTabsContent {
     display: none;
@@ -252,7 +245,7 @@ h4 {
     margin: 0;
     padding: 0;
 }
-#alwaysInTable {
+#alwaysInTable, #prefAlwaysInTable {
     list-style-type: none;
     margin: 0;
     padding: 0;
@@ -262,15 +255,15 @@ h4 {
 #alwaysInTable .rowName {
     margin-right: -4px;
 }
-#alwaysInTable li {
+#alwaysInTable li, #prefAlwaysInTable li {
     background-color: hsl(193, 46%, 41%);
     background-repeat: repeat-x;
-    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#57aac1", endColorstr="#388398");
-    background-image: linear-gradient(#57aac1, #388398) !important;
+    /*filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#57aac1", endColorstr="#388398");*/
+    /*background-image: linear-gradient(#57aac1, #388398) !important;*/
     border-color: #388398 #388398 hsl(193, 46%, 37.5%);
     color: #fff !important;
     text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.23);
-    -webkit-font-smoothing: antialiased;
+    /*-webkit-font-smoothing: antialiased;*/
     margin: 1px;
 }
 #alwaysInTable .rowValue {

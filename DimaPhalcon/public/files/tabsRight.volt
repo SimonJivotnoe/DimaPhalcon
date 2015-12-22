@@ -1,6 +1,6 @@
 <div role="rightTabs">
     <ul class="nav nav-tabs" role="tablist" id="rightTabs">
-        <li role="kim" id="kim" class="active">
+        <li role="kim" id="kim" class="active" style="display: none;">
             <a href="#kimTab" aria-controls="kim" role="tab" data-toggle="tab">
                 <span class="glyphicon glyphicon-stats" id="kimIconColor" aria-hidden="true"></span></a>
         </li>
