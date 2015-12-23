@@ -15,6 +15,7 @@
 		METALLS: 'metalls/',
 		PRODUCT: 'products/',
 		MENU: 'menu/',
+		THEMES: 'themes/',
 		LOCATION: 'http://DimaPhalcon/DimaPhalcon/'
 	};
 
@@ -31,6 +32,8 @@
 	var URL_PRODUCT = URL.BASE + URL.PRODUCT;
 
 	var URL_MENU = URL.BASE + URL.MENU;
+
+	var URL_THEMES = URL.BASE + URL.THEMES;
 
 	var LOCATION = URL.LOCATION;
 
@@ -67,6 +70,8 @@
 	// alias to self.validation
 	var VALIDATION;
 
+	// alias to self.themes
+	var THEMES;
 	// error messages obj
 	var ERR = {
 		ARTICLE: {
@@ -3431,7 +3436,22 @@
                 }
                 return val;
             }
-        }
+        },
+
+		themes: {
+			addTheme: function () {
+				return $.ajax( {
+					url   : URL_THEMES + 'addTheme',
+					method: 'POST',
+					data: {
+						name: $('#customThemeName').val()
+					}
+				} ).then( function ( data )
+				{
+					return data;
+				});
+			}
+		}
 	};
 
 	// the actual object is created here, allowing us to 'new' an object without calling 'new'
@@ -3450,6 +3470,7 @@
 		MENU = this.menu;
 		PREFERENCES = this.preferences;
         VALIDATION = this.validation;
+		THEMES = this.themes;
 
 		run();
 

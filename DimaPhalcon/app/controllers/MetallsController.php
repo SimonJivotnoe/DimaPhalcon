@@ -184,13 +184,13 @@ class MetallsController extends \Phalcon\Mvc\Controller
     }
 
     private function addToMetallHistory($id, $price, $outPrice) {
-        $historyObj = new MetallPricesHistory();
         $history = MetallPricesHistory::findFirst(
             "price = '" . $price . "' AND out_price = '" . $outPrice . "' AND metall_id = '" . $id . "'"
         );
         if ($history) {
             $history->setDate(new RawValue('default'))->save();
         } else {
+            $historyObj = new MetallPricesHistory();
             $historyObj
                 ->setPrice($price)
                 ->setOutPrice($outPrice)

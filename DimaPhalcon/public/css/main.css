@@ -577,7 +577,7 @@ ol li:hover {
     display: none;
 }
 .inputError {
-    border: 1px solid hsla(360, 99%, 46%, 0.92);
+    border: 1px solid hsla(360, 99%, 46%, 0.92) !important;
     border-radius: 2px
 }
 .orderTableActionsWrapper {

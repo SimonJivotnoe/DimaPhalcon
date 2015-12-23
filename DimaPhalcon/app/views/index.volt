@@ -63,13 +63,41 @@
         </div>
     
     <div id="preferencesWrapper">
-        <div id="customThemesWrapper">
+        <!--<div id="customThemesWrapper">
             <table border="0" class="stylesTable">
                 <tr>
                     <td>ergear</td>
                     <td id="showCustomThemes"><span class="glyphicon glyphicon-forward centerIcon" aria-hidden="true"></span></td>
                 </tr>
             </table>
+        </div>-->
+        <div class="col-md-12" style="margin-top: 30px;">
+            <div class="col-md-4">
+                <div class="col-md-8">
+                    <input type="text" class="form-control" id="customThemeName" placeholder="Название темы">
+                </div>
+                <div class="col-md-4">
+                    <button type="button" id="addThemeBtn" class="btn btn-info btn-sm">
+                        <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+                    </button>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <select id="customThemesList" class="form-control input-sm">
+                    <option>Default</option>
+                </select>
+            </div>
+            <div class="col-md-2">
+                <button type="button" id="applyThemeBtn" class="btn btn-success btn-sm">
+                    <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
+                </button>
+                <button type="button" id="deleteThemeBtn" class="btn btn-danger btn-sm">
+                    <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+                </button>
+            </div>
+        </div>
+        <div class="col-md-12">
+            <hr>
         </div>
         <div class="col-md-12 toCollapse" data-toggle="collapse"
                       data-target="#prefGeneralWrapper" aria-expanded="true" aria-controls="prefGeneralWrapper">
@@ -260,19 +288,19 @@
                             <th>Цвет Названий:</th>
                         </tr>
                         <tr>
-                            <th>Шапка</th>
+                            <th>Шапка:</th>
                             <td><input type="text" class="form-control" id="prefOrderHeadBackground"></td>
                             <td><input type="text" class="form-control" id="prefOrderHeadBordersColor"></td>
                             <td><input type="text" class="form-control" id="prefOrderHeadFontColor"></td>
                         </tr>
                         <tr>
-                            <th>Раздел</th>
+                            <th>Раздел:</th>
                             <td><input type="text" class="form-control" id="prefOrderSectionBackground"></td>
                             <td><input type="text" class="form-control" id="prefOrderSectionBordersColor"></td>
                             <td><input type="text" class="form-control" id="prefOrderSectionFontColor"></td>
                         </tr>
                         <tr>
-                            <th>Ряд</th>
+                            <th>Ряд:</th>
                             <td><input type="text" class="form-control" id="prefOrderRowBackground"></td>
                             <td><input type="text" class="form-control" id="prefOrderRowBordersColor"></td>
                             <td><input type="text" class="form-control" id="prefOrderRowFontColor"></td>

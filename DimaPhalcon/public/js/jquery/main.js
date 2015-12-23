@@ -12,6 +12,7 @@ $( document ).ready( function ()
 		MENU = d.menu,
 		PREFERENCES = d.preferences,
 		VALID = d.validation,
+		THEMES = d.themes,
 		defaultScreenSize = '60em',
 		maxScreenSize = (window.screen.availWidth - 5) + 'px',
 		minscreenSize = '5px';
@@ -125,6 +126,19 @@ $( document ).ready( function ()
 	}
 	
 	// MENU
+	$('#addThemeBtn' ).click(function () {
+		if ($('#customThemeName').val()) {
+			$.when(THEMES.addTheme()).then(function (data) {
+				if (data) {
+					$('#customThemeName').val('');
+				} else {
+					VALID.showError('#customThemeName');
+				}
+				console.log(data);
+			});
+		}
+	});
+
 	$('#runPR').click(function () {
 		$('#mainMenuWrapper').fadeOut();
 		if (!MAIN.prRequested) {
