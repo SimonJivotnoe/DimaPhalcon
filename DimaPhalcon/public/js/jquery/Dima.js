@@ -76,6 +76,178 @@
 			emptyName: ' Задайте имя продукта! '
 		}
 	};
+	var preferencesSettings = [
+		// GLOBAL
+		{
+			id: '#globalBodyColor',
+			elem: 'body',
+			style: 'backgroundColor',
+			cssArr: ['body']
+		},
+		{
+			id: '#globalFontColor',
+			elem: 'body',
+			style: 'color',
+			cssArr: ['body']
+		},
+		{
+			id: '#globalHRColor',
+			elem: 'hr',
+			style: 'border-color',
+			cssArr: ['hr']
+		},
+		
+		// TABS
+		{
+			id: '#prefTabFontColor',
+			elem: '#myTab li a',
+			style: 'color',
+			cssArr: ['#myTab li a', '#rightTabs li a', '#testTab li a']
+		},
+		{
+			id: '#prefActiveTabColor',
+			elem: '#testTab .active a',
+			style: 'backgroundColor',
+			cssArr: ['#myTab .active a', '#rightTabs .active a', '#testTab .active a']
+		},
+		{
+			id: '#prefInactiveTabColor',
+			elem: '#testTab li:not(.active) a',
+			style: 'backgroundColor',
+			cssArr: ['#myTab li:not(.active) a', '#rightTabs li:not(.active) a', '#testTab li:not(.active) a']
+		},
+		
+		// PRODUCTS
+		{
+			id: '#prefDynProductTableColor',
+			elem: '#prefSortable li',
+			style: 'backgroundColor',
+			cssArr: ['#sortable li, #prefSortable li']
+		},
+		{
+			id: '#prefProductTableColor',
+			elem: '#prefAlwaysInTable li',
+			style: 'backgroundColor',
+			cssArr: ['#alwaysInTable li, #prefAlwaysInTable li']
+		},
+		{
+			id: '#prefDynProductFontColor',
+			elem: '#prefSortable li .prefRowNumber',
+			style: 'color',
+			cssArr: ['#prefSortable li .prefRowNumber', '#sortable li .rowNumber']
+		},
+		{
+			id: '#prefProductFontColor',
+			elem: '#prefAlwaysInTable li .prefRowNumber',
+			style: 'color',
+			cssArr: ['#prefAlwaysInTable li .prefRowNumber', '#alwaysInTable li .rowNumber']
+		},
+		{
+			id: '#prefDynProductCellFontColor',
+			elem: '#prefSortable li .prefRowNameInput',
+			style: 'color',
+			cssArr: ['#prefSortable li .prefRowNameInput', '#sortable li .rowNameInput']
+		},
+		{
+			id: '#prefProductCellFontColor',
+			elem: '#prefAlwaysInTable li .prefRowNameInput',
+			style: 'color',
+			cssArr: ['#prefAlwaysInTable li .prefRowNameInput', '#alwaysInTable li .rowNameInput']
+		},
+		{
+			id: '#prefDynProductCellBackground',
+			elem: '#prefSortable li .prefRowNameInput',
+			style: 'backgroundColor',
+			cssArr: ['#prefSortable li .prefRowNameInput', '#sortable li .rowNameInput'],
+			important: true
+		},
+		{
+			id: '#prefProductCellBackground',
+			elem: '#prefAlwaysInTable li .prefRowNameInput',
+			style: 'backgroundColor',
+			cssArr: ['#prefAlwaysInTable li .prefRowNameInput', '#alwaysInTable li .rowNameInput']
+		},
+		{
+			id: '#prefDynProductQuantityColor',
+			elem: '#prefSortable li .refRowValueInput',
+			style: 'color',
+			cssArr: ['#prefSortable li .refRowValueInput', '#sortable li .rowValueInput']
+		},
+		{
+			id: '#prefProductQuantityColor',
+			elem: '#prefAlwaysInTable li .refRowValueInput',
+			style: 'color',
+			cssArr: ['#prefAlwaysInTable li .refRowValueInput', '#alwaysInTable li .rowValueInput']
+		},
+		{
+			id: '#prefDynProductQuantityBackground',
+			elem: '#prefSortable li .refRowValueInput',
+			style: 'backgroundColor',
+			cssArr: ['#prefSortable li .refRowValueInput', '#sortable li .rowValueInput']
+		},
+		{
+			id: '#prefProductQuantityBackground',
+			elem: '#prefAlwaysInTable li .refRowValueInput',
+			style: 'backgroundColor',
+			cssArr: ['#prefAlwaysInTable li .refRowValueInput', '#alwaysInTable li .rowValueInput']
+		},
+		
+		// ORDERS
+		{
+			id: '#prefOrderHeadBackground',
+			elem: '#prefOrderTable th',
+			style: 'backgroundColor',
+			cssArr: ['#prefOrderTable th', '#orderTable th', '.sumOrderTableHead']
+		},
+		{
+			id: '#prefOrderHeadBordersColor',
+			elem: '#prefOrderTable th',
+			style: 'borderColor',
+			cssArr: ['#prefOrderTable th', '#orderTable th', '.sumOrderTableHead']
+		},
+		{
+			id: '#prefOrderHeadFontColor',
+			elem: '#prefOrderTable th',
+			style: 'color',
+			cssArr: ['#prefOrderTable th', '#orderTable th', '.sumOrderTableHead']
+		},
+		{
+			id: '#prefOrderSectionBackground',
+			elem: '.orderTableSectionName th',
+			style: 'backgroundColor',
+			cssArr: ['.orderTableSectionName th', '.withoutSectionInOrderTable th']
+		},
+		{
+			id: '#prefOrderSectionBordersColor',
+			elem: '.orderTableSectionName th',
+			style: 'borderColor',
+			cssArr: ['.orderTableSectionName th']
+		},
+		{
+			id: '#prefOrderSectionFontColor',
+			elem: '.orderTableSectionName th',
+			style: 'color',
+			cssArr: ['.orderTableSectionName th']
+		},
+		{
+			id: '#prefOrderRowBackground',
+			elem: '#prefOrderTable td',
+			style: 'backgroundColor',
+			cssArr: ['#prefOrderTable td', '#orderTable td', '.inputWithoutBorders', '.sumOrderTableTd']
+		},
+		{
+			id: '#prefOrderRowBordersColor',
+			elem: '#prefOrderTable td',
+			style: 'borderColor',
+			cssArr: ['#prefOrderTable td', '#orderTable td', '.sumOrderTableTd']
+		},
+		{
+			id: '#prefOrderRowFontColor',
+			elem: '#prefOrderTable td',
+			style: 'color',
+			cssArr: ['#prefOrderTable td', '#orderTable td', '.sumOrderTableTd']
+		}
+	];
 	
 	var clickOnFormulaInput = false;
 	
@@ -2343,14 +2515,14 @@
 						}
 						setOrderSum();
 						showBody();
+						$('#rightTabs, #rightTabsContent').fadeIn('slow');
+						setTimeout(function(){ spinnerRight.stop(document.getElementById('orderSpinner')); }, 200);
 						$(function () {
 							$('[data-toggle="tooltip"]').tooltip({ my: "left+15 center", at: "right center" });
 							$('#orderTable').resizableColumns({
 								  //store: window.store
 								});
 						});
-						$('#rightTabs, #rightTabsContent').fadeIn('slow');
-						setTimeout(function(){ spinnerRight.stop(document.getElementById('orderSpinner')); }, 200);
 					}
 				});
 			},
@@ -3148,6 +3320,10 @@
 						});
 					});
 				}
+			},
+			
+			getPreferencesSettings: function () {
+				return preferencesSettings;
 			}
 		},
 

@@ -40,7 +40,7 @@ body {
     margin-top: 5px;
 }
 
-#backIcon, #prefIcon, #dbIcon, #menuOpen, #prIcon {
+#backIcon, #prefIcon, #dbIcon, #menuOpen, #prIcon, #showCustomThemes {
     position: fixed;
     z-index: 5000;
     opacity: 0.3;
@@ -52,6 +52,26 @@ body {
     margin-top: -40px;
     box-shadow: 0 0 10px rgba(0,0,0,0.5);
 }
+#showCustomThemes {
+    top: 15%;
+    margin-top: 0;
+    margin-left: 155px;
+}
+#customThemesWrapper {
+    position: fixed;
+    z-index: 5000;
+    opacity: 0.3;
+    width: 200px;
+    height: 200px;
+    padding: 3px;
+    border-radius: 3px;
+    cursor: pointer;
+    margin-left: -200px;
+    background-color: grey;
+    top: 15%;
+    box-shadow: 0 0 10px rgba(0,0,0,0.5);
+}
+
 #backIcon {
     left: 12%;
     background-color: #265a88;
@@ -225,10 +245,16 @@ a {
 }
 .rowNameInput{
     width: 250px;
+    font-weight: bold;
 }
 .prefRowNameInput {
     width: 150px;
+    font-weight: bold;
 }
+.refRowValueInput, .rowValueInput, .rowNumber, .prefRowNumber {
+    font-weight: bold;
+}
+
 th {
     text-align: center !important;
     background-color: rgba(43, 41, 51, 0.100);

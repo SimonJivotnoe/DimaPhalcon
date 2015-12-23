@@ -43,16 +43,7 @@ $( document ).ready( function ()
 	});
 	
 	// PREFERENCES
-	// GLOBAL
-	$('#globalBodyColor').colorpicker({
-		color: $('body')[0].style.backgroundColor
-    }).on('changeColor', function(ev) {
-		var css = checkStorageCSS('body');
-		$('body')[0].style.backgroundColor = ev.color.toHex();
-		css.body.backgroundColor = ev.color.toHex();
-		localStorage.customCSS = JSON.stringify(css);
-	});
-	
+	// GLOBAL	
 	$('#globalFontFamily').fontselect().change(function(){
 		var font = $(this).val().replace(/\+/g, ' ');
 		font = font.split(':');
@@ -72,27 +63,6 @@ $( document ).ready( function ()
 		$('body').css('font-size', $('#globalFontSize :selected').text());
 		css.body['font-size'] = $('#globalFontSize :selected').text();
 		localStorage.customCSS = JSON.stringify(css);
-	});
-	
-	$('#globalHRColor').colorpicker({
-		color: $('hr').css('border-color')
-    }).on('changeColor', function(ev) {
-		$('hr').css('border-color', ev.color.toHex());
-		var css = checkStorageCSS('hr');
-		css.hr['border-color'] = ev.color.toHex();
-		localStorage.customCSS = JSON.stringify(css);
-	});
-	
-	$('#globalFontColor').colorpicker({
-		color: $('body')[0].style.color
-    }).on('changeColor', function(ev) {
-		$('body').css('color', ev.color.toHex());
-		var cssArr = ['body'];
-		for (var i = 0; i < cssArr.length; i++) {
-			var css = checkStorageCSS(cssArr[i]);
-			css[cssArr[i]].color = ev.color.toHex();
-			localStorage.customCSS = JSON.stringify(css);
-		}
 	});
 	
 	//TABS
@@ -117,90 +87,30 @@ $( document ).ready( function ()
 		localStorage.customCSS = JSON.stringify(css);
 	});
 	
-	$('#prefTabFontColor').colorpicker({
-		color: $('#myTab li a')[0].style.color
-    }).on('changeColor', function(ev) {
-		$('#testTab li a').css('color', ev.color.toHex());
-		var cssArr = ['#myTab li a', '#rightTabs li a', '#testTab li a'];
-		for (var i = 0; i < cssArr.length; i++) {
-			var css = checkStorageCSS(cssArr[i]);
-			css[cssArr[i]].color = ev.color.toHex();
-			localStorage.customCSS = JSON.stringify(css);
-		}
-	});
+	applyPreferences(MENU.getPreferencesSettings());
 	
-	$('#prefActiveTabColor').colorpicker({
-		color: $('#testTab .active a')[0].style.backgroundColor
-    }).on('changeColor', function(ev) {
-		$('#testTab .active a').css('backgroundColor', ev.color.toHex());
-		var cssArr = ['#myTab .active a', '#rightTabs .active a', '#testTab .active a'];
-		for (var i = 0; i < cssArr.length; i++) {
-			var css = checkStorageCSS(cssArr[i]);
-			css[cssArr[i]].backgroundColor = ev.color.toHex();
-			localStorage.customCSS = JSON.stringify(css);
-		}
-	});
+	function applyPreferences (arr) {
+		$.each(arr, function (num, obj) {
+			$(obj.id).colorpicker({
+				color: $(obj.elem).css(obj.style)
+			}).on('changeColor', function(ev) {
+				applyColorAndSaveToLS(obj.cssArr, obj.style, ev, obj.important);
+			});
+		});
+	}
 	
-	$('#prefInactiveTabColor').colorpicker({
-		color: $('#testTab li:not(.active) a').css('backgroundColor')
-    }).on('changeColor', function(ev) {
-		$('#testTab').css('backgroundColor', ev.color.toHex());
-		var cssArr = ['#myTab li:not(.active) a', '#rightTabs li:not(.active) a', '#testTab li:not(.active) a'];
+	function applyColorAndSaveToLS (cssArr, style, ev, important) {
+		var imp = '';
+		if (important && undefined !== important) {
+			imp = ' !important';
+		}
+		$(cssArr.join(', ')).css(style, ev.color.toHex());
 		for (var i = 0; i < cssArr.length; i++) {
 			var css = checkStorageCSS(cssArr[i]);
-			css[cssArr[i]].backgroundColor = ev.color.toHex();
+			css[cssArr[i]][style] = ev.color.toHex() + imp;
 			localStorage.customCSS = JSON.stringify(css);
 		}
-	});
-	
-	// PRODUCTS
-	$('#prefDynProductTableColor').colorpicker({
-		color: $('#prefSortable li').css('backgroundColor')
-    }).on('changeColor', function(ev) {
-		$('#sortable li, #prefSortable li').css('backgroundColor', ev.color.toHex());
-		var cssArr = ['#sortable li, #prefSortable li'];
-		for (var i = 0; i < cssArr.length; i++) {
-			var css = checkStorageCSS(cssArr[i]);
-			css[cssArr[i]].backgroundColor = ev.color.toHex();
-			localStorage.customCSS = JSON.stringify(css);
-		}
-	});
-	
-	$('#prefDynProductFontColor').colorpicker({
-		color: $('#prefSortable li .prefRowNumber').css('color')
-    }).on('changeColor', function(ev) {
-		$('#prefSortable li .prefRowNumber, #sortable li .rowNumber').css('color', ev.color.toHex());
-		var cssArr = ['#prefSortable li .prefRowNumber', '#sortable li .rowNumber'];
-		for (var i = 0; i < cssArr.length; i++) {
-			var css = checkStorageCSS(cssArr[i]);
-			css[cssArr[i]].color = ev.color.toHex();
-			localStorage.customCSS = JSON.stringify(css);
-		}
-	});
-
-	$('#prefProductTableColor').colorpicker({
-		color: $('#prefAlwaysInTable li').css('backgroundColor')
-    }).on('changeColor', function(ev) {
-		$('#alwaysInTable li, #prefAlwaysInTable li').css('backgroundColor', ev.color.toHex());
-		var cssArr = ['#alwaysInTable li, #prefAlwaysInTable li'];
-		for (var i = 0; i < cssArr.length; i++) {
-			var css = checkStorageCSS(cssArr[i]);
-			css[cssArr[i]].backgroundColor = ev.color.toHex();
-			localStorage.customCSS = JSON.stringify(css);
-		}
-	});
-
-	$('#prefProductFontColor').colorpicker({
-		color: $('#prefAlwaysInTable li .prefRowNumber').css('color')
-    }).on('changeColor', function(ev) {
-		$('#prefAlwaysInTable li .prefRowNumber, #alwaysInTable li .rowNumber').css('color', ev.color.toHex());
-		var cssArr = ['#prefAlwaysInTable li .prefRowNumber', '#alwaysInTable li .rowNumber'];
-		for (var i = 0; i < cssArr.length; i++) {
-			var css = checkStorageCSS(cssArr[i]);
-			css[cssArr[i]].color = ev.color.toHex();
-			localStorage.customCSS = JSON.stringify(css);
-		}
-	});
+	}
 	
 	function checkStorageCSS (elem) {
 		if (!localStorage.customCSS) {
@@ -252,6 +162,25 @@ $( document ).ready( function ()
 					$('span', this ).removeClass().addClass('glyphicon glyphicon-folder-close');
 				}
 			}
+		});
+	$('#customThemesWrapper')
+		.mouseenter(function() {
+			MENU.onHoverElement({
+				scope: this,
+				css: { "marginLeft": "0px" },
+				speed: 250
+			});
+			$('#showCustomThemes span', this ).removeClass().addClass('glyphicon glyphicon-backward');
+		})
+		.mouseleave(function() {
+			if ('MENU' !== localStorage.siteSector) {
+				MENU.onHoverElement({
+					scope: this,
+					css: { "marginLeft": "-200px" },
+					speed: 200
+				});
+			}
+			$('#showCustomThemes span', this ).removeClass().addClass('glyphicon glyphicon-forward');
 		});
 		
 	$( '#backIcon').click(MENU.showMainMenu);

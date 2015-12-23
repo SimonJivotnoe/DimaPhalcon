@@ -39,11 +39,11 @@
         </div>
     </div>
     <div id="menuIconsTop">
-        <div id="backIcon"><span class="glyphicon glyphicon-th-large" aria-hidden="true"></span></div>
-        <div id="prefIcon"><span class="glyphicon glyphicon-cog" aria-hidden="true"></span></div>
-        <div id="dbIcon"><span class="glyphicon glyphicon-folder-close" aria-hidden="true"></span></div>
-        <div id="menuOpen"><span class="glyphicon glyphicon-duplicate" aria-hidden="true"></span></div>
-       <div id="prIcon"><span class="glyphicon glyphicon-check" aria-hidden="true"></span></div>
+        <div id="backIcon"><span class="glyphicon glyphicon-th-large centerIcon" aria-hidden="true"></span></div>
+        <div id="prefIcon"><span class="glyphicon glyphicon-cog centerIcon" aria-hidden="true"></span></div>
+        <div id="dbIcon"><span class="glyphicon glyphicon-folder-close centerIcon" aria-hidden="true"></span></div>
+        <div id="menuOpen"><span class="glyphicon glyphicon-duplicate centerIcon" aria-hidden="true"></span></div>
+       <div id="prIcon"><span class="glyphicon glyphicon-check centerIcon" aria-hidden="true"></span></div>
         <div class="clearer"></div>
     </div>
         <div id="creatingProductsWrapper" class="split-pane fixed-left">
@@ -63,15 +63,23 @@
         </div>
     
     <div id="preferencesWrapper">
-        <div class="col-md-12">
+        <div id="customThemesWrapper">
+            <table border="0" class="stylesTable">
+                <tr>
+                    <td>ergear</td>
+                    <td id="showCustomThemes"><span class="glyphicon glyphicon-forward centerIcon" aria-hidden="true"></span></td>
+                </tr>
+            </table>
+        </div>
+        <div class="col-md-12 toCollapse" data-toggle="collapse"
+                      data-target="#prefGeneralWrapper" aria-expanded="true" aria-controls="prefGeneralWrapper">
             <h4>
                 Основные
-                <span class="glyphicon glyphicon-cog toCollapse" aria-hidden="true" data-toggle="collapse"
-                      data-target="#prefGeneralWrapper" aria-expanded="true" aria-controls="prefGeneralWrapper"></span>
+                <span class="glyphicon glyphicon-cog" aria-hidden="true"></span>
             </h4>
         </div>
         <div class="col-md-12 collapse in" id="prefGeneralWrapper">
-            <div class="col-md-8">
+            <div class="col-md-8 col-md-offset-2">
                 <div class="col-md-8">
                     <table border="0" class="stylesTable">
                         <tr>
@@ -101,15 +109,15 @@
         <div class="col-md-12">
             <hr>
         </div>
-        <div class="col-md-12">
+        <div class="col-md-12 toCollapse" data-toggle="collapse"
+                      data-target="#prefTabsWrapper" aria-expanded="true" aria-controls="prefTabsWrapper">
             <h4>
                 Вкладки
-                <span class="glyphicon glyphicon-duplicate toCollapse" aria-hidden="true" data-toggle="collapse"
-                      data-target="#prefTabsWrapper" aria-expanded="true" aria-controls="prefTabsWrapper"></span>
+                <span class="glyphicon glyphicon-duplicate" aria-hidden="true"></span>
             </h4>
         </div>
         <div class="col-md-12 collapse in" id="prefTabsWrapper">
-            <div class="col-md-8">
+            <div class="col-md-8 col-md-offset-2">
                 <div class="col-md-8">
                     <table border="0" class="stylesTable">
                         <tr>
@@ -134,21 +142,98 @@
                         </tr>
                     </table>
                 </div>
+                <div class="col-md-4">
+                    <div role="tabpanel">
+                        <ul class="nav nav-tabs" role="tablist" id="testTab">
+                            <li role="presentation" class="active">
+                                <a href="#" aria-controls="test" role="tab" data-toggle="tab">
+                                    <span class="tabName">Active</span>
+                                    <span class="closeTab glyphicon glyphicon-remove" aria-hidden="true"></span>
+                                </a>
+                            </li>
+                            <li role="presentation" class="">
+                                <a href="#" aria-controls="test" role="tab" data-toggle="tab">
+                                    <span class="tabName">Inactive</span>
+                                    <span class="closeTab glyphicon glyphicon-remove" aria-hidden="true"></span>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
             </div>
-            <div class="col-md-4">
-                <div role="tabpanel">
-                    <ul class="nav nav-tabs" role="tablist" id="testTab">
-                        <li role="presentation" class="active">
-                            <a href="#" aria-controls="test" role="tab" data-toggle="tab">
-                                <span class="tabName">Active</span>
-                                <span class="closeTab glyphicon glyphicon-remove" aria-hidden="true"></span>
-                            </a>
+        </div>
+        <div class="col-md-12">
+            <hr>
+        </div>
+        <div class="col-md-12 toCollapse" data-toggle="collapse"
+                      data-target="#prefProductsWrapper" aria-expanded="true" aria-controls="prefProductsWrapper">
+            <h4>
+                Изделия
+                <span class="glyphicon glyphicon-compressed" aria-hidden="true"></span>
+            </h4>
+        </div>
+        <div class="col-md-12 collapse in" id="prefProductsWrapper">
+            <div class="col-md-12 col-md-offset-0">
+                <div class="col-md-8">
+                    <table border="0" class="stylesTable">
+                        <tr>
+                            <th></th>
+                            <th>Динамическая Таблица</th>
+                            <th>Статическая Таблица</th>
+                        </tr>
+                        <tr>
+                            <th>Фон: </th>
+                            <td><input type="text" class="form-control" id="prefDynProductTableColor"></td>
+                            <td><input type="text" class="form-control" id="prefProductTableColor"></td>
+                        </tr>
+                        <tr>
+                            <th>Цвет Имени Ячейки: </th>
+                            <td><input type="text" class="form-control" id="prefDynProductFontColor"></td>
+                            <td><input type="text" class="form-control" id="prefProductFontColor"></td>
+                        </tr>
+                        <tr>
+                            <th>Цвет Названия Ячейки: </th>
+                            <td><input type="text" class="form-control" id="prefDynProductCellFontColor"></td>
+                            <td><input type="text" class="form-control" id="prefProductCellFontColor"></td>
+                        </tr>
+                        <tr>
+                            <th>Фон Названия Ячейки: </th>
+                            <td><input type="text" class="form-control" id="prefDynProductCellBackground"></td>
+                            <td><input type="text" class="form-control" id="prefProductCellBackground"></td>
+                        </tr>
+                        <tr>
+                            <th>Цвет Количества Ячейки: </th>
+                            <td><input type="text" class="form-control" id="prefDynProductQuantityColor"></td>
+                            <td><input type="text" class="form-control" id="prefProductQuantityColor"></td>
+                        </tr>
+                        <tr>
+                            <th>Фон Количества Ячейки: </th>
+                            <td><input type="text" class="form-control" id="prefDynProductQuantityBackground"></td>
+                            <td><input type="text" class="form-control" id="prefProductQuantityBackground"></td>
+                        </tr>
+                    </table>
+                </div>
+                <div class="col-md-4" id="prefProductsTableWrapper">
+                    <ul id="prefSortable">
+                        <li class="">
+                            <span class="prefRowNumber col-md-2">A1</span>
+                        <span class="prefRowName">
+                            <input class="prefRowNameInput" type="text" value="Название">
+                        </span>
+                        <span class="prefRowValue">
+                            <input class="refRowValueInput" data-cell="A1" data-formula="" data-format="0[.]00" type="tel" style="width: 5em; margin-left: 1px;" value="100">
+                        </span>
                         </li>
-                        <li role="presentation" class="">
-                            <a href="#" aria-controls="test" role="tab" data-toggle="tab">
-                                <span class="tabName">Inactive</span>
-                                <span class="closeTab glyphicon glyphicon-remove" aria-hidden="true"></span>
-                            </a>
+                    </ul>
+                    <ul id="prefAlwaysInTable">
+                        <li>
+                            <span class="prefRowNumber col-md-2">KIM1</span>
+                        <span class="prefRowName">
+                            <input class="prefRowNameInput" type="text" value="КИМ">
+                        </span>
+                        <span class="prefRowValue">
+                            <input class="refRowValueInput" data-cell="KIM1" data-formula="" data-format="0[.]00" type="tel" style="width: 5em;" value="200">
+                        </span>
                         </li>
                     </ul>
                 </div>
@@ -157,44 +242,70 @@
         <div class="col-md-12">
             <hr>
         </div>
-        <div class="col-md-12">
+        <div class="col-md-12 toCollapse" data-toggle="collapse"
+                      data-target="#prefOrdersWrapper" aria-expanded="true" aria-controls="prefOrdersWrapper">
             <h4>
-                Изделия
-                <span class="glyphicon glyphicon-compressed toCollapse" aria-hidden="true" data-toggle="collapse"
-                      data-target="#prefProductsWrapper" aria-expanded="true" aria-controls="prefTabsWrapper"></span>
+                Ордера
+                <span class="glyphicon glyphicon-tasks toCollapse" aria-hidden="true"></span>
             </h4>
         </div>
-        <div class="col-md-12 collapse in" id="prefProductsWrapper">
-            <div class="col-md-8">
+        <div class="col-md-12 collapse in" id="prefOrdersWrapper">
+            <div class="col-md-12 col-md-offset-0">
                 <div class="col-md-8">
                     <table border="0" class="stylesTable">
                         <tr>
-                            <th>Цвет таблицы: </th>
-                            <td><input type="text" class="form-control" id="prefProductTableColor"></td>
+                            <th></th>
+                            <th>Цвет Фона:</th>
+                            <th>Цвет Рамки:</th>
+                            <th>Цвет Названий:</th>
                         </tr>
                         <tr>
-                            <th>Цвет шрифта Ячейки: </th>
-                            <td><input type="text" class="form-control" id="prefProductFontColor"></td>
+                            <th>Шапка</th>
+                            <td><input type="text" class="form-control" id="prefOrderHeadBackground"></td>
+                            <td><input type="text" class="form-control" id="prefOrderHeadBordersColor"></td>
+                            <td><input type="text" class="form-control" id="prefOrderHeadFontColor"></td>
+                        </tr>
+                        <tr>
+                            <th>Раздел</th>
+                            <td><input type="text" class="form-control" id="prefOrderSectionBackground"></td>
+                            <td><input type="text" class="form-control" id="prefOrderSectionBordersColor"></td>
+                            <td><input type="text" class="form-control" id="prefOrderSectionFontColor"></td>
+                        </tr>
+                        <tr>
+                            <th>Ряд</th>
+                            <td><input type="text" class="form-control" id="prefOrderRowBackground"></td>
+                            <td><input type="text" class="form-control" id="prefOrderRowBordersColor"></td>
+                            <td><input type="text" class="form-control" id="prefOrderRowFontColor"></td>
+                        </tr>
+                    </table>
+                </div>
+                <div class="col-md-4" id="prefOrdersTableWrapper">
+                    <table class="table table-bordered" id="prefOrderTable">
+                        <tr>
+                            <th>Пример</th>
+                            <th>Ордера</th>
+                        </tr>
+                        <tr class="orderTableSectionName">
+                            <th colspan="2">Раздел 1</th>
+                        </tr>
+                        <tr>
+                            <td>Какие-то</td>
+                            <td>Надписи</td>
                         </tr>
                     </table>
                 </div>
             </div>
-            <div class="col-md-4">
-                <ul id="prefAlwaysInTable">
-                    <li>
-                        <span class="prefRowNumber col-md-2">KIM1</span>
-                        <span class="prefRowName">
-                            <input class="refRowNameInput" type="text" value="КИМ">
-                        </span>
-                        <span class="refRowValue">
-                            <input class="refRowValueInput" data-cell="KIM1" data-formula="" data-format="0[.]00" type="tel" style="width: 5em;" value="1.21">
-                        </span>
-                    </li>
-                </ul>
-            </div>
         </div>
         <div class="col-md-12">
             <hr>
+        </div>
+        <div class="col-md-12 toCollapse" data-toggle="collapse"
+                    data-target="#prefCurrencyWrapper" aria-expanded="true" aria-controls="prefCurrencyWrapper">
+            <h4>
+                <span class="glyphicon glyphicon-usd" aria-hidden="true"></span>
+                Валюты
+                <span class="glyphicon glyphicon-euro" aria-hidden="true"></span>
+            </h4>
         </div>
         <div class="clearer"></div>
     </div>
