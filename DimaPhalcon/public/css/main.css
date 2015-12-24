@@ -9,17 +9,20 @@ body {
 }
 
 #menuIconsTop {
-    
+    height: 44px;
 }
 .centerIcon {
-    margin-left: 2px;
+    margin-left: 5px;
 }
-#creatingProductsWrapper {
+#creatingProductsWrapper, #databaseWrapper {
     display: none;
+    margin-top: 49px;
 }
 
 /* MAIN MENU */
-
+.colorpicker-element {
+    color: transparent !important;
+}
 #mainMenuWrapper {
     height: 100vh;
     background-color: steelblue;
@@ -39,18 +42,17 @@ body {
     font-size: 70px;
     margin-top: 5px;
 }
-
 #backIcon, #prefIcon, #dbIcon, #menuOpen, #prIcon, #showCustomThemes {
-    position: fixed;
-    z-index: 5000;
-    opacity: 0.3;
-    width: 31px;
+    width: 42px;
     padding: 3px;
     border-radius: 3px;
     cursor: pointer;
-    font-size: 20px;
-    margin-top: -40px;
+    font-size: 25px;
     box-shadow: 0 0 10px rgba(0,0,0,0.5);
+}
+#backIcon, #prefIcon, #dbIcon, #menuOpen, #prIcon{
+    margin-right: 5px;
+    color: white;
 }
 #showCustomThemes {
     top: 15%;
@@ -71,46 +73,26 @@ body {
     top: 15%;
     box-shadow: 0 0 10px rgba(0,0,0,0.5);
 }
-
-#backIcon {
-    left: 12%;
-    background-color: #265a88;
+.activeTopIcon {
+    opacity: 0.5;
 }
-#backIcon:hover {
-    opacity: 1;
-    color: aliceblue;
+#backIcon {
+    background-color: #265a88;
+    margin-left: 40%;
 }
 #prefIcon {
-    left: 38%;
+    color: black;
     background-color: steelblue;
 }
-#prefIcon:hover {
-    opacity: 1;
-    color: aliceblue;
-}
 #dbIcon {
-    left: 44%;
     background-color: #eb9316;
 }
-#dbIcon:hover {
-    opacity: 1;
-    color: aliceblue;
-}
 #menuOpen {
-    left: 50%;
+    color: black;
     background-color: #2aabd2;
 }
-#menuOpen:hover {
-    opacity: 1;
-    color: aliceblue;
-}
 #prIcon {
-    left: 56%;
     background-color: #3e8f3e;
-}
-#prIcon:hover {
-    opacity: 1;
-    color: aliceblue;
 }
 #prefAlwaysInTable .prefRowName {
     margin-right: -4px;
@@ -125,6 +107,7 @@ body {
 /* PREFERENCES */
 #preferencesWrapper {
     display: none;
+    margin-top: 31px;
 }
 #runPreferences span{
     /*font-size: 70px;
@@ -154,12 +137,12 @@ a {
     //width: 60em;
 }
 
-#divider {
+#divider, #db-divider {
     //left: 60em; /* same as left component width */
     width: 5px;
 }
 
-#right-component {
+#right-component, #db-right-component {
     //left: 60em;
     margin-left: 5px; /* same as divider width */
 }

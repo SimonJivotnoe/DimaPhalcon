@@ -145,4 +145,3 @@ class MenuController extends \Phalcon\Mvc\Controller
         }
     }
 }
-

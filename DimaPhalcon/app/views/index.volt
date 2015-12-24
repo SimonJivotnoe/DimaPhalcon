@@ -11,8 +11,6 @@
     <link href="js/jquery/colorpicker/dist/css/bootstrap-colorpicker.min.css" rel="stylesheet" type="text/css"/>
     <link rel="shortcut icon" type="image/x-icon" href="favicon.ico" />
     <!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">-->
-
-
 </head>
 <body>
     <div id="waitSpinner"></div>
@@ -38,20 +36,33 @@
             </div>
         </div>
     </div>
-    <div id="menuIconsTop">
-        <div id="backIcon"><span class="glyphicon glyphicon-th-large centerIcon" aria-hidden="true"></span></div>
-        <div id="prefIcon"><span class="glyphicon glyphicon-cog centerIcon" aria-hidden="true"></span></div>
-        <div id="dbIcon"><span class="glyphicon glyphicon-folder-close centerIcon" aria-hidden="true"></span></div>
-        <div id="menuOpen"><span class="glyphicon glyphicon-duplicate centerIcon" aria-hidden="true"></span></div>
-       <div id="prIcon"><span class="glyphicon glyphicon-check centerIcon" aria-hidden="true"></span></div>
-        <div class="clearer"></div>
-    </div>
+    <nav class="navbar navbar-inverse navbar-fixed-top" id="topIconsWrapper" style="min-height: 46px;">
+        <div class="container" style="margin-top: 4px;">
+            <div id="menuIconsTop" class="col-md-12">
+                <form class="form-inline">
+                    <div class="form-group hvr-pulse-grow" id="backIcon">
+                        <span class="glyphicon glyphicon-th-large centerIcon" aria-hidden="true"></span>
+                    </div>
+                    <div class="form-group hvr-pulse-grow" id="prefIcon">
+                        <span class="glyphicon glyphicon-cog centerIcon" aria-hidden="true"></span>
+                    </div>
+                    <div class="form-group hvr-pulse-grow" id="dbIcon">
+                        <span class="glyphicon glyphicon-folder-close centerIcon" aria-hidden="true"></span>
+                    </div>
+                    <div class="form-group hvr-pulse-grow" id="menuOpen">
+                        <span class="glyphicon glyphicon-duplicate centerIcon" aria-hidden="true"></span>
+                    </div>
+                    <div class="form-group hvr-pulse-grow" id="prIcon">
+                        <span class="glyphicon glyphicon-check centerIcon" aria-hidden="true"></span>
+                    </div>
+                </form>
+                <div class="clearer"></div>
+            </div>
+        </div>
+     </nav>
         <div id="creatingProductsWrapper" class="split-pane fixed-left">
             <div class="split-pane-component" id="left-component">
-                <div id="tabs">
-                    <div id="leftTabsSpinner"></div>
-                    {{ tabs }}
-                </div>
+                
             </div>
             <div class="split-pane-divider" id="divider"></div>
             <div class="split-pane-component" id="right-component">
@@ -84,7 +95,6 @@
             </div>
             <div class="col-md-3">
                 <select id="customThemesList" class="form-control input-sm">
-                    <option>Default</option>
                 </select>
             </div>
             <div class="col-md-2">
@@ -327,15 +337,82 @@
         <div class="col-md-12">
             <hr>
         </div>
-        <div class="col-md-12 toCollapse" data-toggle="collapse"
-                    data-target="#prefCurrencyWrapper" aria-expanded="true" aria-controls="prefCurrencyWrapper">
-            <h4>
-                <span class="glyphicon glyphicon-usd" aria-hidden="true"></span>
-                Валюты
-                <span class="glyphicon glyphicon-euro" aria-hidden="true"></span>
-            </h4>
-        </div>
         <div class="clearer"></div>
+    </div>
+    <div id="databaseWrapper" class="split-pane fixed-left">
+        <div class="split-pane-component" id="db-left-component">
+            <div id="tabs">
+                <div id="leftTabsSpinner"></div>
+                {{ tabs }}
+            </div>
+        </div>
+        <div class="split-pane-divider" id="db-divider"></div>
+        <div class="split-pane-component" id="db-right-component">
+            <div id="kimSpinner"></div>
+            <div class="col-md-12">
+                <h4>Категории <span class="glyphicon glyphicon-th-list" aria-hidden="true" data-toggle="collapse"
+                                    data-target="#categoriesCollapse" aria-expanded="true"
+                                    aria-controls="categoriesCollapse">
+                    </span>
+                </h4>
+
+                <div class="collapse in" id="categoriesCollapse">
+                    <div class="col-md-8">
+                        <input type="text" id="addCategoryInput" placeholder="Имя категории">
+                        <input type="text" id="addCategoryArticleInput" placeholder="Артикул">
+                        <button type="button" class="btn btn-info btn-sm" id="addCategoryBtn">Добавить</button>
+                    </div>
+                    <div class="col-md-8" id="categoriesListTable">
+                        <table class="table table-bordered">
+                            <tbody>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-12">
+                <h4>КИМ <span class="glyphicon glyphicon-fire" aria-hidden="true" data-toggle="collapse"
+                              data-target="#kimCollapse" aria-expanded="true" aria-controls="kimCollapse">
+                    </span>
+                </h4>
+
+                <div class="collapse in" id="kimCollapse">
+                    <div class="col-md-12">
+                        <input type="text" id="kimHardInput" placeholder="Сложность изделия"/>
+                        <input type="number" id="kimInput" step="0.1" min="0.1" placeholder="КИМ"/>
+                        <button class="btn btn-info btn-sm" id="addKIM">Добавить</button>
+                    </div>
+                    <div class="col-md-8" id="kimListWrapper">
+                        <table class="table table-bordered">
+                            <tbody id="tbodyKIM">
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-12">
+                <h4>Металлы <span class="glyphicon glyphicon-oil" aria-hidden="true"  data-toggle="collapse"
+                                  data-target="#metallsCollapse" aria-expanded="true" aria-controls="metallsCollapse">
+                    </span>
+                </h4>
+                <div class="collapse in" id="metallsCollapse">
+                    <div class="col-md-12">
+                        <input type="text" id="metallName" placeholder="Металл"/>
+                        <input type="number" id="metallPrice" step="10" placeholder="Цена"/>
+                        <input type="number" id="metallMass" step="0.1" min="0.1" placeholder="Масса"/>
+                        <input type="number" id="metallOutPrice" step="10" placeholder="Исходящая цена"/>
+                        <input type="text" id="metallArticle" placeholder="Артикул"/>
+                        <button class="btn btn-info btn-sm" id="addMetall">Добавить</button>
+                    </div>
+                    <div class="col-md-12" id="metallListWrapper">
+                        <table class="table table-bordered">
+                            <tbody id="tbodyMetalls">
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 <div class="modal fade bs-example-modal-lg in" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" id="openMenuModal">
     <div class="modal-dialog modal-lg">

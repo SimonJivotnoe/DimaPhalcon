@@ -18,17 +18,24 @@ $( document ).ready( function ()
 		minscreenSize = '5px';
 
 	PREFERENCES.applyCss();
+	$('#livemill').prop('muted', true);
 	// SPLIT MONITOR SECTION
 	// setting default value
 	if (undefined === localStorage.split) {
 		localStorage.split = defaultScreenSize;
 	}
+	if (undefined === localStorage['db-split']) {
+		localStorage['db-split'] = defaultScreenSize;
+	}
 	TABS.splitMonitor();
-	$('div.split-pane').splitPane();
+	$('#creatingProductsWrapper, #databaseWrapper').splitPane();
 
 	// custom splitting by dragging splitter
 	$('#divider').on('mouseleave', function(){
 		localStorage.split = $('#divider').css('left');
+	});
+	$('#db-divider').on('mouseleave', function(){
+		localStorage['db-split'] = $('#db-divider').css('left');
 	});
 
 	// show / restore default by double clicking on right tab
@@ -52,7 +59,7 @@ $( document ).ready( function ()
 		var cssArr = ['body'];
 		for (var i = 0; i < cssArr.length; i++) {
 			var css = checkStorageCSS(cssArr[i]);
-			css[cssArr[i]]['fontFamily'] = font[0];
+			css[cssArr[i]]['fontFamily'] = font[0] + ' !important';
 			localStorage.customCSS = JSON.stringify(css);
 		}
 	});
@@ -92,9 +99,13 @@ $( document ).ready( function ()
 	
 	function applyPreferences (arr) {
 		$.each(arr, function (num, obj) {
-			$(obj.id).colorpicker({
-				color: $(obj.elem).css(obj.style)
+			$(obj.id).css({
+				backgroundColor: $(obj.elem).css(obj.style)
+			}).colorpicker({
+				color: $(obj.elem).css(obj.style),
+				backgroundColor: $(obj.elem).css(obj.style)
 			}).on('changeColor', function(ev) {
+				$(obj.id).css('backgroundColor', ev.color.toHex());
 				applyColorAndSaveToLS(obj.cssArr, obj.style, ev, obj.important);
 			});
 		});
@@ -109,7 +120,7 @@ $( document ).ready( function ()
 		for (var i = 0; i < cssArr.length; i++) {
 			var css = checkStorageCSS(cssArr[i]);
 			css[cssArr[i]][style] = ev.color.toHex() + imp;
-			localStorage.customCSS = JSON.stringify(css);
+			THEMES.addThemeCss(css);
 		}
 	}
 	
@@ -131,13 +142,16 @@ $( document ).ready( function ()
 			$.when(THEMES.addTheme()).then(function (data) {
 				if (data) {
 					$('#customThemeName').val('');
+					THEMES.getThemesList();
 				} else {
 					VALID.showError('#customThemeName');
 				}
-				console.log(data);
 			});
 		}
 	});
+	
+	$('#applyThemeBtn' ).click(THEMES.applyTheme);
+	$('#deleteThemeBtn' ).click(THEMES.deleteTheme);
 
 	$('#runPR').click(function () {
 		$('#mainMenuWrapper').fadeOut();
@@ -148,6 +162,11 @@ $( document ).ready( function ()
 		}
 	});
 	
+	$('#runDB').click(function () {
+		$('#mainMenuWrapper').fadeOut();
+		setTimeout(MENU.runDB, 300);
+	});
+	
 	$('#runPreferences').click(function () {
 		$('#mainMenuWrapper').fadeOut();
 		setTimeout(MENU.runPreferences, 300);
@@ -156,24 +175,24 @@ $( document ).ready( function ()
 	// ICONS TOP MENU
 	$( '#backIcon, #dbIcon, #prefIcon, #menuOpen, #prIcon' )
 		.mouseenter(function() {
-			MENU.onHoverElement({
+			/*MENU.onHoverElement({
 				scope: this,
 				css: { "marginTop": "0px" },
 				speed: 200
-			});
+			});*/
 			if ('dbIcon' === $(this).attr('id')) {
-				$('span', this ).removeClass().addClass('glyphicon glyphicon-folder-open');
+				$('span', this ).removeClass().addClass('glyphicon glyphicon-folder-open centerIcon');
 			}
 		})
 		.mouseleave(function() {
 			if ('MENU' !== localStorage.siteSector) {
-				MENU.onHoverElement({
+				/*MENU.onHoverElement({
 					scope: this,
 					css: { "marginTop": "-8px" },
 					speed: 200
-				});
+				});*/
 				if ('dbIcon' === $(this).attr('id')) {
-					$('span', this ).removeClass().addClass('glyphicon glyphicon-folder-close');
+					$('span', this ).removeClass().addClass('glyphicon glyphicon-folder-close centerIcon');
 				}
 			}
 		});
@@ -197,15 +216,13 @@ $( document ).ready( function ()
 			$('#showCustomThemes span', this ).removeClass().addClass('glyphicon glyphicon-forward');
 		});
 		
-	$( '#backIcon').click(MENU.showMainMenu);
+	$('#backIcon').click(MENU.showMainMenu);
 
-	$( "#prefIcon" ).click(MENU.runPreferences);
+	$('#prefIcon').click(MENU.runPreferences);
 
-	$( "#dbIcon" ).click(function(){
-		
-	});
+	$('#dbIcon').click(MENU.runDB);
 	
-	$( "#menuOpen" ).click(MENU.createFileManager);
+	$('#menuOpen').click(MENU.createFileManager);
 	
 	$( '#prIcon').click(MENU.runProductCreation);
 	
