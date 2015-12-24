@@ -8,11 +8,29 @@
     <link href="css/main.css" rel="stylesheet" type="text/css"/>
     <link href="css/jquery-ui.css" rel="stylesheet" type="text/css"/>
     <link href="css/hover-min.css" rel="stylesheet" type="text/css"/>
+    <link rel="stylesheet" type="text/css" href="css/semantic.min.css">
     <link href="js/jquery/colorpicker/dist/css/bootstrap-colorpicker.min.css" rel="stylesheet" type="text/css"/>
     <link rel="shortcut icon" type="image/x-icon" href="favicon.ico" />
     <!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">-->
 </head>
 <body>
+<!--
+$('.ui.sidebar').sidebar('toggle');
+ -->
+<div class="ui sidebar inverted vertical menu">
+    <a class="item">
+        1
+    </a>
+    <a class="item">
+        2
+    </a>
+    <a class="item">
+        3
+    </a>
+</div>
+<div class="pusher">
+    <!-- Site content !-->
+
     <div id="waitSpinner"></div>
     <div class="col-md-12" id="mainMenuWrapper">
         <div class="col-md-8 col-md-offset-4" style="margin-top: 18%;">
@@ -413,6 +431,7 @@
                 </div>
             </div>
         </div>
+        <div class="clearer"></div>
     </div>
 <div class="modal fade bs-example-modal-lg in" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" id="openMenuModal">
     <div class="modal-dialog modal-lg">
@@ -507,6 +526,7 @@
         </div><!-- /.modal-content -->
     </div><!-- /.modal-dialog -->
 </div>
+</div>
 <script src="js/jquery/jquery-1.11.2.min.js"></script>
 <script src="js/jquery/jquery-ui.js"></script>
 <script src="js/jquery/underscore.js"></script>
@@ -545,5 +565,6 @@
 <script src="js/jquery/jquery.fontselect.min.js"></script>
 <script src="js/jquery/colorpicker/dist/js/bootstrap-colorpicker.min.js"></script>
 <script src="js/jquery/spin.min.js"></script>
+<script src="js/jquery/semantic.min.js"></script>
 </body>
 </html>

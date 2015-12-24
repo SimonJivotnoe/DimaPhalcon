@@ -17,6 +17,7 @@ body {
 #creatingProductsWrapper, #databaseWrapper {
     display: none;
     margin-top: 49px;
+    height: 100vh;
 }
 
 /* MAIN MENU */

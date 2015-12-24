@@ -2540,11 +2540,9 @@
 			},
 
 			showKim: function() {
-				/*MAIN.tabsRightList.kim.active = '1';
-				MAIN.curTabRightId = 'kim';*/
-                CATEGORIES.getCategoriesTable();
-				KIM.getKIMTable();
-				METALLS.getMetallsTable();
+				$.when(CATEGORIES.getCategoriesTable(), KIM.getKIMTable(), METALLS.getMetallsTable()).done(function () {
+					setTimeout(function(){ spinnerKim.stop(document.getElementById('orderSpinner')); }, 500);
+				});
 			},
 
 			loadPreferences: function() {
@@ -3007,7 +3005,7 @@
             },
 
             getCategoriesTable: function() {
-                $.ajax( {
+                 return $.ajax( {
                     url   : URL_CATEG + 'getCategoriesTable',
                     method: 'GET'
                 } ).then( function ( data )
@@ -3018,7 +3016,7 @@
             },
 
             getCategoriesList: function () {
-                $.ajax({
+                return $.ajax({
                     url: URL_CATEG + 'getCategoriesList',
                     method: 'GET',
                     data: {
@@ -3075,7 +3073,7 @@
 		// kim section
 		kim: {
 			getKIMTable: function () {
-				$.ajax({
+				return $.ajax({
 					url: URL_KIM + 'getKIMTable',
 					method: 'GET'
 				}).then(function (data)
@@ -3169,7 +3167,7 @@
 		// metalls section
 		metalls: {
 			getMetallsTable: function() {
-				$.ajax({
+				return $.ajax({
 					url: URL_METALLS + 'getMetallsTable',
 					method: 'GET'
 				}).then(function (data){
@@ -3390,10 +3388,50 @@
 								$(elem).css(key, val);
 							});
 						});
+						PREFERENCES.applyPreferences(MENU.getPreferencesSettings());
 					} catch (err) {
 						console.log(err);
 					}
 				}
+			},
+
+			applyPreferences: function (arr) {
+				$.each(arr, function (num, obj) {
+					$(obj.id).css({
+						backgroundColor: $(obj.elem).css(obj.style)
+					}).colorpicker({
+						color: $(obj.elem).css(obj.style),
+						backgroundColor: $(obj.elem).css(obj.style)
+					}).on('changeColor', function(ev) {
+						$(obj.id).css('backgroundColor', ev.color.toHex());
+						PREFERENCES.applyColorAndSaveToLS(obj.cssArr, obj.style, ev, obj.important);
+					});
+				});
+			},
+
+			applyColorAndSaveToLS: function (cssArr, style, ev, important) {
+				var imp = '';
+				if (important && undefined !== important) {
+					imp = ' !important';
+				}
+				$(cssArr.join(', ')).css(style, ev.color.toHex());
+				for (var i = 0; i < cssArr.length; i++) {
+					var css = PREFERENCES.checkStorageCSS(cssArr[i]);
+					css[cssArr[i]][style] = ev.color.toHex() + imp;
+					THEMES.addThemeCss(css);
+				}
+			},
+
+			checkStorageCSS: function (elem) {
+				if (!localStorage.customCSS) {
+					localStorage.customCSS = JSON.stringify({});
+				}
+				var css = JSON.parse(localStorage.customCSS);
+				if (!css[elem]) {
+					css[elem] = {};
+					localStorage.customCSS = JSON.stringify(css);
+				}
+				return JSON.parse(localStorage.customCSS);
 			}
 		},
 		

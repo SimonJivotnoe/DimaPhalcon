@@ -58,7 +58,7 @@ $( document ).ready( function ()
 		$('body').css('font-family', font[0]);
 		var cssArr = ['body'];
 		for (var i = 0; i < cssArr.length; i++) {
-			var css = checkStorageCSS(cssArr[i]);
+			var css = PREFERENCES.checkStorageCSS(cssArr[i]);
 			css[cssArr[i]]['fontFamily'] = font[0] + ' !important';
 			localStorage.customCSS = JSON.stringify(css);
 		}
@@ -67,7 +67,7 @@ $( document ).ready( function ()
 	PREFERENCES.insertFontSizes(['#globalFontSize'], 'body');
 	
 	$('#globalFontSize').change(function () {
-		var css = checkStorageCSS('body');
+		var css = PREFERENCES.checkStorageCSS('body');
 		$('body').css('font-size', $('#globalFontSize :selected').text());
 		css.body['font-size'] = $('#globalFontSize :selected').text();
 		localStorage.customCSS = JSON.stringify(css);
@@ -80,7 +80,7 @@ $( document ).ready( function ()
 		$('#testTab').css('font-family', font[0]);
 		var cssArr = ['.tabName', '.tabNameRight', '#testTab'];
 		for (var i = 0; i < cssArr.length; i++) {
-			var css = checkStorageCSS(cssArr[i]);
+			var css = PREFERENCES.checkStorageCSS(cssArr[i]);
 			css[cssArr[i]]['fontFamily'] = font[0];
 			localStorage.customCSS = JSON.stringify(css);
 		}
@@ -89,52 +89,13 @@ $( document ).ready( function ()
 	PREFERENCES.insertFontSizes(['#fontSizeTabs'], '.nav-tabs');
 	
 	$('#fontSizeTabs').change(function () {
-		var css = checkStorageCSS('.nav-tabs');
+		var css = PREFERENCES.checkStorageCSS('.nav-tabs');
 		$('#testTab').css('font-size', $('#fontSizeTabs :selected').text());
 		css['.nav-tabs']['font-size'] = $('#fontSizeTabs :selected').text();
 		localStorage.customCSS = JSON.stringify(css);
 	});
-	
-	applyPreferences(MENU.getPreferencesSettings());
-	
-	function applyPreferences (arr) {
-		$.each(arr, function (num, obj) {
-			$(obj.id).css({
-				backgroundColor: $(obj.elem).css(obj.style)
-			}).colorpicker({
-				color: $(obj.elem).css(obj.style),
-				backgroundColor: $(obj.elem).css(obj.style)
-			}).on('changeColor', function(ev) {
-				$(obj.id).css('backgroundColor', ev.color.toHex());
-				applyColorAndSaveToLS(obj.cssArr, obj.style, ev, obj.important);
-			});
-		});
-	}
-	
-	function applyColorAndSaveToLS (cssArr, style, ev, important) {
-		var imp = '';
-		if (important && undefined !== important) {
-			imp = ' !important';
-		}
-		$(cssArr.join(', ')).css(style, ev.color.toHex());
-		for (var i = 0; i < cssArr.length; i++) {
-			var css = checkStorageCSS(cssArr[i]);
-			css[cssArr[i]][style] = ev.color.toHex() + imp;
-			THEMES.addThemeCss(css);
-		}
-	}
-	
-	function checkStorageCSS (elem) {
-		if (!localStorage.customCSS) {
-			localStorage.customCSS = JSON.stringify({});
-		}
-		var css = JSON.parse(localStorage.customCSS);
-		if (!css[elem]) {
-			css[elem] = {};
-			localStorage.customCSS = JSON.stringify(css);
-		}
-		return JSON.parse(localStorage.customCSS);
-	}
+
+	PREFERENCES.applyPreferences(MENU.getPreferencesSettings());
 	
 	// MENU
 	$('#addThemeBtn' ).click(function () {
