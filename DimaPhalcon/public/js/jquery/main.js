@@ -51,18 +51,7 @@ $( document ).ready( function ()
 	});
 	
 	// PREFERENCES
-	// GLOBAL	
-	$('#globalFontFamily').fontselect().change(function(){
-		var font = $(this).val().replace(/\+/g, ' ');
-		font = font.split(':');
-		$('body').css('font-family', font[0]);
-		var cssArr = ['body'];
-		for (var i = 0; i < cssArr.length; i++) {
-			var css = PREFERENCES.checkStorageCSS(cssArr[i]);
-			css[cssArr[i]]['fontFamily'] = font[0] + ' !important';
-			localStorage.customCSS = JSON.stringify(css);
-		}
-	});
+	// GLOBAL
 	
 	PREFERENCES.insertFontSizes(['#globalFontSize'], 'body');
 	
@@ -74,17 +63,6 @@ $( document ).ready( function ()
 	});
 	
 	//TABS
-	$('#fontFamilyTabs').fontselect().change(function(){
-		var font = $(this).val().replace(/\+/g, ' ');
-		font = font.split(':');
-		$('#testTab').css('font-family', font[0]);
-		var cssArr = ['.tabName', '.tabNameRight', '#testTab'];
-		for (var i = 0; i < cssArr.length; i++) {
-			var css = PREFERENCES.checkStorageCSS(cssArr[i]);
-			css[cssArr[i]]['fontFamily'] = font[0];
-			localStorage.customCSS = JSON.stringify(css);
-		}
-	});
 	
 	PREFERENCES.insertFontSizes(['#fontSizeTabs'], '.nav-tabs');
 	
@@ -183,7 +161,9 @@ $( document ).ready( function ()
 
 	$('#dbIcon').click(MENU.runDB);
 	
-	$('#menuOpen').click(MENU.createFileManager);
+	$('#menuOpen').click(function () {
+		MENU.createFileManager();
+	});
 	
 	$( '#prIcon').click(MENU.runProductCreation);
 	
@@ -218,17 +198,11 @@ $( document ).ready( function ()
 		});
 	});
 	
-	// cog spin on-off
-	$('#preferences')
-		.mouseover(function(){
-			$('.fa-cog').addClass('fa-spin');
-		})
-		.mouseleave(function(){
-			$('.fa-cog').removeClass('fa-spin');
-		})
-		.click(function(){
+	// 
+	$('#dbProductsListTab').click(function(){
 			TABS.loadPreferences();
 			TABS.changeActiveTab('', '', 'changeActiveLeftTab');
+			MENU.createFileManager('PR');
 		});
 
 	// creating new left tab by clicking on +

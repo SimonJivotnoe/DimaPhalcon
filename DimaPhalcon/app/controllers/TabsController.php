@@ -15,9 +15,9 @@ class TabsController extends \Phalcon\Mvc\Controller
             $html = false;
             $active = false;
             $prodId = false;
-            $tabArr['preferences1'] = (object)[
+            $tabArr['dbProductsListTab'] = (object)[
                 'active' => '',
-                'productId' => 'preferences1'
+                'productId' => 'dbProductsListTab'
             ];
             $resObj = [];
             if (count($tabs)) {
@@ -152,22 +152,22 @@ class TabsController extends \Phalcon\Mvc\Controller
             $formulas = json_decode($product->getFormulas());
 
             $productDetails = array(
-                '%PRODUCT_NAME%'    => $prName,
-                '%ARTICLE_BTN%'     => $article,
-                '%IMAGE%'           => $image,
-                '%CATEGORIES%'      => $categoriesList['html'],
-                '%KIM_LIST%'        => $kimList['html'],
-                '%METALL_LIST%'     => $metallList['html'],
-                '%CREATED%'         => $product->getCreated(),
-                '%SAVE_IN_DB%'      => $prStatus,
+                '%PRODUCT_NAME%'      => $prName,
+                '%ARTICLE_BTN%'       => $article,
+                '%IMAGE%'             => $image,
+                '%CATEGORIES%'        => $categoriesList['html'],
+                '%KIM_LIST%'          => $kimList['html'],
+                '%METALL_LIST%'       => $metallList['html'],
+                '%CREATED%'           => $product->getCreated(),
+                '%SAVE_IN_DB%'        => $prStatus,
                 '%TABLE_CONTENT%'     => $productObj->createTableRes($table, $tableTemplate),
                 '%TABLE_CONTENT_A%'   => $productObj->createTableRes($table, 'tableContent.html'),
-                '%ALWAYS_IN_TABLE%' => $productObj->createTableRes($alwaysInTable, $alwaysInTableTemplate),
+                '%ALWAYS_IN_TABLE%'   => $productObj->createTableRes($alwaysInTable, $alwaysInTableTemplate),
                 '%ALWAYS_IN_TABLE_A%' => $productObj->createTableRes($alwaysInTable, 'alwaysInTable.html'),
-                '%FORMULAS_HELPER%' => $formulaHelperObj->createFormulaHelperList(),
-                '%FORMULAS%'        => $formulaHelperObj->createFormulasList($formulas),
-                '%ADD_TO_ORDER%'    => $addToOrder,
-                '%METALL_HISTORY%'  => $metallHistory
+                '%FORMULAS_HELPER%'   => $formulaHelperObj->createFormulaHelperList(),
+                '%FORMULAS%'          => $formulaHelperObj->createFormulasList($formulas),
+                '%ADD_TO_ORDER%'      => $addToOrder,
+                '%METALL_HISTORY%'    => $metallHistory
             );
 
             $tabContent .= $substObj->subHTMLReplace($mainTemplate, $productDetails);
@@ -332,6 +332,8 @@ class TabsController extends \Phalcon\Mvc\Controller
             $nextActive = $this->request->getPost('nextActiveTab');
             $tabs = Tabs::findFirst(array("id = '$id'", "tab_id = '$tabId'"));
             $productObj = Products::findFirst($tabs->getProductId());
+            $this->response->setContentType('application/json', 'UTF-8');
+            $this->response->setJsonContent(false);
             if ($tabs != false) {
                 if ($tabs->delete() == false) {
                     echo "Sorry, we can't delete the robot right now: \n";
@@ -339,14 +341,16 @@ class TabsController extends \Phalcon\Mvc\Controller
                     $this->response->setJsonContent(array($message[0]->__toString()));
                     return $this->response;
                 } else {
-                    $changeActiveStatus = Tabs::findFirst(array("tab_id = '$nextActive'"));
-                    $changeActiveStatus->setActive(1)->save();
                     'draft' === $productObj->getStatus() ? $productObj->delete() : true ;
-                    $this->response->setContentType('application/json', 'UTF-8');
-                    $this->response->setJsonContent('ok');
-                    return $this->response;
+                    if ('dbProductsListTab' !== $nextActive) {
+                        $changeActiveStatus = Tabs::findFirst(array("tab_id = '$nextActive'"));
+                        $changeActiveStatus->setActive(1)->save();
+                    }
+                    $this->response->setJsonContent(true);
                 }
+                return $this->response;
             }
+            
         } else {
             $this->response->redirect('');
         }

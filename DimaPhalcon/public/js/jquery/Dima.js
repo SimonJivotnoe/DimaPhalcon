@@ -2190,6 +2190,7 @@
 						$('#myTab, #leftTabsContent').fadeIn('slow');
 						setTimeout(function(){ spinnerLeft.stop(document.getElementById('leftTabsSpinner')); }, 200);
 						TABS.showPreferences();
+						MENU.createFileManager('PR');
 					}
 					$(function () {
 						$('[data-toggle="tooltip"]').tooltip();
@@ -2206,7 +2207,7 @@
 				{
 					var kim, metall, metallOut;
 
-					$('#preferences1').removeClass('active');
+					$('#dbProductsListList').removeClass('active');
 					$('.currentTab' )
 						.attr('id', tabId)
 						.removeClass('saveInDB addedToOrder')
@@ -2235,6 +2236,9 @@
 						$('.removeFormula, .editFormula').remove();
 						$('#metallHistorySelect option:last-child' ).prop('selected', true);
 						recalculateArticleTable();
+						if ('DB' === localStorage.siteSector) {
+							$('#addToOrderBtn').hide();
+						}
 					}
 					$.each($('.bindFormulaWithCell'), function(num, obj){
 						var li = $(obj).closest('li');
@@ -2275,7 +2279,7 @@
 					elemInObj = Object.keys(MAIN.tabsList),
 					ifActive, index;
 				if (2 === elemInObj.length) {
-					nextActiveTab = 'preferences1';
+					nextActiveTab = 'dbProductsListTab';
 				} else {
 					ifActive = MAIN.tabsList[currentID].active;
 					if ('1' === ifActive) {
@@ -2294,10 +2298,11 @@
 				setTimeout(function () {
 					$('[aria-controls=' + currentID + ']').parent().remove();
 				}, 900);
-				if ('preferences1' === nextActiveTab || undefined === nextActiveTab) {
+				if ('dbProductsListTab' === nextActiveTab || undefined === nextActiveTab) {
 					$('.currentTab').removeClass('active');
-					$('#preferences, #preferences1').addClass('active');
+					$('#dbProductsListTab, #dbProductsListList').addClass('active');
 					TABS.loadPreferences();
+					MENU.createFileManager('PR');
 				} else {
 					$('[aria-controls=' + nextActiveTab + ']').parent().addClass('active');
 				}
@@ -2312,7 +2317,7 @@
 					}
 				}).then(function (  )
 				{
-					if ('preferences1' !== nextActiveTab) {
+					if ('dbProductsListTab' !== nextActiveTab) {
 						TABS.getLeftTabContent(productId, nextActiveTab);
 					}
 				});
@@ -2546,12 +2551,12 @@
 			},
 
 			loadPreferences: function() {
-				MAIN.tabsList['preferences1'].active = '1';
-				MAIN.curTabId = 'preferences1';
+				MAIN.tabsList.dbProductsListTab.active = '1';
+				MAIN.curTabId = 'dbProductsListTab';
 			},
 
 			showPreferences: function (){
-				$('#preferences, #preferences1').addClass('active');
+				$('#dbProductsListTab, #dbProductsListList').addClass('active');
 				TABS.loadPreferences();
 				showBody();
 			},
@@ -2841,6 +2846,50 @@
 				}
 
 				return res;
+			},
+			
+			getProductsTree: function () {
+				$.ajax( {
+					url   : URL_PRODUCT + 'getProductsTree',
+					method: 'GET'
+				} ).then( function ( data )
+				{
+					console.log(data);
+					var tree = $('#productsTree');
+					tree.tree({
+						data: data,
+						autoOpen: false,
+						dragAndDrop: false
+					});
+					tree.bind(
+						'tree.select',
+						function (event) {
+							if (event.node) {
+								var node = event.node;
+								if (node.id) {
+										$.ajax({
+											url: URL_TABS + 'getLeftTabContent/' + node.id,
+											method: 'GET'
+										}).then(function (data){
+											MAIN.productId = node.id;
+											$('#completedProduct').html(addLeftTabContentHandler($(data.html)));
+											$('.rowValueInput').removeClass('rowValueInput');
+											$('.cellBind').removeClass('cellBind');
+											$('.glyphicon-retweet').removeClass('glyphicon-retweet');
+											$('.removeFormula, .editFormula').remove();
+											$('#metallHistorySelect option:last-child').prop('selected', true);
+											$('#selectCreateproductWay, #createProductFromTemplate').hide();
+										});
+								}
+							}
+							else {
+								// event.node is null
+								// a node was deselected
+								// e.previous_node contains the deselected node
+							}
+						}
+					);
+				});
 			}
 		},
 
@@ -3284,7 +3333,10 @@
 						setTimeout(function(){ spinnerKim.stop(document.getElementById('orderSpinner')); }, 300);
 					});
 					$('#topIconsWrapper, #databaseWrapper').show();
-					TABS.openProductCreation();
+					if (!MAIN.prRequested) {
+						TABS.getLeftTabsList();
+						TABS.getRightTabsList();
+					}
 				}
 			},
 			
@@ -3298,6 +3350,7 @@
 					$('#mainMenuWrapper, #preferencesWrapper, #databaseWrapper').hide();
 					$('#topIconsWrapper, #creatingProductsWrapper').show();
 					TABS.openProductCreation();
+					PRODUCT.getProductsTree();
 				}
 			},
 			
@@ -3326,23 +3379,24 @@
 					.animate( css, speed );
 			},
 
-			createFileManager: function() {
+			createFileManager: function(param) {
 				$.ajax( {
 					url   : URL_MENU + 'createFileManager',
-					method: 'GET'
+					method: 'GET',
+					data: {param: param}
 				} ).then( function ( data )
 				{
 					$('#fileManagerCatogoriesSelect' ).html(data.categories);
 					$('#fileManagerProductsTable' ).html(addMenuProductHandler($(data.products)));
 					$('#fileManagerOrdersTable' ).html(addMenuOrdersHandler($(data.orders)));
-					$.each(data.orderDescription, function(name, arr) {
+					/*$.each(data.orderDescription, function(name, arr) {
 						var option = '<option></option>';
 						$.each(arr, function(num, val) {
 							option += '<option>' + val + '</option>';
 						});
 						$('[data-section="' + name.replace(/%/g, '') + '"]').html(option);
 					});
-					$('#openMenuModal').modal('show');
+					$('#openMenuModal').modal('show');*/
 				});
 			},
 			
@@ -3353,7 +3407,7 @@
 					rows.hide();
 					$.each(rows, function(num, tr) {
 						$.each($(tr), function(key, td) {
-							if (-1 !== $(td).text().search(text)) {
+							if (-1 !== $(td).text().toLowerCase().search(text.toLowerCase())) {
 								$(td).closest('tr').show();
 								return true;
 							}
@@ -3566,6 +3620,21 @@
 						PREFERENCES.applyCss();
 					}
 				});
+			},
+			
+			deleteTheme: function () {
+				var theme = $('#customThemesList option:selected').val();
+				if ('default' !== theme) {
+					$.ajax( {
+						url   : URL_THEMES + 'deleteThemes',
+						method: 'POST',
+						data: {theme: theme}
+					} ).then( function ( data )
+					{
+						delete localStorage.customCSS;
+						window.location.href = LOCATION;
+					});
+				}
 			},
 			
 			addThemeCss: function (css) {

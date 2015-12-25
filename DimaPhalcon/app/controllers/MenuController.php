@@ -4,11 +4,15 @@ class MenuController extends \Phalcon\Mvc\Controller
 {
     public function createFileManagerAction(){
         if ($this->request->isAjax() && $this->request->isGet()) {
-            $products = $this->getProducts();
-            $orders = $this->getOrders();
-            $products['orders'] = $orders['ordersTable'];
-            $products['orderDescription'] = $orders['orderDescription'];
             $this->response->setContentType('application/json', 'UTF-8');
+            $param = $this->request->get('param');
+            if ('PR' === $param) {
+                $products = $this->getProducts();
+            } else {
+                $orders = $this->getOrders();
+                $products['orders'] = $orders['ordersTable'];
+                $products['orderDescription'] = $orders['orderDescription'];
+            }
             $this->response->setJsonContent($products);
 
             return $this->response;
@@ -27,10 +31,10 @@ class MenuController extends \Phalcon\Mvc\Controller
             return false;
         }
         $productsTable = '<tr>
-                            <th>Название</th>
                             <th>Категория</th>
+                            <th>Металл</th>
+                            <th>Название</th>
                             <th>Дата создания</th>
-                            <th>Ордера</th>
                             <th>Действия</th>
                           </tr>';
         $substObj = new Substitution();
@@ -45,10 +49,12 @@ class MenuController extends \Phalcon\Mvc\Controller
             $arr['%CATEGORY%'] = $categoriesArr[$val->getCategoryId()];
             $arr['%CATEGORY_ID%'] = $val->getCategoryId();
             $arr['%CREATED%'] = $val->getCreated();
-            $arr['%ORDERS%'] = '';
             $arr['%ACTIONS%'] = '';
             $productID = $val->getProductId();
+            $metallId = $val->getMetall();
             $prInOrderObj = Productinorder::find(array("productId = '$productID'"));
+            $metallObj = Metalls::findFirst($metallId);
+            $arr['%METALL%'] = $metallObj->getName();
             foreach ($prInOrderObj as $data) {
                 $orderId = $data->getOrderId();
                 $prObj = Orders::findFirst(array("id = '$orderId'"));

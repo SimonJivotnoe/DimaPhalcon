@@ -171,6 +171,57 @@ class ProductsController extends \Phalcon\Mvc\Controller
         }
     }
     
+    public function getProductsTreeAction(){
+        if ($this->request->isAjax() && $this->request->isGet()) {
+            $this->response->setContentType('application/json', 'UTF-8');
+            $tree = [];
+            $catObj = Categories::find();
+            if (count($catObj)) {
+                foreach ($catObj as $val) {
+                    $catId = $val->getCategoryId();
+                    $catName = $val->getCategoryName();
+                    $node = [
+                        'label'    => $catName,
+                        'children' => []
+                    ];
+                    $metallObj = Metalls::find();
+                    if (count($metallObj)) {
+                        foreach ($metallObj as $metVal) {
+                            $metId = $metVal->getId();
+                            $metName = $metVal->getName();
+                            $node2 = [
+                                'label'    => $metName,
+                                'children' => []
+                            ];
+                            $pr = Products::find(
+                                "category_id = '" . $catId . "' AND metall = '" . $metId . "'"
+                            );
+                            if (count($pr)) {
+                                foreach ($pr as $prVal) {
+                                    $child = [
+                                        'label' => $prVal->getArticle() . '___' . $prVal->getProductName(),
+                                        'id'    => $prVal->getProductId()
+                                    ];
+                                    array_push($node2['children'], (object)$child);
+                                }
+                            }
+                            if (count($node2['children'])) {
+                                array_push($node['children'], (object)$node2);
+                            }
+                        }
+                    }
+                    if (count($node['children'])) {
+                        array_push($tree, (object)$node);
+                    }
+                }
+            }
+            $this->response->setJsonContent($tree);
+            return $this->response;
+        } else {
+            $this->response->redirect('');
+        }
+    }
+    
     public function createProductFromTemplateAction() {
         if ($this->request->isAjax() && $this->request->isPost()) {
             $prId = $this->request->getPost('prId');
@@ -331,4 +382,3 @@ class ProductsController extends \Phalcon\Mvc\Controller
         return $substObj->subHTMLReplace('orderRow.html', $res);
     }
 }
-
