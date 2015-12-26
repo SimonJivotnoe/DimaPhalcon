@@ -83,6 +83,7 @@ class TabsController extends \Phalcon\Mvc\Controller
     
     public function getLeftTabContentAction($productId) {
         if ($this->request->isAjax() && $this->request->isGet()) {
+            $sector = $this->request->get('sector');
             $product = Products::findFirst($productId);
             $this->response->setContentType('application/json', 'UTF-8');
             if ($product == false) {
@@ -107,6 +108,9 @@ class TabsController extends \Phalcon\Mvc\Controller
                 $orderObj = new OrderController;
                 $addToOrder = $orderObj->createAddToOrder();
                 $mainTemplate = 'leftTabContentArticle.html';
+                if ($sector) {
+                    $mainTemplate = 'leftTabContentArticleOrder.html';
+                }
                 $tableTemplate = 'alwaysInTableArticle.html';
                 $alwaysInTableTemplate = 'alwaysInTableArticle.html';
                 $metallHistoryObj = new MetallsController();
@@ -140,7 +144,7 @@ class TabsController extends \Phalcon\Mvc\Controller
             $image = '';
             if (null !== $product->getImage()) {
                 $date = new DateTime();
-                $image = '<div id="productPicture"><img src="img/' . $product->getImage() . '?' . $date->getTimestamp() .'" style="max-width: 100%; max-height: 100%;"></div>';
+                $image = '<div id="productPicture"><img src="img/' . $product->getImage() . '?' . $date->getTimestamp() .'" style="max-width: 100%; max-height: 200px;"></div>';
             }
             $categoriesList = $categoryObj->createCategoriesList($productCatId, $articleFlag);
             $kimList = $kimObj->createKimList($productKim, $articleFlag);

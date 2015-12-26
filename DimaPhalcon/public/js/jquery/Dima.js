@@ -1628,7 +1628,7 @@
 
 		html
 			// change current tab
-			.find('[role=tab]').click(function(){
+			.find('[role=tab], #dbProductsListList').click(function(){
 				if ($(this ).attr('aria-controls') !== MAIN.curTabId) {
 					changeActiveTab({
 						scope: this,
@@ -2236,9 +2236,6 @@
 						$('.removeFormula, .editFormula').remove();
 						$('#metallHistorySelect option:last-child' ).prop('selected', true);
 						recalculateArticleTable();
-						if ('DB' === localStorage.siteSector) {
-							$('#addToOrderBtn').hide();
-						}
 					}
 					$.each($('.bindFormulaWithCell'), function(num, obj){
 						var li = $(obj).closest('li');
@@ -2443,11 +2440,9 @@
 				} ).then( function ( data )
 				{
 					if(!data.tabs) {
-						/*CATEGORIES.getCategoriesTable();
-						KIM.getKIMTable();
-						METALLS.getMetallsTable();*/
 						$('#rightTabs, #rightTabsContent').fadeIn('slow');
 						setTimeout(function(){ spinnerRight.stop(document.getElementById('orderSpinner')); }, 200);
+						$('#livemill').prop('muted', false);
 						return true;
 					}
 
@@ -2456,12 +2451,14 @@
 					if('kim' !== data.tabId) {
 						TABS.getRightTabContentOrderDetails(data.orderId, data.tabId);
 						TABS.getRightTabContentTable(data.orderId);
+						MAIN.orRequested = true;
 						return true;
 					}
 					//TABS.showKim();
 					MAIN.tabsRightList.kim.active = '1';
 					MAIN.curTabRightId = 'kim';
 					$('#rightTabs, #rightTabsContent').fadeIn('slow');
+					$('#livemill').prop('muted', false);
 					setTimeout(function(){ spinnerRight.stop(document.getElementById('orderSpinner')); }, 200);
 					$(function () {
 						$('[data-toggle="tooltip"]').tooltip();
@@ -2551,6 +2548,9 @@
 			},
 
 			loadPreferences: function() {
+				$.each(MAIN.tabsList, function (tabId, obj) {
+					obj.active = '0';
+				});
 				MAIN.tabsList.dbProductsListTab.active = '1';
 				MAIN.curTabId = 'dbProductsListTab';
 			},
@@ -2854,7 +2854,6 @@
 					method: 'GET'
 				} ).then( function ( data )
 				{
-					console.log(data);
 					var tree = $('#productsTree');
 					tree.tree({
 						data: data,
@@ -2869,7 +2868,8 @@
 								if (node.id) {
 										$.ajax({
 											url: URL_TABS + 'getLeftTabContent/' + node.id,
-											method: 'GET'
+											method: 'GET',
+											data: {sector: true}
 										}).then(function (data){
 											MAIN.productId = node.id;
 											$('#completedProduct').html(addLeftTabContentHandler($(data.html)));
@@ -2878,7 +2878,6 @@
 											$('.glyphicon-retweet').removeClass('glyphicon-retweet');
 											$('.removeFormula, .editFormula').remove();
 											$('#metallHistorySelect option:last-child').prop('selected', true);
-											$('#selectCreateproductWay, #createProductFromTemplate').hide();
 										});
 								}
 							}
@@ -3335,21 +3334,24 @@
 					$('#topIconsWrapper, #databaseWrapper').show();
 					if (!MAIN.prRequested) {
 						TABS.getLeftTabsList();
-						TABS.getRightTabsList();
+						//TABS.getRightTabsList();
 					}
 				}
 			},
 			
 			runProductCreation: function () {
 				if ($('#kimTab').hasClass('active')) {
-					$('#livemill').prop('muted', false);
 				}
+				console.log(MAIN.orRequested);
 				if (MENU.activeClassValidation('#prIcon')) {
 					localStorage.siteSector = 'OR';
 					showBody();
 					$('#mainMenuWrapper, #preferencesWrapper, #databaseWrapper').hide();
 					$('#topIconsWrapper, #creatingProductsWrapper').show();
-					TABS.openProductCreation();
+					//TABS.openProductCreation();
+					if (!MAIN.orRequested) {
+						TABS.getRightTabsList();
+					}
 					PRODUCT.getProductsTree();
 				}
 			},

@@ -8,29 +8,13 @@
     <link href="css/main.css" rel="stylesheet" type="text/css"/>
     <link href="css/jquery-ui.css" rel="stylesheet" type="text/css"/>
     <link href="css/hover-min.css" rel="stylesheet" type="text/css"/>
-    <link rel="stylesheet" type="text/css" href="css/semantic.min.css">
+    <link rel="stylesheet" href="css/bootstrap/bootstrap.min.css">
+    <link rel="stylesheet" href="css/jqtree.css">
     <link href="js/jquery/colorpicker/dist/css/bootstrap-colorpicker.min.css" rel="stylesheet" type="text/css"/>
     <link rel="shortcut icon" type="image/x-icon" href="favicon.ico" />
     <!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">-->
 </head>
 <body>
-<!--
-$('.ui.sidebar').sidebar('toggle');
- -->
-<div class="ui sidebar inverted vertical menu">
-    <a class="item">
-        1
-    </a>
-    <a class="item">
-        2
-    </a>
-    <a class="item">
-        3
-    </a>
-</div>
-<div class="pusher">
-    <!-- Site content !-->
-
     <div id="waitSpinner"></div>
     <div class="col-md-12" id="mainMenuWrapper">
         <div class="col-md-8 col-md-offset-4" style="margin-top: 18%;">
@@ -80,7 +64,16 @@ $('.ui.sidebar').sidebar('toggle');
      </nav>
         <div id="creatingProductsWrapper" class="split-pane fixed-left">
             <div class="split-pane-component" id="left-component">
-                
+                <div class="col-md-12">
+                    <div id="productsTreeWrapper" class="col-md-4">
+                        <div id="productsTree">
+
+                        </div>
+                    </div>
+                    <div class="col-md-8" id="completedProduct">
+                        
+                    </div>
+                </div>
             </div>
             <div class="split-pane-divider" id="divider"></div>
             <div class="split-pane-component" id="right-component">
@@ -100,7 +93,7 @@ $('.ui.sidebar').sidebar('toggle');
                 </tr>
             </table>
         </div>-->
-        <div class="col-md-12" style="margin-top: 30px;">
+        <div class="col-md-10 col-md-offset-2" style="margin-top: 30px;">
             <div class="col-md-4">
                 <div class="col-md-8">
                     <input type="text" class="form-control" id="customThemeName" placeholder="Название темы">
@@ -135,27 +128,19 @@ $('.ui.sidebar').sidebar('toggle');
             </h4>
         </div>
         <div class="col-md-12 collapse in" id="prefGeneralWrapper">
-            <div class="col-md-8 col-md-offset-2">
-                <div class="col-md-8">
+            <div class="col-md-9 col-md-offset-3">
+                <div class="col-md-12">
                     <table border="0" class="stylesTable">
                         <tr>
-                            <th>Основной Фон:</th>
+                            <th>Основной Фон</th>
+                            <th>Размер шрифта</th>
+                            <th>Цвет шрифта</th>
+                            <th>Разделительные линии</th>
+                        </tr>
+                        <tr>
                             <td><input type="text" class="form-control" id="globalBodyColor"></td>
-                        </tr>
-                         <tr>
-                            <th>Шрифт:</th>
-                            <td><input id="globalFontFamily" type="text" /></td>
-                        </tr>
-                        <tr>
-                            <th>Размер шрифта:</th>
-                            <td><select id="globalFontSize" class="fontSizeSelect" style="width: 210px;border-radius: 4px;height: 34px;"></select></td>
-                        </tr>
-                        <tr>
-                            <th>Цвет шрифта:</th>
+                            <td><select id="globalFontSize" class="fontSizeSelect" style="width: 125px;border-radius: 4px;height: 34px;"></select></td>
                             <td><input type="text" class="form-control" id="globalFontColor"></td>
-                        </tr>
-                        <tr>
-                            <th>Разделительные линии: </th>
                             <td><input type="text" class="form-control" id="globalHRColor"></td>
                         </tr>
                     </table>
@@ -173,32 +158,24 @@ $('.ui.sidebar').sidebar('toggle');
             </h4>
         </div>
         <div class="col-md-12 collapse in" id="prefTabsWrapper">
-            <div class="col-md-8 col-md-offset-2">
-                <div class="col-md-8">
+            <div class="col-md-12 col-md-offset-0">
+                <div class="col-md-5 col-md-offset-3">
                     <table border="0" class="stylesTable">
                         <tr>
-                            <th>Шрифт:</th>
-                            <td><input id="fontFamilyTabs" type="text" /></td>
+                            <th>Размер шрифта</th>
+                            <th>Цвет шрифта</th>
+                            <th>Фон активной вкладки</th>
+                            <th>Фон неактивной вкладки</th>
                         </tr>
                         <tr>
-                            <th>Размер шрифта:</th>
-                            <td><select id="fontSizeTabs" class="fontSizeSelect" style="width: 210px;border-radius: 4px;height: 34px;"></select></td>
-                        </tr>
-                        <tr>
-                            <th>Цвет шрифта:</th>
+                            <td><select id="fontSizeTabs" class="fontSizeSelect" style="width: 125px;border-radius: 4px;height: 34px;"></select></td>
                             <td><input type="text" class="form-control" id="prefTabFontColor"></td>
-                        </tr>
-                        <tr>
-                            <th>Фон активной вкладки:</th>
                             <td><input type="text" class="form-control" id="prefActiveTabColor"></td>
-                        </tr>
-                        <tr>
-                            <th>Фон неактивной вкладки:</th>
                             <td><input type="text" class="form-control" id="prefInactiveTabColor"></td>
                         </tr>
                     </table>
                 </div>
-                <div class="col-md-4">
+                <div class="col-md-3 col-md-offset-4" style="margin-top: 5px;">
                     <div role="tabpanel">
                         <ul class="nav nav-tabs" role="tablist" id="testTab">
                             <li role="presentation" class="active">
@@ -229,47 +206,39 @@ $('.ui.sidebar').sidebar('toggle');
             </h4>
         </div>
         <div class="col-md-12 collapse in" id="prefProductsWrapper">
-            <div class="col-md-12 col-md-offset-0">
-                <div class="col-md-8">
+            <div class="col-md-10 col-md-offset-2">
+                <div class="col-md-9">
                     <table border="0" class="stylesTable">
                         <tr>
                             <th></th>
-                            <th>Динамическая Таблица</th>
-                            <th>Статическая Таблица</th>
+                            <th>Фон</th>
+                            <th>Цвет Имени Ячейки</th>
+                            <th>Цвет Названия Ячейки</th>
+                            <th>Фон Названия Ячейки</th>
+                            <th>Цвет Количества Ячейки</th>
+                            <th>Фон Количества Ячейки</th>
                         </tr>
                         <tr>
-                            <th>Фон: </th>
+                            <th>A1</th>
                             <td><input type="text" class="form-control" id="prefDynProductTableColor"></td>
-                            <td><input type="text" class="form-control" id="prefProductTableColor"></td>
-                        </tr>
-                        <tr>
-                            <th>Цвет Имени Ячейки: </th>
                             <td><input type="text" class="form-control" id="prefDynProductFontColor"></td>
-                            <td><input type="text" class="form-control" id="prefProductFontColor"></td>
-                        </tr>
-                        <tr>
-                            <th>Цвет Названия Ячейки: </th>
                             <td><input type="text" class="form-control" id="prefDynProductCellFontColor"></td>
-                            <td><input type="text" class="form-control" id="prefProductCellFontColor"></td>
-                        </tr>
-                        <tr>
-                            <th>Фон Названия Ячейки: </th>
                             <td><input type="text" class="form-control" id="prefDynProductCellBackground"></td>
-                            <td><input type="text" class="form-control" id="prefProductCellBackground"></td>
-                        </tr>
-                        <tr>
-                            <th>Цвет Количества Ячейки: </th>
                             <td><input type="text" class="form-control" id="prefDynProductQuantityColor"></td>
-                            <td><input type="text" class="form-control" id="prefProductQuantityColor"></td>
+                            <td><input type="text" class="form-control" id="prefDynProductQuantityBackground"></td>
                         </tr>
                         <tr>
-                            <th>Фон Количества Ячейки: </th>
-                            <td><input type="text" class="form-control" id="prefDynProductQuantityBackground"></td>
+                            <th>KIM</th>
+                            <td><input type="text" class="form-control" id="prefProductTableColor"></td>
+                            <td><input type="text" class="form-control" id="prefProductFontColor"></td>
+                            <td><input type="text" class="form-control" id="prefProductCellFontColor"></td>
+                            <td><input type="text" class="form-control" id="prefProductCellBackground"></td>
+                            <td><input type="text" class="form-control" id="prefProductQuantityColor"></td>
                             <td><input type="text" class="form-control" id="prefProductQuantityBackground"></td>
                         </tr>
                     </table>
                 </div>
-                <div class="col-md-4" id="prefProductsTableWrapper">
+                <div class="col-md-5 col-md-offset-3" id="prefProductsTableWrapper" style="margin-top: 5px;">
                     <ul id="prefSortable">
                         <li class="">
                             <span class="prefRowNumber col-md-2">A1</span>
@@ -306,14 +275,14 @@ $('.ui.sidebar').sidebar('toggle');
             </h4>
         </div>
         <div class="col-md-12 collapse in" id="prefOrdersWrapper">
-            <div class="col-md-12 col-md-offset-0">
-                <div class="col-md-8">
+            <div class="col-md-10 col-md-offset-2">
+                <div class="col-md-6">
                     <table border="0" class="stylesTable">
                         <tr>
                             <th></th>
-                            <th>Цвет Фона:</th>
-                            <th>Цвет Рамки:</th>
-                            <th>Цвет Названий:</th>
+                            <th>Цвет Фона</th>
+                            <th>Цвет Рамки</th>
+                            <th>Цвет Названий</th>
                         </tr>
                         <tr>
                             <th>Шапка:</th>
@@ -368,12 +337,14 @@ $('.ui.sidebar').sidebar('toggle');
         <div class="split-pane-component" id="db-right-component">
             <div id="kimSpinner"></div>
             <div class="col-md-12">
-                <h4>Категории <span class="glyphicon glyphicon-th-list" aria-hidden="true" data-toggle="collapse"
-                                    data-target="#categoriesCollapse" aria-expanded="true"
-                                    aria-controls="categoriesCollapse">
-                    </span>
-                </h4>
-
+                <div class="col-md-12 toCollapse" data-toggle="collapse"
+                      data-target="#categoriesCollapse" aria-expanded="true" aria-controls="categoriesCollapse"
+                      style="margin-bottom: 8px;">
+                    <h4>
+                        Категории
+                        <span class="glyphicon glyphicon-th-list toCollapse" aria-hidden="true"></span>
+                    </h4>
+                </div>
                 <div class="collapse in" id="categoriesCollapse">
                     <div class="col-md-8">
                         <input type="text" id="addCategoryInput" placeholder="Имя категории">
@@ -442,9 +413,6 @@ $('.ui.sidebar').sidebar('toggle');
             </div>
             <div class="modal-body">
                 <div class="col-md-12">
-                    <button class="btn btn-warning btn-sm" id="showItemFromFileManager" disabled>
-                        <span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span>
-                    </button>
                     <button class="btn btn-info btn-sm" id="FMconsolidatedOrdersBtn" disabled>
                         <span class="glyphicon glyphicon-list-alt" aria-hidden="true"></span>
                     </button>
@@ -455,23 +423,6 @@ $('.ui.sidebar').sidebar('toggle');
                         <span class="glyphicon glyphicon-shopping-cart toCollapse" aria-hidden="true" data-toggle="collapse" data-target="#fileManagerProductsWrapper" aria-expanded="true" aria-controls="fileManagerProductsWrapper">
                     </span>
                     </h4>
-                </div>
-                <div id="fileManagerProductsWrapper" class="collapse in">
-                    <div class="col-md-4 col-md-offset-2">
-                        <form class="form-inline">
-                            <div class="form-group">
-                              <label for="fileManagerCatogoriesSelect">Категории: </label>
-                              <select class="form-control input-sm" id="fileManagerCatogoriesSelect"></select>
-                            </div>
-                        </form>
-                    </div>
-                    <div class="col-md-4">
-                        <input type="text" class="form-control" id="FMsearchInProducts" placeholder="Поиск">
-                    </div>
-                    <table class="table table-bordered">
-                        <tbody id="fileManagerProductsTable">
-                        </tbody>
-                    </table>
                 </div>
                 <div class="col-md-12">
                     <h4>
@@ -526,14 +477,13 @@ $('.ui.sidebar').sidebar('toggle');
         </div><!-- /.modal-content -->
     </div><!-- /.modal-dialog -->
 </div>
-</div>
 <script src="js/jquery/jquery-1.11.2.min.js"></script>
 <script src="js/jquery/jquery-ui.js"></script>
 <script src="js/jquery/underscore.js"></script>
 <script src="js/jquery/less.min.js"></script>
 <!-- Latest compiled and minified CSS -->
 <!--<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">-->
-<link rel="stylesheet" href="css/bootstrap/bootstrap.min.css">
+
 <link rel="stylesheet" href="css/bootstrap/bootstrap-table.css">
 
 <!-- Optional theme -->
@@ -562,9 +512,8 @@ $('.ui.sidebar').sidebar('toggle');
 <script src='js/jquery/pdfmake/vfs_fonts.js'></script>
 <script src='js/jquery/store+json2.min.js'></script>
 <script src="js/jquery/jquery.resizableColumns.min.js"></script>
-<script src="js/jquery/jquery.fontselect.min.js"></script>
 <script src="js/jquery/colorpicker/dist/js/bootstrap-colorpicker.min.js"></script>
 <script src="js/jquery/spin.min.js"></script>
-<script src="js/jquery/semantic.min.js"></script>
+<script src="js/jquery/tree.jquery.js"></script>
 </body>
 </html>

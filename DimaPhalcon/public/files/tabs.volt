@@ -2,7 +2,7 @@
     <ul class="nav nav-tabs" role="tablist" id="myTab">
         <li role="presentation" id="dbProductsListTab">
             <a href="#dbProductsListList" aria-controls="dbProductsListList" role="tab" data-toggle="tab">
-                <span class="glyphicon glyphicon-cog" aria-hidden="true"></span>
+                <span class="glyphicon glyphicon-folder-open" aria-hidden="true" style="color:#eb9316;"></span>
                 <!--<i class="fa fa-cog fa-1.5x fa-fw"></i>-->
             </a>
         </li>
@@ -23,7 +23,7 @@
                     <div class="col-md-4">
                         <input type="text" class="form-control" id="FMsearchInProducts" placeholder="Поиск">
                     </div>
-                <button class="btn btn-warning btn-sm" id="showItemFromFileManager" disabled>
+                <button class="btn btn-success btn-sm" id="showItemFromFileManager" disabled>
                         <span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span>
                     </button>
                     <table class="table table-bordered">
@@ -32,7 +32,7 @@
                     </table>
                 </div>
         </div>
-        
+
         <div role="tabpanel" class="tab-pane currentTab" id=""></div>
     </div>
 </div>

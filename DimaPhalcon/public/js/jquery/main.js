@@ -13,6 +13,7 @@ $( document ).ready( function ()
 		PREFERENCES = d.preferences,
 		VALID = d.validation,
 		THEMES = d.themes,
+		LOCATION = 'http://DimaPhalcon/DimaPhalcon/',
 		defaultScreenSize = '60em',
 		maxScreenSize = (window.screen.availWidth - 5) + 'px',
 		minscreenSize = '5px';
@@ -155,17 +156,30 @@ $( document ).ready( function ()
 			$('#showCustomThemes span', this ).removeClass().addClass('glyphicon glyphicon-forward');
 		});
 		
-	$('#backIcon').click(MENU.showMainMenu);
+	$('#backIcon').click(function () {
+		delete localStorage.siteSector;
+		window.location.href = LOCATION;
+	});
 
 	$('#prefIcon').click(MENU.runPreferences);
 
-	$('#dbIcon').click(MENU.runDB);
+	$('#dbIcon').click(function () {
+		if ('DB' !== localStorage.siteSector) {
+			localStorage.siteSector = 'DB';
+			window.location.href = LOCATION;
+		}
+	});
 	
 	$('#menuOpen').click(function () {
 		MENU.createFileManager();
 	});
 	
-	$( '#prIcon').click(MENU.runProductCreation);
+	$( '#prIcon').click(function () {
+		if ('OR' !== localStorage.siteSector) {
+			localStorage.siteSector = 'OR';
+			window.location.href = LOCATION;
+		}
+	});
 	
 	$('#showItemFromFileManager').click(function() {
 		var product = [];
@@ -180,7 +194,7 @@ $( document ).ready( function ()
 			}
 		});
 		$.when(TABS.openSavedProduct(product, 'new', false, false), ORDER.openSavedOrder(order, 'new', false, false)).done(function(){
-			window.location.href = 'http://DimaPhalcon/DimaPhalcon/';
+			window.location.href = LOCATION;
 		});
 	});
 	

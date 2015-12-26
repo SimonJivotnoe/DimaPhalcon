@@ -194,7 +194,7 @@ class ProductsController extends \Phalcon\Mvc\Controller
                                 'children' => []
                             ];
                             $pr = Products::find(
-                                "category_id = '" . $catId . "' AND metall = '" . $metId . "'"
+                                "category_id = '" . $catId . "' AND metall = '" . $metId . "' AND status = 'save' AND article != 'NULL'"
                             );
                             if (count($pr)) {
                                 foreach ($pr as $prVal) {

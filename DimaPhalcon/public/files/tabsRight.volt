@@ -15,6 +15,7 @@
             height="360"
             loop=""
             preload=""
+            muted=""
             src="img/livemill.mp4" width="640">
         </video>
     </div>

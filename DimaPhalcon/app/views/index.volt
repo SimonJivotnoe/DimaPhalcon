@@ -413,9 +413,6 @@
             </div>
             <div class="modal-body">
                 <div class="col-md-12">
-                    <!--<button class="btn btn-warning btn-sm" id="showItemFromFileManager" disabled>
-                        <span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span>
-                    </button>-->
                     <button class="btn btn-info btn-sm" id="FMconsolidatedOrdersBtn" disabled>
                         <span class="glyphicon glyphicon-list-alt" aria-hidden="true"></span>
                     </button>
