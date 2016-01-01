@@ -442,7 +442,7 @@ class TabsController extends \Phalcon\Mvc\Controller
             } else {
                 $this->response->setContentType('application/json', 'UTF-8');
                 if (count($tabs)) {
-                    $active = 'kim';
+                    $active = 'fileManagerOrdersTab';
                     $orderId = '';
                     $tabsLi = '';
                     $tabArr = array();
@@ -463,9 +463,9 @@ class TabsController extends \Phalcon\Mvc\Controller
                         $tabsList['%ORDER_NAME%'] = $order->getArticle();
                         $tabsLi .= $substObj->subHTMLReplace('tab_li_right.html', $tabsList);
 
-                        $tabArr['kim'] = (object)[
+                        $tabArr['fileManagerOrdersTab'] = (object)[
                             'active' => '',
-                            'orderId' => 'kim'
+                            'orderId' => 'fileManagerOrdersTab'
                         ];
                         $tabArr['or' . $val->getId()] = (object) [
                             'active'  => $val->getActive(),

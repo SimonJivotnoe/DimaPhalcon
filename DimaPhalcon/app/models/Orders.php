@@ -29,9 +29,9 @@ class Orders extends \Phalcon\Mvc\Model
 
     /**
      *
-     * @var string
+     * @var integer
      */
-    protected $order_description;
+    protected $project;
 
     /**
      *
@@ -104,14 +104,14 @@ class Orders extends \Phalcon\Mvc\Model
     }
 
     /**
-     * Method to set the value of field order_description
+     * Method to set the value of field project
      *
-     * @param string $order_description
+     * @param integer $project
      * @return $this
      */
-    public function setOrderDescription($order_description)
+    public function setProject($project)
     {
-        $this->order_description = $order_description;
+        $this->project = $project;
 
         return $this;
     }
@@ -196,13 +196,13 @@ class Orders extends \Phalcon\Mvc\Model
     }
 
     /**
-     * Returns the value of field order_description
+     * Returns the value of field project
      *
-     * @return string
+     * @return integer
      */
-    public function getOrderDescription()
+    public function getProject()
     {
-        return $this->order_description;
+        return $this->project;
     }
 
     /**
@@ -240,8 +240,11 @@ class Orders extends \Phalcon\Mvc\Model
      */
     public function initialize()
     {
+        $this->hasMany('id', '\Consolidate_orders', 'order_id', array('alias' => 'Consolidate_orders'));
+        $this->hasMany('id', '\Consolidate_orders', 'cons_order_id', array('alias' => 'Consolidate_orders'));
         $this->hasMany('id', '\ProductInOrder', 'orderId', array('alias' => 'ProductInOrder'));
         $this->hasMany('id', '\Tabs_right', 'order_id', array('alias' => 'Tabs_right'));
+        $this->belongsTo('project', '\Projects', 'id', array('alias' => 'Projects'));
     }
 
 }

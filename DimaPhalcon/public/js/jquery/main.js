@@ -214,7 +214,7 @@ $( document ).ready( function ()
 	
 	// 
 	$('#dbProductsListTab').click(function(){
-			TABS.loadPreferences();
+			TABS.setActiveDefaultTab('tabsList', 'dbProductsListTab', 'curTabId');
 			TABS.changeActiveTab('', '', 'changeActiveLeftTab');
 			MENU.createFileManager('PR');
 		});
@@ -232,9 +232,10 @@ $( document ).ready( function ()
 	});
 
 	// KIM TAB
-	$('#kim').on('click', function(){
-		if (false === $('#kim').hasClass('active')) {
-			TABS.showKim();
+	$('#fileManagerOrdersTab').on('click', function(){
+		if (false === $('#fileManagerOrdersTab').hasClass('active')) {
+			MENU.getClientsTree();
+			TABS.setActiveDefaultTab('tabsRightList', 'fileManagerOrdersTab', 'curTabRightId');
 			TABS.changeActiveTab('', '', 'changeActiveRightTab');
 		}
 	});

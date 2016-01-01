@@ -38,7 +38,7 @@
             </div>
         </div>
     </div>
-    <nav class="navbar navbar-inverse navbar-fixed-top" id="topIconsWrapper" style="min-height: 46px;">
+    <nav class="navbar navbar-default navbar-fixed-top" id="topIconsWrapper" style="min-height: 46px;">
         <div class="container" style="margin-top: 4px;">
             <div id="menuIconsTop" class="col-md-12">
                 <form class="form-inline">

@@ -127,25 +127,79 @@ class MenuController extends \Phalcon\Mvc\Controller
     }
 
     public function saveOrderMapAction(){
-        if ($this->request->isAjax() && $this->request->isPost()) {
-            $map = $this->request->getPost('map');
-            $orderId = $this->request->getPost('orderId');
-            $this->response->setContentType('application/json', 'UTF-8');
-            $order = Orders::findFirst(array("id = '$orderId'"));
-            if ($order == false) {
-                echo "Мы не можем сохранить робота прямо сейчас: \n";
-                foreach ($order->getMessages() as $message) {
-                    echo $message, "\n";
+            if ($this->request->isAjax() && $this->request->isPost()) {
+                $map = $this->request->getPost('map');
+                $orderId = $this->request->getPost('orderId');
+                $this->response->setContentType('application/json', 'UTF-8');
+                $order = Orders::findFirst(array("id = '$orderId'"));
+                if ($order == false) {
+                    echo "Мы не можем сохранить робота прямо сейчас: \n";
+                    foreach ($order->getMessages() as $message) {
+                        echo $message, "\n";
+                    }
+                } else {
+                    $order->setMap($map);
+                    if($order->save()) {
+                        $this->response->setJsonContent(true);
+
+                        return $this->response;
+                    }
+
                 }
             } else {
-                $order->setMap($map);
-                if($order->save()) {
-                    $this->response->setJsonContent(true);
-
-                    return $this->response;
-                }
-
+                $this->response->redirect('');
             }
+    }
+
+    public function getClientsTreeAction () {
+        if ($this->request->isAjax() && $this->request->isGet()) {
+            $this->response->setContentType('application/json', 'UTF-8');
+            $tree = [];
+            $clientObj = Clients::find();
+            if (count($clientObj)) {
+                foreach ($clientObj as $val) {
+                    $clientId = $val->getId();
+                    $node = [
+                        'label'    => $val->getFio() . ' | ' . $val->getCompanyName(),
+                        'id'       => $clientId,
+                        'sector'   => 'client',
+                        'children' => []
+                    ];
+                    $projectObj = Projects::find();
+                    if (count($projectObj)) {
+                        foreach ($projectObj as $prVal) {
+                            $projectId = $prVal->getId();
+                            $node2 = [
+                                'label'    => $prVal->getName(),
+                                'id'       => $projectId,
+                                'sector'   => 'project',
+                                'children' => []
+                            ];
+                            $ordersObj = Orders::find(
+                                "project = '" . $projectId . "' AND status = 'save' AND consolidate != 'TRUE'"
+                            );
+                            if (count($ordersObj)) {
+                                foreach ($ordersObj as $orVal) {
+                                    $child = [
+                                        'label'  => $orVal->getArticle(),
+                                        'sector' => 'order',
+                                        'id'     => $orVal->getId()
+                                    ];
+                                    array_push($node2['children'], (object)$child);
+                                }
+                            }
+                            if (count($node2['children'])) {
+                                array_push($node['children'], (object)$node2);
+                            }
+                        }
+                    }
+                    if (count($node['children'])) {
+                        array_push($tree, (object)$node);
+                    }
+                }
+            }
+            $this->response->setJsonContent($tree);
+            return $this->response;
         } else {
             $this->response->redirect('');
         }
