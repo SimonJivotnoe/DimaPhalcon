@@ -47,7 +47,7 @@ $( document ).ready( function ()
 
 	// show / restore default by double clicking on left tab
 	$('#tabs').on('dblclick', '#myTab li', function(){
-		localStorage.split === maxScreenSize ? localStorage.split = defaultScreenSize : localStorage.split = maxScreenSize;
+		localStorage['db-split'] === maxScreenSize ? localStorage['db-split'] = defaultScreenSize : localStorage['db-split'] = maxScreenSize;
 		TABS.splitMonitor();
 	});
 	
@@ -180,7 +180,7 @@ $( document ).ready( function ()
 			window.location.href = LOCATION;
 		}
 	});
-	
+
 	$('#showItemFromFileManager').click(function() {
 		var product = [];
 		var order = [];

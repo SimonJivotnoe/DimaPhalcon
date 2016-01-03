@@ -1,18 +1,12 @@
 <!DOCTYPE html>
 <html>
 <head lang="en">
-    <meta charset="UTF-8">
+    <meta http-equiv="content-type" content="text/html;charset=utf-8" />
     <title>Дима</title>
-    <link href="css/split-pane.css" rel="stylesheet" type="text/css"/>
-    <link href="css/pretty-split-pane.css" rel="stylesheet" type="text/css"/>
-    <link href="css/main.css" rel="stylesheet" type="text/css"/>
-    <link href="css/jquery-ui.css" rel="stylesheet" type="text/css"/>
-    <link href="css/hover-min.css" rel="stylesheet" type="text/css"/>
+    <?php echo $this->assets->outputCss('styleHead'); ?>
     <link rel="stylesheet" href="css/bootstrap/bootstrap.min.css">
-    <link rel="stylesheet" href="css/jqtree.css">
     <link href="js/jquery/colorpicker/dist/css/bootstrap-colorpicker.min.css" rel="stylesheet" type="text/css"/>
     <link rel="shortcut icon" type="image/x-icon" href="favicon.ico" />
-    <!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">-->
 </head>
 <body>
     <div id="waitSpinner"></div>
@@ -477,43 +471,30 @@
         </div><!-- /.modal-content -->
     </div><!-- /.modal-dialog -->
 </div>
-<script src="js/jquery/jquery-1.11.2.min.js"></script>
-<script src="js/jquery/jquery-ui.js"></script>
-<script src="js/jquery/underscore.js"></script>
-<script src="js/jquery/less.min.js"></script>
-<!-- Latest compiled and minified CSS -->
-<!--<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">-->
+    <script src="js/jquery/jquery-1.11.2.min.js"></script>
+    <script src="js/jquery/jquery-ui.min.js"></script>
+    <link rel="stylesheet" href="css/bootstrap/bootstrap-table.css">
+    <link rel="stylesheet" href="libs/bootstrap/css/bootstrap-theme.min.css">
+    <link rel="stylesheet" href="css/font-awesome.css">
+    <script src="js/bootstrap/bootstrap.min.js"></script>
+    <script src="js/bootstrap/bootstrap-table.js"></script>
+    <!--
+     ?
 
-<link rel="stylesheet" href="css/bootstrap/bootstrap-table.css">
-
-<!-- Optional theme -->
-<!--<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap-theme.min.css">-->
-<link rel="stylesheet" href="libs/bootstrap/css/bootstrap-theme.min.css">
-<link rel="stylesheet" href="css/font-awesome.css">
-<!-- Latest compiled and minified JavaScript -->
-<!--<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>-->
-<script src="js/bootstrap/bootstrap.min.js"></script>
-<script src="js/bootstrap/bootstrap-table.js"></script>
-<!--<script src="http://code.jquery.com/jquery-1.11.2.min.js"></script>-->
-<script src="js/jquery/js/jquery.flot.min.js"></script>
-<script src="js/jquery/js/flot_plugin/jquery.flot.pie.js"></script>
-<script src="js/jquery/js/flot_plugin/jquery.flot.categories.js"></script>
-<script src="js/jquery/js/numeral.min.js"></script>
-<script src="js/jquery/js/moment.min.js"></script>
-<script src="js/jquery/js/jstat.min.js"></script>
-<script src="js/jquery/jquery-calx-2.2.1.js"></script>
-<script src="js/jquery/main.js"></script>
-<script src="js/jquery/Dima.js"></script>
-<script src="js/jquery/jquery.caret.js"></script>
-<script src="js/jquery/split-pane.js"></script>
-<script src="js/jquery/jquery.mousewheel.js"></script>
-<script src="js/jquery/bootstrap-confirmation.js"></script>
-<script src='js/jquery/pdfmake/pdfmake.min.js'></script>
-<script src='js/jquery/pdfmake/vfs_fonts.js'></script>
-<script src='js/jquery/store+json2.min.js'></script>
-<script src="js/jquery/jquery.resizableColumns.min.js"></script>
-<script src="js/jquery/colorpicker/dist/js/bootstrap-colorpicker.min.js"></script>
-<script src="js/jquery/spin.min.js"></script>
-<script src="js/jquery/tree.jquery.js"></script>
+     ?
+     -->
+    <script src="js/jquery/js/numeral.min.js"></script>
+    <script src="js/jquery/jquery-calx-2.2.3.min.js"></script>
+    <script src="js/jquery/jquery.caret.js"></script>
+    <script src="js/jquery/jquery.mousewheel.js"></script>
+    <script src="js/jquery/bootstrap-confirmation.js"></script>
+    <script src='js/jquery/pdfmake/pdfmake.min.js'></script>
+    <script src='js/jquery/pdfmake/vfs_fonts.js'></script>
+    <script src='js/jquery/store+json2.min.js'></script>
+    <script src="js/jquery/jquery.resizableColumns.min.js"></script>
+    <script src="js/jquery/colorpicker/dist/js/bootstrap-colorpicker.min.js"></script>
+    <script src="js/jquery/spin.min.js"></script>
+    <script src="js/jquery/tree.jquery.js"></script>
+    <?php echo $this->assets->outputJs('jsFooter'); ?>
 </body>
 </html>

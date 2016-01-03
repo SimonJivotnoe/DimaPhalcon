@@ -158,6 +158,12 @@ class MenuController extends \Phalcon\Mvc\Controller
             $clientObj = Clients::find();
             if (count($clientObj)) {
                 foreach ($clientObj as $val) {
+                    /*foreach ($val->Projects as $key) {
+
+                        var_dump($key->getName());
+                        die();
+                    }*/
+
                     $clientId = $val->getId();
                     $node = [
                         'label'    => $val->getFio() . ' | ' . $val->getCompanyName(),

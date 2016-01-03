@@ -28,7 +28,9 @@
         </div>
         <div class="col-md-8" id="orderFromTree">
             <div class="col-md-12" id="addNewClientForm">
-
+                <div class="col-md-12">
+                    <input type="text" class="form-control" id="NewClientFio" placeholder="ÔÈÎ Êëèåíòà">
+                </div>
             </div>
         </div>
     </div>
