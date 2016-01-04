@@ -194,14 +194,14 @@ class MenuController extends \Phalcon\Mvc\Controller
                                     array_push($node2['children'], (object)$child);
                                 }
                             }
-                            if (count($node2['children'])) {
-                                array_push($node['children'], (object)$node2);
-                            }
+                            /*if (count($node2['children'])) {
+                            }*/
+                            array_push($node['children'], (object)$node2);
                         }
                     }
-                    if (count($node['children'])) {
-                        array_push($tree, (object)$node);
-                    }
+                    /*if (count($node['children'])) {
+                    }*/
+                    array_push($tree, (object)$node);
                 }
             }
             $this->response->setJsonContent($tree);

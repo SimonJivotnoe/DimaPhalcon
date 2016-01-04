@@ -19,6 +19,7 @@ class IndexController extends ControllerBase
             $val->getName();
             $array[] = array('id' => $val->getId());
         }*/
+        $sub = new Substitution();
         $this->assets
              ->collection('styleHead')
              ->addCss('css/main.css')
@@ -42,17 +43,10 @@ class IndexController extends ControllerBase
              ->join(true)
              ->addFilter(new \Phalcon\Assets\Filters\Jsmin());
         $left = file_get_contents('../public/files/tabs.volt');
-        //$right = file_get_contents('../public/files/tabsRight.volt');
-        $right = iconv('UTF-8', 'ISO-8859-1//TRANSLIT', file_get_contents('../public/files/tabsRight.volt'));
         $this->view->setVars(array(
             'tabs' => $left,
-            'tabsRight' => $right
+            'tabsRight' => file_get_contents('../public/files/ordersTabs.html')
         ));
-    }
-    function file_get_contents_utf8($fn) {
-        $content = file_get_contents($fn);
-        return mb_convert_encoding($content, 'UTF-8',
-            mb_detect_encoding($content, 'UTF-8, ISO-8859-5, windows-1251', true));
     }
 }
 
