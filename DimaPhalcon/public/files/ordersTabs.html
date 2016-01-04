@@ -18,18 +18,68 @@
             muted=""
             src="img/livemill.mp4" width="640">
         </video>-->
-        <div class="col-md-4" id="clientsTreeWrapper">
+        <div class="col-md-4">
             <div class="col-md-12 navbar navbar-inverse" id="clientsTreeActionsWrapper">
                 <span class="glyphicon glyphicon-user" aria-hidden="true" id="addNewClient"><span>+</span></span>
             </div>
             <div class="col-md-12">
+                <input type="text" class="form-control" id="findInClietsTree" placeholder="Поиск">
+            </div>
+            <div class="col-md-12" id="clientsTreeWrapper">
                 <div id="clientsTree"></div>
             </div>
         </div>
         <div class="col-md-8" id="orderFromTree">
             <div class="col-md-12" id="addNewClientForm">
+                <h3 id="h3NewClientInfo">Форма создания нового клиента</h3>
+                <h3 id="h3ClientInfo">Информация о клиенте</h3>
                 <div class="col-md-12">
-                    <input type="text" class="form-control" id="NewClientFio" placeholder="ФИО Клиента">
+                    <input required type="text" name="fio" class="form-control" data-toggle="tooltip" title="ФИО Клиента" id="NewClientFio" placeholder="ФИО Клиента">
+                </div>
+                <div class="col-md-12">
+                    <input required type="text" name="appeal" class="form-control" data-toggle="tooltip" title="Обращение" id="NewClientAppeal" placeholder="Обращение">
+                </div>
+                <div class="col-md-12">
+                    <input required type="text" name="company_name" class="form-control" data-toggle="tooltip" title="Название Компании" id="NewClientCompanyName" placeholder="Название Компании">
+                </div>
+                <div class="col-md-12">
+                    <input required type="text" name="adress" class="form-control" data-toggle="tooltip" title="Почтовый Адрес" id="NewClientAdress" placeholder="Почтовый Адрес">
+                </div>
+                <div class="col-md-12">
+                    <input required type="text" name="accaunt" class="form-control" data-toggle="tooltip" title="Номер Счета" id="NewClientAccount" placeholder="Номер Счета">
+                </div>
+                <div class="col-md-12">
+                    <input required type="text" name="zip" class="form-control" data-toggle="tooltip" title="Город, почтовый индекс" id="NewClientZip" placeholder="Город, почтовый индекс">
+                </div>
+                <div class="col-md-3 col-md-offset-5">
+                    <button type="button" class="btn btn-success" id="addNewClientBtn">Создать</button>
+                    <button type="button" class="btn btn-success" id="updateClientBtn">Обновить</button>
+                </div>
+            </div>
+            <div class="col-md-12" id="addNewProjectForm">
+                <h3 id="h3NewProjectInfo">Форма создания нового проекта</h3>
+                <h3 id="h3ProjectInfo">Информация о проекте</h3>
+                <div class="col-md-12">
+                    <input required type="text" name="fio" class="form-control" data-toggle="tooltip" title="ФИО Клиента" id="NewClientFio" placeholder="ФИО Клиента">
+                </div>
+                <div class="col-md-12">
+                    <input required type="text" name="appeal" class="form-control" data-toggle="tooltip" title="Обращение" id="NewClientAppeal" placeholder="Обращение">
+                </div>
+                <div class="col-md-12">
+                    <input required type="text" name="company_name" class="form-control" data-toggle="tooltip" title="Название Компании" id="NewClientCompanyName" placeholder="Название Компании">
+                </div>
+                <div class="col-md-12">
+                    <input required type="text" name="adress" class="form-control" data-toggle="tooltip" title="Почтовый Адрес" id="NewClientAdress" placeholder="Почтовый Адрес">
+                </div>
+                <div class="col-md-12">
+                    <input required type="text" name="accaunt" class="form-control" data-toggle="tooltip" title="Номер Счета" id="NewClientAccount" placeholder="Номер Счета">
+                </div>
+                <div class="col-md-12">
+                    <input required type="text" name="zip" class="form-control" data-toggle="tooltip" title="Город, почтовый индекс" id="NewClientZip" placeholder="Город, почтовый индекс">
+                </div>
+                <div class="col-md-3 col-md-offset-5">
+                    <button type="button" class="btn btn-success" id="addNewProjectBtn">Создать</button>
+                    <button type="button" class="btn btn-success" id="updateProjectBtn">Обновить</button>
                 </div>
             </div>
         </div>

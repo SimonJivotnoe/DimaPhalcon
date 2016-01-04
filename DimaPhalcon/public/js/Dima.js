@@ -282,6 +282,8 @@
 	var spinnerRight;
 	var spinnerKim;
 	
+	var currentClietsTree;
+	
 	// PRIVATE METHODS SECTION
 	function run() {
 		THEMES.getThemesList();
@@ -1042,13 +1044,92 @@
 			button.prop('disabled', true);
 		}
 	}
-
+	
 	function addHandlerIndexHtml() {
 
 		// clients Tree
 		$('#addNewClient' ).click(function () {
-			//MENU.activeClassValidation('#addNewClient');
-			$('#addNewClientForm' ).show();
+			var data = {}, check = 0;
+			if ($('#h3NewClientInfo').is(':visible')) {
+				$.each($('#addNewClientForm input'), function (num, input) {
+					var $input = $(input);
+					if ($input.val()) {
+						check++;
+					}
+				});
+			}
+			if (0 === check) {
+				MENU.fillFormOfClientsInfo();
+			}
+		});
+		
+		$('#findInClietsTree').keyup(function() {
+			var tree = JSON.parse($('#clientsTree').tree('toJson')),
+				text = $(this).val().toLowerCase();
+			if (!text) {
+				$('#clientsTree > ul > li').show();
+			} else {
+				$('#clientsTree > ul > li').hide();
+				MENU.searchInTree(tree, text);
+			}
+		});
+		
+		$('#addNewClientBtn').click(function () {
+			var check = 0, data = {};
+			$.each($('#addNewClientForm input'), function (num, input) {
+				var $input = $(input);
+				data[$input.attr('name')] = $input.val();
+				if (!VALIDATION.validateInputVal(
+					{
+						val: $input.val(),
+						id: '#' + $input.attr('id')
+					}
+				)) {
+					check++;
+				}
+			});
+			if (!check) {
+				$.ajax({
+					url: URL_MENU + 'addNewClient',
+					method: 'POST',
+					data: data
+				}).then(function (data)
+				{
+					if (data) {
+						$('#addNewClientForm input').val('');
+						MENU.getClientsTree(true);
+					}
+				});
+			}
+		});
+		
+		$('#updateClientBtn').click(function () {
+			var check = 0, data = {id: VALIDATION.digitsOnly($('#clientsTree').tree('getSelectedNode').id)};
+			$.each($('#addNewClientForm input'), function (num, input) {
+				var $input = $(input);
+				data[$input.attr('name')] = $input.val();
+				if (!VALIDATION.validateInputVal(
+					{
+						val: $input.val(),
+						id: '#' + $input.attr('id')
+					}
+				)) {
+					check++;
+				}
+			});
+			if (!check) {
+				$.ajax({
+					url: URL_MENU + 'updateClient',
+					method: 'POST',
+					data: data
+				}).then(function (data)
+				{
+					if (data) {
+						MENU.getClientsTree(true);
+						PRODUCT.getClientsDetails();
+					}
+				});
+			}
 		});
 	}
 
@@ -2909,6 +2990,28 @@
 						}
 					);
 				});
+			},
+			
+			getClientsDetails: function () {
+				$.ajax( {
+					url   : URL_MENU + 'getClientsDescriptionObj',
+					method: 'GET'
+				} ).then( function ( data )
+				{
+					if (data) {
+						$(function () {
+							$('[data-toggle="tooltip"]').tooltip();
+							$.each(data, function(name, arr) {
+								$('#addNewClientForm input').filter('[name="' + name + '"]').autocomplete({
+									source: arr,
+									select: function (event, ui) {
+										$('#addNewClientForm input').filter('[name="' + name + '"]').attr('value', ui.item.value ).val(ui.item.value);
+									}
+								});
+							});
+						});
+					}
+				});
 			}
 		},
 
@@ -3325,7 +3428,14 @@
 		menu: {
 			showMainMenu: function () {
 				$('#livemill').prop('muted', true);
-				MENU.activeClassValidation('#backIcon');
+				MENU.activeClassValidation(
+					{
+						id:			'#backIcon',
+						class:		'activeTopIcon',
+						extraClass: 'hvr-pulse-grow',
+						scope:      '#menuIconsTop div'
+					}
+				);
 				localStorage.siteSector = 'MENU';
 				showBody();
 				$('#topIconsWrapper, #creatingProductsWrapper, #preferencesWrapper, #menuIconsRight, #menuIconsBottom, #menuIconsLeft').hide();
@@ -3334,7 +3444,14 @@
 			
 			runPreferences: function () {
 				$('#livemill').prop('muted', true);
-				if (MENU.activeClassValidation('#prefIcon')) {
+				if (MENU.activeClassValidation(
+						{
+							id:			'#prefIcon',
+							class:		'activeTopIcon',
+							extraClass: 'hvr-pulse-grow',
+							scope:      '#menuIconsTop div'
+						}
+					)) {
 					localStorage.siteSector = 'PR';
 					showBody();
 					$('#mainMenuWrapper, #databaseWrapper, #creatingProductsWrapper').hide();
@@ -3344,7 +3461,14 @@
 			
 			runDB: function () {
 				$('#livemill').prop('muted', true);
-				if (MENU.activeClassValidation('#dbIcon')) {
+				if (MENU.activeClassValidation(
+						{
+							id:			'#dbIcon',
+							class:		'activeTopIcon',
+							extraClass: 'hvr-pulse-grow',
+							scope:      '#menuIconsTop div'
+						}
+					)) {
 					localStorage.siteSector = 'DB';
 					showBody();
 					$('#mainMenuWrapper, #preferencesWrapper, #creatingProductsWrapper').hide();
@@ -3362,7 +3486,14 @@
 			runProductCreation: function () {
 				if ($('#fileManagerOrdersWrapper').hasClass('active')) {
 				}
-				if (MENU.activeClassValidation('#prIcon')) {
+				if (MENU.activeClassValidation(
+						{
+							id:			'#prIcon',
+							class:		'activeTopIcon',
+							extraClass: 'hvr-pulse-grow',
+							scope:      '#menuIconsTop div'
+						}
+					)) {
 					localStorage.siteSector = 'OR';
 					showBody();
 					$('#mainMenuWrapper, #preferencesWrapper, #databaseWrapper').hide();
@@ -3370,6 +3501,7 @@
 					//TABS.openProductCreation();
 					if (!MAIN.orRequested) {
 						TABS.getRightTabsList();
+						PRODUCT.getClientsDetails();
 					}
 					PRODUCT.getProductsTree();
 				}
@@ -3381,12 +3513,12 @@
 				}, timeout);
 			},
 			
-			activeClassValidation: function (id) {
-				if (!$(id).hasClass('activeTopIcon')) {
-					$('#menuIconsTop div')
-							.removeClass('activeTopIcon')
-							.addClass('hvr-pulse-grow');
-					$(id).addClass('activeTopIcon').removeClass('hvr-pulse-grow');
+			activeClassValidation: function (obj) {
+				if (!$(obj.id).hasClass(obj.class)) {
+					$(obj.scope)
+							.removeClass(obj.class)
+							.addClass(obj.extraClass);
+					$(obj.id).addClass(obj.class).removeClass(obj.extraClass);
 					return true;
 				}
 				return false;
@@ -3421,7 +3553,7 @@
 				});
 			},
 			
-			searchInTable: function(rows, text) {
+			searchInTable: function(rows, text, elem) {
 				if (!text) {
 					rows.show();
 				} else {
@@ -3429,7 +3561,7 @@
 					$.each(rows, function(num, tr) {
 						$.each($(tr), function(key, td) {
 							if (-1 !== $(td).text().toLowerCase().search(text.toLowerCase())) {
-								$(td).closest('tr').show();
+								$(td).closest(elem).show();
 								return true;
 							}
 						});
@@ -3437,48 +3569,104 @@
 				}
 			},
 			
+			searchInTree: function(node, text) {
+				var res = false;
+				$.each(node, function (num, obj) {
+					if (!res) {
+						$.each(obj.info, function (key, val) {
+							if (-1 !== val.toLowerCase().search(text) && !res) {
+								res = true;
+							} else if (obj.children && obj.children.length) {
+								res = MENU.searchInTree(obj.children, text);
+							}
+							if (res) {
+								$('#clientsTree li .jqtree-title:contains("' + obj.name + '")')
+										.closest('.clientInTree').show();
+							}
+						});
+					}
+				});
+			},
+			
 			getPreferencesSettings: function () {
 				return preferencesSettings;
 			},
-
-			getClientsTree: function () {
+			
+			fillFormOfClientsInfo: function (info) {
+				if (info) {
+					$.each($('#addNewClientForm input'), function (num, input) {
+						var $input = $(input);
+						$input.val(info[$input.attr('name')]);
+					});
+					$('#h3NewClientInfo').hide();
+					$('#h3ClientInfo').show();
+					$('#addNewClientBtn').hide();
+					$('#updateClientBtn').show();
+				} else {
+					$('#addNewClientForm input').val('');
+					$('#h3NewClientInfo').show();
+					$('#h3ClientInfo').hide();
+					$('#addNewClientBtn').show();
+					$('#updateClientBtn').hide();
+				}
+				$('#addNewClientForm').show();
+			},
+			
+			getClientsTree: function (refresh) {
 				$.ajax( {
 					url   : URL_MENU + 'getClientsTree',
 					method: 'GET'
 				} ).then( function ( data )
 				{
+					currentClietsTree = data.tree;
 					var tree = $('#clientsTree');
-					tree.tree({
-						data: data,
-						autoOpen: true,
-						dragAndDrop: false,
-						saveState: true,
-						saveState: 'clients-Tree',
-						openedIcon: $('<span class="glyphicon glyphicon-minus" aria-hidden="true"></span>'),
-						closedIcon: $('<span class="glyphicon glyphicon-plus" aria-hidden="true"></span>'),
-						onCreateLi: function(node, $li) {
-							if ('order' === node.sector) {
-								$li.find('.jqtree-element').append(
-									'<span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span>'
-								);
+					if (refresh) {
+						tree.tree('loadData', data.tree);
+					} else {
+						tree.tree({
+							data: data.tree,
+							autoOpen: true,
+							dragAndDrop: false,
+							saveState: true,
+							saveState: 'clients-Tree',
+							openedIcon: $('<span class="glyphicon glyphicon-minus" aria-hidden="true"></span>'),
+							closedIcon: $('<span class="glyphicon glyphicon-plus" aria-hidden="true"></span>'),
+							onCreateLi: function(node, $li) {
+								if ('order' === node.sector) {
+									$li.find('.jqtree-element').append(
+										'<span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span>'
+									);
+								}
+								if ('project' === node.sector) {
+									$li.find('.jqtree-title' ).html('<span class="glyphicon glyphicon-folder-close" aria-hidden="true">&nbsp;</span>' + $li.find('.jqtree-title' ).text());
+								}
+								if ('client' === node.sector) {
+									$li.find('.jqtree-title' ).closest('li').addClass('clientInTree');
+									$li.find('.jqtree-title' ).html('<span class="glyphicon glyphicon-user" aria-hidden="true">&nbsp;</span>' + $li.find('.jqtree-title' ).text());
+								}
 							}
-							if ('client' === node.sector) {
-								$li.find('.jqtree-title' ).html('<span class="glyphicon glyphicon-user" aria-hidden="true">&nbsp;</span>' + $li.find('.jqtree-title' ).text());
-							}
-						}
-					});
-					tree.bind(
-						'tree.click',
-						function(event) {
-							var node = event.node;
-							console.log(node.sector);
-							if ('order' !== node.sector) {
-								tree.tree('toggle', node);
-							} else {
+						});
+						tree.bind(
+							'tree.click',
+							function(event) {
+								var node = event.node;
+								if ('client' === node.sector) {
+									MENU.fillFormOfClientsInfo(node.info);
+								}
+								/*if ('order' !== node.sector) {
+									tree.tree('toggle', node);
+								} else {
 
+								}*/
 							}
-						}
-					);
+						);
+					}
+					var selectedNode = tree.tree('getSelectedNode');
+					switch (selectedNode.sector) {
+						case 'client':
+							MENU.fillFormOfClientsInfo(selectedNode.info);
+							break;
+					}
 				});
 			}
 		},

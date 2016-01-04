@@ -127,28 +127,28 @@ class MenuController extends \Phalcon\Mvc\Controller
     }
 
     public function saveOrderMapAction(){
-            if ($this->request->isAjax() && $this->request->isPost()) {
-                $map = $this->request->getPost('map');
-                $orderId = $this->request->getPost('orderId');
-                $this->response->setContentType('application/json', 'UTF-8');
-                $order = Orders::findFirst(array("id = '$orderId'"));
-                if ($order == false) {
-                    echo "Мы не можем сохранить робота прямо сейчас: \n";
-                    foreach ($order->getMessages() as $message) {
-                        echo $message, "\n";
-                    }
-                } else {
-                    $order->setMap($map);
-                    if($order->save()) {
-                        $this->response->setJsonContent(true);
-
-                        return $this->response;
-                    }
-
+        if ($this->request->isAjax() && $this->request->isPost()) {
+            $map = $this->request->getPost('map');
+            $orderId = $this->request->getPost('orderId');
+            $this->response->setContentType('application/json', 'UTF-8');
+            $order = Orders::findFirst(array("id = '$orderId'"));
+            if ($order == false) {
+                echo "Мы не можем сохранить робота прямо сейчас: \n";
+                foreach ($order->getMessages() as $message) {
+                    echo $message, "\n";
                 }
             } else {
-                $this->response->redirect('');
+                $order->setMap($map);
+                if($order->save()) {
+                    $this->response->setJsonContent(true);
+
+                    return $this->response;
+                }
+
             }
+        } else {
+            $this->response->redirect('');
+        }
     }
 
     public function getClientsTreeAction () {
@@ -158,28 +158,36 @@ class MenuController extends \Phalcon\Mvc\Controller
             $clientObj = Clients::find();
             if (count($clientObj)) {
                 foreach ($clientObj as $val) {
-                    /*foreach ($val->Projects as $key) {
-
-                        var_dump($key->getName());
-                        die();
-                    }*/
-
                     $clientId = $val->getId();
                     $node = [
                         'label'    => $val->getFio() . ' | ' . $val->getCompanyName(),
-                        'id'       => $clientId,
+                        'id'       => 'CL' . $clientId,
                         'sector'   => 'client',
-                        'children' => []
+                        'children' => [],
+                        'info'     => [
+                            'fio'          => $val->getFio(),
+                            'appeal'       => $val->getAppeal(),
+                            'company_name' => $val->getCompanyName(),
+                            'adress'       => $val->getAdress(),
+                            'accaunt'      => $val->getAccaunt(),
+                            'zip'          => $val->getZip()
+                        ]
                     ];
                     $projectObj = Projects::find();
                     if (count($projectObj)) {
-                        foreach ($projectObj as $prVal) {
+                        foreach ($val->Projects as $prVal) {
                             $projectId = $prVal->getId();
                             $node2 = [
                                 'label'    => $prVal->getName(),
-                                'id'       => $projectId,
+                                'id'       => 'PR' . $projectId,
                                 'sector'   => 'project',
-                                'children' => []
+                                'children' => [],
+                                'info'     => [
+                                    'name'        => $prVal->getName(),
+                                    'description' => $prVal->getDescription(),
+                                    'estimate'    => $prVal->getEstimate(),
+                                    'date'        => $prVal->getDate()
+                                ]
                             ];
                             $ordersObj = Orders::find(
                                 "project = '" . $projectId . "' AND status = 'save' AND consolidate != 'TRUE'"
@@ -189,7 +197,10 @@ class MenuController extends \Phalcon\Mvc\Controller
                                     $child = [
                                         'label'  => $orVal->getArticle(),
                                         'sector' => 'order',
-                                        'id'     => $orVal->getId()
+                                        'id'     => 'OR' . $orVal->getId(),
+                                        'info'     => [
+                                            'article' => $orVal->getArticle()
+                                        ]
                                     ];
                                     array_push($node2['children'], (object)$child);
                                 }
@@ -204,10 +215,79 @@ class MenuController extends \Phalcon\Mvc\Controller
                     array_push($tree, (object)$node);
                 }
             }
-            $this->response->setJsonContent($tree);
+            $this->response->setJsonContent(['tree' => $tree]);
             return $this->response;
         } else {
             $this->response->redirect('');
         }
     }
+    
+    public function addNewClientAction () {
+        if ($this->request->isAjax() && $this->request->isPost()) {
+            $this->response->setContentType('application/json', 'UTF-8');
+            $client = new Clients();
+            $success = $client->save($this->request->getPost(), array(
+                'fio', 'appeal', 'company_name', 'adress', 'accaunt', 'zip'
+            ));
+
+            if ($success) {
+                $this->response->setJsonContent(true);
+            } else {
+                $this->response->setJsonContent(false);
+            }
+            return $this->response;
+        } else {
+            $this->response->redirect('');
+        }
+    }
+    
+    public function updateClientAction () {
+        if ($this->request->isAjax() && $this->request->isPost()) {
+            $this->response->setContentType('application/json', 'UTF-8');
+            $client = Clients::findFirst($this->request->getPost('id'));
+            $success = $client->save($this->request->getPost(), array(
+                'fio', 'appeal', 'company_name', 'adress', 'accaunt', 'zip'
+            ));
+
+            if ($success) {
+                $this->response->setJsonContent(true);
+            } else {
+                $this->response->setJsonContent(false);
+            }
+            return $this->response;
+        } else {
+            $this->response->redirect('');
+        }
+    }
+    
+    public function getClientsDescriptionObjAction() {
+        if ($this->request->isAjax() && $this->request->isGet()) {
+            $clients = Clients::find();
+            if ($clients == false) {
+                return false;
+            }
+            $clientsDescription = [
+                'fio'          => [],
+                'appeal'       => [],
+                'company_name' => [],
+                'adress'       => [],
+                'accaunt'      => [],
+                'zip'          => []
+            ];
+            foreach ($clients as $val) {
+                array_push($clientsDescription['fio'], $val->getFio());
+                array_push($clientsDescription['appeal'], $val->getAppeal());
+                array_push($clientsDescription['company_name'], $val->getCompanyName());
+                array_push($clientsDescription['adress'], $val->getAdress());
+                array_push($clientsDescription['accaunt'], $val->getAccaunt());
+                array_push($clientsDescription['zip'], $val->getZip());
+            }
+            $this->response->setContentType('application/json', 'UTF-8');
+            $this->response->setJsonContent($clientsDescription);
+            return $this->response;
+        } else {
+            $this->response->redirect('');
+        }
+    }
+
 }

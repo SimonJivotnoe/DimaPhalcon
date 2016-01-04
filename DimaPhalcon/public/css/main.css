@@ -225,12 +225,24 @@ a {
     color: green;
 }
 
-#addNewClientForm {
+#addNewClientForm, #addNewProjectForm {
     display: none;
 }
-
+#addNewClientForm h3, #addNewProjectForm h3{
+    text-align: center;
+    display: none;
+}
+#addNewClientForm button, #addNewProjectForm button{
+    margin-top: 3px;
+    display: none;
+}
+#findInClietsTree {
+    height: 20px;
+    margin-bottom: 7px;
+}
 #clientsTreeActionsWrapper {
     min-height: 20px;
+    margin-bottom: 3px;
 }
 
 #fileManagerProductsWrapper {

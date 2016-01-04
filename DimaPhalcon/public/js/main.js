@@ -357,13 +357,13 @@ $( document ).ready( function ()
 	$('#FMsearchInProducts').keyup(function() {
 		var text = $(this).val(),
 			rows = $('#fileManagerProductsTable tr:gt(0)');
-		MENU.searchInTable(rows, text);
+		MENU.searchInTable(rows, text, 'tr');
 	});
 	
 	$('#FMsearchInOrders').keyup(function() {
 		var text = $(this).val(),
 			rows = $('#fileManagerOrdersTable tr:gt(0)');
-		MENU.searchInTable(rows, text);
+		MENU.searchInTable(rows, text, 'tr');
 	});
 	/*$(function(){
 		var self;
