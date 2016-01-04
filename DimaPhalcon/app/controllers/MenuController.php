@@ -162,6 +162,7 @@ class MenuController extends \Phalcon\Mvc\Controller
                     $node = [
                         'label'    => $val->getFio() . ' | ' . $val->getCompanyName(),
                         'id'       => 'CL' . $clientId,
+                        'clientId' => $clientId,
                         'sector'   => 'client',
                         'children' => [],
                         'info'     => [
@@ -173,13 +174,14 @@ class MenuController extends \Phalcon\Mvc\Controller
                             'zip'          => $val->getZip()
                         ]
                     ];
-                    $projectObj = Projects::find();
-                    if (count($projectObj)) {
+
+                    if (count($val->Projects)) {
                         foreach ($val->Projects as $prVal) {
                             $projectId = $prVal->getId();
                             $node2 = [
                                 'label'    => $prVal->getName(),
                                 'id'       => 'PR' . $projectId,
+                                'clientId' => $clientId,
                                 'sector'   => 'project',
                                 'children' => [],
                                 'info'     => [
@@ -198,6 +200,7 @@ class MenuController extends \Phalcon\Mvc\Controller
                                         'label'  => $orVal->getArticle(),
                                         'sector' => 'order',
                                         'id'     => 'OR' . $orVal->getId(),
+                                        'clientId' => $clientId,
                                         'info'     => [
                                             'article' => $orVal->getArticle()
                                         ]
@@ -259,7 +262,26 @@ class MenuController extends \Phalcon\Mvc\Controller
             $this->response->redirect('');
         }
     }
-    
+
+    public function addNewProjectAction () {
+        if ($this->request->isAjax() && $this->request->isPost()) {
+            $this->response->setContentType('application/json', 'UTF-8');
+            $client = new Projects();
+            $success = $client->save($this->request->getPost(), array(
+                'name', 'description', 'estimate', 'date', 'client'
+            ));
+
+            if ($success) {
+                $this->response->setJsonContent(true);
+            } else {
+                $this->response->setJsonContent(false);
+            }
+            return $this->response;
+        } else {
+            $this->response->redirect('');
+        }
+    }
+
     public function getClientsDescriptionObjAction() {
         if ($this->request->isAjax() && $this->request->isGet()) {
             $clients = Clients::find();
@@ -272,7 +294,9 @@ class MenuController extends \Phalcon\Mvc\Controller
                 'company_name' => [],
                 'adress'       => [],
                 'accaunt'      => [],
-                'zip'          => []
+                'zip'          => [],
+                'name'         => [],
+                'description'  => []
             ];
             foreach ($clients as $val) {
                 array_push($clientsDescription['fio'], $val->getFio());
@@ -281,6 +305,14 @@ class MenuController extends \Phalcon\Mvc\Controller
                 array_push($clientsDescription['adress'], $val->getAdress());
                 array_push($clientsDescription['accaunt'], $val->getAccaunt());
                 array_push($clientsDescription['zip'], $val->getZip());
+            }
+            $projects = Projects::find();
+            if (count($projects)) {
+                foreach ($projects as $val) {
+                    array_push($clientsDescription['name'], $val->getName());
+                    array_push($clientsDescription['description'], $val->getDescription());
+                }
+
             }
             $this->response->setContentType('application/json', 'UTF-8');
             $this->response->setJsonContent($clientsDescription);

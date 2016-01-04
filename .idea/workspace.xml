@@ -21,7 +21,7 @@
     <favorites_list name="DimaPhalcon" />
   </component>
   <component name="FileEditorManager">
-    <splitter split-orientation="horizontal" split-proportion="0.20940721">
+    <splitter split-orientation="horizontal" split-proportion="0.52822083">
       <split-first>
         <leaf>
           <file leaf-file-name="TabsController.php" pinned="false" current-in-tab="false">
@@ -80,6 +80,19 @@
               </provider>
             </entry>
           </file>
+          <file leaf-file-name="MenuController.php" pinned="false" current-in-tab="true">
+            <entry file="file://$PROJECT_DIR$/DimaPhalcon/app/controllers/MenuController.php">
+              <provider selected="true" editor-type-id="text-editor">
+                <state vertical-scroll-proportion="0.39148936">
+                  <caret line="298" column="36" selection-start-line="298" selection-start-column="36" selection-end-line="298" selection-end-column="36" />
+                  <folding>
+                    <marker date="1451946682185" expanded="true" signature="1150:1416" placeholder="..." />
+                    <marker date="1451946682185" expanded="true" signature="3586:3859" placeholder="..." />
+                  </folding>
+                </state>
+              </provider>
+            </entry>
+          </file>
           <file leaf-file-name="IndexController.php" pinned="false" current-in-tab="false">
             <entry file="file://$PROJECT_DIR$/DimaPhalcon/app/controllers/IndexController.php">
               <provider selected="true" editor-type-id="text-editor">
@@ -90,11 +103,11 @@
               </provider>
             </entry>
           </file>
-          <file leaf-file-name="ordersTabs.html" pinned="false" current-in-tab="true">
+          <file leaf-file-name="ordersTabs.html" pinned="false" current-in-tab="false">
             <entry file="file://$PROJECT_DIR$/DimaPhalcon/public/files/ordersTabs.html">
               <provider selected="true" editor-type-id="text-editor">
-                <state vertical-scroll-proportion="0.7746479">
-                  <caret line="30" column="39" selection-start-line="30" selection-start-column="39" selection-end-line="30" selection-end-column="39" />
+                <state vertical-scroll-proportion="0.0">
+                  <caret line="59" column="56" selection-start-line="59" selection-start-column="39" selection-end-line="59" selection-end-column="56" />
                   <folding />
                 </state>
               </provider>
@@ -121,8 +134,8 @@
           <file leaf-file-name="main.css" pinned="false" current-in-tab="false">
             <entry file="file://$PROJECT_DIR$/DimaPhalcon/public/css/main.css">
               <provider selected="true" editor-type-id="text-editor">
-                <state vertical-scroll-proportion="0.0">
-                  <caret line="860" column="1" selection-start-line="860" selection-start-column="1" selection-end-line="860" selection-end-column="1" />
+                <state vertical-scroll-proportion="-21.071428">
+                  <caret line="231" column="14" selection-start-line="231" selection-start-column="14" selection-end-line="231" selection-end-column="14" />
                   <folding />
                 </state>
               </provider>
@@ -132,7 +145,7 @@
             <entry file="file://$PROJECT_DIR$/DimaPhalcon/public/files/rightTabContent.html">
               <provider selected="true" editor-type-id="text-editor">
                 <state vertical-scroll-proportion="0.0">
-                  <caret line="66" column="68" selection-start-line="66" selection-start-column="68" selection-end-line="66" selection-end-column="68" />
+                  <caret line="78" column="63" selection-start-line="78" selection-start-column="59" selection-end-line="78" selection-end-column="63" />
                   <folding />
                 </state>
               </provider>
@@ -158,25 +171,12 @@
               </provider>
             </entry>
           </file>
-          <file leaf-file-name="Dima.js" pinned="false" current-in-tab="false">
+          <file leaf-file-name="Dima.js" pinned="false" current-in-tab="true">
             <entry file="file://$PROJECT_DIR$/DimaPhalcon/public/js/Dima.js">
               <provider selected="true" editor-type-id="text-editor">
-                <state vertical-scroll-proportion="0.0">
-                  <caret line="1050" column="43" selection-start-line="1050" selection-start-column="43" selection-end-line="1050" selection-end-column="43" />
+                <state vertical-scroll-proportion="0.57488984">
+                  <caret line="3057" column="92" selection-start-line="3057" selection-start-column="92" selection-end-line="3057" selection-end-column="92" />
                   <folding />
-                </state>
-              </provider>
-            </entry>
-          </file>
-          <file leaf-file-name="MenuController.php" pinned="false" current-in-tab="true">
-            <entry file="file://$PROJECT_DIR$/DimaPhalcon/app/controllers/MenuController.php">
-              <provider selected="true" editor-type-id="text-editor">
-                <state vertical-scroll-proportion="0.70893973">
-                  <caret line="189" column="73" selection-start-line="189" selection-start-column="73" selection-end-line="189" selection-end-column="73" />
-                  <folding>
-                    <marker date="1451900132262" expanded="true" signature="1150:1416" placeholder="..." />
-                    <marker date="1451900132262" expanded="true" signature="3586:3859" placeholder="..." />
-                  </folding>
                 </state>
               </provider>
             </entry>
@@ -244,14 +244,14 @@
         <option value="$PROJECT_DIR$/DimaPhalcon/public/js/jquery/main.js" />
         <option value="$PROJECT_DIR$/DimaPhalcon/public/js/jquery/Dima.js" />
         <option value="$PROJECT_DIR$/DimaPhalcon/app/models/Clients.php" />
-        <option value="$PROJECT_DIR$/DimaPhalcon/public/css/main.css" />
         <option value="$PROJECT_DIR$/DimaPhalcon/public/js/main.js" />
-        <option value="$PROJECT_DIR$/DimaPhalcon/public/js/Dima.js" />
         <option value="$PROJECT_DIR$/DimaPhalcon/public/files/tabsRight.volt" />
         <option value="$PROJECT_DIR$/DimaPhalcon/app/views/index.volt" />
         <option value="$PROJECT_DIR$/DimaPhalcon/public/files/tabsRight.html" />
         <option value="$PROJECT_DIR$/DimaPhalcon/app/controllers/IndexController.php" />
         <option value="$PROJECT_DIR$/DimaPhalcon/public/files/ordersTabs.html" />
+        <option value="$PROJECT_DIR$/DimaPhalcon/public/css/main.css" />
+        <option value="$PROJECT_DIR$/DimaPhalcon/public/js/Dima.js" />
         <option value="$PROJECT_DIR$/DimaPhalcon/app/controllers/MenuController.php" />
       </list>
     </option>
@@ -558,8 +558,8 @@
           </PATH>
         </subPane>
       </pane>
-      <pane id="Scope" />
       <pane id="Scratches" />
+      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -627,12 +627,11 @@
     <frame x="1592" y="-8" width="1696" height="1066" extended-state="6" />
     <editor active="false" />
     <layout>
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.07619048" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.029761905" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="8" side_tool="true" content_ui="tabs" />
       <window_info id="Application Servers" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4168357" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="11" side_tool="false" content_ui="tabs" />
@@ -645,6 +644,7 @@
       <window_info id="Command Line Tools Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.86206895" sideWeight="0.5" order="11" side_tool="false" content_ui="tabs" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4168357" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
     </layout>
@@ -667,6 +667,14 @@
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
+    <entry file="file://$PROJECT_DIR$/DimaPhalcon/app/models/Clients.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="53" column="7" selection-start-line="53" selection-start-column="7" selection-end-line="53" selection-end-column="7" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/DimaPhalcon/public/js/jquery/jquery.caret.js">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.3328767">
@@ -818,7 +826,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="6" column="0" selection-start-line="6" selection-start-column="0" selection-end-line="6" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -826,11 +833,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="202" column="20" selection-start-line="202" selection-start-column="20" selection-end-line="202" selection-end-column="20" />
-          <folding>
-            <marker date="1450909958294" expanded="true" signature="-1:-1" placeholder="..." />
-            <marker date="1450909958294" expanded="true" signature="-1:-1" placeholder="..." />
-            <marker date="1450909958294" expanded="true" signature="-1:-1" placeholder="..." />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -857,14 +859,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.5751634">
           <caret line="24" column="22" selection-start-line="24" selection-start-column="22" selection-end-line="24" selection-end-column="22" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/DimaPhalcon/public/files/rightTabContent.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="66" column="68" selection-start-line="66" selection-start-column="68" selection-end-line="66" selection-end-column="68" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -948,21 +942,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/DimaPhalcon/public/css/main.css">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="860" column="1" selection-start-line="860" selection-start-column="1" selection-end-line="860" selection-end-column="1" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/DimaPhalcon/public/js/jquery/Dima.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="294" column="8" selection-start-line="294" selection-start-column="8" selection-end-line="294" selection-end-column="8" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/DimaPhalcon/app/controllers/ThemesController.php">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
@@ -983,14 +962,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="170" column="7" selection-start-line="170" selection-start-column="7" selection-end-line="170" selection-end-column="7" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/DimaPhalcon/public/js/Dima.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="1050" column="43" selection-start-line="1050" selection-start-column="43" selection-end-line="1050" selection-end-column="43" />
           <folding />
         </state>
       </provider>
@@ -1035,21 +1006,45 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/DimaPhalcon/public/files/rightTabContent.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="78" column="63" selection-start-line="78" selection-start-column="59" selection-end-line="78" selection-end-column="63" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/DimaPhalcon/public/css/main.css">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-21.071428">
+          <caret line="231" column="14" selection-start-line="231" selection-start-column="14" selection-end-line="231" selection-end-column="14" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/DimaPhalcon/public/files/ordersTabs.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.7746479">
-          <caret line="30" column="39" selection-start-line="30" selection-start-column="39" selection-end-line="30" selection-end-column="39" />
+        <state vertical-scroll-proportion="0.0">
+          <caret line="59" column="56" selection-start-line="59" selection-start-column="39" selection-end-line="59" selection-end-column="56" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/DimaPhalcon/public/js/Dima.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.57488984">
+          <caret line="3057" column="92" selection-start-line="3057" selection-start-column="92" selection-end-line="3057" selection-end-column="92" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/DimaPhalcon/app/controllers/MenuController.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.70893973">
-          <caret line="189" column="73" selection-start-line="189" selection-start-column="73" selection-end-line="189" selection-end-column="73" />
+        <state vertical-scroll-proportion="0.39148936">
+          <caret line="298" column="36" selection-start-line="298" selection-start-column="36" selection-end-line="298" selection-end-column="36" />
           <folding>
-            <marker date="1451900132262" expanded="true" signature="1150:1416" placeholder="..." />
-            <marker date="1451900132262" expanded="true" signature="3586:3859" placeholder="..." />
+            <marker date="1451946682185" expanded="true" signature="1150:1416" placeholder="..." />
+            <marker date="1451946682185" expanded="true" signature="3586:3859" placeholder="..." />
           </folding>
         </state>
       </provider>

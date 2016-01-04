@@ -1044,22 +1044,40 @@
 			button.prop('disabled', true);
 		}
 	}
-	
+
+	function checkInputsInClientsDetails (scope) {
+		var check = 0;
+		$.each($(scope), function (num, input) {
+			var $input = $(input);
+			if ($input.val()) {
+				check++;
+			}
+		});
+		return check;
+	}
+
 	function addHandlerIndexHtml() {
 
 		// clients Tree
 		$('#addNewClient' ).click(function () {
-			var data = {}, check = 0;
+			var check = 0;
 			if ($('#h3NewClientInfo').is(':visible')) {
-				$.each($('#addNewClientForm input'), function (num, input) {
-					var $input = $(input);
-					if ($input.val()) {
-						check++;
-					}
-				});
+				check = checkInputsInClientsDetails('#addNewClientForm input');
 			}
 			if (0 === check) {
 				MENU.fillFormOfClientsInfo();
+			}
+		});
+
+		$('#addNewProject' ).click(function () {
+			var data = {}, check = 0;
+			var selectedNode = $('#clientsTree').tree('getSelectedNode');
+			console.log(selectedNode);
+			if ($('#h3NewProjectInfo').is(':visible')) {
+				check = checkInputsInClientsDetails('#addNewProjectForm input');
+			}
+			if (0 === check && selectedNode) {
+				MENU.fillFormOfProjectInfo();
 			}
 		});
 		
@@ -1129,6 +1147,38 @@
 						PRODUCT.getClientsDetails();
 					}
 				});
+			}
+		});
+
+		$('#addNewProjectBtn').click(function () {
+			var selectedNode = $('#clientsTree').tree('getSelectedNode');
+			if (selectedNode && selectedNode.clientId) {
+				var check = 0, data = {client: selectedNode.clientId};
+				$.each($('#addNewProjectForm input'), function (num, input) {
+					var $input = $(input);
+					data[$input.attr('name')] = $input.val();
+					if (!VALIDATION.validateInputVal(
+							{
+								val: $input.val(),
+								id: '#' + $input.attr('id')
+							}
+						)) {
+						check++;
+					}
+				});
+				if (!check) {
+					$.ajax({
+						url: URL_MENU + 'addNewProject',
+						method: 'POST',
+						data: data
+					}).then(function (data)
+					{
+						if (data) {
+							$('#addNewProjectForm input').val('');
+							MENU.getClientsTree(true);
+						}
+					});
+				}
 			}
 		});
 	}
@@ -3002,10 +3052,10 @@
 						$(function () {
 							$('[data-toggle="tooltip"]').tooltip();
 							$.each(data, function(name, arr) {
-								$('#addNewClientForm input').filter('[name="' + name + '"]').autocomplete({
+								$('#addNewClientForm input, #addNewProjectForm input').filter('[name="' + name + '"]').autocomplete({
 									source: arr,
 									select: function (event, ui) {
-										$('#addNewClientForm input').filter('[name="' + name + '"]').attr('value', ui.item.value ).val(ui.item.value);
+										$('#addNewClientForm input, #addNewProjectForm input').filter('[name="' + name + '"]').attr('value', ui.item.value ).val(ui.item.value);
 									}
 								});
 							});
@@ -3593,6 +3643,7 @@
 			},
 			
 			fillFormOfClientsInfo: function (info) {
+				$('#addNewProjectForm' ).hide();
 				if (info) {
 					$.each($('#addNewClientForm input'), function (num, input) {
 						var $input = $(input);
@@ -3610,6 +3661,27 @@
 					$('#updateClientBtn').hide();
 				}
 				$('#addNewClientForm').show();
+			},
+
+			fillFormOfProjectInfo: function (info) {
+				$('#addNewClientForm' ).hide();
+				if (info) {
+					$.each($('#addNewProjectForm input'), function (num, input) {
+						var $input = $(input);
+						$input.val(info[$input.attr('name')]);
+					});
+					$('#h3NewProjectInfo').hide();
+					$('#h3ProjectInfo').show();
+					$('#addNewProjectBtn').hide();
+					$('#updateProjectBtn').show();
+				} else {
+					$('#addNewProjectForm input').val('');
+					$('#h3NewProjectInfo').show();
+					$('#h3ProjectInfo').hide();
+					$('#addNewProjectBtn').show();
+					$('#updateProjectBtn').hide();
+				}
+				$('#addNewProjectForm').show();
 			},
 			
 			getClientsTree: function (refresh) {
@@ -3653,6 +3725,9 @@
 								if ('client' === node.sector) {
 									MENU.fillFormOfClientsInfo(node.info);
 								}
+								if ('project' === node.sector) {
+									MENU.fillFormOfProjectInfo(node.info);
+								}
 								/*if ('order' !== node.sector) {
 									tree.tree('toggle', node);
 								} else {
@@ -3665,6 +3740,9 @@
 					switch (selectedNode.sector) {
 						case 'client':
 							MENU.fillFormOfClientsInfo(selectedNode.info);
+							break;
+						case 'project':
+							MENU.fillFormOfProjectInfo(selectedNode.info);
 							break;
 					}
 				});

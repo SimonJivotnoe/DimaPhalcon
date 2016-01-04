@@ -21,6 +21,7 @@
         <div class="col-md-4">
             <div class="col-md-12 navbar navbar-inverse" id="clientsTreeActionsWrapper">
                 <span class="glyphicon glyphicon-user" aria-hidden="true" id="addNewClient"><span>+</span></span>
+                <span class="glyphicon glyphicon-folder-close" aria-hidden="true" id="addNewProject"><span>+</span></span>
             </div>
             <div class="col-md-12">
                 <input type="text" class="form-control" id="findInClietsTree" placeholder="Поиск">
@@ -60,22 +61,16 @@
                 <h3 id="h3NewProjectInfo">Форма создания нового проекта</h3>
                 <h3 id="h3ProjectInfo">Информация о проекте</h3>
                 <div class="col-md-12">
-                    <input required type="text" name="fio" class="form-control" data-toggle="tooltip" title="ФИО Клиента" id="NewClientFio" placeholder="ФИО Клиента">
+                    <input required type="text" name="name" class="form-control" data-toggle="tooltip" title="Название проэкта" id="newProjectName" placeholder="Название проэкта">
                 </div>
                 <div class="col-md-12">
-                    <input required type="text" name="appeal" class="form-control" data-toggle="tooltip" title="Обращение" id="NewClientAppeal" placeholder="Обращение">
+                    <input required type="text" name="description" class="form-control" data-toggle="tooltip" title="Описание проэкта" id="newProjectDescription" placeholder="Описание проэкта">
                 </div>
                 <div class="col-md-12">
-                    <input required type="text" name="company_name" class="form-control" data-toggle="tooltip" title="Название Компании" id="NewClientCompanyName" placeholder="Название Компании">
+                    <input required type="date" name="estimate" class="form-control" data-toggle="tooltip" title="Срок" id="newProjectEstimate" placeholder="Срок">
                 </div>
                 <div class="col-md-12">
-                    <input required type="text" name="adress" class="form-control" data-toggle="tooltip" title="Почтовый Адрес" id="NewClientAdress" placeholder="Почтовый Адрес">
-                </div>
-                <div class="col-md-12">
-                    <input required type="text" name="accaunt" class="form-control" data-toggle="tooltip" title="Номер Счета" id="NewClientAccount" placeholder="Номер Счета">
-                </div>
-                <div class="col-md-12">
-                    <input required type="text" name="zip" class="form-control" data-toggle="tooltip" title="Город, почтовый индекс" id="NewClientZip" placeholder="Город, почтовый индекс">
+                    <input required type="date" name="date" class="form-control" data-toggle="tooltip" title="Дата" id="newProjectDate" placeholder="Дата">
                 </div>
                 <div class="col-md-3 col-md-offset-5">
                     <button type="button" class="btn btn-success" id="addNewProjectBtn">Создать</button>

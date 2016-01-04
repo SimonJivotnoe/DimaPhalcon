@@ -224,6 +224,14 @@ a {
 #addNewClient span {
     color: green;
 }
+#addNewProject {
+    color: #eb9316;
+    cursor: pointer;
+}
+
+#addNewProject span {
+    color: green;
+}
 
 #addNewClientForm, #addNewProjectForm {
     display: none;
