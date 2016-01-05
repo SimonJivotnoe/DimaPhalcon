@@ -207,39 +207,39 @@
 		// ORDERS
 		{
 			id: '#prefOrderHeadBackground',
-			elem: '#prefOrderTable tr:not(.orderTableSectionName) th',
+			elem: '#prefOrderTable tr:not(.prefOrderTableSectionName) th',
 			style: 'backgroundColor',
-			cssArr: ['#prefOrderTable tr:not(.orderTableSectionName) th', '#orderTable tr:not(.orderTableSectionName) th', '.sumOrderTableHead']
+			cssArr: ['#prefOrderTable tr:not(.prefOrderTableSectionName) th', '#orderTable tr:not(.orderTableSectionName) th', '.sumOrderTableHead']
 		},
 		{
 			id: '#prefOrderHeadBordersColor',
-			elem: '#prefOrderTable tr:not(.orderTableSectionName) th',
+			elem: '#prefOrderTable tr:not(.prefOrderTableSectionName) th',
 			style: 'borderColor',
-			cssArr: ['#prefOrderTable tr:not(.orderTableSectionName) th', '#orderTable tr:not(.orderTableSectionName) th', '.sumOrderTableHead']
+			cssArr: ['#prefOrderTable tr:not(.prefOrderTableSectionName) th', '#orderTable tr:not(.orderTableSectionName) th', '.sumOrderTableHead']
 		},
 		{
 			id: '#prefOrderHeadFontColor',
-			elem: '#prefOrderTable tr:not(.orderTableSectionName) th',
+			elem: '#prefOrderTable tr:not(.prefOrderTableSectionName) th',
 			style: 'color',
-			cssArr: ['#prefOrderTable tr:not(.orderTableSectionName) th', '#orderTable tr:not(.orderTableSectionName) th', '.sumOrderTableHead']
+			cssArr: ['#prefOrderTable tr:not(.prefOrderTableSectionName) th', '#orderTable tr:not(.orderTableSectionName) th', '.sumOrderTableHead']
 		},
 		{
 			id: '#prefOrderSectionBackground',
-			elem: '.orderTableSectionName th',
+			elem: '.prefOrderTableSectionName th',
 			style: 'backgroundColor',
-			cssArr: ['.orderTableSectionName th', '.withoutSectionInOrderTable th']
+			cssArr: ['.prefOrderTableSectionName th, .orderTableSectionName th', '.withoutSectionInOrderTable th']
 		},
 		{
 			id: '#prefOrderSectionBordersColor',
-			elem: '.orderTableSectionName th',
+			elem: '.prefOrderTableSectionName th',
 			style: 'borderColor',
-			cssArr: ['.orderTableSectionName th']
+			cssArr: ['.prefOrderTableSectionName th, .orderTableSectionName th']
 		},
 		{
 			id: '#prefOrderSectionFontColor',
-			elem: '.orderTableSectionName th',
+			elem: '.prefOrderTableSectionName th',
 			style: 'color',
-			cssArr: ['.orderTableSectionName th']
+			cssArr: ['.prefOrderTableSectionName th, .orderTableSectionName th']
 		},
 		{
 			id: '#prefOrderRowBackground',
@@ -3242,7 +3242,7 @@
 					$('.rowValue input' ).addClass('rowValueInput');
 					alwaysInTable = JSON.stringify(PRODUCT.getTableContent('#alwaysInTable li'));
 					$('.rowValueInput').removeClass('rowValueInput');
-				}console.log(alwaysInTable);
+				}
 				$.ajax({
 					url: URL_ORDER + 'addProductToOrder',
 					method: 'POST',

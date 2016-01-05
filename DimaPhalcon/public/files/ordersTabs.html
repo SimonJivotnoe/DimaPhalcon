@@ -18,7 +18,7 @@
             muted=""
             src="img/livemill.mp4" width="640">
         </video>-->
-        <div class="col-md-4">
+        <div class="col-md-4 totalWrapper collapse width in">
             <div class="col-md-12 navbar navbar-inverse" id="clientsTreeActionsWrapper">
                 <span class="glyphicon glyphicon-user" aria-hidden="true" id="addNewClient"><span>+</span></span>
                 <span class="glyphicon glyphicon-folder-close" aria-hidden="true" id="addNewProject"><span>+</span></span>
@@ -32,6 +32,7 @@
             </div>
         </div>
         <div class="col-md-8" id="orderFromTree">
+            <div aria-hidden="true" data-toggle="collapse" data-target=".totalWrapper" aria-expanded="true" aria-controls="totalWrapper">test</div>
             <div class="col-md-12" id="addNewClientForm">
                 <h3 id="h3NewClientInfo">Форма создания нового клиента</h3>
                 <h3 id="h3ClientInfo">Информация о клиенте</h3>

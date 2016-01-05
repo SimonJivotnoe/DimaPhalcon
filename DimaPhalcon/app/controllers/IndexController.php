@@ -34,8 +34,8 @@ class IndexController extends ControllerBase
              ->addFilter(new \Phalcon\Assets\Filters\Cssmin());
         $this->assets
              ->collection('jsFooter')
-             ->addJs('js/Dima.js')
-             ->addJs('js/main.js')
+             /*->addJs('js/Dima.js')
+             ->addJs('js/main.js')*/
              ->addJs('js/libs/split-pane.min.js', false, false)
              ->addJs('js/libs/underscore-min.js', false, false)
              ->setTargetPath('js/production.js')

@@ -418,4 +418,36 @@ $( document ).ready( function ()
 		});
 	});*/
 	PREFERENCES.applyCss();
+	/*
+	$("tbody").sortable({
+		items: "> tr:not(:first)",
+		appendTo: "parent",
+		helper: "clone"
+	}).disableSelection();
+
+	 $('.list').sortable({connectWith: ".list",
+	 tolerance: 'pointer',
+	 });
+	 <div class="list1 list">
+	 <div class="item">clone 1</div>
+	 <div class="item">clone 2</div>
+	 <div class="item">clone 3</div>
+	 </div>
+	 <div class="list2 list">
+	 <div class="item">move 1</div>
+	 <div class="item">move 2</div>
+	 <div class="item">move 3</div>
+	 </div>
+	 <div class="list3 list">
+	 <div class="item">move 1</div>
+	 <div class="item">move 2</div>
+	 <div class="item">move 3</div>
+	 </div>
+	 $('.list1, .list2, .list3').bind('sortstop', function(event, ui) {
+	 var idx = $('.list1, .list2, .list3').children().index($(ui.item[0]))-1,
+	 elm = $(ui.item[0]).clone(true);
+	 $('.list1, .list2, .list3').children(':eq('+idx+')').after(elm);
+	 $(this).sortable('cancel');
+	 });
+	*/
 } );

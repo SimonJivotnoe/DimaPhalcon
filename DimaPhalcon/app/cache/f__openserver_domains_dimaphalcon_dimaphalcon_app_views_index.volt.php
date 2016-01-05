@@ -5,6 +5,8 @@
     <title>Дима</title>
     <?php echo $this->assets->outputCss('styleHead'); ?>
     <link rel="stylesheet" href="css/bootstrap/bootstrap.min.css">
+    <link rel="stylesheet" href="css/libs/animate.css">
+    <link rel="stylesheet" href="css/libs/notifcenter.css">
     <link href="js/jquery/colorpicker/dist/css/bootstrap-colorpicker.min.css" rel="stylesheet" type="text/css"/>
     <link rel="shortcut icon" type="image/x-icon" href="favicon.ico" />
 </head>
@@ -73,7 +75,8 @@
             <div class="split-pane-component" id="right-component">
                 <div id="tabsRight">
                     <div id="rightTabsSpinner"></div>
-                    <?php echo $tabsRight; ?>
+                    
+                        <?php echo $tabsRight; ?>
                 </div>
             </div>
         </div>
@@ -304,7 +307,7 @@
                             <th>Пример</th>
                             <th>Ордера</th>
                         </tr>
-                        <tr class="orderTableSectionName">
+                        <tr class="prefOrderTableSectionName">
                             <th colspan="2">Раздел 1</th>
                         </tr>
                         <tr>
@@ -495,6 +498,10 @@
     <script src="js/jquery/colorpicker/dist/js/bootstrap-colorpicker.min.js"></script>
     <script src="js/jquery/spin.min.js"></script>
     <script src="js/jquery/tree.jquery.js"></script>
+    <script src="js/Dima.js"></script>
+    <script src="js/main.js"></script>
     <?php echo $this->assets->outputJs('jsFooter'); ?>
+    <script src="js/libs/jquery.noty.packaged.min.js"></script>
+    <script src="js/libs/jquery.notificationcenter.js"></script>
 </body>
 </html>
