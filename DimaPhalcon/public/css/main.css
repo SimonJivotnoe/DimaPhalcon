@@ -16,15 +16,13 @@ body {
 
 #creatingProductsWrapper, #databaseWrapper {
     display: none;
-    margin-top: 49px;
-    height: 100vh;
+    /*height: 100vh;*/
 }
 
 .colorpicker-element {
     color: transparent !important;
     width: 125px !important;
 }
-
 #mainMenuWrapper {
     height: 100vh;
     background-color: steelblue;
@@ -142,9 +140,11 @@ body {
 #myTab, #rightTabs, #rightTabsContent, #leftTabsContent {
     display: none;
 }
-
+#myTab, #db-right-component {
+    margin-top: 49px;
+}
 #productsTreeWrapper, #clientsTreeWrapper {
-    height: 100vh;
+    height: 80vh;
     overflow-y: scroll;
     position: relative;
 }
@@ -165,18 +165,15 @@ a {
     background: #aaa;
 }
 
-#left-component {
-//width: 60em;
-}
-
 #divider, #db-divider {
 //left: 60em;
     width: 5px;
 }
 
-#right-component, #db-right-component {
+#right-component, #db-right-component, #left-component {
 //left: 60em;
     margin-left: 5px;
+    margin-top: 49px;
 }
 
 #addNewTab, #addNewTabRight, .moveWithoutOrderUp, .moveWithoutOrderDown, .removeWithoutOrderRow, .removeOrderRow, .moveToCopyTo, .moveOrderUp, .moveOrderDown {
@@ -219,17 +216,28 @@ a {
 #addNewClient {
     color: wheat;
     cursor: pointer;
+    margin-right: 10px;
 }
 
 #addNewClient span {
     color: green;
 }
 #addNewProject {
+    color: #2aabd2;
+    cursor: pointer;
+    margin-right: 10px;
+}
+
+#addNewProject span {
+    color: green;
+}
+
+#addNewOrder {
     color: #eb9316;
     cursor: pointer;
 }
 
-#addNewProject span {
+#addNewOrder span {
     color: green;
 }
 
@@ -242,6 +250,8 @@ a {
 }
 #addNewClientForm button, #addNewProjectForm button{
     margin-top: 3px;
+}
+.addNewClientBtnsWrapper {
     display: none;
 }
 #findInClietsTree {
@@ -626,7 +636,7 @@ ol li:hover {
     color: green;
 }
 
-#orderDetailsWrapper {
+#orderDetailsWrapper, #orderDetailsWrapperFromTree{
     padding-top: 15px;
     margin-bottom: 15px;
 }

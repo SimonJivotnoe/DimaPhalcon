@@ -6,26 +6,20 @@ class OrderController  extends \Phalcon\Mvc\Controller
         if ($this->request->isAjax() && $this->request->isPost()) {
             $orderMax = Orders::maximum(array("column" => "order_number"));
             $consolidate = $this->request->getPost('consolidate');
+            $project = $this->request->getPost('project');
             $orderNumber = 1;
             if ($orderMax) {
                 $orderNumber = (int)($orderMax) + 1;
             }
 
             $order = new Orders;
-            $descr = (array)json_decode(file_get_contents('files/orderDetails.json'));
-            $year = date('o');
-            $month = date('m');
-            $day = date('d');
-            $descr['%DATE%'] = $year . '-' . $month . '-' . $day;
-            $descr['%ESTIMATE%'] = $year . '-' . $month . '-' . $day;
             $order->setOrderNumber($orderNumber)
-                ->setArticle($this->generateArticle($orderNumber))
-                ->setDiscount(new RawValue('default'))
-                ->setOrderDescription(json_encode((object)$descr))
-                ->setMap(new RawValue('default'))
-                ->setStatus(new RawValue('default'))
-                ->setConsolidate($consolidate)
-                ->save();
+                  ->setArticle($this->generateArticle($orderNumber))
+                  ->setDiscount(new RawValue('default'))
+                  ->setProject($project)
+                  ->setMap(new RawValue('default'))
+                  ->setStatus('save')
+                  ->setConsolidate($consolidate);
 
             $this->response->setContentType('application/json', 'UTF-8');
 
@@ -35,8 +29,9 @@ class OrderController  extends \Phalcon\Mvc\Controller
             }
             $order_id = $order->getId();
 
-            $tab = new TabsController;
-            $this->response->setJsonContent($tab->addNewRightTab($order_id));
+            /*$tab = new TabsController;
+            $this->response->setJsonContent($tab->addNewRightTab($order_id));*/
+            $this->response->setJsonContent(true);
             return $this->response;
         } else {
             $this->response->redirect('');

@@ -1,21 +1,22 @@
 ;(function(global, $) {
 	
 	// 'new' an object
-	var Dima = function(firstName, lastName, language) {
-		return new Dima.init(firstName, lastName, language);
+	var Dima = function() {
+		return new Dima.init();
 	};
 
 	// url's
 	var URL = {
-		BASE: 'http://DimaPhalcon/DimaPhalcon/',
-		TABS: 'tabs/',
-		CATEG: 'categories/',
-		ORDER: 'order/',
-		KIM: 'kim/',
-		METALLS: 'metalls/',
-		PRODUCT: 'products/',
-		MENU: 'menu/',
-		THEMES: 'themes/',
+		BASE:     'http://DimaPhalcon/DimaPhalcon/',
+		TABS:	  'tabs/',
+		CATEG:	  'categories/',
+		ORDER:    'order/',
+		KIM:	  'kim/',
+		METALLS:  'metalls/',
+		PRODUCT:  'products/',
+		MENU:	  'menu/',
+		CLIENTS:  'clients/',
+		THEMES:	  'themes/',
 		LOCATION: 'http://DimaPhalcon/DimaPhalcon/'
 	};
 
@@ -33,6 +34,8 @@
 
 	var URL_MENU = URL.BASE + URL.MENU;
 
+	var URL_CLIENTS = URL.BASE + URL.CLIENTS;
+	
 	var URL_THEMES = URL.BASE + URL.THEMES;
 
 	var LOCATION = URL.LOCATION;
@@ -72,6 +75,10 @@
 
 	// alias to self.themes
 	var THEMES;
+	
+	// alias to self.clients
+	var CLIENTS;
+	
 	// error messages obj
 	var ERR = {
 		ARTICLE: {
@@ -1059,27 +1066,6 @@
 	function addHandlerIndexHtml() {
 
 		// clients Tree
-		$('#addNewClient' ).click(function () {
-			var check = 0;
-			if ($('#h3NewClientInfo').is(':visible')) {
-				check = checkInputsInClientsDetails('#addNewClientForm input');
-			}
-			if (0 === check) {
-				MENU.fillFormOfClientsInfo();
-			}
-		});
-
-		$('#addNewProject' ).click(function () {
-			var data = {}, check = 0;
-			var selectedNode = $('#clientsTree').tree('getSelectedNode');
-			console.log(selectedNode);
-			if ($('#h3NewProjectInfo').is(':visible')) {
-				check = checkInputsInClientsDetails('#addNewProjectForm input');
-			}
-			if (0 === check && selectedNode) {
-				MENU.fillFormOfProjectInfo();
-			}
-		});
 		
 		$('#findInClietsTree').keyup(function() {
 			var tree = JSON.parse($('#clientsTree').tree('toJson')),
@@ -1089,6 +1075,17 @@
 			} else {
 				$('#clientsTree > ul > li').hide();
 				MENU.searchInTree(tree, text);
+			}
+		});
+		
+		$('#addNewClient' ).click(function () {
+			var check = 0;
+			$('#clientsTree').tree('selectNode');
+			if ($('#h3NewClientInfo').is(':visible')) {
+				check = checkInputsInClientsDetails('#addNewClientForm input');
+			}
+			if (0 === check) {
+				MENU.fillFormOfClientsInfo();
 			}
 		});
 		
@@ -1115,41 +1112,104 @@
 				{
 					if (data) {
 						$('#addNewClientForm input').val('');
-						MENU.getClientsTree(true);
+						CLIENTS.getClientsTree(true);
 					}
 				});
 			}
 		});
 		
 		$('#updateClientBtn').click(function () {
-			var check = 0, data = {id: VALIDATION.digitsOnly($('#clientsTree').tree('getSelectedNode').id)};
-			$.each($('#addNewClientForm input'), function (num, input) {
-				var $input = $(input);
-				data[$input.attr('name')] = $input.val();
-				if (!VALIDATION.validateInputVal(
+			var $tree = $('#clientsTree');
+			if ($tree.tree('getSelectedNode').clientId) {
+				var check = 0, data = {id: $tree.tree('getSelectedNode').clientId};
+				$.each($('#addNewClientForm input'), function (num, input) {
+					var $input = $(input);
+					data[$input.attr('name')] = $input.val();
+					if (!VALIDATION.validateInputVal(
+						{
+							val: $input.val(),
+							id: '#' + $input.attr('id')
+						}
+					)) {
+						check++;
+					}
+				});
+				if (!check) {
+					$.ajax({
+						url: URL_CLIENTS + 'updateClient',
+						method: 'POST',
+						data: data
+					}).then(function (data)
 					{
-						val: $input.val(),
-						id: '#' + $input.attr('id')
-					}
-				)) {
-					check++;
+						if (data) {
+							CLIENTS.getClientsTree(true);
+							PRODUCT.getClientsDetails();
+							noty({
+								text: 'Информация обновлена',
+								type: 'success',
+								layout: 'center',
+								/*animation: {
+									open: 'animated flipInX',
+									close: 'animated flipOutX'
+								},*/
+								timeout: 600
+							});
+						}
+					});
 				}
-			});
-			if (!check) {
-				$.ajax({
-					url: URL_MENU + 'updateClient',
-					method: 'POST',
-					data: data
-				}).then(function (data)
-				{
-					if (data) {
-						MENU.getClientsTree(true);
-						PRODUCT.getClientsDetails();
-					}
+			}
+		});
+		
+		$('#deleteClientBtn').click(function () {
+			var selectedNode = $('#clientsTree').tree('getSelectedNode');
+			if (selectedNode && selectedNode.clientId) {
+				noty({
+					text: 'Вы уверены, что хотите удалить Клиента? При удалении Клиента, будут удалены все проекты и ордера, принадлежащие данному Клиенту.',
+					modal: true,
+					type: 'confirm',
+					layout: 'center',
+					animation: {
+						open: 'animated flipInX',
+						close: 'animated flipOutX'
+					},
+					buttons: [
+						{addClass: 'btn btn-success', text: 'Удалить!', onClick: function($noty) {
+								$.when(CLIENTS.deleteClient(selectedNode.clientId)).then(function (data) {
+									$noty.close();
+								});
+							}
+						},
+						{addClass: 'btn btn-danger', text: 'Передумал', onClick: function($noty) {
+								$noty.close();
+							}
+						}
+					]
 				});
 			}
 		});
-
+		
+		$('#addNewProject' ).click(function () {
+			var data = {}, check = 0;
+			var selectedNode = $('#clientsTree').tree('getSelectedNode');
+			if ($('#h3NewProjectInfo').is(':visible')) {
+				check = checkInputsInClientsDetails('#addNewProjectForm input');
+			}
+			if (0 === check && selectedNode) {
+				MENU.fillFormOfProjectInfo();
+			} else {
+				noty({
+					text: 'Выберите Клиента',
+					type: 'error',
+					layout: 'center',
+					/*animation: {
+						open: 'animated flipInX',
+						close: 'animated flipOutX'
+					},*/
+					timeout: 900
+				});
+			}
+		});
+		
 		$('#addNewProjectBtn').click(function () {
 			var selectedNode = $('#clientsTree').tree('getSelectedNode');
 			if (selectedNode && selectedNode.clientId) {
@@ -1175,14 +1235,103 @@
 					{
 						if (data) {
 							$('#addNewProjectForm input').val('');
-							MENU.getClientsTree(true);
+							CLIENTS.getClientsTree(true);
 						}
 					});
 				}
 			}
 		});
+		
+		$('#updateProjectBtn').click(function () {
+			var $tree = $('#clientsTree');
+			if ($tree.tree('getSelectedNode').projectId) {
+				var check = 0, data = {id: $tree.tree('getSelectedNode').projectId};
+				$.each($('#addNewProjectForm input'), function (num, input) {
+					var $input = $(input);
+					data[$input.attr('name')] = $input.val();
+					if (!VALIDATION.validateInputVal(
+						{
+							val: $input.val(),
+							id: '#' + $input.attr('id')
+						}
+					)) {
+						check++;
+					}
+				});
+				if (!check) {
+					$.ajax({
+						url: URL_CLIENTS + 'updateProject',
+						method: 'POST',
+						data: data
+					}).then(function (data)
+					{
+						if (data) {
+							CLIENTS.getClientsTree(true);
+							PRODUCT.getClientsDetails();
+							noty({
+								text: 'Информация обновлена',
+								type: 'success',
+								layout: 'center',
+								/*animation: {
+									open: 'animated flipInX',
+									close: 'animated flipOutX'
+								},*/
+								timeout: 600
+							});
+						}
+					});
+				}
+			}
+		});
+		
+		$('#deleteProjectBtn').click(function () {
+			var selectedNode = $('#clientsTree').tree('getSelectedNode');
+			if (selectedNode && selectedNode.projectId) {
+				noty({
+					text: 'Вы уверены, что хотите удалить Проэкт? При удалении Проэкта, будут удалены все ордера, принадлежащие данному Проэкту.',
+					modal: true,
+					type: 'confirm',
+					layout: 'center',
+					animation: {
+						open: 'animated flipInX',
+						close: 'animated flipOutX'
+					},
+					buttons: [
+						{addClass: 'btn btn-success', text: 'Удалить!', onClick: function($noty) {
+								$.when(CLIENTS.deleteProject(selectedNode.projectId)).then(function (data) {
+									$noty.close();
+								});
+							}
+						},
+						{addClass: 'btn btn-danger', text: 'Передумал', onClick: function($noty) {
+								$noty.close();
+							}
+						}
+					]
+				});
+			}
+		});
+		
+		$('#addNewOrder').click(function () {
+			var $tree = $('#clientsTree');
+			if ($tree.tree('getSelectedNode').projectId) {
+				$.when(ORDER.createNewOrder($tree.tree('getSelectedNode').projectId, false)).done(function () {
+					CLIENTS.getClientsTree(true);
+				});
+			} else {
+				noty({
+					text: 'Выберите Проэкт',
+					type: 'error',
+					layout: 'center',
+					/*animation: {
+						open: 'animated flipInX',
+						close: 'animated flipOutX'
+					},*/
+					timeout: 900
+				});
+			}
+		});
 	}
-
 	function addLeftTabContentHandler(html) {
 		//console.log(html.find('#addFormulaBtnPr' ));
 		html
@@ -2582,7 +2731,7 @@
 				{
 					if(!data.tabs) {
 						$('#rightTabs, #rightTabsContent').fadeIn('slow');
-						MENU.getClientsTree();
+						CLIENTS.getClientsTree();
 						setTimeout(function(){ spinnerRight.stop(document.getElementById('orderSpinner')); }, 200);
 						$('#livemill').prop('muted', false);
 						return true;
@@ -3008,7 +3157,7 @@
 					var tree = $('#productsTree');
 					tree.tree({
 						data: data,
-						autoOpen: false,
+						autoOpen: true,
 						dragAndDrop: false
 					});
 					tree.bind(
@@ -3017,19 +3166,19 @@
 							if (event.node) {
 								var node = event.node;
 								if (node.id) {
-										$.ajax({
-											url: URL_TABS + 'getLeftTabContent/' + node.id,
-											method: 'GET',
-											data: {sector: true}
-										}).then(function (data){
-											MAIN.productId = node.id;
-											$('#completedProduct').html(addLeftTabContentHandler($(data.html)));
-											$('.rowValueInput').removeClass('rowValueInput');
-											$('.cellBind').removeClass('cellBind');
-											$('.glyphicon-retweet').removeClass('glyphicon-retweet');
-											$('.removeFormula, .editFormula').remove();
-											$('#metallHistorySelect option:last-child').prop('selected', true);
-										});
+									$.ajax({
+										url: URL_TABS + 'getLeftTabContent/' + node.id,
+										method: 'GET',
+										data: {sector: true}
+									}).then(function (data){
+										MAIN.productId = node.id;
+										$('#completedProduct').html(addLeftTabContentHandler($(data.html)));
+										$('.rowValueInput').removeClass('rowValueInput');
+										$('.cellBind').removeClass('cellBind');
+										$('.glyphicon-retweet').removeClass('glyphicon-retweet');
+										$('.removeFormula, .editFormula').remove();
+										$('#metallHistorySelect option:last-child').prop('selected', true);
+									});
 								}
 							}
 							else {
@@ -3067,13 +3216,13 @@
 
 		// order section
 		order: {
-			createNewOrder: function (refresh, consolidate) {
-				var refresh = (refresh=== undefined) ? refresh = true : refresh;
-				var consolidate = (consolidate=== undefined) ? consolidate = false : consolidate;
+			createNewOrder: function (project, refresh, consolidate) {
+				var refresh = (refresh === undefined) ? refresh = true : refresh;
+				var consolidate = (consolidate === undefined) ? consolidate = false : consolidate;
 				return $.ajax({
 					url: URL_ORDER + 'createNewOrder',
 					method: 'POST',
-					data: {consolidate: consolidate}
+					data: {project: project, consolidate: consolidate}
 				}).then(function (data)
 				{
 					if (false !== data && refresh) {
@@ -3093,7 +3242,7 @@
 					$('.rowValue input' ).addClass('rowValueInput');
 					alwaysInTable = JSON.stringify(PRODUCT.getTableContent('#alwaysInTable li'));
 					$('.rowValueInput').removeClass('rowValueInput');
-				}
+				}console.log(alwaysInTable);
 				$.ajax({
 					url: URL_ORDER + 'addProductToOrder',
 					method: 'POST',
@@ -3643,7 +3792,7 @@
 			},
 			
 			fillFormOfClientsInfo: function (info) {
-				$('#addNewProjectForm' ).hide();
+				$('#addNewProjectForm, .addNewClientBtnsWrapper' ).hide();
 				if (info) {
 					$.each($('#addNewClientForm input'), function (num, input) {
 						var $input = $(input);
@@ -3652,19 +3801,19 @@
 					$('#h3NewClientInfo').hide();
 					$('#h3ClientInfo').show();
 					$('#addNewClientBtn').hide();
-					$('#updateClientBtn').show();
+					$('.addNewClientBtnsWrapper').show();
 				} else {
 					$('#addNewClientForm input').val('');
 					$('#h3NewClientInfo').show();
 					$('#h3ClientInfo').hide();
 					$('#addNewClientBtn').show();
-					$('#updateClientBtn').hide();
+					$('.addNewClientBtnsWrapper').hide();
 				}
 				$('#addNewClientForm').show();
 			},
 
 			fillFormOfProjectInfo: function (info) {
-				$('#addNewClientForm' ).hide();
+				$('#addNewClientForm, .addNewProjectBtnsWrapper' ).hide();
 				if (info) {
 					$.each($('#addNewProjectForm input'), function (num, input) {
 						var $input = $(input);
@@ -3673,79 +3822,15 @@
 					$('#h3NewProjectInfo').hide();
 					$('#h3ProjectInfo').show();
 					$('#addNewProjectBtn').hide();
-					$('#updateProjectBtn').show();
+					$('.addNewProjectBtnsWrapper').show();
 				} else {
 					$('#addNewProjectForm input').val('');
 					$('#h3NewProjectInfo').show();
 					$('#h3ProjectInfo').hide();
 					$('#addNewProjectBtn').show();
-					$('#updateProjectBtn').hide();
+					$('.addNewProjectBtnsWrapper').hide();
 				}
 				$('#addNewProjectForm').show();
-			},
-			
-			getClientsTree: function (refresh) {
-				$.ajax( {
-					url   : URL_MENU + 'getClientsTree',
-					method: 'GET'
-				} ).then( function ( data )
-				{
-					currentClietsTree = data.tree;
-					var tree = $('#clientsTree');
-					if (refresh) {
-						tree.tree('loadData', data.tree);
-					} else {
-						tree.tree({
-							data: data.tree,
-							autoOpen: true,
-							dragAndDrop: false,
-							saveState: true,
-							saveState: 'clients-Tree',
-							openedIcon: $('<span class="glyphicon glyphicon-minus" aria-hidden="true"></span>'),
-							closedIcon: $('<span class="glyphicon glyphicon-plus" aria-hidden="true"></span>'),
-							onCreateLi: function(node, $li) {
-								if ('order' === node.sector) {
-									$li.find('.jqtree-element').append(
-										'<span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span>'
-									);
-								}
-								if ('project' === node.sector) {
-									$li.find('.jqtree-title' ).html('<span class="glyphicon glyphicon-folder-close" aria-hidden="true">&nbsp;</span>' + $li.find('.jqtree-title' ).text());
-								}
-								if ('client' === node.sector) {
-									$li.find('.jqtree-title' ).closest('li').addClass('clientInTree');
-									$li.find('.jqtree-title' ).html('<span class="glyphicon glyphicon-user" aria-hidden="true">&nbsp;</span>' + $li.find('.jqtree-title' ).text());
-								}
-							}
-						});
-						tree.bind(
-							'tree.click',
-							function(event) {
-								var node = event.node;
-								if ('client' === node.sector) {
-									MENU.fillFormOfClientsInfo(node.info);
-								}
-								if ('project' === node.sector) {
-									MENU.fillFormOfProjectInfo(node.info);
-								}
-								/*if ('order' !== node.sector) {
-									tree.tree('toggle', node);
-								} else {
-
-								}*/
-							}
-						);
-					}
-					var selectedNode = tree.tree('getSelectedNode');
-					switch (selectedNode.sector) {
-						case 'client':
-							MENU.fillFormOfClientsInfo(selectedNode.info);
-							break;
-						case 'project':
-							MENU.fillFormOfProjectInfo(selectedNode.info);
-							break;
-					}
-				});
 			}
 		},
 
@@ -3898,7 +3983,95 @@
                 return val;
             }
         },
-
+		
+		clients: {
+			getClientsTree: function (refresh) {
+				$.ajax({
+					url: URL_CLIENTS + 'getClientsTree',
+					method: 'GET'
+				}).then(function (data)
+				{
+					currentClietsTree = data.tree;
+					var tree = $('#clientsTree');
+					if (refresh) {
+						tree.tree('loadData', data.tree);
+					} else {
+						tree.tree({
+							data: data.tree,
+							autoOpen: true,
+							dragAndDrop: false,
+							saveState: true,
+							saveState: 'clients-Tree',
+							openedIcon: $('<span class="glyphicon glyphicon-minus" aria-hidden="true"></span>'),
+							closedIcon: $('<span class="glyphicon glyphicon-plus" aria-hidden="true"></span>'),
+							onCreateLi: function (node, $li) {
+								if ('order' === node.sector) {
+									$li.find('.jqtree-element').append(
+										'<span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span>'
+									);
+								}
+								if ('project' === node.sector) {
+									$li.find('.jqtree-title').html('<span class="glyphicon glyphicon-folder-close" aria-hidden="true">&nbsp;</span>' + $li.find('.jqtree-title').text());
+								}
+								if ('client' === node.sector) {
+									$li.find('.jqtree-title').closest('li').addClass('clientInTree');
+									$li.find('.jqtree-title').html('<span class="glyphicon glyphicon-user" aria-hidden="true">&nbsp;</span>' + $li.find('.jqtree-title').text());
+								}
+							}
+						});
+						tree.bind(
+							'tree.click',
+							function (event) {
+								var node = event.node;
+								$('#clientsTree').tree('selectNode');
+								CLIENTS.currentClietsTreeSectionAction(node);
+							}
+						);
+					}
+					var selectedNode = tree.tree('getSelectedNode');
+					CLIENTS.currentClietsTreeSectionAction(selectedNode);
+				});
+			},
+			
+			currentClietsTreeSectionAction: function (node) {
+				switch (node.sector) {
+					case 'client':
+						MENU.fillFormOfClientsInfo(node.info);
+						break;
+					case 'project':
+						MENU.fillFormOfProjectInfo(node.info);
+						break;
+					case 'order':
+						TABS.getRightTabContentOrderDetails(node.orderId);
+						TABS.getRightTabContentTable(node.orderId);
+						MAIN.orderId = node.orderId;
+						break;
+				}
+			},
+			
+			deleteClient: function (id) {
+				$.ajax({
+					url: URL_CLIENTS + 'deleteClient',
+					method: 'POST',
+					data: {id: id}
+				}).then(function (data)
+				{
+					CLIENTS.getClientsTree(true);
+				});
+			},
+			
+			deleteProject: function (id) {
+				$.ajax({
+					url: URL_CLIENTS + 'deleteProject',
+					method: 'POST',
+					data: {id: id}
+				}).then(function (data)
+				{
+					CLIENTS.getClientsTree(true);
+				});
+			}
+		},
+		
 		themes: {
 			addTheme: function () {
 				return $.ajax( {
@@ -3988,21 +4161,20 @@
 
 	// the actual object is created here, allowing us to 'new' an object without calling 'new'
 	Dima.init = function() {
-
-		var self = this;
-		self.main = {};
-		SELF  = this;
-		MAIN = this.main,
-		TABS = this.tabs;
-		ORDER = this.order;
-		PRODUCT = this.product;
-        CATEGORIES = this.categories;
-		KIM = this.kim;
-		METALLS = this.metalls;
-		MENU = this.menu;
+		this.main	= {};
+		SELF		= this;
+		MAIN		= this.main,
+		TABS		= this.tabs;
+		ORDER		= this.order;
+		PRODUCT		= this.product;
+        CATEGORIES	= this.categories;
+		KIM			= this.kim;
+		METALLS		= this.metalls;
+		MENU		= this.menu;
 		PREFERENCES = this.preferences;
-        VALIDATION = this.validation;
-		THEMES = this.themes;
+        VALIDATION  = this.validation;
+		THEMES		= this.themes;
+		CLIENTS		= this.clients;
 
 		run();
 
