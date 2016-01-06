@@ -503,7 +503,9 @@ class TabsController extends \Phalcon\Mvc\Controller
             }
             $substObj = new Substitution();
 
-            $rows = (array) json_decode($order->getOrderDescription());
+            $orderObj = new OrderController();
+            $orderDescription = $orderObj->getOrderDescriptionObj();
+            $rows = $orderDescription;
             $status = $order->getStatus();
             'draft' === $status
                 ? $rows['%SAVE_ORDER_IN_DB%'] = '<button type="button" class="btn btn-danger btn-sm" id="saveOrderInDB">Сохранить в БД</button>'
@@ -511,9 +513,6 @@ class TabsController extends \Phalcon\Mvc\Controller
             $rows['%ORDER_NAME%'] = $order->getArticle();
             $discount = $order->getDiscount();
             $rows['%DISCOUNT%'] = $discount;
-            $orderObj = new OrderController();
-            $orderDescription = $orderObj->getOrderDescriptionObj();
-
             $res = $substObj->subHTMLReplace('rightTabContent.html', $rows);
             $this->response->setJsonContent(['success' => true, 'html' => $res, 'orderDescription' => $orderDescription, 'consolidate' => $order->getConsolidate()]);
 

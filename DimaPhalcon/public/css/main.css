@@ -180,6 +180,7 @@ a {
 //left: 60em;
     margin-left: 5px;
     margin-top: 49px;
+    padding-bottom: 49px;
 }
 
 #addNewTab, #addNewTabRight, .moveWithoutOrderUp, .moveWithoutOrderDown, .removeWithoutOrderRow, .removeOrderRow, .moveToCopyTo, .moveOrderUp, .moveOrderDown {
@@ -241,6 +242,7 @@ a {
 #addNewOrder {
     color: #eb9316;
     cursor: pointer;
+    margin-right: 30px;
 }
 
 #addNewOrder span {
@@ -889,9 +891,12 @@ table.rc-table-resizing thead,table.rc-table-resizing thead> th,table.rc-table-r
 }
 
 .emptyGlyphSpan {
-    color: white;
+    color: transparent !important;
 }
-
+.glyphicon-none:before {
+    content: "\FF3F";
+    color: transparent !important;
+}
 .inputOrderDetails {
     width: 75%;
 }

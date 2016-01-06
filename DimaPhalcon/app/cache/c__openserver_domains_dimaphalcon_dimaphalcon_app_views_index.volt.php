@@ -307,7 +307,7 @@
                             <th>Пример</th>
                             <th>Ордера</th>
                         </tr>
-                        <tr class="orderTableSectionName">
+                        <tr class="prefOrderTableSectionName">
                             <th colspan="2">Раздел 1</th>
                         </tr>
                         <tr>
@@ -498,6 +498,8 @@
     <script src="js/jquery/colorpicker/dist/js/bootstrap-colorpicker.min.js"></script>
     <script src="js/jquery/spin.min.js"></script>
     <script src="js/jquery/tree.jquery.js"></script>
+    <script src="js/Dima.js"></script>
+    <script src="js/main.js"></script>
     <?php echo $this->assets->outputJs('jsFooter'); ?>
     <script src="js/libs/jquery.noty.packaged.min.js"></script>
     <script src="js/libs/jquery.notificationcenter.js"></script>

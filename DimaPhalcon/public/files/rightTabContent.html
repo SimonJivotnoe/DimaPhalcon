@@ -3,7 +3,7 @@
     Детали заказа
 </button>
 <span id="saveOrderInDBWrapper">%SAVE_ORDER_IN_DB%</span>
-<span><button type="button" class="btn btn-danger btn-sm" id="createPDF"><span class="glyphicon glyphicon-print" aria-hidden="true"></span>  PDF</button></span>
+<span><button type="button" class="btn btn-danger btn-sm" id="createPDF" data-order-article="%ORDER_NAME%"><span class="glyphicon glyphicon-print" aria-hidden="true"></span>  PDF</button></span>
 
 <div class="collapse" id="orderDetailsCollapse">
     <p>Дисконт: <input id="changeDiscount" class="inputWithoutBorders" type="number" value="%DISCOUNT%"/>%</p>
@@ -14,35 +14,72 @@
         <button class="btn btn-default btn-sm" id="uncheckAllInOrder"><span class="glyphicon glyphicon-unchecked"
                                                                             aria-hidden="true"></span></button>
     </div>
-    <div class="col-md-12 panel panel-info" id="orderDetails">
-        <div class="col-md-12 panel-body">
+    <div class="col-md-12" id="orderDetails">
+        <table class="table table-striped table-bordered" id="orderDetailsTable">
+            <tr>
+                <td><input type="checkbox" name="FIO" data-name="Вниманию(Ф.И.О.):"/></td>
+                <th>Вниманию(Ф.И.О.):</th>
+                <td>%FIO%</td>
+                <td><input type="checkbox" name="APPEAL" data-name="Обращение:"/></td>
+                <th>Обращение:</th>
+                <td>%APPEAL%</td>
+            </tr>
+            <tr>
+                <td><input type="checkbox" name="COMPANY_NAME" data-name="Название компании:"/></td>
+                <th>Название компании:</th>
+                <td>%COMPANY_NAME%</td>
+                <td><input type="checkbox" name="ADDRES" data-name="Почтовый адрес:"/></td>
+                <th>Почтовый адрес:</th>
+                <td>%ADDRES%</td>
+            </tr>
+            <tr>
+                <td><input type="checkbox" name="ACC_NUMBER" data-name="Номер счета:"/></td>
+                <th>Номер счета:</th>
+                <td>%ACC_NUMBER%</td>
+                <td><input type="checkbox" name="CITY" data-name="Город, почтовый индекс:"/></td>
+                <th>Город, почтовый индекс:</th>
+                <td>%CITY%</td>
+            </tr>
+            <tr>
+                <td><input type="checkbox" name="PROJECT_NAME" data-name="Название проэкта:"/></td>
+                <th>Название проэкта:</th>
+                <td>%PROJECT_NAME%</td>
+                <td><input type="checkbox" name="PROJECT_DESCR" data-name="Описание проэкта:"/></td>
+                <th>Описание проэкта:</th>
+                <td>%PROJECT_DESCR%</td>
+            </tr>
+            <tr>
+                <td><input type="checkbox" name="ESTIMATE" data-name="Срок:"/></td>
+                <th>Срок:</th>
+                <td>%ESTIMATE%</td>
+                <td><input type="checkbox" name="DATE" data-name="Дата:"/></td>
+                <th>Дата:</th>
+                <td>%DATE%</td>
+            </tr>
+        </table>
+        <!--<div class="col-md-12 panel-body">
             <div class="col-md-6 orderDetailsItem">
                 <label><input type="checkbox" name="FIO"/>Вниманию(Ф.И.О.):</label>
-                <!--<span contenteditable="true" name="FIO" class="inputOrderDetails">%FIO%</span>-->
                 <input name="FIO" data-orderdetails="FIO" class="inputOrderDetails" value="%FIO%"/>
             </div>
             <div class="col-md-6 orderDetailsItem">
                 <label><input type="checkbox" name="projectName"/>Название проэкта:</label>
-                <!--<span contenteditable="true" name="projectName" class="inputOrderDetails">%PROJECT_NAME%</span>-->
                 <input name="projectName" data-orderdetails="PROJECT_NAME" class="inputOrderDetails" value="%PROJECT_NAME%"/>
             </div>
         </div>
         <div class="col-md-12 panel-heading">
             <div class="col-md-6 orderDetailsItem">
                 <label><input type="checkbox" name="appeal"/>Обращение:</label>
-                <!--<span contenteditable="true" name="appeal" class="inputOrderDetails">%APPEAL%</span>-->
                 <input name="appeal"  data-orderdetails="APPEAL" class="inputOrderDetails" value="%APPEAL%"/>
             </div>
             <div class="col-md-6 orderDetailsItem">
                 <label><input type="checkbox" name="projectDescr"/>Описание проэкта:</label>
-                <!--<span contenteditable="true" name="projectDescr" class="inputOrderDetails">%PROJECT_DESCR%</span>-->
                 <input name="projectDescr"  data-orderdetails="PROJECT_DESCR" class="inputOrderDetails" value="%PROJECT_DESCR%"/>
             </div>
         </div>
         <div class="col-md-12 panel-body">
             <div class="col-md-6 orderDetailsItem">
                 <label><input type="checkbox" name="companyName"/>Название компании:</label>
-                <!--<span contenteditable="true" name="companyName" class="inputOrderDetails">%COMPANY_NAME%</span>-->
                 <input name="companyName"  data-orderdetails="COMPANY_NAME" class="inputOrderDetails" value="%COMPANY_NAME%"/>
             </div>
             <div class="col-md-6 orderDetailsItem">
@@ -53,19 +90,16 @@
         <div class="col-md-12 panel-heading">
             <div class="col-md-6 orderDetailsItem">
                 <label><input type="checkbox" name="adress"/>Почтовый адрес:</label>
-                <!--<span contenteditable="true" name="adress" class="inputOrderDetails">%ADDRES%</span>-->
                 <input name="adress"  data-orderdetails="ADDRES" class="inputOrderDetails" value="%ADDRES%"/>
             </div>
             <div class="col-md-6 orderDetailsItem">
                 <label><input type="checkbox" name="accNumber"/>Номер счета:</label>
-                <!--<span contenteditable="true" name="accNumber" class="inputOrderDetails">%ACC_NUMBER%</span>-->
                 <input name="accNumber"  data-orderdetails="ACC_NUMBER" class="inputOrderDetails" value="%ACC_NUMBER%"/>
             </div>
         </div>
         <div class="col-md-12 panel-body">
             <div class="col-md-6 orderDetailsItem">
                 <label><input type="checkbox" name="city"/>Город, почтовый индекс:</label>
-                <!--<span contenteditable="true" name="city" class="inputOrderDetails">%CITY%</span>-->
                 <input name="city"  data-orderdetails="CITY" class="inputOrderDetails" value="%CITY%"/>
             </div>
             <div class="col-md-6 orderDetailsItem">
@@ -77,14 +111,13 @@
         <div class="col-md-12 panel-heading">
             <div class="col-md-6 orderDetailsItem">
                 <label><input type="checkbox" name="date"/>Дата:</label>
-                <!--<span contenteditable="true" class="inputOrderDetails"></span>-->
                 <input type="date" name="date" value="%DATE%" id="orderDateInput"
                        class="inputOrderDetails skipLineHeight">
             </div>
             <div class="col-md-6">
 
             </div>
-        </div>
+        </div>-->
     </div>
 </div>
 <div class="col-md-12" id="consOrderButtonsWrapper">

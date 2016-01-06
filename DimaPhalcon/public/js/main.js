@@ -2,21 +2,22 @@
 $( document ).ready( function ()
 {
 	var d = D$(),
-		MAIN = d.main,
-		TABS = d.tabs,
-		ORDER = d.order,
-		PRODUCT = d.product,
-		CATEGORIES = d.categories,
-		KIM = d.kim,
-		METALLS = d.metalls,
-		MENU = d.menu,
-		PREFERENCES = d.preferences,
-		VALID = d.validation,
-		THEMES = d.themes,
-		LOCATION = 'http://DimaPhalcon/DimaPhalcon/',
+		MAIN			  = d.main,
+		TABS			  = d.tabs,
+		ORDER			  = d.order,
+		PRODUCT			  = d.product,
+		CATEGORIES		  = d.categories,
+		KIM				  = d.kim,
+		METALLS			  = d.metalls,
+		MENU			  = d.menu,
+		PREFERENCES       = d.preferences,
+		VALID			  = d.validation,
+		CLIENTS			  = d.clients,
+		THEMES			  = d.themes,
+		LOCATION		  = 'http://DimaPhalcon/DimaPhalcon/',
 		defaultScreenSize = '60em',
-		maxScreenSize = (window.screen.availWidth - 5) + 'px',
-		minscreenSize = '5px';
+		maxScreenSize	  = (window.screen.availWidth - 5) + 'px',
+		minscreenSize	  = '5px';
 
 	PREFERENCES.applyCss();
 	$('#livemill').prop('muted', true);
@@ -193,6 +194,8 @@ $( document ).ready( function ()
 				order.push($(obj).attr('data-id'));
 			}
 		});
+		console.log(product);
+		console.log(order);
 		$.when(TABS.openSavedProduct(product, 'new', false, false), ORDER.openSavedOrder(order, 'new', false, false)).done(function(){
 			window.location.href = LOCATION;
 		});
@@ -204,7 +207,7 @@ $( document ).ready( function ()
 		$.each($('.consolidateOrderSelected'), function (num, obj) {
 			orderId.push($(obj).attr('data-id'));
 		});
-		$.when( ORDER.createNewOrder(false, true) ).then(function(data){
+		$.when( ORDER.createNewOrder($('#FMconsolidatedOrdersBtn').attr('projectId'), false, true) ).then(function(data){
 			console.log(data);
 			if (false !== data) {
 				ORDER.addToConsolidateOrder(data, orderId);
@@ -234,7 +237,7 @@ $( document ).ready( function ()
 	// KIM TAB
 	$('#fileManagerOrdersTab').on('click', function(){
 		if (false === $('#fileManagerOrdersTab').hasClass('active')) {
-			MENU.getClientsTree();
+			CLIENTS.getClientsTree();
 			TABS.setActiveDefaultTab('tabsRightList', 'fileManagerOrdersTab', 'curTabRightId');
 			TABS.changeActiveTab('', '', 'changeActiveRightTab');
 		}

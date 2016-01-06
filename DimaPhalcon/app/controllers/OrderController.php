@@ -18,9 +18,12 @@ class OrderController  extends \Phalcon\Mvc\Controller
                   ->setDiscount(new RawValue('default'))
                   ->setProject($project)
                   ->setMap(new RawValue('default'))
-                  ->setStatus('save')
                   ->setConsolidate($consolidate);
-
+            if ($consolidate) {
+                $order->setStatus('draft');
+            } else {
+                $order->setStatus('save');
+            }
             $this->response->setContentType('application/json', 'UTF-8');
 
             if ($order->save() == false) {
@@ -28,10 +31,14 @@ class OrderController  extends \Phalcon\Mvc\Controller
                 return $this->response;
             }
             $order_id = $order->getId();
-
-            /*$tab = new TabsController;
-            $this->response->setJsonContent($tab->addNewRightTab($order_id));*/
-            $this->response->setJsonContent(true);
+            
+            if ($consolidate) {
+                $tab = new TabsController;
+                $this->response->setJsonContent($tab->addNewRightTab($order_id));
+            } else {
+                $this->response->setJsonContent(true);
+            }
+            
             return $this->response;
         } else {
             $this->response->redirect('');
@@ -237,25 +244,25 @@ class OrderController  extends \Phalcon\Mvc\Controller
         return date('y') . '-' . $zero . strval($number) . '-' . date('d') . date('m') . date('o');
     }
 
-    public function getOrderDescriptionObj(){
-        $orders = Orders::find(array("status = 'save'"));
-        if ($orders == false) {
+    public function getOrderDescriptionObj($id){
+        $order = Orders::findFirst($id);
+        if ($order == false) {
             return false;
         }
         $orderDescription = [
-            '%ACC_NUMBER%'    => [],
-            '%ADDRES%'        => [],
-            '%APPEAL%'        => [],
-            '%CITY%'          => [],
-            '%COMPANY_NAME%'  => [],
-            '%DATE%'          => [],
-            '%ESTIMATE%'      => [],
-            '%FIO%'           => [],
-            '%PROJECT_DESCR%' => [],
-            '%PROJECT_NAME%'  => [],
-            '%ORDER_NAME%'    => []
+            '%FIO%'           => $order->Projects->Clients->getFio(),
+            '%APPEAL%'        => $order->Projects->Clients->getAppeal(),
+            '%COMPANY_NAME%'  => $order->Projects->Clients->getCompanyName(),
+            '%ADDRES%'        => $order->Projects->Clients->getAdress(),
+            '%ACC_NUMBER%'    => $order->Projects->Clients->getAccaunt(),
+            '%CITY%'          => $order->Projects->Clients->getZip(),
+            '%PROJECT_NAME%'  => $order->Projects->getName(),
+            '%PROJECT_DESCR%' => $order->Projects->getDescription(),
+            '%ESTIMATE%'      => $order->Projects->getEstimate(),
+            '%DATE%'          => $order->Projects->getDate(),
+            '%ORDER_NAME%'    => $order->getArticle()
         ];
-        foreach ($orders as $val) {
+        /*foreach ($orders as $val) {
             foreach (json_decode($val->getOrderDescription()) as $key => $text) {
                 if (trim($text)) {
                     if(!in_array($text, $orderDescription[$key], true)){
@@ -264,7 +271,7 @@ class OrderController  extends \Phalcon\Mvc\Controller
                 }
             }
             array_push($orderDescription['%ORDER_NAME%'], $val->getArticle());
-        }
+        }*/
         return $orderDescription;
     }
 }

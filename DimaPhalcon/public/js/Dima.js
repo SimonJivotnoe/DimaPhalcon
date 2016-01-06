@@ -16,6 +16,7 @@
 		PRODUCT:  'products/',
 		MENU:	  'menu/',
 		CLIENTS:  'clients/',
+		PROJECTS:  'projects/',
 		THEMES:	  'themes/',
 		LOCATION: 'http://DimaPhalcon/DimaPhalcon/'
 	};
@@ -35,6 +36,8 @@
 	var URL_MENU = URL.BASE + URL.MENU;
 
 	var URL_CLIENTS = URL.BASE + URL.CLIENTS;
+	
+	var URL_PROJECTS = URL.BASE + URL.PROJECTS;
 	
 	var URL_THEMES = URL.BASE + URL.THEMES;
 
@@ -79,15 +82,19 @@
 	// alias to self.clients
 	var CLIENTS;
 	
+	// alias to self.projects
+	var PROJECTS;
+	
 	// error messages obj
 	var ERR = {
 		ARTICLE: {
 			emptyTable: ' Заполните поля таблицы продукта! ',
-			checked: ' Нужно отметить от 2-х до 4-х значений в таблице! ',
-			already: 'Такой артикул уже существует!',
-			emptyName: ' Задайте имя продукта! '
+			checked:	' Нужно отметить от 2-х до 4-х значений в таблице! ',
+			already:	'Такой артикул уже существует!',
+			emptyName:	' Задайте имя продукта! '
 		}
 	};
+	
 	var preferencesSettings = [
 		// GLOBAL
 		{
@@ -341,55 +348,59 @@
 		targetObj[targetKey] = temp;
 	};
 	
-	
 	// TABS
 
 	// PRODUCTS
-
-	function createProductFromTemplate (obj, action) {
-		var obj = (obj === undefined) ? obj = {prId: MAIN.productId, tab: 'new'} : obj;
-		var action = (action === undefined) ? action = true : action;
-		if ('currentTab' === $('#selectCreateproductWay').val()) {
-			obj.tab = MAIN.curTabId;
-		}
-		$.ajax( {
-			url   : URL_PRODUCT + 'createProductFromTemplate',
-			method: 'POST',
-			data: obj
-		} ).then( function ( data )
-		{
-			console.log(data);
-			if (true === data && action) {
-				window.location.href = LOCATION;
+	var _products = {
+		tempTable: {
+			"%ROW_NUMBER%":   "",
+			"%ROW_NAME%":	  "",
+			"%DATA_CELL%":	  "",
+			"%DATA_FORMULA%": "",
+			"%INPUT_VALUE%":  ""
+		},
+		
+		createProductFromTemplate: function () {
+			var obj = {prId: MAIN.productId, tab: 'new'};
+			if ('currentTab' === $('#selectCreateproductWay').val()) {
+				obj.tab = MAIN.curTabId;
 			}
-		});
-	}
-	/*
-	 * 
-	 * @returns {undefined}
-	 */
-	function cancelArticleBtn () {
-		$('#createArticle').show();
-		$('#cancelArticleBtn, #errorArticle' ).hide();
-		$.each($('.checkToArticle'), function(key, val){
-			if($(val).prop('checked')) {
-				$(this).click();
-			};
-		});
-		$('.checkToArticle, #saveArticle').hide();
-		$('#productArticle' ).html('');
-	}
-
-	function recalculateArticleTable () {
-		var selected = $('#metallHistorySelect option:selected');
-		$('[data-cell="PR1"]' ).val(selected.attr('data-price'));
-		$('[data-cell="PR2"]' ).val(selected.attr('data-outprice'));
-		$('#calx' ).calx();
-		$.each($('.rowValue input'), function(num, obj){
-			var cell = $(obj).attr('data-cell');
-			$('[data-cellarticle="' + cell + '"]').text($(obj).val());
-		});
-	}
+			$.ajax( {
+				url   : URL_PRODUCT + 'createProductFromTemplate',
+				method: 'POST',
+				data: obj
+			} ).then( function ( data )
+			{
+				console.log(data);
+				if (true === data) {
+					window.location.href = LOCATION;
+				}
+			});
+		},
+		
+		cancelArticleBtn: function () {
+			$('#createArticle').show();
+			$('#cancelArticleBtn, #errorArticle' ).hide();
+			$.each($('.checkToArticle'), function(key, val){
+				if($(val).prop('checked')) {
+					$(this).click();
+				};
+			});
+			$('.checkToArticle, #saveArticle').hide();
+			$('#productArticle' ).html('');
+		},
+		
+		recalculateArticleTable: function () {
+			var selected = $('#metallHistorySelect option:selected');
+			$('[data-cell="PR1"]' ).val(selected.attr('data-price'));
+			$('[data-cell="PR2"]' ).val(selected.attr('data-outprice'));
+			$('#calx' ).calx();
+			$.each($('.rowValue input'), function(num, obj){
+				var cell = $(obj).attr('data-cell');
+				$('[data-cellarticle="' + cell + '"]').text($(obj).val());
+			});
+		}
+	};
 
 	var orderPlaceholder = {
 		"%FIO%": "",
@@ -403,18 +414,10 @@
 		"%ESTIMATE%": "",
 		"%DATE%": ""
 	};
-
-	var tempTable = {
-		"%ROW_NUMBER%": "",
-		"%ROW_NAME%": "",
-		"%DATA_CELL%": "",
-		"%DATA_FORMULA%": "",
-		"%INPUT_VALUE%": ""
-	};
 	
 	var notIncludeInCell = ['KIM1', 'PR1', 'SUM1', 'PR2', 'SUM2'];
 	// ORDERS
-	
+	var _orderDetails = {};
 	var consolidateObj = {
 		sections: {},
 		withoutSection: {},
@@ -434,7 +437,12 @@
 		} ).then( function ( data )
 		{
 			if (data && refresh) {
-				TABS.getRightTabContentTable(MAIN.orderId);
+				
+				var elem = '#orderTableWrapper';
+				if ($('#fileManagerOrdersTab').hasClass('active')) {
+					elem = '#orderTableWrapperFromTree';
+				}
+				TABS.getRightTabContentTable(MAIN.orderId, elem);
 			}
 		} );
 	}
@@ -682,28 +690,26 @@
 	function buildOrderDetailsPDF () {
 		var i = -1;
 		var tempObj = {widths: [ '50%', '50%' ],table: {body: []}, layout: 'noBorders', fontSize: 11};
-		var body = tempObj.table.body; 
+		var tbody = tempObj.table.body; 
 		var tempDetArr = [];
-		$.each($('.orderDetailsItem'), function(num, obj) {
-			var itemText = $(obj).find('label').text();
-			var itemName = $(obj).find('label input').attr('name');
-			var check = $(obj).find('label input').prop('checked');
-			var itemDetails = $(obj).find('.inputOrderDetails').val();
-			if (check) {
-				if ('orderNumber' === itemName) {
-					tempDetArr.push(itemText + $('[aria-controls=' + MAIN.curTabRightId + ']').find('.tabNameRight').text());
-				} else {
-					tempDetArr.push(itemText + itemDetails);
+		if ($('#orderDetailsTable input').length) {
+			$.each($('#orderDetailsTable input:checked'), function(num, input) {
+				var $input = $(input);
+				if ($input.prop('checked')) {
+					tempDetArr.push($input.attr('data-name') + _orderDetails['%' + $input.attr('name') + '%']);
+					i++;
+					if ((0 < i && 1 === (i % 2)) || num === $('#orderDetailsTable input:checked').length - 1) {
+						tbody.push(tempDetArr);
+						tempDetArr = [];
+					}
 				}
-				i++;
-			}
-			if ((0 < i && 1 === (i % 2)) || num === $('.orderDetailsItem').length - 1) {
-				body.push(tempDetArr);
-				tempDetArr = [];
-			}
-		});
-		if (1 === body[body.length - 1].length) {
-			body[body.length - 1].push('');
+			});
+		}
+		if (0 === tbody.length) {
+			tbody.push(['','']);
+		}
+		if (1 === tbody[tbody.length - 1].length) {
+			tbody[tbody.length - 1].push('');
 		}
 		return tempObj;
 	}
@@ -713,7 +719,7 @@
 	 * @returns {undefined}
 	 */
 	function saveOrderToPDF () {
-		var orderName = $('[aria-controls=' + MAIN.curTabRightId + ']').find('.tabNameRight').text();
+		var orderName = $('#createPDF').attr('data-order-article');
 		var pdfName = orderName + '.pdf';
 		if (!pdfName) {
 			pdfName = 'Ордер.pdf';
@@ -920,7 +926,7 @@
 			if (obj.hasOwnProperty('order')) {
 				orderId = $(scope ).attr('data-order');
 				TABS.getRightTabContentOrderDetails(orderId, selectedTabId);
-				TABS.getRightTabContentTable(orderId);
+				TABS.getRightTabContentTable(orderId, '#orderTableWrapper');
 			} else {
 				TABS[obj.getTabContent](prodId, selectedTabId);
 			}
@@ -1066,6 +1072,21 @@
 	function addHandlerIndexHtml() {
 
 		// clients Tree
+		$('#hideShowClietsTree').click(function() {
+			if ($('.totalClientsTreeWrapper').hasClass('hiddenTree')) {
+				$('.totalClientsTreeWrapper').removeClass('hiddenTree');
+				$('.totalClientsTreeWrapper').show('highlight');
+				$('#hideShowClietsTree')
+						.find('.hideClientsTree').show().end()
+						.find('.showClientsTree').hide();
+			} else {
+				$('.totalClientsTreeWrapper').addClass('hiddenTree');
+				$('.totalClientsTreeWrapper').hide('highlight');
+				$('#hideShowClietsTree')
+						.find('.hideClientsTree').hide().end()
+						.find('.showClientsTree').show();
+			}
+		});
 		
 		$('#findInClietsTree').keyup(function() {
 			var tree = JSON.parse($('#clientsTree').tree('toJson')),
@@ -1085,7 +1106,7 @@
 				check = checkInputsInClientsDetails('#addNewClientForm input');
 			}
 			if (0 === check) {
-				MENU.fillFormOfClientsInfo();
+				CLIENTS.fillFormOfClientsInfo();
 			}
 		});
 		
@@ -1104,17 +1125,7 @@
 				}
 			});
 			if (!check) {
-				$.ajax({
-					url: URL_MENU + 'addNewClient',
-					method: 'POST',
-					data: data
-				}).then(function (data)
-				{
-					if (data) {
-						$('#addNewClientForm input').val('');
-						CLIENTS.getClientsTree(true);
-					}
-				});
+				CLIENTS.addNewClient(data);
 			}
 		});
 		
@@ -1135,27 +1146,7 @@
 					}
 				});
 				if (!check) {
-					$.ajax({
-						url: URL_CLIENTS + 'updateClient',
-						method: 'POST',
-						data: data
-					}).then(function (data)
-					{
-						if (data) {
-							CLIENTS.getClientsTree(true);
-							PRODUCT.getClientsDetails();
-							noty({
-								text: 'Информация обновлена',
-								type: 'success',
-								layout: 'center',
-								/*animation: {
-									open: 'animated flipInX',
-									close: 'animated flipOutX'
-								},*/
-								timeout: 600
-							});
-						}
-					});
+					CLIENTS.updateClient(data);
 				}
 			}
 		});
@@ -1195,7 +1186,7 @@
 				check = checkInputsInClientsDetails('#addNewProjectForm input');
 			}
 			if (0 === check && selectedNode) {
-				MENU.fillFormOfProjectInfo();
+				PROJECTS.fillFormOfProjectInfo();
 			} else {
 				noty({
 					text: 'Выберите Клиента',
@@ -1227,17 +1218,7 @@
 					}
 				});
 				if (!check) {
-					$.ajax({
-						url: URL_MENU + 'addNewProject',
-						method: 'POST',
-						data: data
-					}).then(function (data)
-					{
-						if (data) {
-							$('#addNewProjectForm input').val('');
-							CLIENTS.getClientsTree(true);
-						}
-					});
+					PROJECTS.addNewProject(data);
 				}
 			}
 		});
@@ -1259,27 +1240,7 @@
 					}
 				});
 				if (!check) {
-					$.ajax({
-						url: URL_CLIENTS + 'updateProject',
-						method: 'POST',
-						data: data
-					}).then(function (data)
-					{
-						if (data) {
-							CLIENTS.getClientsTree(true);
-							PRODUCT.getClientsDetails();
-							noty({
-								text: 'Информация обновлена',
-								type: 'success',
-								layout: 'center',
-								/*animation: {
-									open: 'animated flipInX',
-									close: 'animated flipOutX'
-								},*/
-								timeout: 600
-							});
-						}
-					});
+					PROJECTS.updateProject(data);
 				}
 			}
 		});
@@ -1331,7 +1292,29 @@
 				});
 			}
 		});
+		
+		$('#clientsTree').on('click', '.openProductTab', (function(e) {
+			e.stopPropagation();
+			if ('' === $(this ).attr('data-selected')) {
+				$(this ).addClass('openProductTabSelected').attr('data-selected', 'selected' );
+			} else if('selected' === $(this ).attr('data-selected')){
+				$(this).removeClass('openProductTabSelected').attr('data-selected', '' );
+			}
+			enableDisableButton($('.openProductTabSelected'), $('#showItemFromFileManager'));
+		}));
+		
+		$('#clientsTree').on('click', '.consolidateOrder', (function(e) {
+			e.stopPropagation();
+			if ('' === $(this).attr('data-selected')) {
+				$(this).addClass('consolidateOrderSelected').attr('data-selected', 'selected');
+			} else if ('selected' === $(this).attr('data-selected')) {
+				$(this).removeClass('consolidateOrderSelected').attr('data-selected', '');
+			}
+			enableDisableButton($('.consolidateOrderSelected'), $('#FMconsolidatedOrdersBtn'));
+			$('#FMconsolidatedOrdersBtn').attr('projectId', $('#clientsTree').tree('getSelectedNode').projectId);
+		}));
 	}
+	
 	function addLeftTabContentHandler(html) {
 		//console.log(html.find('#addFormulaBtnPr' ));
 		html
@@ -1408,7 +1391,7 @@
 
 			// edit Categories list of Product
 			.on('click', '#editCategoriesListContent', function(){
-				cancelArticleBtn();
+				_products.cancelArticleBtn();
 				$(this ).attr({
 					class: 'glyphicon glyphicon-floppy-disk',
 					id: 'saveCategoriesListContent'
@@ -1488,9 +1471,9 @@
 				}
 			}).end()
 
-			.find('#cancelArticleBtn').click(cancelArticleBtn).end()
+			.find('#cancelArticleBtn').click(_products.cancelArticleBtn).end()
 			
-			.find('#metallHistorySelect').change(recalculateArticleTable).end()
+			.find('#metallHistorySelect').change(_products.recalculateArticleTable).end()
 	
 			.on('change', '.checkToArticle', function(){
 				var val = $(this ).closest('li' ).find('.rowValueInput' ).val(),
@@ -1516,7 +1499,7 @@
 			
 			// edit & save TableContent
 			.on('click', '#editTableContent', function(){
-				cancelArticleBtn();
+				_products.cancelArticleBtn();
 				$(this ).attr(
 					{
 						class: 'glyphicon glyphicon-floppy-disk',
@@ -1551,7 +1534,21 @@
 			}).end()
 
 			.find('#addToOrderBtn').click(function () {
-				if (!MAIN.orderId) {
+				if (MAIN.orderId) {
+					ORDER.addToOrder();
+				} else {
+					noty({
+					text: 'Выберите Ордер',
+					type: 'error',
+					layout: 'center',
+					/*animation: {
+						open: 'animated flipInX',
+						close: 'animated flipOutX'
+					},*/
+					timeout: 900
+				});
+				}
+				/*if (!MAIN.orderId) {
 					localStorage.addToOrder = MAIN.productId;
 					$('.rowValue input' ).addClass('rowValueInput');
 					localStorage.alwaysInTable = JSON.stringify(PRODUCT.getTableContent('#alwaysInTable li'));;
@@ -1559,12 +1556,10 @@
 					ORDER.createNewOrder();
 					return true;
 				}
-				ORDER.addToOrder();
+				ORDER.addToOrder();*/
 			}).end()
 			
-			.find('#createProductFromTemplate').click(function () {
-				createProductFromTemplate();
-			}).end()
+			.find('#createProductFromTemplate').click(_products.createProductFromTemplate).end()
 
 			// change left tab name
 			.find('.nameOfProduct').on('change, keyup', function(){
@@ -1599,10 +1594,10 @@
 					arr = [],
 					max = 0,
 					i;
-				cancelArticleBtn();
+				_products.cancelArticleBtn();
 				if (0 === $('#sortable li').size()) {
 					for (i = 0; i < numbersOfRows; i++) {
-						temp = _.clone(tempTable);
+						temp = _.clone(_products.tempTable);
 						temp['%ROW_NUMBER%'] = 'A' + (i + 1);
 						temp['%DATA_CELL%'] = 'A' + (i + 1);
 						tableContent[i] = temp;
@@ -1621,7 +1616,7 @@
 
 					tableContent = PRODUCT.getTableContent('#sortable li');
 					for (var i = 0; i < numbersOfRows; i++) {
-						temp = _.clone(tempTable);
+						temp = _.clone(_products.tempTable);
 						temp['%ROW_NUMBER%'] = 'A' + (max + 1);
 						temp['%DATA_CELL%'] = 'A' + (max + 1);
 						tableContent[max] = temp;
@@ -1948,13 +1943,13 @@
 			.find('[role=tab]').click(function(){
 				if ($(this ).attr('aria-controls') !== MAIN.curTabRightId) {
 					changeActiveTab({
-						scope: this,
-						order: true,
-						curTabId: 'curTabRightId',
-						tabsList: 'tabsRightList',
-						getTabContent: 'getRightTabContent',
+						scope:			 this,
+						order:			 true,
+						curTabId:		 'curTabRightId',
+						tabsList:		 'tabsRightList',
+						getTabContent:   'getRightTabContent',
 						changeActiveTab: 'changeActiveTab',
-						action: 'changeActiveRightTab'
+						action:			 'changeActiveRightTab'
 					});
 				}
 			} ).end()
@@ -2406,7 +2401,6 @@
 		return html;
 	}
 	
-	
 	function addMenuProductHandler(html) {
 
 		html
@@ -2525,7 +2519,7 @@
 						$('.glyphicon-retweet').removeClass('glyphicon-retweet');
 						$('.removeFormula, .editFormula').remove();
 						$('#metallHistorySelect option:last-child' ).prop('selected', true);
-						recalculateArticleTable();
+						_products.recalculateArticleTable();
 					}
 					$.each($('.bindFormulaWithCell'), function(num, obj){
 						var li = $(obj).closest('li');
@@ -2663,7 +2657,9 @@
 				{
 					if ('fileManagerOrdersTab' !== nextActiveTab) {
 						 TABS.getRightTabContentOrderDetails(productId, 'or' + nextActiveTab);
-						 TABS.getRightTabContentTable(productId);
+						 TABS.getRightTabContentTable(productId, '#orderTableWrapper');
+					} else {
+						CLIENTS.getClientsTree(true);
 					}
 				});
 			},
@@ -2737,18 +2733,17 @@
 						return true;
 					}
 
-					$(addRightTabsHandler($(data.html))).insertBefore( '#addNewTabRight' );
+					$(addRightTabsHandler($(data.html))).insertAfter( '#fileManagerOrdersTab' );
 					MAIN.tabsRightList = data.obj;
 					if('fileManagerOrdersTab' !== data.tabId) {
 						TABS.getRightTabContentOrderDetails(data.orderId, data.tabId);
-						TABS.getRightTabContentTable(data.orderId);
+						TABS.getRightTabContentTable(data.orderId, '#orderTableWrapper');
 						MAIN.orRequested = true;
 						return true;
 					}
-					//TABS.showKim();
 					MAIN.tabsRightList.fileManagerOrdersTab.active = '1';
 					MAIN.curTabRightId = 'fileManagerOrdersTab';
-					console.log(MAIN);
+					CLIENTS.getClientsTree();
 					$('#rightTabs, #rightTabsContent').fadeIn('slow');
 					$('#livemill').prop('muted', false);
 					setTimeout(function(){ spinnerRight.stop(document.getElementById('orderSpinner')); }, 200);
@@ -2758,7 +2753,8 @@
 				});
 			},
 
-			getRightTabContentOrderDetails: function (orderId, tabId) {
+			getRightTabContentOrderDetails: function (orderId, tabId, elem) {
+				var elem = (elem === undefined) ? elem = '#orderDetailsWrapper' : elem;
 				$.ajax( {
 					url   : URL_TABS + 'getRightTabContentOrderDetails/',
 					method: 'GET',
@@ -2766,12 +2762,13 @@
 				} ).then( function ( data )
 				{
 					if (true === data.success) {
+						$('#orderDetailsWrapperFromTree, #orderTableWrapperFromTree').html('');
 						$('#fileManagerOrdersWrapper, #fileManagerOrdersTab').removeClass('active');
 						$('#livemill').prop('muted', true);
 						$('.currentTabRight' )
 							.attr('id', tabId)
 							.addClass('active');
-						$('#orderDetailsWrapper').html(addRightTabContentOrderHandler($(data.html)));
+						$(elem).html(addRightTabContentOrderHandler($(data.html)));
 
 						MAIN.curTabRightId = tabId;
 						MAIN.curTabRightName = 'a[href="#' + MAIN.curTabRightId + '"] .tabName';
@@ -2781,31 +2778,17 @@
 						} else {
 							store.remove('consOrder');
 						}
-						$(function () {
-							$('[data-toggle="tooltip"]').tooltip();
-							$.each(data.orderDescription, function(name, arr) {
-								$('[data-orderdetails="' + name.replace(/%/g, '') + '"]').autocomplete({
-									source: arr,
-									select: function (event, ui) {
-										$('[data-orderdetails="' + name.replace(/%/g, '') + '"]').attr('value', ui.item.value ).val(ui.item.value);
-										var obj = ORDER.createJSONFromOrderDescription();
-										ORDER.changeOrderDetails(
-											{
-												orderId: MAIN.orderId,
-												orderDescr: obj
-											}
-										);
-									}
-								});
-							});
-						});
+						_orderDetails = {};
+						if (_.isObject(data.orderDescription)) {
+							_orderDetails = data.orderDescription;
+						}
 						return this;
 					}
 					log(data.error);
 				});
 			},
 
-			getRightTabContentTable: function (orderId) {
+			getRightTabContentTable: function (orderId, elem) {
 				$.ajax( {
 					url   : URL_TABS + 'getRightTabContentTable/',
 					method: 'GET',
@@ -2813,13 +2796,13 @@
 				} ).then( function ( data )
 				{
 					if (data.success) {
-						$('#orderTableWrapper').html(addRightTabContentTableHandler($(data.html)));
+						$(elem).html(addRightTabContentTableHandler($(data.html)));
 						if (data.consolidateData) {
 							$('#saveOrderInDBWrapper').hide();
 							$('#consOrderButtonsWrapper').show();
 							buildConsolidateOrder(data.consolidateData);
 						}
-						setOrderSum();
+						setTimeout(setOrderSum, 1);
 						showBody();
 						$('#rightTabs, #rightTabsContent').fadeIn('slow');
 						setTimeout(function(){ spinnerRight.stop(document.getElementById('orderSpinner')); }, 200);
@@ -2939,7 +2922,7 @@
 					i = 0,
 					temp;
 				$.each($(dom), function(key, val) {
-					temp = _.clone(tempTable);
+					temp = _.clone(_products.tempTable);
 					if ('' !== $('.rowNumber', val ).text()) {
 						temp['%ROW_NUMBER%'] = $('.rowNumber', val ).text();
 						temp['%ROW_NAME%'] = $('.rowNameInput', val ).val();
@@ -3189,11 +3172,660 @@
 						}
 					);
 				});
+			}
+		},
+		
+        // categories section
+        categories: {
+            addCategory: function(categoryName, article) {
+                $.ajax( {
+                    url   :  URL_CATEG +'add',
+                    method: 'POST',
+                    data: {
+                        categoryName: categoryName,
+                        article: article
+                    }
+                } ).then( function ( data )
+                {
+                    if (true === data) {
+                        $('#addCategoryInput, #addCategoryArticleInput').val('');
+                        CATEGORIES.getCategoriesTable();
+                        CATEGORIES.getCategoriesList();
+                    }
+                } );
+            },
+
+            getCategoriesTable: function() {
+                 return $.ajax( {
+                    url   : URL_CATEG + 'getCategoriesTable',
+                    method: 'GET'
+                } ).then( function ( data )
+                {
+                    MAIN.categoriesTableContent = data.categoriesTableContent;
+                    $('#categoriesListTable tbody' ).html(addCategoriesTableHandler($(data.html)));
+                } );
+            },
+
+            getCategoriesList: function () {
+                return $.ajax({
+                    url: URL_CATEG + 'getCategoriesList',
+                    method: 'GET',
+                    data: {
+                        prId: MAIN.productId
+                    }
+                }).then(function (data) {console.log(data);
+                    $('.listOfCategories').html(data.html);
+                });
+            },
+
+            editCategory: function (id, name, save) {
+                _products.cancelArticleBtn();
+                $.ajax( {
+                    url   : URL_CATEG + 'editCategory',
+                    method: 'POST',
+                    data: {
+                        id: id,
+                        name: name
+                    }
+                } ).then( function ( data )
+                {
+                    if (true === data) {
+                        CATEGORIES.getCategoriesTable();
+                        CATEGORIES.getCategoriesList();
+                    } else {
+                        $(save )
+                            .parents('tr')
+                            .find('.categoryName')
+                            .css({
+                                'border': '3px solid hsl(0, 69%, 22%)',
+                                'border-radius': '2px'
+                            });
+                    }
+                });
+            },
+            removeCategory: function (id) {
+                _products.cancelArticleBtn();
+                $.ajax({
+                    url   : URL_CATEG + 'removeCategory',
+                    method: 'POST',
+                    data: {
+                        id: id
+                    }
+                }).then(function (data)
+                {
+                    if (true === data) {
+                        CATEGORIES.getCategoriesTable();
+                        CATEGORIES.getCategoriesList();
+                    }
+                });
+            }
+        },
+
+		// kim section
+		kim: {
+			getKIMTable: function () {
+				return $.ajax({
+					url: URL_KIM + 'getKIMTable',
+					method: 'GET'
+				}).then(function (data)
+				{
+					MAIN.fileManagerOrdersWrapperleContent = data.fileManagerOrdersWrapperleContent;
+					$('#tbodyKIM').html(addKimTableHandler($(data.html)));
+				});
+			},
+
+			getKimList: function () {
+				$.ajax({
+					url: URL_KIM + 'getKimList',
+					method: 'GET',
+					data: {
+						prId: MAIN.productId
+					}
+				}).then(function (data) {
+					$('.listOfKim').html(data.html);
+					var kim = $('.listOfKim option:selected').attr('kim');
+					$('[data-cell="KIM1"]').val(kim);
+					$('#calx').calx();
+				});
+			},
+
+			addKIMtoTable: function (kim, kimHard) {
+                _products.cancelArticleBtn();
+				$.ajax({
+					url: URL_KIM + 'addKIMtoTable',
+					method: 'POST',
+					data: {
+						kim: kim,
+						kimHard: kimHard
+					}
+				}).then(function (data)
+				{
+					if (true === data) {
+						$('#kimInput, #kimHardInput, #kimArticle').val('');
+						KIM.getKIMTable();
+						KIM.getKimList();
+					} else {
+
+					}
+				});
+			},
+
+			editKim: function (kimId, kim, kimHard, save) {
+                _products.cancelArticleBtn();
+				$.ajax( {
+					url   : URL_KIM + 'editKim',
+					method: 'POST',
+					data: {
+						kimId: kimId,
+						kim: kim,
+						kimHard : kimHard
+					}
+				} ).then( function ( data )
+				{
+					if (true === data) {
+						KIM.getKIMTable();
+						KIM.getKimList();
+					} else {
+						$(save )
+							.parents('tr')
+							.find('.kimHardName, .kimName')
+							.css({
+								'border': '3px solid hsl(0, 69%, 22%)',
+								'border-radius': '2px'
+							});
+					}
+				});
+			},
+
+			removeKim: function (kimId) {
+                _products.cancelArticleBtn();
+				$.ajax({
+					url   : URL_KIM + 'removeKim',
+					method: 'POST',
+					data: {
+					kimId: kimId
+					}
+				}).then(function (data)
+				{
+					if (true === data) {
+						KIM.getKIMTable();
+						KIM.getKimList();
+					}
+				});
+			}
+		},
+
+		// metalls section
+		metalls: {
+			getMetallsTable: function() {
+				return $.ajax({
+					url: URL_METALLS + 'getMetallsTable',
+					method: 'GET'
+				}).then(function (data){
+                    MAIN.metallTableContent = data.metallTableContent;
+					 $('#tbodyMetalls').html(addMetallsTableHandler($(data.html)));
+				}); 
+			},
+
+			editMetall: function (obj, scope) {
+                _products.cancelArticleBtn();
+				$.ajax({
+					url: URL_METALLS + 'editMetall',
+					method: 'POST',
+					data: obj
+				}).then(function (data)
+				{
+					if (true === data) {
+						METALLS.getMetallsTable();
+						METALLS.getMetallsList();
+					} else {
+						$(scope)
+							.parents('tr')
+							.find('.metallName, .metallPrice, .metallMass, .metallOutPrice')
+							.css({
+								'border': '3px solid hsl(0, 69%, 22%)',
+								'border-radius': '2px'
+							});
+					}
+					if (MAIN.isArticle && (obj.metallId === MAIN.metallId)) {
+						TABS.getLeftTabContent(MAIN.productId, MAIN.curTabId);
+					}
+				});
+			},
+
+			getMetallsList: function () {
+				$.ajax({
+					url: URL_METALLS + 'getMetallsList',
+					method: 'GET',
+					data: {
+						prId: MAIN.productId
+					}
+				}).then(function (data) {
+					$('.listOfMetalls').html(data.html);
+					var metall = $('.listOfMetalls option:selected').attr('metall');
+					var metallOut = $('.listOfMetalls option:selected').attr('metallOut');
+					$('[data-cell="PR1"]').val(metall);
+					$('[data-cell="PR2"]').val(metallOut);
+					$('#calx').calx();
+				});
+			},
+
+			addMetallToTable: function (obj) {
+                _products.cancelArticleBtn();
+				$.ajax( {
+					url   : URL_METALLS + 'addMetallToTable',
+					method: 'POST',
+					data: obj
+				} ).then( function ( data )
+				{
+					if (true === data) {
+						$('#metallName, #metallPrice, #metallMass, #metallOutPrice, #metallArticle').val('');
+						METALLS.getMetallsTable();
+						METALLS.getMetallsList();
+					}
+				});
+			},
+
+			removeMetall: function(metallId) {
+                _products.cancelArticleBtn();
+				$.ajax( {
+					url   : URL_METALLS + 'removeMetall',
+					method: 'POST',
+					data: {
+						metallId: metallId
+					}
+				} ).then( function ( data )
+				{
+					console.log(data);
+					if (true === data) {
+						METALLS.getMetallsTable();
+						METALLS.getMetallsList();
+					}
+				});
+			}
+		},
+
+		menu: {
+			showMainMenu: function () {
+				$('#livemill').prop('muted', true);
+				MENU.activeClassValidation(
+					{
+						id:			'#backIcon',
+						class:		'activeTopIcon',
+						extraClass: 'hvr-pulse-grow',
+						scope:      '#menuIconsTop div'
+					}
+				);
+				localStorage.siteSector = 'MENU';
+				showBody();
+				$('#topIconsWrapper, #creatingProductsWrapper, #preferencesWrapper, #menuIconsRight, #menuIconsBottom, #menuIconsLeft').hide();
+				$('#mainMenuWrapper').fadeIn();
+			},
+			
+			runPreferences: function () {
+				$('#livemill').prop('muted', true);
+				if (MENU.activeClassValidation(
+						{
+							id:			'#prefIcon',
+							class:		'activeTopIcon',
+							extraClass: 'hvr-pulse-grow',
+							scope:      '#menuIconsTop div'
+						}
+					)) {
+					localStorage.siteSector = 'PR';
+					showBody();
+					$('#mainMenuWrapper, #databaseWrapper, #creatingProductsWrapper').hide();
+					$('#topIconsWrapper, #preferencesWrapper').show();
+				}
+			},
+			
+			runDB: function () {
+				$('#livemill').prop('muted', true);
+				if (MENU.activeClassValidation(
+						{
+							id:			'#dbIcon',
+							class:		'activeTopIcon',
+							extraClass: 'hvr-pulse-grow',
+							scope:      '#menuIconsTop div'
+						}
+					)) {
+					localStorage.siteSector = 'DB';
+					showBody();
+					$('#mainMenuWrapper, #preferencesWrapper, #creatingProductsWrapper').hide();
+					$.when(TABS.showKim()).done(function () {
+						setTimeout(function(){ spinnerKim.stop(document.getElementById('orderSpinner')); }, 300);
+					});
+					$('#topIconsWrapper, #databaseWrapper').show();
+					if (!MAIN.prRequested) {
+						TABS.getLeftTabsList();
+						//TABS.getRightTabsList();
+					}
+				}
+			},
+			
+			runProductCreation: function () {
+				if ($('#fileManagerOrdersWrapper').hasClass('active')) {
+				}
+				if (MENU.activeClassValidation(
+						{
+							id:			'#prIcon',
+							class:		'activeTopIcon',
+							extraClass: 'hvr-pulse-grow',
+							scope:      '#menuIconsTop div'
+						}
+					)) {
+					localStorage.siteSector = 'OR';
+					showBody();
+					$('#mainMenuWrapper, #preferencesWrapper, #databaseWrapper').hide();
+					$('#topIconsWrapper, #creatingProductsWrapper').show();
+					//TABS.openProductCreation();
+					if (!MAIN.orRequested) {
+						TABS.getRightTabsList();
+						CLIENTS.getClientsDetails();
+					}
+					PRODUCT.getProductsTree();
+				}
+			},
+			
+			showTopIcons: function (px, animate, timeout) {
+				setTimeout(function(){
+					$('#backIcon, #prefIcon, #dbIcon, #menuOpen, #prIcon').blur().animate( { "marginTop": px }, animate ); 
+				}, timeout);
+			},
+			
+			activeClassValidation: function (obj) {
+				if (!$(obj.id).hasClass(obj.class)) {
+					$(obj.scope)
+							.removeClass(obj.class)
+							.addClass(obj.extraClass);
+					$(obj.id).addClass(obj.class).removeClass(obj.extraClass);
+					return true;
+				}
+				return false;
+			},
+			
+			onHoverElement: function(obj){
+				var scope = obj.scope,
+					css = obj.css,
+					speed = obj.speed;
+				$(scope).stop(true).delay(20)
+					.animate( css, speed );
+			},
+
+			createFileManager: function(param) {
+				$.ajax( {
+					url   : URL_MENU + 'createFileManager',
+					method: 'GET',
+					data: {param: param}
+				} ).then( function ( data )
+				{
+					$('#fileManagerCatogoriesSelect' ).html(data.categories);
+					$('#fileManagerProductsTable' ).html(addMenuProductHandler($(data.products)));
+					$('#fileManagerOrdersTable' ).html(addMenuOrdersHandler($(data.orders)));
+					/*$.each(data.orderDescription, function(name, arr) {
+						var option = '<option></option>';
+						$.each(arr, function(num, val) {
+							option += '<option>' + val + '</option>';
+						});
+						$('[data-section="' + name.replace(/%/g, '') + '"]').html(option);
+					});
+					$('#openMenuModal').modal('show');*/
+				});
+			},
+			
+			searchInTable: function(rows, text, elem) {
+				if (!text) {
+					rows.show();
+				} else {
+					rows.hide();
+					$.each(rows, function(num, tr) {
+						$.each($(tr), function(key, td) {
+							if (-1 !== $(td).text().toLowerCase().search(text.toLowerCase())) {
+								$(td).closest(elem).show();
+								return true;
+							}
+						});
+					});
+				}
+			},
+			
+			searchInTree: function(node, text) {
+				var res = false;
+				$.each(node, function (num, obj) {
+					if (!res) {
+						$.each(obj.info, function (key, val) {
+							if (-1 !== val.toLowerCase().search(text) && !res) {
+								res = true;
+							} else if (obj.children && obj.children.length) {
+								res = MENU.searchInTree(obj.children, text);
+							}
+							if (res) {
+								$('#clientsTree li .jqtree-title:contains("' + obj.name + '")')
+										.closest('.clientInTree').show();
+							}
+						});
+					}
+				});
+			},
+			
+			getPreferencesSettings: function () {
+				return preferencesSettings;
+			}
+		},
+
+		preferences: {
+			insertFontSizes: function (arr, elem) {
+				var i = 1;
+				var option = '';
+				for (i; i <= 60; i++) {
+					option += $(elem).css('font-size') === i + 'px' ? '<option selected>' : '<option>';
+					option += i + 'px</option>';
+				}
+				$.each(arr, function (num, target) {
+					$(target).append(option);
+				});
+			},
+			
+			applyCss: function () {
+				if (localStorage.customCSS) {
+					try {
+						$.each(JSON.parse(localStorage.customCSS), function (elem, obj) {
+							$.each(obj, function (key, val) {
+								$(elem).css(key, val);
+							});
+						});
+						PREFERENCES.applyPreferences(MENU.getPreferencesSettings());
+					} catch (err) {
+						console.log(err);
+					}
+				}
+			},
+
+			applyPreferences: function (arr) {
+				$.each(arr, function (num, obj) {
+					$(obj.id).css({
+						backgroundColor: $(obj.elem).css(obj.style)
+					}).colorpicker({
+						color: $(obj.elem).css(obj.style),
+						backgroundColor: $(obj.elem).css(obj.style)
+					}).on('changeColor', function(ev) {
+						$(obj.id).css('backgroundColor', ev.color.toHex());
+						PREFERENCES.applyColorAndSaveToLS(obj.cssArr, obj.style, ev, obj.important);
+					});
+				});
+			},
+
+			applyColorAndSaveToLS: function (cssArr, style, ev, important) {
+				var imp = '';
+				if (important && undefined !== important) {
+					imp = ' !important';
+				}
+				$(cssArr.join(', ')).css(style, ev.color.toHex());
+				for (var i = 0; i < cssArr.length; i++) {
+					var css = PREFERENCES.checkStorageCSS(cssArr[i]);
+					css[cssArr[i]][style] = ev.color.toHex() + imp;
+					THEMES.addThemeCss(css);
+				}
+			},
+
+			checkStorageCSS: function (elem) {
+				if (!localStorage.customCSS) {
+					localStorage.customCSS = JSON.stringify({});
+				}
+				var css = JSON.parse(localStorage.customCSS);
+				if (!css[elem]) {
+					css[elem] = {};
+					localStorage.customCSS = JSON.stringify(css);
+				}
+				return JSON.parse(localStorage.customCSS);
+			}
+		},
+		
+		// validation section
+        validation: {
+            validateInputVal: function (obj) {
+                var val = obj.val.trim();
+
+                if (val && obj.digitsOnly) {
+                    val = VALIDATION.digitsOnly(val);
+                }
+
+                if (val && obj.unique) {
+                    val = VALIDATION.onUnique(val, obj.id);
+                }
+
+                if (!val) {
+                    if (obj.id) {
+                        VALIDATION.showError(obj.id);
+                    }
+                    return false;
+                }
+
+                return val;
+            },
+
+            /**
+             * parse string remove all letters and change coma to dot
+             *
+             * @param val
+             * @returns {string}
+             */
+            digitsOnly: function (val) {
+                var res;
+                res = val.replace(/[A-Za-z]+/g, '').replace(/,/g, '.');
+                return res;
+            },
+
+            onUnique: function (val, id) {
+                var articles, names;
+                switch (id) {
+                    case '#metallName':
+                        names = MAIN.metallTableContent.names;
+                        if (0 < names.length) {
+                            val = VALIDATION.parseArray(names, val);
+                        }
+                        break;
+                    case '#metallArticle':
+                        articles = MAIN.metallTableContent.articles;
+                        if (0 < articles.length) {
+                            val = VALIDATION.parseArray(articles, val);
+                        }
+                        break;
+                    case '#addCategoryInput':
+                        names = MAIN.categoriesTableContent.names;
+                        if (0 < names.length) {
+                            val = VALIDATION.parseArray(names, val);
+                        }
+                        break;
+                    case '#addCategoryArticleInput':
+                        articles = MAIN.categoriesTableContent.articles;console.log(MAIN);
+                        if (0 < articles.length) {
+                            val = VALIDATION.parseArray(articles, val);
+                        }
+                        break;
+                }
+                return val;
+            },
+
+            showError: function (id) {
+                $(id).addClass('inputError');
+                setTimeout(function(){ $(id).removeClass('inputError'); }, 1000);
+            },
+
+            parseArray: function (arr, val) {
+                var i;
+                for (i = 0; i < arr.length; i++) {
+                    if (val.toLowerCase() === arr[i].toLowerCase()) {
+                        val = false;
+                        break;
+                    }
+                }
+                return val;
+            }
+        },
+		
+		// clients section
+		clients: {
+			getClientsTree: function (refresh) {
+				$.ajax({
+					url: URL_CLIENTS + 'getClientsTree',
+					method: 'GET'
+				}).then(function (data)
+				{
+					currentClietsTree = data.tree;
+					var tree = $('#clientsTree');
+					if (refresh) {
+						tree.tree('loadData', data.tree);
+					} else {
+						tree.tree({
+							data: data.tree,
+							autoOpen: true,
+							dragAndDrop: false,
+							saveState: true,
+							saveState: 'clients-Tree',
+							openedIcon: $('<span class="glyphicon glyphicon-minus" aria-hidden="true"></span>'),
+							closedIcon: $('<span class="glyphicon glyphicon-plus" aria-hidden="true"></span>'),
+							onCreateLi: function (node, $li) {
+								if ('order' === node.sector) {
+									if (!node.inTab) {
+										$li.find('.jqtree-element').append(
+											'<span>&nbsp;</span><span class="glyphicon glyphicon-eye-open openProductTab" data-id="' + node.orderId + '" data-type="order" aria-hidden="true" data-selected=""></span>'
+										);
+									} else {
+										$li.find('.jqtree-element').append(
+											'<span>&nbsp;</span><span class="glyphicon glyphicon-none" aria-hidden="true"></span>'
+										);
+									}
+									$li.find('.jqtree-element').append(
+											'<span>&nbsp;</span><span class="glyphicon glyphicon-list-alt consolidateOrder" data-id="' + node.orderId + '" data-type="order" aria-hidden="true" data-selected=""></span>'
+										);
+								}
+								if ('project' === node.sector) {
+									$li.find('.jqtree-title').html('<span class="glyphicon glyphicon-folder-close" aria-hidden="true">&nbsp;</span>' + $li.find('.jqtree-title').text());
+								}
+								if ('client' === node.sector) {
+									$li.find('.jqtree-title').closest('li').addClass('clientInTree');
+									$li.find('.jqtree-title').html('<span class="glyphicon glyphicon-user" aria-hidden="true">&nbsp;</span>' + $li.find('.jqtree-title').text());
+								}
+							}
+						});
+						tree.bind(
+							'tree.click',
+							function (event) {
+								var node = event.node;
+								$('#clientsTree').tree('selectNode');
+								CLIENTS.currentClietsTreeSectionAction(node);
+							}
+						);
+					}
+					var selectedNode = tree.tree('getSelectedNode');
+					CLIENTS.currentClietsTreeSectionAction(selectedNode);
+				});
 			},
 			
 			getClientsDetails: function () {
 				$.ajax( {
-					url   : URL_MENU + 'getClientsDescriptionObj',
+					url   : URL_CLIENTS + 'getClientsDescriptionObj',
 					method: 'GET'
 				} ).then( function ( data )
 				{
@@ -3211,11 +3843,196 @@
 						});
 					}
 				});
+			},
+			
+			fillFormOfClientsInfo: function (info) {
+				$('#addNewProjectForm, .addNewClientBtnsWrapper, #orderWrapperFromTree' ).hide();
+				if (info) {
+					$.each($('#addNewClientForm input'), function (num, input) {
+						var $input = $(input);
+						$input.val(info[$input.attr('name')]);
+					});
+					$('#h3NewClientInfo').hide();
+					$('#h3ClientInfo').show();
+					$('#addNewClientBtn').hide();
+					$('.addNewClientBtnsWrapper').show();
+				} else {
+					$('#addNewClientForm input').val('');
+					$('#h3NewClientInfo').show();
+					$('#h3ClientInfo').hide();
+					$('#addNewClientBtn').show();
+					$('.addNewClientBtnsWrapper').hide();
+				}
+				$('#addNewClientForm').show();
+			},
+			
+			currentClietsTreeSectionAction: function (node) {
+				switch (node.sector) {
+					case 'client':
+						CLIENTS.fillFormOfClientsInfo(node.info);
+						break;
+					case 'project':
+						PROJECTS.fillFormOfProjectInfo(node.info);
+						break;
+					case 'order':
+						$('#addNewClientForm, #addNewProjectForm' ).hide();
+						$('#orderWrapperFromTree').show();
+						MAIN.orderId = node.orderId;
+						ORDER.getOrderDetailsFromTree(node.orderId);
+						TABS.getRightTabContentTable(node.orderId, '#orderTableWrapperFromTree');
+						break;
+				}
+			},
+			
+			addNewClient: function (data) {
+				$.ajax({
+					url: URL_CLIENTS + 'addNewClient',
+					method: 'POST',
+					data: data
+				}).then(function (data)
+				{
+					if (data) {
+						$('#addNewClientForm input').val('');
+						CLIENTS.getClientsTree(true);
+					}
+				});
+			},
+			
+			updateClient: function (data) {
+				$.ajax({
+					url: URL_CLIENTS + 'updateClient',
+					method: 'POST',
+					data: data
+				}).then(function (data)
+				{
+					if (data) {
+						CLIENTS.getClientsTree(true);
+						CLIENTS.getClientsDetails();
+						noty({
+							text: 'Информация обновлена',
+							type: 'success',
+							layout: 'center',
+							/*animation: {
+								open: 'animated flipInX',
+								close: 'animated flipOutX'
+							},*/
+							timeout: 600
+						});
+					}
+				});
+			},
+			
+			deleteClient: function (id) {
+				$.ajax({
+					url: URL_CLIENTS + 'deleteClient',
+					method: 'POST',
+					data: {id: id}
+				}).then(function (data)
+				{
+					CLIENTS.getClientsTree(true);
+				});
 			}
 		},
-
+		
+		// projects section
+		projects: {
+			fillFormOfProjectInfo: function (info) {
+				$('#addNewClientForm, .addNewProjectBtnsWrapper, #orderWrapperFromTree' ).hide();
+				if (info) {
+					$.each($('#addNewProjectForm input'), function (num, input) {
+						var $input = $(input);
+						$input.val(info[$input.attr('name')]);
+					});
+					$('#h3NewProjectInfo').hide();
+					$('#h3ProjectInfo').show();
+					$('#addNewProjectBtn').hide();
+					$('.addNewProjectBtnsWrapper').show();
+				} else {
+					$('#addNewProjectForm input').val('');
+					$('#h3NewProjectInfo').show();
+					$('#h3ProjectInfo').hide();
+					$('#addNewProjectBtn').show();
+					$('.addNewProjectBtnsWrapper').hide();
+				}
+				$('#addNewProjectForm').show();
+			},
+			
+			addNewProject: function (data) {
+				$.ajax({
+					url: URL_PROJECTS + 'addNewProject',
+					method: 'POST',
+					data: data
+				}).then(function (data)
+				{
+					if (data) {
+						$('#addNewProjectForm input').val('');
+						CLIENTS.getClientsTree(true);
+					}
+				});	
+			},
+			
+			updateProject: function (data) {
+				$.ajax({
+					url: URL_PROJECTS + 'updateProject',
+					method: 'POST',
+					data: data
+				}).then(function (data)
+				{
+					if (data) {
+						CLIENTS.getClientsTree(true);
+						CLIENTS.getClientsDetails();
+						noty({
+							text: 'Информация обновлена',
+							type: 'success',
+							layout: 'center',
+							/*animation: {
+							 open: 'animated flipInX',
+							 close: 'animated flipOutX'
+							 },*/
+							timeout: 600
+						});
+					}
+				});	
+			},
+			
+			deleteProject: function (id) {
+				$.ajax({
+					url: URL_PROJECTS + 'deleteProject',
+					method: 'POST',
+					data: {id: id}
+				}).then(function (data)
+				{
+					CLIENTS.getClientsTree(true);
+				});
+			}
+		},
+		
 		// order section
 		order: {
+			getOrderDetailsFromTree: function (orderId) {
+				$.ajax( {
+					url   : URL_TABS + 'getRightTabContentOrderDetails/',
+					method: 'GET',
+					data: {orderId: orderId}
+				} ).then( function ( data )
+				{
+					if (true === data.success) {
+						$('#orderDetailsWrapperFromTree').html(addRightTabContentOrderHandler($(data.html)));
+						if ('TRUE' === data.consolidate) {
+							store.set('consOrder', 'consAverageTr');
+						} else {
+							store.remove('consOrder');
+						}
+						_orderDetails = {};
+						if (_.isObject(data.orderDescription)) {
+							_orderDetails = data.orderDescription;
+						}
+						return this;
+					}
+					log(data.error);
+				});
+			},
+			
 			createNewOrder: function (project, refresh, consolidate) {
 				var refresh = (refresh === undefined) ? refresh = true : refresh;
 				var consolidate = (consolidate === undefined) ? consolidate = false : consolidate;
@@ -3231,18 +4048,20 @@
 					return data;
 				});
 			},
+			
 			addToOrder: function () {
 				var map,
 					productId = MAIN.productId,
 					alwaysInTable = '',
 					obj = {};
-				if (localStorage.addToOrder) {
+				$('.rowValue input' ).addClass('rowValueInput');
+				alwaysInTable = JSON.stringify(PRODUCT.getTableContent('#alwaysInTable li'));
+				$('.rowValueInput').removeClass('rowValueInput');
+				/*if (localStorage.addToOrder) {
 					alwaysInTable = localStorage.alwaysInTable;
 				} else {
-					$('.rowValue input' ).addClass('rowValueInput');
-					alwaysInTable = JSON.stringify(PRODUCT.getTableContent('#alwaysInTable li'));
-					$('.rowValueInput').removeClass('rowValueInput');
-				}
+					
+				}*/
 				$.ajax({
 					url: URL_ORDER + 'addProductToOrder',
 					method: 'POST',
@@ -3353,725 +4172,8 @@
 				return obj;
 			}
 		},
-
-        // categories section
-        categories: {
-            addCategory: function(categoryName, article) {
-                $.ajax( {
-                    url   :  URL_CATEG +'add',
-                    method: 'POST',
-                    data: {
-                        categoryName: categoryName,
-                        article: article
-                    }
-                } ).then( function ( data )
-                {
-                    if (true === data) {
-                        $('#addCategoryInput, #addCategoryArticleInput').val('');
-                        CATEGORIES.getCategoriesTable();
-                        CATEGORIES.getCategoriesList();
-                    }
-                } );
-            },
-
-            getCategoriesTable: function() {
-                 return $.ajax( {
-                    url   : URL_CATEG + 'getCategoriesTable',
-                    method: 'GET'
-                } ).then( function ( data )
-                {
-                    MAIN.categoriesTableContent = data.categoriesTableContent;
-                    $('#categoriesListTable tbody' ).html(addCategoriesTableHandler($(data.html)));
-                } );
-            },
-
-            getCategoriesList: function () {
-                return $.ajax({
-                    url: URL_CATEG + 'getCategoriesList',
-                    method: 'GET',
-                    data: {
-                        prId: MAIN.productId
-                    }
-                }).then(function (data) {console.log(data);
-                    $('.listOfCategories').html(data.html);
-                });
-            },
-
-            editCategory: function (id, name, save) {
-                cancelArticleBtn();
-                $.ajax( {
-                    url   : URL_CATEG + 'editCategory',
-                    method: 'POST',
-                    data: {
-                        id: id,
-                        name: name
-                    }
-                } ).then( function ( data )
-                {
-                    if (true === data) {
-                        CATEGORIES.getCategoriesTable();
-                        CATEGORIES.getCategoriesList();
-                    } else {
-                        $(save )
-                            .parents('tr')
-                            .find('.categoryName')
-                            .css({
-                                'border': '3px solid hsl(0, 69%, 22%)',
-                                'border-radius': '2px'
-                            });
-                    }
-                });
-            },
-            removeCategory: function (id) {
-                cancelArticleBtn();
-                $.ajax({
-                    url   : URL_CATEG + 'removeCategory',
-                    method: 'POST',
-                    data: {
-                        id: id
-                    }
-                }).then(function (data)
-                {
-                    if (true === data) {
-                        CATEGORIES.getCategoriesTable();
-                        CATEGORIES.getCategoriesList();
-                    }
-                });
-            }
-        },
-
-		// kim section
-		kim: {
-			getKIMTable: function () {
-				return $.ajax({
-					url: URL_KIM + 'getKIMTable',
-					method: 'GET'
-				}).then(function (data)
-				{
-					MAIN.fileManagerOrdersWrapperleContent = data.fileManagerOrdersWrapperleContent;
-					$('#tbodyKIM').html(addKimTableHandler($(data.html)));
-				});
-			},
-
-			getKimList: function () {
-				$.ajax({
-					url: URL_KIM + 'getKimList',
-					method: 'GET',
-					data: {
-						prId: MAIN.productId
-					}
-				}).then(function (data) {
-					$('.listOfKim').html(data.html);
-					var kim = $('.listOfKim option:selected').attr('kim');
-					$('[data-cell="KIM1"]').val(kim);
-					$('#calx').calx();
-				});
-			},
-
-			addKIMtoTable: function (kim, kimHard) {
-                cancelArticleBtn();
-				$.ajax({
-					url: URL_KIM + 'addKIMtoTable',
-					method: 'POST',
-					data: {
-						kim: kim,
-						kimHard: kimHard
-					}
-				}).then(function (data)
-				{
-					if (true === data) {
-						$('#kimInput, #kimHardInput, #kimArticle').val('');
-						KIM.getKIMTable();
-						KIM.getKimList();
-					} else {
-
-					}
-				});
-			},
-
-			editKim: function (kimId, kim, kimHard, save) {
-                cancelArticleBtn();
-				$.ajax( {
-					url   : URL_KIM + 'editKim',
-					method: 'POST',
-					data: {
-						kimId: kimId,
-						kim: kim,
-						kimHard : kimHard
-					}
-				} ).then( function ( data )
-				{
-					if (true === data) {
-						KIM.getKIMTable();
-						KIM.getKimList();
-					} else {
-						$(save )
-							.parents('tr')
-							.find('.kimHardName, .kimName')
-							.css({
-								'border': '3px solid hsl(0, 69%, 22%)',
-								'border-radius': '2px'
-							});
-					}
-				});
-			},
-
-			removeKim: function (kimId) {
-                cancelArticleBtn();
-				$.ajax({
-					url   : URL_KIM + 'removeKim',
-					method: 'POST',
-					data: {
-					kimId: kimId
-					}
-				}).then(function (data)
-				{
-					if (true === data) {
-						KIM.getKIMTable();
-						KIM.getKimList();
-					}
-				});
-			}
-		},
-
-		// metalls section
-		metalls: {
-			getMetallsTable: function() {
-				return $.ajax({
-					url: URL_METALLS + 'getMetallsTable',
-					method: 'GET'
-				}).then(function (data){
-                    MAIN.metallTableContent = data.metallTableContent;
-					 $('#tbodyMetalls').html(addMetallsTableHandler($(data.html)));
-				}); 
-			},
-
-			editMetall: function (obj, scope) {
-                cancelArticleBtn();
-				$.ajax({
-					url: URL_METALLS + 'editMetall',
-					method: 'POST',
-					data: obj
-				}).then(function (data)
-				{
-					if (true === data) {
-						METALLS.getMetallsTable();
-						METALLS.getMetallsList();
-					} else {
-						$(scope)
-							.parents('tr')
-							.find('.metallName, .metallPrice, .metallMass, .metallOutPrice')
-							.css({
-								'border': '3px solid hsl(0, 69%, 22%)',
-								'border-radius': '2px'
-							});
-					}
-					if (MAIN.isArticle && (obj.metallId === MAIN.metallId)) {
-						TABS.getLeftTabContent(MAIN.productId, MAIN.curTabId);
-					}
-				});
-			},
-
-			getMetallsList: function () {
-				$.ajax({
-					url: URL_METALLS + 'getMetallsList',
-					method: 'GET',
-					data: {
-						prId: MAIN.productId
-					}
-				}).then(function (data) {
-					$('.listOfMetalls').html(data.html);
-					var metall = $('.listOfMetalls option:selected').attr('metall');
-					var metallOut = $('.listOfMetalls option:selected').attr('metallOut');
-					$('[data-cell="PR1"]').val(metall);
-					$('[data-cell="PR2"]').val(metallOut);
-					$('#calx').calx();
-				});
-			},
-
-			addMetallToTable: function (obj) {
-                cancelArticleBtn();
-				$.ajax( {
-					url   : URL_METALLS + 'addMetallToTable',
-					method: 'POST',
-					data: obj
-				} ).then( function ( data )
-				{
-					if (true === data) {
-						$('#metallName, #metallPrice, #metallMass, #metallOutPrice, #metallArticle').val('');
-						METALLS.getMetallsTable();
-						METALLS.getMetallsList();
-					}
-				});
-			},
-
-			removeMetall: function(metallId) {
-                cancelArticleBtn();
-				$.ajax( {
-					url   : URL_METALLS + 'removeMetall',
-					method: 'POST',
-					data: {
-						metallId: metallId
-					}
-				} ).then( function ( data )
-				{
-					console.log(data);
-					if (true === data) {
-						METALLS.getMetallsTable();
-						METALLS.getMetallsList();
-					}
-				});
-			}
-		},
-
-		menu: {
-			showMainMenu: function () {
-				$('#livemill').prop('muted', true);
-				MENU.activeClassValidation(
-					{
-						id:			'#backIcon',
-						class:		'activeTopIcon',
-						extraClass: 'hvr-pulse-grow',
-						scope:      '#menuIconsTop div'
-					}
-				);
-				localStorage.siteSector = 'MENU';
-				showBody();
-				$('#topIconsWrapper, #creatingProductsWrapper, #preferencesWrapper, #menuIconsRight, #menuIconsBottom, #menuIconsLeft').hide();
-				$('#mainMenuWrapper').fadeIn();
-			},
-			
-			runPreferences: function () {
-				$('#livemill').prop('muted', true);
-				if (MENU.activeClassValidation(
-						{
-							id:			'#prefIcon',
-							class:		'activeTopIcon',
-							extraClass: 'hvr-pulse-grow',
-							scope:      '#menuIconsTop div'
-						}
-					)) {
-					localStorage.siteSector = 'PR';
-					showBody();
-					$('#mainMenuWrapper, #databaseWrapper, #creatingProductsWrapper').hide();
-					$('#topIconsWrapper, #preferencesWrapper').show();
-				}
-			},
-			
-			runDB: function () {
-				$('#livemill').prop('muted', true);
-				if (MENU.activeClassValidation(
-						{
-							id:			'#dbIcon',
-							class:		'activeTopIcon',
-							extraClass: 'hvr-pulse-grow',
-							scope:      '#menuIconsTop div'
-						}
-					)) {
-					localStorage.siteSector = 'DB';
-					showBody();
-					$('#mainMenuWrapper, #preferencesWrapper, #creatingProductsWrapper').hide();
-					$.when(TABS.showKim()).done(function () {
-						setTimeout(function(){ spinnerKim.stop(document.getElementById('orderSpinner')); }, 300);
-					});
-					$('#topIconsWrapper, #databaseWrapper').show();
-					if (!MAIN.prRequested) {
-						TABS.getLeftTabsList();
-						//TABS.getRightTabsList();
-					}
-				}
-			},
-			
-			runProductCreation: function () {
-				if ($('#fileManagerOrdersWrapper').hasClass('active')) {
-				}
-				if (MENU.activeClassValidation(
-						{
-							id:			'#prIcon',
-							class:		'activeTopIcon',
-							extraClass: 'hvr-pulse-grow',
-							scope:      '#menuIconsTop div'
-						}
-					)) {
-					localStorage.siteSector = 'OR';
-					showBody();
-					$('#mainMenuWrapper, #preferencesWrapper, #databaseWrapper').hide();
-					$('#topIconsWrapper, #creatingProductsWrapper').show();
-					//TABS.openProductCreation();
-					if (!MAIN.orRequested) {
-						TABS.getRightTabsList();
-						PRODUCT.getClientsDetails();
-					}
-					PRODUCT.getProductsTree();
-				}
-			},
-			
-			showTopIcons: function (px, animate, timeout) {
-				setTimeout(function(){
-					$('#backIcon, #prefIcon, #dbIcon, #menuOpen, #prIcon').blur().animate( { "marginTop": px }, animate ); 
-				}, timeout);
-			},
-			
-			activeClassValidation: function (obj) {
-				if (!$(obj.id).hasClass(obj.class)) {
-					$(obj.scope)
-							.removeClass(obj.class)
-							.addClass(obj.extraClass);
-					$(obj.id).addClass(obj.class).removeClass(obj.extraClass);
-					return true;
-				}
-				return false;
-			},
-			
-			onHoverElement: function(obj){
-				var scope = obj.scope,
-					css = obj.css,
-					speed = obj.speed;
-				$(scope).stop(true).delay(20)
-					.animate( css, speed );
-			},
-
-			createFileManager: function(param) {
-				$.ajax( {
-					url   : URL_MENU + 'createFileManager',
-					method: 'GET',
-					data: {param: param}
-				} ).then( function ( data )
-				{
-					$('#fileManagerCatogoriesSelect' ).html(data.categories);
-					$('#fileManagerProductsTable' ).html(addMenuProductHandler($(data.products)));
-					$('#fileManagerOrdersTable' ).html(addMenuOrdersHandler($(data.orders)));
-					/*$.each(data.orderDescription, function(name, arr) {
-						var option = '<option></option>';
-						$.each(arr, function(num, val) {
-							option += '<option>' + val + '</option>';
-						});
-						$('[data-section="' + name.replace(/%/g, '') + '"]').html(option);
-					});
-					$('#openMenuModal').modal('show');*/
-				});
-			},
-			
-			searchInTable: function(rows, text, elem) {
-				if (!text) {
-					rows.show();
-				} else {
-					rows.hide();
-					$.each(rows, function(num, tr) {
-						$.each($(tr), function(key, td) {
-							if (-1 !== $(td).text().toLowerCase().search(text.toLowerCase())) {
-								$(td).closest(elem).show();
-								return true;
-							}
-						});
-					});
-				}
-			},
-			
-			searchInTree: function(node, text) {
-				var res = false;
-				$.each(node, function (num, obj) {
-					if (!res) {
-						$.each(obj.info, function (key, val) {
-							if (-1 !== val.toLowerCase().search(text) && !res) {
-								res = true;
-							} else if (obj.children && obj.children.length) {
-								res = MENU.searchInTree(obj.children, text);
-							}
-							if (res) {
-								$('#clientsTree li .jqtree-title:contains("' + obj.name + '")')
-										.closest('.clientInTree').show();
-							}
-						});
-					}
-				});
-			},
-			
-			getPreferencesSettings: function () {
-				return preferencesSettings;
-			},
-			
-			fillFormOfClientsInfo: function (info) {
-				$('#addNewProjectForm, .addNewClientBtnsWrapper' ).hide();
-				if (info) {
-					$.each($('#addNewClientForm input'), function (num, input) {
-						var $input = $(input);
-						$input.val(info[$input.attr('name')]);
-					});
-					$('#h3NewClientInfo').hide();
-					$('#h3ClientInfo').show();
-					$('#addNewClientBtn').hide();
-					$('.addNewClientBtnsWrapper').show();
-				} else {
-					$('#addNewClientForm input').val('');
-					$('#h3NewClientInfo').show();
-					$('#h3ClientInfo').hide();
-					$('#addNewClientBtn').show();
-					$('.addNewClientBtnsWrapper').hide();
-				}
-				$('#addNewClientForm').show();
-			},
-
-			fillFormOfProjectInfo: function (info) {
-				$('#addNewClientForm, .addNewProjectBtnsWrapper' ).hide();
-				if (info) {
-					$.each($('#addNewProjectForm input'), function (num, input) {
-						var $input = $(input);
-						$input.val(info[$input.attr('name')]);
-					});
-					$('#h3NewProjectInfo').hide();
-					$('#h3ProjectInfo').show();
-					$('#addNewProjectBtn').hide();
-					$('.addNewProjectBtnsWrapper').show();
-				} else {
-					$('#addNewProjectForm input').val('');
-					$('#h3NewProjectInfo').show();
-					$('#h3ProjectInfo').hide();
-					$('#addNewProjectBtn').show();
-					$('.addNewProjectBtnsWrapper').hide();
-				}
-				$('#addNewProjectForm').show();
-			}
-		},
-
-		preferences: {
-			insertFontSizes: function (arr, elem) {
-				var i = 1;
-				var option = '';
-				for (i; i <= 60; i++) {
-					option += $(elem).css('font-size') === i + 'px' ? '<option selected>' : '<option>';
-					option += i + 'px</option>';
-				}
-				$.each(arr, function (num, target) {
-					$(target).append(option);
-				});
-			},
-			
-			applyCss: function () {
-				if (localStorage.customCSS) {
-					try {
-						$.each(JSON.parse(localStorage.customCSS), function (elem, obj) {
-							$.each(obj, function (key, val) {
-								$(elem).css(key, val);
-							});
-						});
-						PREFERENCES.applyPreferences(MENU.getPreferencesSettings());
-					} catch (err) {
-						console.log(err);
-					}
-				}
-			},
-
-			applyPreferences: function (arr) {
-				$.each(arr, function (num, obj) {
-					$(obj.id).css({
-						backgroundColor: $(obj.elem).css(obj.style)
-					}).colorpicker({
-						color: $(obj.elem).css(obj.style),
-						backgroundColor: $(obj.elem).css(obj.style)
-					}).on('changeColor', function(ev) {
-						$(obj.id).css('backgroundColor', ev.color.toHex());
-						PREFERENCES.applyColorAndSaveToLS(obj.cssArr, obj.style, ev, obj.important);
-					});
-				});
-			},
-
-			applyColorAndSaveToLS: function (cssArr, style, ev, important) {
-				var imp = '';
-				if (important && undefined !== important) {
-					imp = ' !important';
-				}
-				$(cssArr.join(', ')).css(style, ev.color.toHex());
-				for (var i = 0; i < cssArr.length; i++) {
-					var css = PREFERENCES.checkStorageCSS(cssArr[i]);
-					css[cssArr[i]][style] = ev.color.toHex() + imp;
-					THEMES.addThemeCss(css);
-				}
-			},
-
-			checkStorageCSS: function (elem) {
-				if (!localStorage.customCSS) {
-					localStorage.customCSS = JSON.stringify({});
-				}
-				var css = JSON.parse(localStorage.customCSS);
-				if (!css[elem]) {
-					css[elem] = {};
-					localStorage.customCSS = JSON.stringify(css);
-				}
-				return JSON.parse(localStorage.customCSS);
-			}
-		},
 		
-        validation: {
-            validateInputVal: function (obj) {
-                var val = obj.val.trim();
-
-                if (val && obj.digitsOnly) {
-                    val = VALIDATION.digitsOnly(val);
-                }
-
-                if (val && obj.unique) {
-                    val = VALIDATION.onUnique(val, obj.id);
-                }
-
-                if (!val) {
-                    if (obj.id) {
-                        VALIDATION.showError(obj.id);
-                    }
-                    return false;
-                }
-
-                return val;
-            },
-
-            /**
-             * parse string remove all letters and change coma to dot
-             *
-             * @param val
-             * @returns {string}
-             */
-            digitsOnly: function (val) {
-                var res;
-                res = val.replace(/[A-Za-z]+/g, '').replace(/,/g, '.');
-                return res;
-            },
-
-            onUnique: function (val, id) {
-                var articles, names;
-                switch (id) {
-                    case '#metallName':
-                        names = MAIN.metallTableContent.names;
-                        if (0 < names.length) {
-                            val = VALIDATION.parseArray(names, val);
-                        }
-                        break;
-                    case '#metallArticle':
-                        articles = MAIN.metallTableContent.articles;
-                        if (0 < articles.length) {
-                            val = VALIDATION.parseArray(articles, val);
-                        }
-                        break;
-                    case '#addCategoryInput':
-                        names = MAIN.categoriesTableContent.names;
-                        if (0 < names.length) {
-                            val = VALIDATION.parseArray(names, val);
-                        }
-                        break;
-                    case '#addCategoryArticleInput':
-                        articles = MAIN.categoriesTableContent.articles;console.log(MAIN);
-                        if (0 < articles.length) {
-                            val = VALIDATION.parseArray(articles, val);
-                        }
-                        break;
-                }
-                return val;
-            },
-
-            showError: function (id) {
-                $(id).addClass('inputError');
-                setTimeout(function(){ $(id).removeClass('inputError'); }, 1000);
-            },
-
-            parseArray: function (arr, val) {
-                var i;
-                for (i = 0; i < arr.length; i++) {
-                    if (val.toLowerCase() === arr[i].toLowerCase()) {
-                        val = false;
-                        break;
-                    }
-                }
-                return val;
-            }
-        },
-		
-		clients: {
-			getClientsTree: function (refresh) {
-				$.ajax({
-					url: URL_CLIENTS + 'getClientsTree',
-					method: 'GET'
-				}).then(function (data)
-				{
-					currentClietsTree = data.tree;
-					var tree = $('#clientsTree');
-					if (refresh) {
-						tree.tree('loadData', data.tree);
-					} else {
-						tree.tree({
-							data: data.tree,
-							autoOpen: true,
-							dragAndDrop: false,
-							saveState: true,
-							saveState: 'clients-Tree',
-							openedIcon: $('<span class="glyphicon glyphicon-minus" aria-hidden="true"></span>'),
-							closedIcon: $('<span class="glyphicon glyphicon-plus" aria-hidden="true"></span>'),
-							onCreateLi: function (node, $li) {
-								if ('order' === node.sector) {
-									$li.find('.jqtree-element').append(
-										'<span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span>'
-									);
-								}
-								if ('project' === node.sector) {
-									$li.find('.jqtree-title').html('<span class="glyphicon glyphicon-folder-close" aria-hidden="true">&nbsp;</span>' + $li.find('.jqtree-title').text());
-								}
-								if ('client' === node.sector) {
-									$li.find('.jqtree-title').closest('li').addClass('clientInTree');
-									$li.find('.jqtree-title').html('<span class="glyphicon glyphicon-user" aria-hidden="true">&nbsp;</span>' + $li.find('.jqtree-title').text());
-								}
-							}
-						});
-						tree.bind(
-							'tree.click',
-							function (event) {
-								var node = event.node;
-								$('#clientsTree').tree('selectNode');
-								CLIENTS.currentClietsTreeSectionAction(node);
-							}
-						);
-					}
-					var selectedNode = tree.tree('getSelectedNode');
-					CLIENTS.currentClietsTreeSectionAction(selectedNode);
-				});
-			},
-			
-			currentClietsTreeSectionAction: function (node) {
-				switch (node.sector) {
-					case 'client':
-						MENU.fillFormOfClientsInfo(node.info);
-						break;
-					case 'project':
-						MENU.fillFormOfProjectInfo(node.info);
-						break;
-					case 'order':
-						TABS.getRightTabContentOrderDetails(node.orderId);
-						TABS.getRightTabContentTable(node.orderId);
-						MAIN.orderId = node.orderId;
-						break;
-				}
-			},
-			
-			deleteClient: function (id) {
-				$.ajax({
-					url: URL_CLIENTS + 'deleteClient',
-					method: 'POST',
-					data: {id: id}
-				}).then(function (data)
-				{
-					CLIENTS.getClientsTree(true);
-				});
-			},
-			
-			deleteProject: function (id) {
-				$.ajax({
-					url: URL_CLIENTS + 'deleteProject',
-					method: 'POST',
-					data: {id: id}
-				}).then(function (data)
-				{
-					CLIENTS.getClientsTree(true);
-				});
-			}
-		},
-		
+		// themes section
 		themes: {
 			addTheme: function () {
 				return $.ajax( {
@@ -4175,6 +4277,7 @@
         VALIDATION  = this.validation;
 		THEMES		= this.themes;
 		CLIENTS		= this.clients;
+		PROJECTS	= this.projects;
 
 		run();
 
