@@ -2,6 +2,7 @@
         data-target="#orderDetailsCollapse" aria-expanded="false" aria-controls="orderDetailsCollapse">
     Детали заказа
 </button>
+<button type="button" class="btn btn-danger btn-sm" id="deleteOrder">Удалить Ордер</button>
 <span id="saveOrderInDBWrapper">%SAVE_ORDER_IN_DB%</span>
 <span><button type="button" class="btn btn-danger btn-sm" id="createPDF" data-order-article="%ORDER_NAME%"><span class="glyphicon glyphicon-print" aria-hidden="true"></span>  PDF</button></span>
 
@@ -57,67 +58,6 @@
                 <td>%DATE%</td>
             </tr>
         </table>
-        <!--<div class="col-md-12 panel-body">
-            <div class="col-md-6 orderDetailsItem">
-                <label><input type="checkbox" name="FIO"/>Вниманию(Ф.И.О.):</label>
-                <input name="FIO" data-orderdetails="FIO" class="inputOrderDetails" value="%FIO%"/>
-            </div>
-            <div class="col-md-6 orderDetailsItem">
-                <label><input type="checkbox" name="projectName"/>Название проэкта:</label>
-                <input name="projectName" data-orderdetails="PROJECT_NAME" class="inputOrderDetails" value="%PROJECT_NAME%"/>
-            </div>
-        </div>
-        <div class="col-md-12 panel-heading">
-            <div class="col-md-6 orderDetailsItem">
-                <label><input type="checkbox" name="appeal"/>Обращение:</label>
-                <input name="appeal"  data-orderdetails="APPEAL" class="inputOrderDetails" value="%APPEAL%"/>
-            </div>
-            <div class="col-md-6 orderDetailsItem">
-                <label><input type="checkbox" name="projectDescr"/>Описание проэкта:</label>
-                <input name="projectDescr"  data-orderdetails="PROJECT_DESCR" class="inputOrderDetails" value="%PROJECT_DESCR%"/>
-            </div>
-        </div>
-        <div class="col-md-12 panel-body">
-            <div class="col-md-6 orderDetailsItem">
-                <label><input type="checkbox" name="companyName"/>Название компании:</label>
-                <input name="companyName"  data-orderdetails="COMPANY_NAME" class="inputOrderDetails" value="%COMPANY_NAME%"/>
-            </div>
-            <div class="col-md-6 orderDetailsItem">
-                <label><input type="checkbox" name="orderNumber"/>Номер заказа:</label>
-                <span class="inputOrderDetails skip">%ORDER_NAME%</span>
-            </div>
-        </div>
-        <div class="col-md-12 panel-heading">
-            <div class="col-md-6 orderDetailsItem">
-                <label><input type="checkbox" name="adress"/>Почтовый адрес:</label>
-                <input name="adress"  data-orderdetails="ADDRES" class="inputOrderDetails" value="%ADDRES%"/>
-            </div>
-            <div class="col-md-6 orderDetailsItem">
-                <label><input type="checkbox" name="accNumber"/>Номер счета:</label>
-                <input name="accNumber"  data-orderdetails="ACC_NUMBER" class="inputOrderDetails" value="%ACC_NUMBER%"/>
-            </div>
-        </div>
-        <div class="col-md-12 panel-body">
-            <div class="col-md-6 orderDetailsItem">
-                <label><input type="checkbox" name="city"/>Город, почтовый индекс:</label>
-                <input name="city"  data-orderdetails="CITY" class="inputOrderDetails" value="%CITY%"/>
-            </div>
-            <div class="col-md-6 orderDetailsItem">
-                <label><input type="checkbox" name="estimate"/>Срок:</label>
-                <input type="date" name="estimate" value="%ESTIMATE%" id="orderEstimateInput"
-                       class="inputOrderDetails skipLineHeight">
-            </div>
-        </div>
-        <div class="col-md-12 panel-heading">
-            <div class="col-md-6 orderDetailsItem">
-                <label><input type="checkbox" name="date"/>Дата:</label>
-                <input type="date" name="date" value="%DATE%" id="orderDateInput"
-                       class="inputOrderDetails skipLineHeight">
-            </div>
-            <div class="col-md-6">
-
-            </div>
-        </div>-->
     </div>
 </div>
 <div class="col-md-12" id="consOrderButtonsWrapper">
@@ -126,19 +66,20 @@
         <div class="col-md-6"><button type="button" class="btn btn-success btn-sm" id="consAveragePrices">Уникальные цены</button></div>
     </div>
 </div>
-<div class="col-md-12" id="orderCurrenciesWrapper">
-    <div class="col-md-4 col-md-offset-6">
-        <div class="col-md-5 pull-right">
-            <div class="col-md-6">
-                <button type="button" class="btn btn-success btn-sm" autofocus="true" id="orderCurrencyUSDToggle">
-                    <span class="glyphicon glyphicon-usd" aria-hidden="true"></span>
-                </button>
-            </div>
-            <div class="col-md-6">
-                <input id="usdSet" type="number" value="24.00" step="0.1" style="width: 56px;">
-            </div>
-        </div>
-        <div class="col-md-3 pull-right">
-            <button type="button" class="btn btn-warning btn-sm activeCurrency" id="orderCurrencyUAHToggle">UAH</button>
+<div class="col-md-12 navbar navbar-default" id="orderCurrenciesWrapper">
+    <div class="col-md-8 col-md-offset-4">
+        <button type="button" class="btn btn-warning btn-sm activeCurrency" id="orderCurrencyUAHToggle">UAH</button>
+        <button type="button" class="btn btn-success btn-sm" autofocus="true" id="orderCurrencyUSDToggle">
+            <span class="glyphicon glyphicon-usd" aria-hidden="true"></span>
+        </button>
+        <input id="usdSet" type="number" value="24.00" step="0.1" style="width: 56px;">
+        <button type="button" class="btn btn-info btn-sm" autofocus="true" id="orderCurrencyEURToggle">
+            <span class="glyphicon glyphicon-eur" aria-hidden="true"></span>
+        </button>
+        <input id="eurSet" type="number" value="24.00" step="0.1" style="width: 56px;">
+        <button type="button" class="btn btn-warning btn-sm" autofocus="true" id="orderCurrencyRUBToggle">
+            <span class="glyphicon glyphicon-rub" aria-hidden="true"></span>
+        </button>
+        <input id="rubSet" type="number" value="24.00" step="0.1" style="width: 56px;">
     </div>
 </div>

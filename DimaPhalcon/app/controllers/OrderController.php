@@ -19,7 +19,7 @@ class OrderController  extends \Phalcon\Mvc\Controller
                   ->setProject($project)
                   ->setMap(new RawValue('default'))
                   ->setConsolidate($consolidate);
-            if ($consolidate) {
+            if ('true' === $consolidate) {
                 $order->setStatus('draft');
             } else {
                 $order->setStatus('save');
@@ -32,7 +32,7 @@ class OrderController  extends \Phalcon\Mvc\Controller
             }
             $order_id = $order->getId();
             
-            if ($consolidate) {
+            if ('true' === $consolidate) {
                 $tab = new TabsController;
                 $this->response->setJsonContent($tab->addNewRightTab($order_id));
             } else {
@@ -189,13 +189,13 @@ class OrderController  extends \Phalcon\Mvc\Controller
         }
     }
 
-   public function openSavedOrderAction() {
+    public function openSavedOrderAction() {
        if ($this->request->isAjax() && $this->request->isPost()) {
             $arr = $this->request->getPost('arr');
             $tab = $this->request->getPost('tab');
             $active = $this->request->getPost('active');
             $this->response->setContentType('application/json', 'UTF-8');
-           foreach ($arr as $id) {
+            foreach ($arr as $id) {
                $orderId = $id;
                $tabs = TabsRight::findFirst(array("order_id = '$orderId'"));
                if ($tabs) {
@@ -218,22 +218,74 @@ class OrderController  extends \Phalcon\Mvc\Controller
                } else {
                    $tabs = TabsRight::findFirst(array("order_id = '$orderId'"));
                    $tabs->setOrderId($orderId)
-                       ->save();
+                        ->save();
                }
-           }
+            }
             $this->response->setJsonContent(true);
+            return $this->response;
+       } else {
+            $this->response->redirect('');
+       }
+    }
+
+    public function deleteOrderAction()
+    {
+        if ($this->request->isAjax() && $this->request->isPost()) {
+            $orderId = $this->request->getPost('orderId');
+            $this->response->setContentType('application/json', 'UTF-8');
+            $res = false;
+            if ($this->deleteProductsFromOrder($orderId) && $this->deleteOrderFromTabs($orderId) && $this->deleteOrder($orderId)) {
+                $res = true;
+            }
+            $this->response->setJsonContent($res);
             return $this->response;
         } else {
             $this->response->redirect('');
         }
-   }
+    }
+
+    public function deleteOrder($id)
+    {
+        $orObj = Orders::findFirst($id);
+        $res = true;
+        if (count($orObj)) {
+            if (!$orObj->delete()) {
+                $res = false;
+            }
+        }
+        return $res;
+    }
+
+    public function deleteProductsFromOrder($id)
+    {
+        $orObj = Productinorder::find(array("orderId = '$id'"));
+        $res = true;
+        if (count($orObj)) {
+            if (!$orObj->delete()) {
+                $res = false;
+            }
+        }
+        return $res;
+    }
+
+    public function deleteOrderFromTabs($id)
+    {
+        $orObj = TabsRight::find(array("order_id = '$id'"));
+        $res = true;
+        if (count($orObj)) {
+            if (!$orObj->delete()) {
+                $res = false;
+            }
+        }
+        return $res;
+    }
 
     public function createAddToOrder() {
         //$substObj = new Substitution();
         $res = '<button class="btn btn-info btn-sm" id="addToOrderBtn">Добавить в ордер</button>';
         return $res;
     }
-    
+
     public function generateArticle($number) {
         $zero = '00';
         if (9 < $number && 100 > $number) {

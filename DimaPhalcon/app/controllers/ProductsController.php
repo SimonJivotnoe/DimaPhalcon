@@ -175,6 +175,7 @@ class ProductsController extends \Phalcon\Mvc\Controller
         if ($this->request->isAjax() && $this->request->isGet()) {
             $this->response->setContentType('application/json', 'UTF-8');
             $tree = [];
+            $i = 1;
             $catObj = Categories::find();
             if (count($catObj)) {
                 foreach ($catObj as $val) {
@@ -182,25 +183,30 @@ class ProductsController extends \Phalcon\Mvc\Controller
                     $catName = $val->getCategoryName();
                     $node = [
                         'label'    => $catName,
-                        'children' => []
+                        'children' => [],
+                        'id'       => $i
                     ];
                     $metallObj = Metalls::find();
                     if (count($metallObj)) {
                         foreach ($metallObj as $metVal) {
+                            $i++;
                             $metId = $metVal->getId();
                             $metName = $metVal->getName();
                             $node2 = [
                                 'label'    => $metName,
-                                'children' => []
+                                'children' => [],
+                                'id'       => $i
                             ];
                             $pr = Products::find(
                                 "category_id = '" . $catId . "' AND metall = '" . $metId . "' AND status = 'save' AND article != 'NULL'"
                             );
                             if (count($pr)) {
                                 foreach ($pr as $prVal) {
+                                    $i++;
                                     $child = [
                                         'label' => $prVal->getArticle() . '___' . $prVal->getProductName(),
-                                        'id'    => $prVal->getProductId()
+                                        'productId'    => $prVal->getProductId(),
+                                        'id'    => $i
                                     ];
                                     array_push($node2['children'], (object)$child);
                                 }
@@ -213,6 +219,7 @@ class ProductsController extends \Phalcon\Mvc\Controller
                     if (count($node['children'])) {
                         array_push($tree, (object)$node);
                     }
+                    $i++;
                 }
             }
             $this->response->setJsonContent($tree);

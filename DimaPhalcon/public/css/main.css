@@ -179,7 +179,7 @@ a {
 #right-component, #db-right-component, #left-component {
 //left: 60em;
     margin-left: 5px;
-    margin-top: 49px;
+    padding-top: 49px;
     padding-bottom: 49px;
 }
 
@@ -929,7 +929,9 @@ table.rc-table-resizing thead,table.rc-table-resizing thead> th,table.rc-table-r
 }
 
 #orderCurrenciesWrapper {
-    margin-bottom: 5px;
+    margin-top: 8px;
+    margin-bottom: 1px;
+    min-height: 33px;
 }
 
 .clearer {
