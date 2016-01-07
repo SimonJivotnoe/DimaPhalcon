@@ -68,18 +68,19 @@
 </div>
 <div class="col-md-12 navbar navbar-default" id="orderCurrenciesWrapper">
     <div class="col-md-8 col-md-offset-4">
-        <button type="button" class="btn btn-warning btn-sm activeCurrency" id="orderCurrencyUAHToggle">UAH</button>
-        <button type="button" class="btn btn-success btn-sm" autofocus="true" id="orderCurrencyUSDToggle">
+        <button type="button" class="btn btn-warning btn-sm activeCurrency" data-currency="грн" data-area="uahSet" id="orderCurrencyUAHToggle">UAH</button>
+        <input data-set="uahSet" type="number" value="1.00" step="0.1" style="display: none;">
+        <button type="button" class="btn btn-success btn-sm" autofocus="true" data-currency="USD" data-area="usdSet" id="orderCurrencyUSDToggle">
             <span class="glyphicon glyphicon-usd" aria-hidden="true"></span>
         </button>
-        <input id="usdSet" type="number" value="24.00" step="0.1" style="width: 56px;">
-        <button type="button" class="btn btn-info btn-sm" autofocus="true" id="orderCurrencyEURToggle">
+        <input data-set="usdSet" type="number" value="24.00" step="0.1" style="width: 56px;">
+        <button type="button" class="btn btn-info btn-sm" autofocus="true" data-currency="EUR" data-area="eurSet" id="orderCurrencyEURToggle">
             <span class="glyphicon glyphicon-eur" aria-hidden="true"></span>
         </button>
-        <input id="eurSet" type="number" value="24.00" step="0.1" style="width: 56px;">
-        <button type="button" class="btn btn-warning btn-sm" autofocus="true" id="orderCurrencyRUBToggle">
+        <input data-set="eurSet" type="number" value="27.00" step="0.1" style="width: 56px;">
+        <button type="button" class="btn btn-warning btn-sm" autofocus="true" data-currency="руб" data-area="rubSet" id="orderCurrencyRUBToggle">
             <span class="glyphicon glyphicon-rub" aria-hidden="true"></span>
         </button>
-        <input id="rubSet" type="number" value="24.00" step="0.1" style="width: 56px;">
+        <input data-set="rubSet" type="number" value="0.4" step="0.1" style="width: 56px;">
     </div>
 </div>

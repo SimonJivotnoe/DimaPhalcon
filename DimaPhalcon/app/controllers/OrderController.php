@@ -268,6 +268,18 @@ class OrderController  extends \Phalcon\Mvc\Controller
         return $res;
     }
 
+    public function deleteFromConsolidateOrder($id)
+    {
+        $orObj = ConsolidateOrders::find(array("cons_order_id = '$id'"));
+        $res = true;
+        if (count($orObj)) {
+            if (!$orObj->delete()) {
+                $res = false;
+            }
+        }
+        return $res;
+    }
+
     public function deleteOrderFromTabs($id)
     {
         $orObj = TabsRight::find(array("order_id = '$id'"));

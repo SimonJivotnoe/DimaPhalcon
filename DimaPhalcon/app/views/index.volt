@@ -13,7 +13,7 @@
 <body>
     <div id="waitSpinner"></div>
     <div class="col-md-12" id="mainMenuWrapper">
-        <div class="col-md-8 col-md-offset-4" style="margin-top: 18%;">
+        <div class="col-md-9 col-md-offset-3" style="margin-top: 18%;">
             <div class="col-md-6 mainMenuIcon hvr-float-shadow btn-primary" id="runPreferences">
                 <span class="glyphicon glyphicon-cog" aria-hidden="true"></span>
                 <h4>Найстройки</h4>
@@ -22,16 +22,17 @@
                 <span class="glyphicon glyphicon-folder-open" aria-hidden="true"></span>
                 <h4>База Данных</h4>
             </div>
-        </div>
-        <div class="col-md-8 col-md-offset-4" style="margin-top: 5px;">
-            <div class="col-md-6 mainMenuIcon hvr-float-shadow btn-info" id="runFM">
-                <span class="glyphicon glyphicon-duplicate" aria-hidden="true"></span>
-                <h4>Файловый Менеджер</h4>
-            </div>
             <div class="col-md-6 mainMenuIcon hvr-float-shadow btn-success" id="runPR">
                 <span class="glyphicon glyphicon-check" aria-hidden="true"></span>
                 <h4>Создать заказ</h4>
             </div>
+        </div>
+        <div class="col-md-8 col-md-offset-4" style="margin-top: 5px;">
+            <!--<div class="col-md-6 mainMenuIcon hvr-float-shadow btn-info" id="runFM">
+                <span class="glyphicon glyphicon-duplicate" aria-hidden="true"></span>
+                <h4>Файловый Менеджер</h4>
+            </div>-->
+
         </div>
     </div>
     <nav class="navbar navbar-default navbar-fixed-top" id="topIconsWrapper" style="min-height: 46px;">
@@ -47,9 +48,9 @@
                     <div class="form-group hvr-pulse-grow" id="dbIcon">
                         <span class="glyphicon glyphicon-folder-close centerIcon" aria-hidden="true"></span>
                     </div>
-                    <div class="form-group hvr-pulse-grow" id="menuOpen">
+                    <!--<div class="form-group hvr-pulse-grow" id="menuOpen">
                         <span class="glyphicon glyphicon-duplicate centerIcon" aria-hidden="true"></span>
-                    </div>
+                    </div>-->
                     <div class="form-group hvr-pulse-grow" id="prIcon">
                         <span class="glyphicon glyphicon-check centerIcon" aria-hidden="true"></span>
                     </div>
@@ -66,8 +67,16 @@
 
                         </div>
                     </div>
-                    <div class="col-md-8" id="completedProduct">
-                        
+                    <div class="col-md-8">
+                        <div class="col-md-12">
+                            <button type="button" class="btn btn-info btn-sm" id="hideShowProductsTree">
+                                <span class="glyphicon glyphicon-menu-left hideClientsTree" aria-hidden="true"></span>
+                                <span class="glyphicon glyphicon-menu-right showClientsTree" style="display: none;" aria-hidden="true"></span>
+                            </button>
+                        </div>
+                        <div class="col-md-12" id="completedProduct">
+
+                        </div>
                     </div>
                 </div>
             </div>
@@ -401,6 +410,7 @@
         </div>
         <div class="clearer"></div>
     </div>
+    <!--
 <div class="modal fade bs-example-modal-lg in" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" id="openMenuModal">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
@@ -471,9 +481,9 @@
                 </div>
                 <div class="clearer"></div>
             </div>
-        </div><!-- /.modal-content -->
-    </div><!-- /.modal-dialog -->
-</div>
+        </div>
+    </div>
+</div>-->
     <script src="js/jquery/jquery-1.11.2.min.js"></script>
     <script src="js/jquery/jquery-ui.min.js"></script>
     <link rel="stylesheet" href="css/bootstrap/bootstrap-table.css">

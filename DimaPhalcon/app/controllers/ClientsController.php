@@ -165,25 +165,17 @@ class ClientsController  extends \Phalcon\Mvc\Controller
             $this->response->setContentType('application/json', 'UTF-8');
             $client = Clients::findFirst($this->request->getPost('id'));
             $res = false;
-            $orderObj = new OrderController();
             $ordersArr = [];
             if (count($client)) {
                 if (count($client->Projects)) {
+                    $projectObj = new ProjectsController();
                     foreach ($client->Projects as $project) {
-                        if (count($project->Orders)) {
-                            foreach ($project->Orders as $order) {
-                                array_push($ordersArr, $order->getId());
-                                $orderObj->deleteProductsFromOrder($order->getId());
-                                $orderObj->deleteOrderFromTabs($order->getId());
-                                $order->delete();
-                            }
-                        }
-                        $project->delete();
+                        array_push($ordersArr, $projectObj->deleteProject($project)['orders']);
                     }
                 }
                 $res = $client->delete();
             }
-            $this->response->setJsonContent(array('res' => $res, 'orders' => $ordersArr));
+            $this->response->setJsonContent(array('res' => $res, 'orders' => array_merge(...$ordersArr)));
             
             return $this->response;
         } else {

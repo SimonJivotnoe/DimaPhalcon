@@ -453,14 +453,10 @@
 	 */
 	function setOrderSum () {
 		var orderSum = 0;
-		var currency = ' грн';
+		var currency = $('.activeCurrency' ).attr('data-currency');
 		$.each($('.outputSumInOrder'), function(num, obj) {
 			orderSum += parseInt($(obj).text());
 		});
-		
-		if ($('#orderCurrencyUSDToggle').hasClass('activeCurrency')) {
-			currency = ' USD';
-		}
 		$('#orderSum').text(orderSum + currency);
 		$('#orderSumWithDiscount').text(orderSum - orderSum * parseInt($('#changeDiscount').val())/100 + currency);
 	}
@@ -516,6 +512,23 @@
 	 * @param {type} scope
 	 * @returns {undefined}
 	 */
+
+	function toggleTreeDisplay (treeWrapper, button) {
+		if ($(treeWrapper).hasClass('hiddenTree')) {
+			$(treeWrapper).removeClass('hiddenTree');
+			$(treeWrapper).show('highlight');
+			$(button)
+				.find('.hideClientsTree').show().end()
+				.find('.showClientsTree').hide();
+		} else {
+			$(treeWrapper).addClass('hiddenTree');
+			$(treeWrapper).hide('highlight');
+			$(button)
+				.find('.hideClientsTree').hide().end()
+				.find('.showClientsTree').show();
+		}
+	}
+
 	function removeRowFromOrder (scope) {
 		var productId = $(scope ).attr('name');
 		if (1 >= countProductInOrder(productId)) {
@@ -532,69 +545,71 @@
 			productsDetails: {}
 		};
 		$.each(consolidateData, function (orderId, obj) {
-			$.each(obj.map, function (section, secObj) {
-				if (_.size(secObj)) {
-					$.each(secObj, function (num, detSec) {
-						$.each(detSec, function (prId, quantity) {
-							if (!consolidateObj.sections[section]) {
-								consolidateObj.sections[section] = {};
-							}
-							if (!consolidateObj.sections[section][prId]) {
-								consolidateObj.sections[section][prId] = {};
-							}
-							if (!consolidateObj.sections[section][prId].quantity) {
-								consolidateObj.sections[section][prId].quantity = 0;
-							}
-							if (!consolidateObj.sections[section][prId].inPrices) {
-								consolidateObj.sections[section][prId].inPrices = [];
-							}
-							if (!consolidateObj.sections[section][prId].outPrices) {
-								consolidateObj.sections[section][prId].outPrices = [];
-							}
-							if (!consolidateObj.sections[section][prId].sum) {
-								consolidateObj.sections[section][prId].sum = [];
-							}
-							if (!consolidateObj.sections[section][prId].inSum) {
-								consolidateObj.sections[section][prId].inSum = [];
-							}
-							if (!consolidateObj.withoutSection[prId]) {
-								consolidateObj.withoutSection[prId] = {};
-							}
-							if (!consolidateObj.withoutSection[prId].quantity) {
-								consolidateObj.withoutSection[prId].quantity = 0;
-							}
-							if (!consolidateObj.withoutSection[prId].inPrices) {
-								consolidateObj.withoutSection[prId].inPrices = [];
-							}
-							if (!consolidateObj.withoutSection[prId].outPrices) {
-								consolidateObj.withoutSection[prId].outPrices = [];
-							}
-							if (!consolidateObj.withoutSection[prId].sum) {
-								consolidateObj.withoutSection[prId].sum = [];
-							}
-							if (!consolidateObj.withoutSection[prId].inSum) {
-								consolidateObj.withoutSection[prId].inSum = [];
-							}
-							consolidateObj.sections[section][prId].quantity += parseInt(quantity);
-							consolidateObj.withoutSection[prId].quantity += parseInt(quantity);
-							for (var i = 1; i <= parseInt(quantity); i++) {
-								var data = {};
-								data[parseInt(consolidateData[orderId].products[prId].inSum)] =  parseInt(consolidateData[orderId].products[prId].outSum);
-								consolidateObj.sections[section][prId].inSum.push(parseInt(consolidateData[orderId].products[prId].inSum));
-								consolidateObj.sections[section][prId].inPrices.push(parseInt(consolidateData[orderId].products[prId].inPrice));
-								consolidateObj.sections[section][prId].outPrices.push(parseInt(consolidateData[orderId].products[prId].outPrice));
-								consolidateObj.sections[section][prId].sum.push(data);
-								consolidateObj.withoutSection[prId].inPrices.push(parseInt(consolidateData[orderId].products[prId].inPrice));
-								consolidateObj.withoutSection[prId].outPrices.push(parseInt(consolidateData[orderId].products[prId].outPrice));
-								data = {};
-								data[parseInt(consolidateData[orderId].products[prId].inSum)] = parseInt(consolidateData[orderId].products[prId].outSum);
-								consolidateObj.withoutSection[prId].inSum.push(parseInt(consolidateData[orderId].products[prId].inSum));
-								consolidateObj.withoutSection[prId].sum.push(data);
-							}
+			if ( _.size(obj.map)) {
+				$.each(obj.map, function (section, secObj) {
+					if (_.size(secObj)) {
+						$.each(secObj, function (num, detSec) {
+							$.each(detSec, function (prId, quantity) {
+								if (!consolidateObj.sections[section]) {
+									consolidateObj.sections[section] = {};
+								}
+								if (!consolidateObj.sections[section][prId]) {
+									consolidateObj.sections[section][prId] = {};
+								}
+								if (!consolidateObj.sections[section][prId].quantity) {
+									consolidateObj.sections[section][prId].quantity = 0;
+								}
+								if (!consolidateObj.sections[section][prId].inPrices) {
+									consolidateObj.sections[section][prId].inPrices = [];
+								}
+								if (!consolidateObj.sections[section][prId].outPrices) {
+									consolidateObj.sections[section][prId].outPrices = [];
+								}
+								if (!consolidateObj.sections[section][prId].sum) {
+									consolidateObj.sections[section][prId].sum = [];
+								}
+								if (!consolidateObj.sections[section][prId].inSum) {
+									consolidateObj.sections[section][prId].inSum = [];
+								}
+								if (!consolidateObj.withoutSection[prId]) {
+									consolidateObj.withoutSection[prId] = {};
+								}
+								if (!consolidateObj.withoutSection[prId].quantity) {
+									consolidateObj.withoutSection[prId].quantity = 0;
+								}
+								if (!consolidateObj.withoutSection[prId].inPrices) {
+									consolidateObj.withoutSection[prId].inPrices = [];
+								}
+								if (!consolidateObj.withoutSection[prId].outPrices) {
+									consolidateObj.withoutSection[prId].outPrices = [];
+								}
+								if (!consolidateObj.withoutSection[prId].sum) {
+									consolidateObj.withoutSection[prId].sum = [];
+								}
+								if (!consolidateObj.withoutSection[prId].inSum) {
+									consolidateObj.withoutSection[prId].inSum = [];
+								}
+								consolidateObj.sections[section][prId].quantity += parseInt(quantity);
+								consolidateObj.withoutSection[prId].quantity += parseInt(quantity);
+								for (var i = 1; i <= parseInt(quantity); i++) {
+									var data = {};
+									data[parseInt(consolidateData[orderId].products[prId].inSum)] =  parseInt(consolidateData[orderId].products[prId].outSum);
+									consolidateObj.sections[section][prId].inSum.push(parseInt(consolidateData[orderId].products[prId].inSum));
+									consolidateObj.sections[section][prId].inPrices.push(parseInt(consolidateData[orderId].products[prId].inPrice));
+									consolidateObj.sections[section][prId].outPrices.push(parseInt(consolidateData[orderId].products[prId].outPrice));
+									consolidateObj.sections[section][prId].sum.push(data);
+									consolidateObj.withoutSection[prId].inPrices.push(parseInt(consolidateData[orderId].products[prId].inPrice));
+									consolidateObj.withoutSection[prId].outPrices.push(parseInt(consolidateData[orderId].products[prId].outPrice));
+									data = {};
+									data[parseInt(consolidateData[orderId].products[prId].inSum)] = parseInt(consolidateData[orderId].products[prId].outSum);
+									consolidateObj.withoutSection[prId].inSum.push(parseInt(consolidateData[orderId].products[prId].inSum));
+									consolidateObj.withoutSection[prId].sum.push(data);
+								}
+							});
 						});
-					});
-				}
-			});
+					}
+				});
+			}
 			$.each(obj.products, function (prId, obj) {
 				if (!consolidateObj.productsDetails[prId]) {
 					consolidateObj.productsDetails[prId] = {};
@@ -1073,19 +1088,11 @@
 
 		// clients Tree
 		$('#hideShowClietsTree').click(function() {
-			if ($('.totalClientsTreeWrapper').hasClass('hiddenTree')) {
-				$('.totalClientsTreeWrapper').removeClass('hiddenTree');
-				$('.totalClientsTreeWrapper').show('highlight');
-				$('#hideShowClietsTree')
-						.find('.hideClientsTree').show().end()
-						.find('.showClientsTree').hide();
-			} else {
-				$('.totalClientsTreeWrapper').addClass('hiddenTree');
-				$('.totalClientsTreeWrapper').hide('highlight');
-				$('#hideShowClietsTree')
-						.find('.hideClientsTree').hide().end()
-						.find('.showClientsTree').show();
-			}
+			toggleTreeDisplay('.totalClientsTreeWrapper', '#hideShowClietsTree');
+		});
+
+		$('#hideShowProductsTree').click(function() {
+			toggleTreeDisplay('#productsTreeWrapper', '#hideShowProductsTree');
 		});
 		
 		$('#findInClietsTree').keyup(function() {
@@ -1219,6 +1226,8 @@
 				});
 				if (!check) {
 					PROJECTS.addNewProject(data);
+					var $tree = $('#clientsTree');
+					setTimeout(function () {$tree.tree('openNode', $tree.tree('getSelectedNode'));}, 100);
 				}
 			}
 		});
@@ -1259,7 +1268,7 @@
 					},
 					buttons: [
 						{addClass: 'btn btn-success', text: 'Удалить!', onClick: function($noty) {
-								$.when(CLIENTS.deleteProject(selectedNode.projectId)).then(function (data) {
+								$.when(PROJECTS.deleteProject(selectedNode.projectId)).then(function (data) {
 									$noty.close();
 								});
 							}
@@ -1278,6 +1287,8 @@
 			if ($tree.tree('getSelectedNode').projectId) {
 				$.when(ORDER.createNewOrder($tree.tree('getSelectedNode').projectId, false)).done(function () {
 					CLIENTS.getClientsTree(true);
+					var $tree = $('#clientsTree');
+					setTimeout(function () {$tree.tree('openNode', $tree.tree('getSelectedNode'));}, 100);
 				});
 			} else {
 				noty({
@@ -2077,24 +2088,16 @@
 					}
 				}
 			}).end()
-			
-			.find('#orderCurrencyUAHToggle').click(function () {
-				$('#orderCurrencyUAHToggle').addClass('activeCurrency');
-				$('#orderCurrencyUSDToggle').removeClass('activeCurrency');
+
+			.filter('#orderCurrenciesWrapper' ).on('click', 'button', function () {
+				$('#orderCurrenciesWrapper .activeCurrency' ).removeClass('activeCurrency');
+				$(this ).addClass('activeCurrency');
+				var dataArea = $(this ).attr('data-area');
 				$.each($('[data-uah]'), function (num, td) {
-					$(td).text($(td).attr('data-uah'));
+					$(td).text((parseInt($(td).attr('data-uah')) / parseFloat($('[data-set="' + dataArea + '"]').val())).toFixed(2));
 				});
 				setOrderSum();
-			}).end()
-			
-			.find('#orderCurrencyUSDToggle').click(function () {
-				$('#orderCurrencyUSDToggle').addClass('activeCurrency');
-				$('#orderCurrencyUAHToggle').removeClass('activeCurrency');
-				$.each($('[data-uah]'), function (num, td) {
-					$(td).text((parseInt($(td).attr('data-uah')) / parseInt($('#usdSet').val())).toFixed(2));
-				});
-				setOrderSum();
-			}).end();
+			});
 
 		return html;
 	}
@@ -2806,7 +2809,7 @@
 							}, 1);
 							buildConsolidateOrder(data.consolidateData);
 						}
-						setTimeout(setOrderSum, 1);
+						setTimeout(setOrderSum, 100);
 						showBody();
 						$('#rightTabs, #rightTabsContent').fadeIn('slow');
 						setTimeout(function(){ spinnerRight.stop(document.getElementById('orderSpinner')); }, 200);
@@ -3532,7 +3535,7 @@
 					if (!MAIN.orRequested) {
 						TABS.getRightTabsList();
 						CLIENTS.getClientsDetails();
-						//PRODUCT.getProductsTree();
+						PRODUCT.getProductsTree();
 					}
 				}
 			},
@@ -3881,9 +3884,11 @@
 				switch (node.sector) {
 					case 'client':
 						CLIENTS.fillFormOfClientsInfo(node.info);
+						MAIN.orderId = false;
 						break;
 					case 'project':
 						PROJECTS.fillFormOfProjectInfo(node.info);
+						MAIN.orderId = false;
 						break;
 					case 'order':
 						$('#addNewClientForm, #addNewProjectForm' ).hide();
@@ -3941,7 +3946,7 @@
 				}).then(function (data)
 				{
 					CLIENTS.getClientsTree(true);
-					if (data.orders.length) {
+					if (data.orders && data.orders.length) {
 						for (var i = 0; i<=data.orders.length; i++) {
 							$('.closeTabRight[data-order="' + data.orders[i] + '"]' ).click();
 						}
@@ -4108,6 +4113,10 @@
 					{
 						if (true === data) {
 							$('.closeTabRight[data-order="' + MAIN.orderId + '"]' ).click();
+						}
+						if ($('#fileManagerOrdersTab' ).hasClass('active')) {
+							$('#orderWrapperFromTree' ).hide();
+							CLIENTS.getClientsTree(true);
 						}
 					});
 				}

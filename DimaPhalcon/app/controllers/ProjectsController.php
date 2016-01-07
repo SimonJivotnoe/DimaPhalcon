@@ -44,12 +44,7 @@ class ProjectsController  extends \Phalcon\Mvc\Controller
             $project = Projects::findFirst($this->request->getPost('id'));
             $res = false;
             if (count($project)) {
-                if (count($project->Orders)) {
-                    foreach ($project->Orders as $order) {
-                        $order->delete();
-                    }
-                }
-                $res = $project->delete();
+                $res = $this->deleteProject($project)['res'];
             }
             $this->response->setJsonContent($res);
             
@@ -57,5 +52,23 @@ class ProjectsController  extends \Phalcon\Mvc\Controller
         } else {
             $this->response->redirect('');
         }
+    }
+
+    public function deleteProject($project)
+    {
+        $ordersArr = [];
+        if (count($project->Orders)) {
+            $orderObj = new OrderController();
+            foreach ($project->Orders as $order) {
+                $orderId = $order->getId();
+                array_push($ordersArr, $orderId);
+                $orderObj->deleteFromConsolidateOrder($orderId);
+                $orderObj->deleteProductsFromOrder($orderId);
+                $orderObj->deleteOrderFromTabs($orderId);
+                $orderObj->deleteFromConsolidateOrder($orderId);
+                $order->delete();
+            }
+        }
+        return ['res' => $project->delete(), 'orders' => $ordersArr];
     }
 }
