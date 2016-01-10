@@ -1311,7 +1311,7 @@
 			} else if('selected' === $(this ).attr('data-selected')){
 				$(this).removeClass('openProductTabSelected').attr('data-selected', '' );
 			}
-			enableDisableButton($('.openProductTabSelected'), $('#showItemFromFileManager'));
+			enableDisableButton($('.openProductTabSelected'), $('#showItemFromClientsTree'));
 		}));
 		
 		$('#clientsTree').on('click', '.consolidateOrder', (function(e) {
@@ -2431,7 +2431,7 @@
 				} else if ('selected' === $(this).attr('data-selected')) {
 					$(this).removeClass('openProductTabSelected').attr('data-selected', '');
 				}
-				enableDisableButton($('.openProductTabSelected'), $('#showItemFromFileManager'));
+				enableDisableButton($('.openProductTabSelected'), $('#showItemFromClientsTree'));
 			}).end()
 
 			.find('.consolidateOrder').click(function () {

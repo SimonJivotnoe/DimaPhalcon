@@ -287,7 +287,9 @@ a {
     text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.23);
     -webkit-font-smoothing: antialiased;
 }
-
+#fileManagerCatogoriesSelect {
+    height: 34px;
+}
 #kimListWrapper, #metallListWrapper, #categoriesListTable {
     margin-top: 15px;
 }

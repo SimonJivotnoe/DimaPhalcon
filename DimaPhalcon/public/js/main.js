@@ -182,7 +182,7 @@ $( document ).ready( function ()
 		}
 	});
 
-	$('#showItemFromFileManager').click(function() {
+	$('#showItemFromFileManager, #showItemFromClientsTree').click(function() {
 		var product = [];
 		var order = [];
 		$(this).hide();
@@ -194,8 +194,6 @@ $( document ).ready( function ()
 				order.push($(obj).attr('data-id'));
 			}
 		});
-		console.log(product);
-		console.log(order);
 		$.when(TABS.openSavedProduct(product, 'new', false, false), ORDER.openSavedOrder(order, 'new', false, false)).done(function(){
 			window.location.href = LOCATION;
 		});
