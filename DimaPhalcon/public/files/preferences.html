@@ -1,0 +1,234 @@
+<div id="preferencesWrapper">
+        <div class="col-md-10 col-md-offset-2" style="margin-top: 30px;">
+            <div class="col-md-4">
+                <div class="col-md-8">
+                    <input type="text" class="form-control" id="customThemeName" placeholder="Название темы">
+                </div>
+                <div class="col-md-4">
+                    <button type="button" id="addThemeBtn" class="btn btn-info btn-sm">
+                        <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+                    </button>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <select id="customThemesList" class="form-control input-sm">
+                </select>
+            </div>
+            <div class="col-md-2">
+                <button type="button" id="applyThemeBtn" class="btn btn-success btn-sm">
+                    <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
+                </button>
+                <button type="button" id="deleteThemeBtn" class="btn btn-danger btn-sm">
+                    <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+                </button>
+            </div>
+        </div>
+        <div class="col-md-12">
+            <hr>
+        </div>
+        <div class="col-md-12 toCollapse" data-toggle="collapse"
+                      data-target="#prefGeneralWrapper" aria-expanded="true" aria-controls="prefGeneralWrapper">
+            <h4>
+                Основные
+                <span class="glyphicon glyphicon-cog" aria-hidden="true"></span>
+            </h4>
+        </div>
+        <div class="col-md-12 collapse in" id="prefGeneralWrapper">
+            <div class="col-md-9 col-md-offset-3">
+                <div class="col-md-12">
+                    <table border="0" class="stylesTable">
+                        <tr>
+                            <th>Основной Фон</th>
+                            <th>Размер шрифта</th>
+                            <th>Цвет шрифта</th>
+                            <th>Разделительные линии</th>
+                        </tr>
+                        <tr>
+                            <td><input type="text" class="form-control" id="globalBodyColor"></td>
+                            <td><select id="globalFontSize" class="fontSizeSelect" style="width: 125px;border-radius: 4px;height: 34px;"></select></td>
+                            <td><input type="text" class="form-control" id="globalFontColor"></td>
+                            <td><input type="text" class="form-control" id="globalHRColor"></td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-12">
+            <hr>
+        </div>
+        <div class="col-md-12 toCollapse" data-toggle="collapse"
+                      data-target="#prefTabsWrapper" aria-expanded="true" aria-controls="prefTabsWrapper">
+            <h4>
+                Вкладки
+                <span class="glyphicon glyphicon-duplicate" aria-hidden="true"></span>
+            </h4>
+        </div>
+        <div class="col-md-12 collapse in" id="prefTabsWrapper">
+            <div class="col-md-12 col-md-offset-0">
+                <div class="col-md-5 col-md-offset-3">
+                    <table border="0" class="stylesTable">
+                        <tr>
+                            <th>Размер шрифта</th>
+                            <th>Цвет шрифта</th>
+                            <th>Фон активной вкладки</th>
+                            <th>Фон неактивной вкладки</th>
+                        </tr>
+                        <tr>
+                            <td><select id="fontSizeTabs" class="fontSizeSelect" style="width: 125px;border-radius: 4px;height: 34px;"></select></td>
+                            <td><input type="text" class="form-control" id="prefTabFontColor"></td>
+                            <td><input type="text" class="form-control" id="prefActiveTabColor"></td>
+                            <td><input type="text" class="form-control" id="prefInactiveTabColor"></td>
+                        </tr>
+                    </table>
+                </div>
+                <div class="col-md-3 col-md-offset-4" style="margin-top: 5px;">
+                    <div role="tabpanel">
+                        <ul class="nav nav-tabs" role="tablist" id="testTab">
+                            <li role="presentation" class="active">
+                                <a href="#" aria-controls="test" role="tab" data-toggle="tab">
+                                    <span class="tabName">Active</span>
+                                    <span class="closeTab glyphicon glyphicon-remove" aria-hidden="true"></span>
+                                </a>
+                            </li>
+                            <li role="presentation" class="">
+                                <a href="#" aria-controls="test" role="tab" data-toggle="tab">
+                                    <span class="tabName">Inactive</span>
+                                    <span class="closeTab glyphicon glyphicon-remove" aria-hidden="true"></span>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-12">
+            <hr>
+        </div>
+        <div class="col-md-12 toCollapse" data-toggle="collapse"
+                      data-target="#prefProductsWrapper" aria-expanded="true" aria-controls="prefProductsWrapper">
+            <h4>
+                Изделия
+                <span class="glyphicon glyphicon-compressed" aria-hidden="true"></span>
+            </h4>
+        </div>
+        <div class="col-md-12 collapse in" id="prefProductsWrapper">
+            <div class="col-md-10 col-md-offset-2">
+                <div class="col-md-9">
+                    <table border="0" class="stylesTable">
+                        <tr>
+                            <th></th>
+                            <th>Фон</th>
+                            <th>Цвет Имени Ячейки</th>
+                            <th>Цвет Названия Ячейки</th>
+                            <th>Фон Названия Ячейки</th>
+                            <th>Цвет Количества Ячейки</th>
+                            <th>Фон Количества Ячейки</th>
+                        </tr>
+                        <tr>
+                            <th>A1</th>
+                            <td><input type="text" class="form-control" id="prefDynProductTableColor"></td>
+                            <td><input type="text" class="form-control" id="prefDynProductFontColor"></td>
+                            <td><input type="text" class="form-control" id="prefDynProductCellFontColor"></td>
+                            <td><input type="text" class="form-control" id="prefDynProductCellBackground"></td>
+                            <td><input type="text" class="form-control" id="prefDynProductQuantityColor"></td>
+                            <td><input type="text" class="form-control" id="prefDynProductQuantityBackground"></td>
+                        </tr>
+                        <tr>
+                            <th>KIM</th>
+                            <td><input type="text" class="form-control" id="prefProductTableColor"></td>
+                            <td><input type="text" class="form-control" id="prefProductFontColor"></td>
+                            <td><input type="text" class="form-control" id="prefProductCellFontColor"></td>
+                            <td><input type="text" class="form-control" id="prefProductCellBackground"></td>
+                            <td><input type="text" class="form-control" id="prefProductQuantityColor"></td>
+                            <td><input type="text" class="form-control" id="prefProductQuantityBackground"></td>
+                        </tr>
+                    </table>
+                </div>
+                <div class="col-md-5 col-md-offset-3" id="prefProductsTableWrapper" style="margin-top: 5px;">
+                    <ul id="prefSortable">
+                        <li class="">
+                            <span class="prefRowNumber col-md-2">A1</span>
+                        <span class="prefRowName">
+                            <input class="prefRowNameInput" type="text" value="Название">
+                        </span>
+                        <span class="prefRowValue">
+                            <input class="refRowValueInput" data-cell="A1" data-formula="" data-format="0[.]00" type="tel" style="width: 5em; margin-left: 1px;" value="100">
+                        </span>
+                        </li>
+                    </ul>
+                    <ul id="prefAlwaysInTable">
+                        <li>
+                            <span class="prefRowNumber col-md-2">KIM1</span>
+                        <span class="prefRowName">
+                            <input class="prefRowNameInput" type="text" value="КИМ">
+                        </span>
+                        <span class="prefRowValue">
+                            <input class="refRowValueInput" data-cell="KIM1" data-formula="" data-format="0[.]00" type="tel" style="width: 5em;" value="200">
+                        </span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-12">
+            <hr>
+        </div>
+        <div class="col-md-12 toCollapse" data-toggle="collapse"
+                      data-target="#prefOrdersWrapper" aria-expanded="true" aria-controls="prefOrdersWrapper">
+            <h4>
+                Ордера
+                <span class="glyphicon glyphicon-tasks toCollapse" aria-hidden="true"></span>
+            </h4>
+        </div>
+        <div class="col-md-12 collapse in" id="prefOrdersWrapper">
+            <div class="col-md-10 col-md-offset-2">
+                <div class="col-md-6">
+                    <table border="0" class="stylesTable">
+                        <tr>
+                            <th></th>
+                            <th>Цвет Фона</th>
+                            <th>Цвет Рамки</th>
+                            <th>Цвет Названий</th>
+                        </tr>
+                        <tr>
+                            <th>Шапка:</th>
+                            <td><input type="text" class="form-control" id="prefOrderHeadBackground"></td>
+                            <td><input type="text" class="form-control" id="prefOrderHeadBordersColor"></td>
+                            <td><input type="text" class="form-control" id="prefOrderHeadFontColor"></td>
+                        </tr>
+                        <tr>
+                            <th>Раздел:</th>
+                            <td><input type="text" class="form-control" id="prefOrderSectionBackground"></td>
+                            <td><input type="text" class="form-control" id="prefOrderSectionBordersColor"></td>
+                            <td><input type="text" class="form-control" id="prefOrderSectionFontColor"></td>
+                        </tr>
+                        <tr>
+                            <th>Ряд:</th>
+                            <td><input type="text" class="form-control" id="prefOrderRowBackground"></td>
+                            <td><input type="text" class="form-control" id="prefOrderRowBordersColor"></td>
+                            <td><input type="text" class="form-control" id="prefOrderRowFontColor"></td>
+                        </tr>
+                    </table>
+                </div>
+                <div class="col-md-4" id="prefOrdersTableWrapper">
+                    <table class="table table-bordered" id="prefOrderTable">
+                        <tr>
+                            <th>Пример</th>
+                            <th>Ордера</th>
+                        </tr>
+                        <tr class="prefOrderTableSectionName">
+                            <th colspan="2">Раздел 1</th>
+                        </tr>
+                        <tr>
+                            <td>Какие-то</td>
+                            <td>Надписи</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-12">
+            <hr>
+        </div>
+        <div class="clearer"></div>
+    </div>

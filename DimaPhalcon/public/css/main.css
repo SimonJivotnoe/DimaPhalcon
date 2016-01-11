@@ -127,7 +127,6 @@ body {
 }
 
 #preferencesWrapper {
-    display: none;
     margin-top: 31px;
 }
 
@@ -160,7 +159,7 @@ html, body {
     min-height: 100%;
     margin: 0;
     padding: 0;
-    font-family: Cyrillic UltraLight !important;
+    font-family: Helvetica Neue Cyr UltraLight !important;
 }
 
 a {
