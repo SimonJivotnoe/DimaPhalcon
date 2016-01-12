@@ -1371,7 +1371,19 @@
 		return html;
 	}
 
-		
+	function addOrderCreationHandler(html) {
+		html
+			.find('#left-component').css('width', localStorage.split).end()
+			.find('#divider, #right-component').css('left', localStorage.split).end()
+			.find('#creatingOrderWrapper').splitPane().end()
+	
+			// custom splitting by dragging splitter
+			.find('#divider').on('mouseleave', function(){
+				localStorage.split = $('#divider').css('left');
+			});
+			
+		return html;
+	}	
 	
 	function addLeftTabContentHandler(html) {
 		//console.log(html.find('#addFormulaBtnPr' ));
@@ -3552,7 +3564,7 @@
 					)) {
 					localStorage.siteSector = 'PR';
 					$.ajax( {
-						url   : 'files/preferences.html',
+						url   : 'templates/preferences.html',
 						method: 'GET'
 					} ).then( function ( data )
 					{
@@ -3579,7 +3591,7 @@
 					)) {
 					localStorage.siteSector = 'DB';
 					showBody();
-					$('#mainMenuWrapper, #preferencesWrapper, #creatingProductsWrapper').hide();
+					$('#mainMenuWrapper, #preferencesWrapper, #creatingOrderWrapper').hide();
 					$.when(TABS.showKim()).done(function () {
 						setTimeout(function(){ spinnerKim.stop(document.getElementById('orderSpinner')); }, 300);
 					});
@@ -3591,8 +3603,6 @@
 			},
 			
 			runProductCreation: function () {
-				if ($('#fileManagerOrdersWrapper').hasClass('active')) {
-				}
 				if (MENU.activeClassValidation(
 						{
 							id:			'#prIcon',
@@ -3602,14 +3612,22 @@
 						}
 					)) {
 					localStorage.siteSector = 'OR';
-					showBody();
-					$('#mainMenuWrapper, #preferencesWrapper, #databaseWrapper').hide();
-					$('#topIconsWrapper, #creatingProductsWrapper').show();
-					if (!MAIN.orRequested) {
-						TABS.getRightTabsList();
-						CLIENTS.getClientsDetails();
-						PRODUCT.getProductsTree();
-					}
+					$.ajax( {
+						url   : 'templates/creatingOrder.html',
+						method: 'GET'
+					} ).then( function ( data )
+					{
+						//sectionContent.html(addPreferencesHandler($(data)));
+						sectionContent.html(addOrderCreationHandler($(data)));
+						showBody();
+						$('#mainMenuWrapper, #databaseWrapper').hide();
+						$('#topIconsWrapper').show();
+						if (!MAIN.orRequested) {
+							TABS.getRightTabsList();
+							CLIENTS.getClientsDetails();
+							PRODUCT.getProductsTree();
+						}
+					});
 				}
 			},
 			
@@ -4385,7 +4403,7 @@
 			localStorage['db-split'] = defaultScreenSize;
 		}
 		TABS.splitMonitor();
-		$('#creatingProductsWrapper, #databaseWrapper').splitPane();
+		$('#creatingOrderWrapper, #databaseWrapper').splitPane();
 
 		// custom splitting by dragging splitter
 		$('#divider').on('mouseleave', function(){
