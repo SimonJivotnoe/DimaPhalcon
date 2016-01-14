@@ -267,7 +267,10 @@
 			cssArr: ['#prefOrderTable td', '#orderTable td', '.sumOrderTableTd']
 		}
 	];
-	var sectionContent = $('#sectionContent');
+	var defaultScreenSize   = '60em';
+	var maxScreenSize	    = (window.screen.availWidth - 5) + 'px';
+	var minscreenSize	    = '5px';
+	var sectionContent	    = $('#sectionContent');
 	var clickOnFormulaInput = false;
 	
 	var spinnerSettings = {
@@ -329,7 +332,6 @@
 					$('#runPR').click();
 			}
 		}
-		addHandlerIndexHtml();
 	}
 	
 	/*
@@ -369,7 +371,6 @@
 				data: obj
 			} ).then( function ( data )
 			{
-				console.log(data);
 				if (true === data) {
 					window.location.href = LOCATION;
 				}
@@ -1082,259 +1083,7 @@
 		return check;
 	}
 
-	function addHandlerIndexHtml() {
-
-		// clients Tree
-		$('#hideShowClietsTree').click(function() {
-			toggleTreeDisplay('.totalClientsTreeWrapper', '#hideShowClietsTree');
-		});
-
-		$('#hideShowProductsTree').click(function() {
-			toggleTreeDisplay('#productsTreeWrapper', '#hideShowProductsTree');
-		});
-		
-		$('#findInClietsTree').keyup(function() {
-			var tree = JSON.parse($('#clientsTree').tree('toJson')),
-				text = $(this).val().toLowerCase();
-			if (!text) {
-				$('#clientsTree > ul > li').show();
-			} else {
-				$('#clientsTree > ul > li').hide();
-				MENU.searchInTree(tree, text);
-			}
-		});
-		
-		$('#addNewClient' ).click(function () {
-			var check = 0;
-			$('#clientsTree').tree('selectNode');
-			if ($('#h3NewClientInfo').is(':visible')) {
-				check = checkInputsInClientsDetails('#addNewClientForm input');
-			}
-			if (0 === check) {
-				CLIENTS.fillFormOfClientsInfo();
-			}
-		});
-		
-		$('#addNewClientBtn').click(function () {
-			var check = 0, data = {};
-			$.each($('#addNewClientForm input'), function (num, input) {
-				var $input = $(input);
-				data[$input.attr('name')] = $input.val();
-				if (!VALIDATION.validateInputVal(
-					{
-						val: $input.val(),
-						id: '#' + $input.attr('id')
-					}
-				)) {
-					check++;
-				}
-			});
-			if (!check) {
-				CLIENTS.addNewClient(data);
-			}
-		});
-		
-		$('#updateClientBtn').click(function () {
-			var $tree = $('#clientsTree');
-			if ($tree.tree('getSelectedNode').clientId) {
-				var check = 0, data = {id: $tree.tree('getSelectedNode').clientId};
-				$.each($('#addNewClientForm input'), function (num, input) {
-					var $input = $(input);
-					data[$input.attr('name')] = $input.val();
-					if (!VALIDATION.validateInputVal(
-						{
-							val: $input.val(),
-							id: '#' + $input.attr('id')
-						}
-					)) {
-						check++;
-					}
-				});
-				if (!check) {
-					CLIENTS.updateClient(data);
-				}
-			}
-		});
-		
-		$('#deleteClientBtn').click(function () {
-			var selectedNode = $('#clientsTree').tree('getSelectedNode');
-			if (selectedNode && selectedNode.clientId) {
-				noty({
-					text: 'Вы уверены, что хотите удалить Клиента? При удалении Клиента, будут удалены все проекты и ордера, принадлежащие данному Клиенту.',
-					modal: true,
-					type: 'confirm',
-					layout: 'center',
-					animation: {
-						open: 'animated flipInX',
-						close: 'animated flipOutX'
-					},
-					buttons: [
-						{addClass: 'btn btn-success', text: 'Удалить!', onClick: function($noty) {
-								$.when(CLIENTS.deleteClient(selectedNode.clientId)).then(function (data) {
-									$noty.close();
-								});
-							}
-						},
-						{addClass: 'btn btn-danger', text: 'Передумал', onClick: function($noty) {
-								$noty.close();
-							}
-						}
-					]
-				});
-			}
-		});
-		
-		$('#addNewProject' ).click(function () {
-			var data = {}, check = 0;
-			var selectedNode = $('#clientsTree').tree('getSelectedNode');
-			if ($('#h3NewProjectInfo').is(':visible')) {
-				check = checkInputsInClientsDetails('#addNewProjectForm input');
-			}
-			if (0 === check && selectedNode) {
-				PROJECTS.fillFormOfProjectInfo();
-			} else {
-				noty({
-					text: 'Выберите Клиента',
-					type: 'error',
-					layout: 'center',
-					/*animation: {
-						open: 'animated flipInX',
-						close: 'animated flipOutX'
-					},*/
-					timeout: 900
-				});
-			}
-		});
-		
-		$('#addNewProjectBtn').click(function () {
-			var selectedNode = $('#clientsTree').tree('getSelectedNode');
-			if (selectedNode && selectedNode.clientId) {
-				var check = 0, data = {client: selectedNode.clientId};
-				$.each($('#addNewProjectForm input'), function (num, input) {
-					var $input = $(input);
-					data[$input.attr('name')] = $input.val();
-					if (!VALIDATION.validateInputVal(
-							{
-								val: $input.val(),
-								id: '#' + $input.attr('id')
-							}
-						)) {
-						check++;
-					}
-				});
-				if (!check) {
-					PROJECTS.addNewProject(data);
-					var $tree = $('#clientsTree');
-					setTimeout(function () {$tree.tree('openNode', $tree.tree('getSelectedNode'));}, 100);
-				}
-			}
-		});
-		
-		$('#updateProjectBtn').click(function () {
-			var $tree = $('#clientsTree');
-			if ($tree.tree('getSelectedNode').projectId) {
-				var check = 0, data = {id: $tree.tree('getSelectedNode').projectId};
-				$.each($('#addNewProjectForm input'), function (num, input) {
-					var $input = $(input);
-					data[$input.attr('name')] = $input.val();
-					if (!VALIDATION.validateInputVal(
-						{
-							val: $input.val(),
-							id: '#' + $input.attr('id')
-						}
-					)) {
-						check++;
-					}
-				});
-				if (!check) {
-					PROJECTS.updateProject(data);
-				}
-			}
-		});
-		
-		$('#deleteProjectBtn').click(function () {
-			var selectedNode = $('#clientsTree').tree('getSelectedNode');
-			if (selectedNode && selectedNode.projectId) {
-				noty({
-					text: 'Вы уверены, что хотите удалить Проэкт? При удалении Проэкта, будут удалены все ордера, принадлежащие данному Проэкту.',
-					modal: true,
-					type: 'confirm',
-					layout: 'center',
-					animation: {
-						open: 'animated flipInX',
-						close: 'animated flipOutX'
-					},
-					buttons: [
-						{addClass: 'btn btn-success', text: 'Удалить!', onClick: function($noty) {
-								$.when(PROJECTS.deleteProject(selectedNode.projectId)).then(function (data) {
-									$noty.close();
-								});
-							}
-						},
-						{addClass: 'btn btn-danger', text: 'Передумал', onClick: function($noty) {
-								$noty.close();
-							}
-						}
-					]
-				});
-			}
-		});
-		
-		$('#addNewOrder').click(function () {
-			var $tree = $('#clientsTree');
-			if ($tree.tree('getSelectedNode').projectId) {
-				$.when(ORDER.createNewOrder($tree.tree('getSelectedNode').projectId, false)).done(function () {
-					CLIENTS.getClientsTree(true);
-					var $tree = $('#clientsTree');
-					setTimeout(function () {$tree.tree('openNode', $tree.tree('getSelectedNode'));}, 100);
-				});
-			} else {
-				noty({
-					text: 'Выберите Проэкт',
-					type: 'error',
-					layout: 'center',
-					/*animation: {
-						open: 'animated flipInX',
-						close: 'animated flipOutX'
-					},*/
-					timeout: 900
-				});
-			}
-		});
-		
-		$('#clientsTree').on('click', '.openProductTab', (function(e) {
-			e.stopPropagation();
-			if ('' === $(this ).attr('data-selected')) {
-				$(this ).addClass('openProductTabSelected').attr('data-selected', 'selected' );
-			} else if('selected' === $(this ).attr('data-selected')){
-				$(this).removeClass('openProductTabSelected').attr('data-selected', '' );
-			}
-			enableDisableButton($('.openProductTabSelected'), $('#showItemFromClientsTree'));
-		}));
-		
-		$('#clientsTree').on('click', '.consolidateOrder', (function(e) {
-			e.stopPropagation();
-			if ('' === $(this).attr('data-selected')) {
-				$(this).addClass('consolidateOrderSelected').attr('data-selected', 'selected');
-			} else if ('selected' === $(this).attr('data-selected')) {
-				$(this).removeClass('consolidateOrderSelected').attr('data-selected', '');
-			}
-			enableDisableButton($('.consolidateOrderSelected'), $('#FMconsolidatedOrdersBtn'));
-			$('#FMconsolidatedOrdersBtn').attr('projectId', $('#clientsTree').tree('getSelectedNode').projectId);
-		}));
-		
-		// products DB
-		$('#fileManagerCatogoriesSelect' ).change(function() {
-			var category = $('option:selected', this ).attr('name' );
-			$.each($('.prManProductTableCategory'), function(){
-				$(this ).parent().show();
-				if ($(this).attr('name') !== category && 'categoriesAll' !== category) {
-					$(this ).parent().hide();
-				}
-			});
-		});
-	}
-	
+	// HANDLERS
 	function addPreferencesHandler(html) {
 		html
 			.find('#globalFontSize').change(function () {
@@ -1374,19 +1123,417 @@
 	function addOrderCreationHandler(html) {
 		html
 			.find('#left-component').css('width', localStorage.split).end()
-			.find('#divider, #right-component').css('left', localStorage.split).end()
-			.find('#creatingOrderWrapper').splitPane().end()
 	
-			// custom splitting by dragging splitter
+			.find('#divider, #right-component').css('left', localStorage.split).end()
+	
 			.find('#divider').on('mouseleave', function(){
 				localStorage.split = $('#divider').css('left');
+			}).end()
+			
+			.find('#hideShowClietsTree').click(function() {
+				toggleTreeDisplay('.totalClientsTreeWrapper', '#hideShowClietsTree');
+			}).end()
+
+			.find('#hideShowProductsTree').click(function() {
+				toggleTreeDisplay('#productsTreeWrapper', '#hideShowProductsTree');
+			}).end()
+
+			.find('#findInClietsTree').keyup(function() {
+				var tree = JSON.parse($('#clientsTree').tree('toJson')),
+					text = $(this).val().toLowerCase();
+				if (!text) {
+					$('#clientsTree > ul > li').show();
+				} else {
+					$('#clientsTree > ul > li').hide();
+					MENU.searchInTree(tree, text);
+				}
+			}).end()
+
+			.find('#addNewClient' ).click(function () {
+				var check = 0;
+				$('#clientsTree').tree('selectNode');
+				if ($('#h3NewClientInfo').is(':visible')) {
+					check = checkInputsInClientsDetails('#addNewClientForm input');
+				}
+				if (0 === check) {
+					CLIENTS.fillFormOfClientsInfo();
+				}
+			}).end()
+
+			.find('#addNewClientBtn').click(function () {
+				var check = 0, data = {};
+				$.each($('#addNewClientForm input'), function (num, input) {
+					var $input = $(input);
+					data[$input.attr('name')] = $input.val();
+					if (!VALIDATION.validateInputVal(
+						{
+							val: $input.val(),
+							id: '#' + $input.attr('id')
+						}
+					)) {
+						check++;
+					}
+				});
+				if (!check) {
+					CLIENTS.addNewClient(data);
+				}
+			}).end()
+
+			.find('#updateClientBtn').click(function () {
+				var $tree = $('#clientsTree');
+				if ($tree.tree('getSelectedNode').clientId) {
+					var check = 0, data = {id: $tree.tree('getSelectedNode').clientId};
+					$.each($('#addNewClientForm input'), function (num, input) {
+						var $input = $(input);
+						data[$input.attr('name')] = $input.val();
+						if (!VALIDATION.validateInputVal(
+							{
+								val: $input.val(),
+								id: '#' + $input.attr('id')
+							}
+						)) {
+							check++;
+						}
+					});
+					if (!check) {
+						CLIENTS.updateClient(data);
+					}
+				}
+			}).end()
+
+			.find('#deleteClientBtn').click(function () {
+				var selectedNode = $('#clientsTree').tree('getSelectedNode');
+				if (selectedNode && selectedNode.clientId) {
+					noty({
+						text: 'Вы уверены, что хотите удалить Клиента? При удалении Клиента, будут удалены все проекты и ордера, принадлежащие данному Клиенту.',
+						modal: true,
+						type: 'confirm',
+						layout: 'center',
+						animation: {
+							open: 'animated flipInX',
+							close: 'animated flipOutX'
+						},
+						buttons: [
+							{addClass: 'btn btn-success', text: 'Удалить!', onClick: function($noty) {
+									$.when(CLIENTS.deleteClient(selectedNode.clientId)).then(function (data) {
+										$noty.close();
+									});
+								}
+							},
+							{addClass: 'btn btn-danger', text: 'Передумал', onClick: function($noty) {
+									$noty.close();
+								}
+							}
+						]
+					});
+				}
+			}).end()
+
+			.find('#addNewProject' ).click(function () {
+				var data = {}, check = 0;
+				var selectedNode = $('#clientsTree').tree('getSelectedNode');
+				if ($('#h3NewProjectInfo').is(':visible')) {
+					check = checkInputsInClientsDetails('#addNewProjectForm input');
+				}
+				if (0 === check && selectedNode) {
+					PROJECTS.fillFormOfProjectInfo();
+				} else {
+					noty({
+						text: 'Выберите Клиента',
+						type: 'error',
+						layout: 'center',
+						/*animation: {
+							open: 'animated flipInX',
+							close: 'animated flipOutX'
+						},*/
+						timeout: 900
+					});
+				}
+			}).end()
+
+			.find('#addNewProjectBtn').click(function () {
+				var selectedNode = $('#clientsTree').tree('getSelectedNode');
+				if (selectedNode && selectedNode.clientId) {
+					var check = 0, data = {client: selectedNode.clientId};
+					$.each($('#addNewProjectForm input'), function (num, input) {
+						var $input = $(input);
+						data[$input.attr('name')] = $input.val();
+						if (!VALIDATION.validateInputVal(
+								{
+									val: $input.val(),
+									id: '#' + $input.attr('id')
+								}
+							)) {
+							check++;
+						}
+					});
+					if (!check) {
+						PROJECTS.addNewProject(data);
+						var $tree = $('#clientsTree');
+						setTimeout(function () {$tree.tree('openNode', $tree.tree('getSelectedNode'));}, 100);
+					}
+				}
+			}).end()
+
+			.find('#updateProjectBtn').click(function () {
+				var $tree = $('#clientsTree');
+				if ($tree.tree('getSelectedNode').projectId) {
+					var check = 0, data = {id: $tree.tree('getSelectedNode').projectId};
+					$.each($('#addNewProjectForm input'), function (num, input) {
+						var $input = $(input);
+						data[$input.attr('name')] = $input.val();
+						if (!VALIDATION.validateInputVal(
+							{
+								val: $input.val(),
+								id: '#' + $input.attr('id')
+							}
+						)) {
+							check++;
+						}
+					});
+					if (!check) {
+						PROJECTS.updateProject(data);
+					}
+				}
+			}).end()
+
+			.find('#deleteProjectBtn').click(function () {
+				var selectedNode = $('#clientsTree').tree('getSelectedNode');
+				if (selectedNode && selectedNode.projectId) {
+					noty({
+						text: 'Вы уверены, что хотите удалить Проэкт? При удалении Проэкта, будут удалены все ордера, принадлежащие данному Проэкту.',
+						modal: true,
+						type: 'confirm',
+						layout: 'center',
+						animation: {
+							open: 'animated flipInX',
+							close: 'animated flipOutX'
+						},
+						buttons: [
+							{addClass: 'btn btn-success', text: 'Удалить!', onClick: function($noty) {
+									$.when(PROJECTS.deleteProject(selectedNode.projectId)).then(function (data) {
+										$noty.close();
+									});
+								}
+							},
+							{addClass: 'btn btn-danger', text: 'Передумал', onClick: function($noty) {
+									$noty.close();
+								}
+							}
+						]
+					});
+				}
+			}).end()
+
+			.find('#addNewOrder').click(function () {
+				var $tree = $('#clientsTree');
+				if ($tree.tree('getSelectedNode').projectId) {
+					$.when(ORDER.createNewOrder($tree.tree('getSelectedNode').projectId, false)).done(function () {
+						CLIENTS.getClientsTree(true);
+						var $tree = $('#clientsTree');
+						setTimeout(function () {$tree.tree('openNode', $tree.tree('getSelectedNode'));}, 100);
+					});
+				} else {
+					noty({
+						text: 'Выберите Проэкт',
+						type: 'error',
+						layout: 'center',
+						/*animation: {
+							open: 'animated flipInX',
+							close: 'animated flipOutX'
+						},*/
+						timeout: 900
+					});
+				}
+			}).end()
+
+			.find('#clientsTree').on('click', '.openProductTab', (function(e) {
+				e.stopPropagation();
+				if ('' === $(this ).attr('data-selected')) {
+					$(this ).addClass('openProductTabSelected').attr('data-selected', 'selected' );
+				} else if('selected' === $(this ).attr('data-selected')){
+					$(this).removeClass('openProductTabSelected').attr('data-selected', '' );
+				}
+				enableDisableButton($('.openProductTabSelected'), $('#showItemFromClientsTree'));
+			})).end()
+
+			.find('#clientsTree').on('click', '.consolidateOrder', (function(e) {
+			e.stopPropagation();
+			if ('' === $(this).attr('data-selected')) {
+				$(this).addClass('consolidateOrderSelected').attr('data-selected', 'selected');
+			} else if ('selected' === $(this).attr('data-selected')) {
+				$(this).removeClass('consolidateOrderSelected').attr('data-selected', '');
+			}
+			enableDisableButton($('.consolidateOrderSelected'), $('#FMconsolidatedOrdersBtn'));
+			$('#FMconsolidatedOrdersBtn').attr('projectId', $('#clientsTree').tree('getSelectedNode').projectId);
+		})).end()
+		
+			.find('#showItemFromClientsTree').click(function() {
+				var order = [];
+				$(this).hide();
+				$.each($('.openProductTabSelected'), function (num, obj) {
+					order.push($(obj).attr('data-id'));
+				});
+				$.when(ORDER.openSavedOrder(order, 'new', false, false)).done(function(){
+					window.location.href = LOCATION;
+				});
+			}).end()
+			
+			.find('#FMconsolidatedOrdersBtn').click(function () {
+				var orderId = [];
+				$(this).hide();
+				$.each($('.consolidateOrderSelected'), function (num, obj) {
+					orderId.push($(obj).attr('data-id'));
+				});
+				$.when( ORDER.createNewOrder($('#FMconsolidatedOrdersBtn').attr('projectId'), false, true) ).then(function(data){
+					if (false !== data) {
+						ORDER.addToConsolidateOrder(data, orderId);
+					}
+				});
+			}).end()
+			
+			.find('#tabsRight').on('dblclick', '#rightTabs li', function(){
+				localStorage.split === minscreenSize ? localStorage.split = defaultScreenSize : localStorage.split = minscreenSize;
+				$('#left-component').css('width', localStorage.split);
+				$('#divider, #right-component').css('left', localStorage.split);
 			});
 			
 		return html;
 	}	
 	
+	function addProductsDbHandler(html) {
+		html
+			.find('#db-left-component').css('width', localStorage['db-split']).end()
+	
+			.find('#db-divider, #db-right-component').css('left', localStorage['db-split']).end()
+	
+			.find('#db-divider').on('mouseleave', function(){
+				localStorage['db-split'] = $('#db-divider').css('left');
+			}).end()
+			
+			.find('#showItemFromFileManager').click(function() {
+				var product = [];
+				$(this).hide();
+				$.each($('.openProductTabSelected'), function (num, obj) {
+					product.push($(obj).attr('data-id'));
+				});
+				$.when(TABS.openSavedProduct(product, 'new', false, false)).done(function(){
+					window.location.href = LOCATION;
+				});
+			}).end()
+			
+			.find('#fileManagerCatogoriesSelect' ).change(function() {
+				var category = $('option:selected', this ).attr('name' );
+				$.each($('.prManProductTableCategory'), function(){
+					$(this ).parent().show();
+					if ($(this).attr('name') !== category && 'categoriesAll' !== category) {
+						$(this ).parent().hide();
+					}
+				});
+			}).end()
+			
+			.find('#dbProductsListTab').click(function(){
+				TABS.setActiveDefaultTab('tabsList', 'dbProductsListTab', 'curTabId');
+				TABS.changeActiveTab('', '', 'changeActiveLeftTab');
+				PRODUCT.createFileManager('PR');
+			}).end()
+			
+			.find('#addNewTab').on('click', function(){
+				TABS.getLastLeftTab();
+			}).end()
+			
+			.find('#fileManagerOrdersTab').on('click', function(){
+				if (false === $('#fileManagerOrdersTab').hasClass('active')) {
+					CLIENTS.getClientsTree();
+					TABS.setActiveDefaultTab('tabsRightList', 'fileManagerOrdersTab', 'curTabRightId');
+					TABS.changeActiveTab('', '', 'changeActiveRightTab');
+				}
+			}).end()
+			
+			.find('#addCategoryBtn').click(function(){
+				var category = VALIDATION.validateInputVal({
+						val: $('#addCategoryInput' ).val(),
+						id: '#addCategoryInput',
+						unique: true
+					}),
+					article = VALIDATION.validateInputVal({
+						val: $('#addCategoryArticleInput' ).val(),
+						id: '#addCategoryArticleInput',
+						unique: true
+					});
+				if (category && article) {
+					CATEGORIES.addCategory(category, article);
+				}
+			}).end()
+			
+			.find('#addKIM').click(function(){
+				var kim = VALIDATION.validateInputVal({
+						val: $('#kimInput' ).val(),
+						id: '#kimInput',
+						digitsOnly: true
+					}),
+					kimHardInput = VALIDATION.validateInputVal({
+						val: $('#kimHardInput' ).val(),
+						id: '#kimHardInput'
+					});
+
+				if (kim && kimHardInput) {
+					KIM.addKIMtoTable(kim, kimHardInput);
+				}
+			}).end()
+			
+			.find('#addMetall').on('click', function(){;
+				var metall = VALIDATION.validateInputVal({
+						val: $('#metallName' ).val(),
+						id: '#metallName',
+						unique: true
+					}),
+					price =  VALIDATION.validateInputVal({
+						val: $('#metallPrice' ).val(),
+						id: '#metallPrice',
+						digitsOnly: true
+					}),
+					mass =  VALIDATION.validateInputVal({
+						val: $('#metallMass' ).val(),
+						id: '#metallMass',
+						digitsOnly: true
+					}),
+					outPrice =  VALIDATION.validateInputVal({
+						val: $('#metallOutPrice' ).val(),
+						id: '#metallOutPrice',
+						digitsOnly: true
+					}),
+					article = VALIDATION.validateInputVal({
+						val: $('#metallArticle' ).val(),
+						id: '#metallArticle',
+						unique: true
+					});
+				if (metall && price && mass && outPrice && article) {
+					METALLS.addMetallToTable({
+						metall: metall,
+						price: price,
+						mass: mass,
+						outPrice: outPrice,
+						article: article
+					});
+				}
+			}).end()
+
+			.find('#FMsearchInProducts').keyup(function() {
+				var text = $(this).val(),
+					rows = $('#fileManagerProductsTable tr:gt(0)');
+				MENU.searchInTable(rows, text, 'tr');
+			}).end()
+			
+			.find('#tabs').on('dblclick', '#myTab li', function(){
+				localStorage['db-split'] === maxScreenSize ? localStorage['db-split'] = defaultScreenSize : localStorage['db-split'] = maxScreenSize;
+				$('#db-left-component').css('width', localStorage['db-split']);
+				$('#db-divider, #db-right-component').css('left', localStorage['db-split']);
+			});
+		return html;
+	}
+	
 	function addLeftTabContentHandler(html) {
-		//console.log(html.find('#addFormulaBtnPr' ));
 		html
 			.find('#uploadImageProduct').click(function (e) {
 				$('#input-file-upload').trigger('click');
@@ -1977,8 +2124,7 @@
 			});
 		return html;
 	}
-
-
+	
 	function addLeftTabsHandler(html) {
 
 		html
@@ -2036,7 +2182,6 @@
 	}
 
 	function addRightTabContentOrderHandler(html) {
-		//console.log(html.find('#saveOrderInDB'));
 		html
 			.find('#saveOrderInDB').click(function() {
 				ORDER.saveOrderInDB();
@@ -2336,7 +2481,6 @@
     }
 
 	function addKimTableHandler(html) {
-		//console.log(html.find('.editKimPencil'));
 		html
 			.filter('tr')
 				.mouseover(function () {
@@ -2616,7 +2760,7 @@
 					}
 				}).then(function (data)
 				{
-					//console.log(data);
+					
 				});
 			},
 
@@ -2760,7 +2904,7 @@
 					}
 				} ).then( function ( data )
 				{
-					//console.log(data);
+					
 				});
 			},
 
@@ -2775,7 +2919,7 @@
 						active: active
 					}
 				} ).then( function ( data )
-				{console.log(data);
+				{
 					if (true === data && refresh) {
 						window.location.href = LOCATION;
 					}
@@ -2905,14 +3049,7 @@
 				$('#dbProductsListTab, #dbProductsListList').addClass('active');
 				TABS.loadPreferences();
 				showBody();
-			},
-
-            splitMonitor: function() {
-                $('#left-component').css('width', localStorage.split);
-                $('#divider, #right-component').css('left', localStorage.split);
-                $('#db-left-component').css('width', localStorage['db-split']);
-                $('#db-divider, #db-right-component').css('left', localStorage['db-split']);
-            }
+			}
 		},
 
 		// product section
@@ -2948,7 +3085,6 @@
 							href = $('<span><a id="errorOpenInCurrentTab"> Открыть в текущей вкладке</a><span> или</span><a id="errorOpenInNewTab"> Открыть в новой вкладке</a></span>');
 							href
 								.find('#errorOpenInCurrentTab').click(function () {
-								console.log(MAIN);
 									TABS.openSavedProduct(data.id, MAIN.curTabId, true, true);
 								}).end()
 								.find('#errorOpenInNewTab').click(function () {
@@ -2976,7 +3112,7 @@
 					}
 				} ).then( function ( data )
 				{
-					//console.log(data);
+					
 				});
 			},
 
@@ -3293,7 +3429,7 @@
                     data: {
                         prId: MAIN.productId
                     }
-                }).then(function (data) {console.log(data);
+                }).then(function (data) {
                     $('.listOfCategories').html(data.html);
                 });
             },
@@ -3516,7 +3652,6 @@
 					}
 				} ).then( function ( data )
 				{
-					console.log(data);
 					if (true === data) {
 						METALLS.getMetallsTable();
 						METALLS.getMetallsList();
@@ -3590,15 +3725,22 @@
 						}
 					)) {
 					localStorage.siteSector = 'DB';
-					showBody();
-					$('#mainMenuWrapper, #preferencesWrapper, #creatingOrderWrapper').hide();
-					$.when(TABS.showKim()).done(function () {
-						setTimeout(function(){ spinnerKim.stop(document.getElementById('orderSpinner')); }, 300);
+					$.ajax( {
+						url   : 'templates/productsDB.html',
+						method: 'GET'
+					} ).then( function ( data )
+					{
+						sectionContent.html(addProductsDbHandler($(data)));
+						$('#databaseWrapper').splitPane();
+						showBody();
+						$('#mainMenuWrapper').hide();
+						$.when(TABS.showKim()).done(function () {
+							setTimeout(function(){ spinnerKim.stop(document.getElementById('orderSpinner')); }, 300);
+						});
+						if (!MAIN.prRequested) {
+							TABS.getLeftTabsList();
+						}
 					});
-					$('#topIconsWrapper, #databaseWrapper').show();
-					if (!MAIN.prRequested) {
-						TABS.getLeftTabsList();
-					}
 				}
 			},
 			
@@ -3617,10 +3759,10 @@
 						method: 'GET'
 					} ).then( function ( data )
 					{
-						//sectionContent.html(addPreferencesHandler($(data)));
 						sectionContent.html(addOrderCreationHandler($(data)));
+						$('#creatingOrderWrapper').splitPane();
 						showBody();
-						$('#mainMenuWrapper, #databaseWrapper').hide();
+						$('#mainMenuWrapper').hide();
 						$('#topIconsWrapper').show();
 						if (!MAIN.orRequested) {
 							TABS.getRightTabsList();
@@ -3795,7 +3937,12 @@
              */
             digitsOnly: function (val) {
                 var res;
-                res = val.replace(/[A-Za-z]+/g, '').replace(/,/g, '.');
+                res = val.replace(/[^0-9.]+/g, '');
+				var splitRes = res.split('.');
+				res = splitRes[0];
+				if (1 < splitRes.length) {
+					res += '.' + splitRes[1][0] + splitRes[1][1];
+				}
                 return res;
             },
 
@@ -3821,7 +3968,7 @@
                         }
                         break;
                     case '#addCategoryArticleInput':
-                        articles = MAIN.categoriesTableContent.articles;console.log(MAIN);
+                        articles = MAIN.categoriesTableContent.articles;
                         if (0 < articles.length) {
                             val = VALIDATION.parseArray(articles, val);
                         }
@@ -4229,7 +4376,7 @@
 					method: 'POST',
 					data: obj
 				}).then(function (data) {
-					console.log(data);
+					
 				});
 			},
 
@@ -4388,12 +4535,8 @@
     'use strict';
 	$( document ).ready( function ()
 	{
-		var d = D$(),
-			defaultScreenSize = '60em',
-			maxScreenSize	  = (window.screen.availWidth - 5) + 'px',
-			minscreenSize	  = '5px';
-
-		PREFERENCES.applyCss();
+		D$();
+		
 		// SPLIT MONITOR SECTION
 		// setting default value
 		if (undefined === localStorage.split) {
@@ -4402,28 +4545,6 @@
 		if (undefined === localStorage['db-split']) {
 			localStorage['db-split'] = defaultScreenSize;
 		}
-		TABS.splitMonitor();
-		$('#creatingOrderWrapper, #databaseWrapper').splitPane();
-
-		// custom splitting by dragging splitter
-		$('#divider').on('mouseleave', function(){
-			localStorage.split = $('#divider').css('left');
-		});
-		$('#db-divider').on('mouseleave', function(){
-			localStorage['db-split'] = $('#db-divider').css('left');
-		});
-
-		// show / restore default by double clicking on right tab
-		$('#tabsRight').on('dblclick', '#rightTabs li', function(){
-			localStorage.split === minscreenSize ? localStorage.split = defaultScreenSize : localStorage.split = minscreenSize;
-			TABS.splitMonitor();
-		});
-
-		// show / restore default by double clicking on left tab
-		$('#tabs').on('dblclick', '#myTab li', function(){
-			localStorage['db-split'] === maxScreenSize ? localStorage['db-split'] = defaultScreenSize : localStorage['db-split'] = maxScreenSize;
-			TABS.splitMonitor();
-		});
 
 		$('#runPreferences').click(function () {
 			$('#mainMenuWrapper').fadeOut();
@@ -4500,150 +4621,10 @@
 			MENU.runSection('DB');
 		});
 
-		$( '#prIcon').click(function () {
+		$('#prIcon').click(function () {
 			MENU.runSection('OR');
 		});
-
-		$('#showItemFromFileManager, #showItemFromClientsTree').click(function() {
-			var product = [];
-			var order = [];
-			$(this).hide();
-			$.each($('.openProductTabSelected'), function (num, obj) {
-				if ('product' === $(obj).attr('data-type')) {
-					product.push($(obj).attr('data-id'));
-				}
-				if ('order' === $(obj).attr('data-type')) {
-					order.push($(obj).attr('data-id'));
-				}
-			});
-			$.when(TABS.openSavedProduct(product, 'new', false, false), ORDER.openSavedOrder(order, 'new', false, false)).done(function(){
-				window.location.href = LOCATION;
-			});
-		});
-
-		$('#FMconsolidatedOrdersBtn').click(function () {
-			var orderId = [];
-			//$(this).hide();
-			$.each($('.consolidateOrderSelected'), function (num, obj) {
-				orderId.push($(obj).attr('data-id'));
-			});
-			$.when( ORDER.createNewOrder($('#FMconsolidatedOrdersBtn').attr('projectId'), false, true) ).then(function(data){
-				console.log(data);
-				if (false !== data) {
-					ORDER.addToConsolidateOrder(data, orderId);
-				}
-			});
-		});
-
-		// 
-		$('#dbProductsListTab').click(function(){
-				TABS.setActiveDefaultTab('tabsList', 'dbProductsListTab', 'curTabId');
-				TABS.changeActiveTab('', '', 'changeActiveLeftTab');
-				PRODUCT.createFileManager('PR');
-			});
-
-		// creating new left tab by clicking on +
-		$('#addNewTab').on('click', function(){
-			TABS.getLastLeftTab();
-		});
-
-		// RIGHT PART
-
-		// create new order
-		$('#addNewTabRight' ).click(function() {
-			ORDER.createNewOrder();
-		});
-
-		// KIM TAB
-		$('#fileManagerOrdersTab').on('click', function(){
-			if (false === $('#fileManagerOrdersTab').hasClass('active')) {
-				CLIENTS.getClientsTree();
-				TABS.setActiveDefaultTab('tabsRightList', 'fileManagerOrdersTab', 'curTabRightId');
-				TABS.changeActiveTab('', '', 'changeActiveRightTab');
-			}
-		});
-
-		/**
-		 *
-		 */
-		$('#addCategoryBtn').click(function(){
-			var category = VALID.validateInputVal({
-					val: $('#addCategoryInput' ).val(),
-					id: '#addCategoryInput',
-					unique: true
-				}),
-				article = VALID.validateInputVal({
-					val: $('#addCategoryArticleInput' ).val(),
-					id: '#addCategoryArticleInput',
-					unique: true
-				});
-			if (category && article) {
-				CATEGORIES.addCategory(category, article);
-			}
-		});
-
-		/**
-		 *
-		 */
-		$('#addKIM').click(function(){
-			var kim = VALID.validateInputVal({
-					val: $('#kimInput' ).val(),
-					id: '#kimInput',
-					digitsOnly: true
-				}),
-				kimHardInput = VALID.validateInputVal({
-					val: $('#kimHardInput' ).val(),
-					id: '#kimHardInput'
-				});
-
-			if (kim && kimHardInput) {
-				KIM.addKIMtoTable(kim, kimHardInput);
-			}
-		});
-
-		// metalls table
-		$('#addMetall').on('click', function(){;
-			var metall = VALID.validateInputVal({
-					val: $('#metallName' ).val(),
-					id: '#metallName',
-					unique: true
-				}),
-				price =  VALID.validateInputVal({
-					val: $('#metallPrice' ).val(),
-					id: '#metallPrice',
-					digitsOnly: true
-				}),
-				mass =  VALID.validateInputVal({
-					val: $('#metallMass' ).val(),
-					id: '#metallMass',
-					digitsOnly: true
-				}),
-				outPrice =  VALID.validateInputVal({
-					val: $('#metallOutPrice' ).val(),
-					id: '#metallOutPrice',
-					digitsOnly: true
-				}),
-				article = VALID.validateInputVal({
-					val: $('#metallArticle' ).val(),
-					id: '#metallArticle',
-					unique: true
-				});
-			if (metall && price && mass && outPrice && article) {
-				METALLS.addMetallToTable({
-					metall: metall,
-					price: price,
-					mass: mass,
-					outPrice: outPrice,
-					article: article
-				});
-			}
-		});
-
-		$('#FMsearchInProducts').keyup(function() {
-			var text = $(this).val(),
-				rows = $('#fileManagerProductsTable tr:gt(0)');
-			MENU.searchInTable(rows, text, 'tr');
-		});
+		
 		PREFERENCES.applyCss();
 		/*
 		$("tbody").sortable({

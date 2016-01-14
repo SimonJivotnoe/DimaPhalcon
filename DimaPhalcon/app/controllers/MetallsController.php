@@ -135,20 +135,16 @@ class MetallsController extends \Phalcon\Mvc\Controller
     public function removeMetallAction (){
         if ($this->request->isAjax() && $this->request->isPost()) {
             $metallId = $this->request->getPost('metallId');
+            $this->response->setContentType('application/json', 'UTF-8');
+            $res = false;
             $metall = Metalls::findFirst($metallId);
-            if ($metall != false) {
-                if ($metall->delete() == false) {
-                    echo "К сожалению, мы не можем удалить робота прямо сейчас: \n";
-                    foreach ($metall->getMessages() as $message) {
-                        echo $message, "\n";
-                    }
-                } else {
-                    $this->response->setContentType('application/json', 'UTF-8');
-                    $this->response->setJsonContent(true);
-
-                    return $this->response;
-                }
+            $metallHistory = MetallPricesHistory::find(array("metall_id = '$metallId'"));
+            $metallHistory->delete();
+            if ($metall != false && $metallHistory && $metallHistory->delete() && $metall->delete()) {
+                $res = true;
             }
+            $this->response->setJsonContent($res);
+            return $this->response;
         } else {
             $this->response->redirect('');
         }

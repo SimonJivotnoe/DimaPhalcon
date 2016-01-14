@@ -42,11 +42,11 @@ class IndexController extends ControllerBase
              ->setTargetUri('js/production.js')
              ->join(true)
              ->addFilter(new \Phalcon\Assets\Filters\Jsmin());
-        $left = file_get_contents('../public/files/tabs.volt');
+        /*$left = file_get_contents('../public/files/tabs.volt');
         $this->view->setVars(array(
             'tabs' => $left,
             'tabsRight' => file_get_contents('../public/files/ordersTabs.html')
-        ));
+        ));*/
     }
 }
 
