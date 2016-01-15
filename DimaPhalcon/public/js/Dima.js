@@ -3430,7 +3430,9 @@
                         prId: MAIN.productId
                     }
                 }).then(function (data) {
-                    $('.listOfCategories').html(data.html);
+					if (data) {
+						$('.listOfCategories').html(data.html);
+					}
                 });
             },
 
