@@ -511,6 +511,11 @@ class TabsController extends \Phalcon\Mvc\Controller
                 ? $rows['%SAVE_ORDER_IN_DB%'] = '<button type="button" class="btn btn-danger btn-sm" id="saveOrderInDB">Сохранить в БД</button>'
                 : $rows['%SAVE_ORDER_IN_DB%'] = 'Сохранено в базе данных';
             $rows['%ORDER_NAME%'] = $order->getArticle();
+            $rows['%DELETE_ORDER%'] = '<button type="button" class="btn btn-danger btn-sm" id="deleteOrder">Удалить Ордер</button>';
+            if ('TRUE' === $order->getConsolidate()) {
+                $rows['%DELETE_ORDER%'] = '';
+                $rows['%SAVE_ORDER_IN_DB%'] = '';
+            }
             $discount = $order->getDiscount();
             $rows['%DISCOUNT%'] = $discount;
             $res = $substObj->subHTMLReplace('rightTabContent.html', $rows);

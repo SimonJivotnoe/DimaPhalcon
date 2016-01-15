@@ -145,9 +145,6 @@ body {
 #myTab, #rightTabs, #rightTabsContent, #leftTabsContent {
     display: none;
 }
-#myTab, #db-right-component {
-    margin-top: 49px;
-}
 #productsTreeWrapper, #clientsTreeWrapper {
     height: 80vh;
     overflow-y: scroll;
@@ -175,9 +172,8 @@ a {
     width: 5px;
 }
 
-#right-component, #left-component {
-//left: 60em;
-    margin-left: 5px;
+#right-component, #left-component, #myTab, #db-right-component {
+    /*margin-left: 5px;*/
     padding-top: 49px;
     padding-bottom: 49px;
 }

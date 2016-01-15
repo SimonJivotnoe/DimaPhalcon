@@ -1,10 +1,16 @@
-<button id="orderDetailsButton" class="btn btn-primary btn-sm" type="button" data-toggle="collapse"
-        data-target="#orderDetailsCollapse" aria-expanded="false" aria-controls="orderDetailsCollapse">
-    Детали заказа
-</button>
-<button type="button" class="btn btn-danger btn-sm" id="deleteOrder">Удалить Ордер</button>
-<span id="saveOrderInDBWrapper">%SAVE_ORDER_IN_DB%</span>
-<span><button type="button" class="btn btn-danger btn-sm" id="createPDF" data-order-article="%ORDER_NAME%"><span class="glyphicon glyphicon-print" aria-hidden="true"></span>  PDF</button></span>
+<div class="col-md-12">
+    <div class="col-md-6">
+        <button id="orderDetailsButton" class="btn btn-primary btn-sm" type="button" data-toggle="collapse"
+                data-target="#orderDetailsCollapse" aria-expanded="false" aria-controls="orderDetailsCollapse">
+            Детали заказа
+        </button>
+    </div>
+    <div class="col-md-6">
+        <!--<span id="saveOrderInDBWrapper">%SAVE_ORDER_IN_DB%</span>-->
+        <span><button type="button" class="btn btn-danger btn-sm" id="createPDF" data-order-article="%ORDER_NAME%"><span class="glyphicon glyphicon-print" aria-hidden="true"></span>  PDF</button></span>
+        %DELETE_ORDER%
+    </div>
+</div>
 
 <div class="collapse" id="orderDetailsCollapse">
     <p>Дисконт: <input id="changeDiscount" class="inputWithoutBorders" type="number" value="%DISCOUNT%"/>%</p>

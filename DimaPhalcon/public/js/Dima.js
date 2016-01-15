@@ -617,7 +617,6 @@
 				consolidateObj.productsDetails[prId].productName = obj.productName;
 			});
 		});
-		$('#addNewSection').parent().remove();
 		if (consolidateObj.sections) {
 			$.each(consolidateObj.sections, function (name, obj) {
 				if ('out' === name) {
@@ -1391,7 +1390,15 @@
 					}
 				});
 			}).end()
-			
+
+			.find('#fileManagerOrdersTab').on('click', function(){
+				if (false === $('#fileManagerOrdersTab').hasClass('active')) {
+					CLIENTS.getClientsTree();
+					TABS.setActiveDefaultTab('tabsRightList', 'fileManagerOrdersTab', 'curTabRightId');
+					TABS.changeActiveTab('', '', 'changeActiveRightTab');
+				}
+			}).end()
+
 			.find('#tabsRight').on('dblclick', '#rightTabs li', function(){
 				localStorage.split === minscreenSize ? localStorage.split = defaultScreenSize : localStorage.split = minscreenSize;
 				$('#left-component').css('width', localStorage.split);
@@ -1440,14 +1447,6 @@
 			
 			.find('#addNewTab').on('click', function(){
 				TABS.getLastLeftTab();
-			}).end()
-			
-			.find('#fileManagerOrdersTab').on('click', function(){
-				if (false === $('#fileManagerOrdersTab').hasClass('active')) {
-					CLIENTS.getClientsTree();
-					TABS.setActiveDefaultTab('tabsRightList', 'fileManagerOrdersTab', 'curTabRightId');
-					TABS.changeActiveTab('', '', 'changeActiveRightTab');
-				}
 			}).end()
 			
 			.find('#addCategoryBtn').click(function(){
@@ -2187,7 +2186,7 @@
 				ORDER.saveOrderInDB();
 			} ).end()
 
-			.filter('#deleteOrder' ).click(function () {
+			.find('#deleteOrder' ).click(function () {
 				noty({
 					text: 'Вы уверены, что хотите удалить Ордер?',
 					modal: true,
@@ -2967,21 +2966,21 @@
 				} ).then( function ( data )
 				{
 					if (true === data.success) {
+						var $html = $(data.html);
 						$('#orderDetailsWrapperFromTree, #orderTableWrapperFromTree').html('');
 						$('#fileManagerOrdersWrapper, #fileManagerOrdersTab').removeClass('active');
 						$('.currentTabRight' )
 							.attr('id', tabId)
 							.addClass('active');
-						$(elem).html(addRightTabContentOrderHandler($(data.html)));
-
-						MAIN.curTabRightId = tabId;
-						MAIN.curTabRightName = 'a[href="#' + MAIN.curTabRightId + '"] .tabName';
-						MAIN.orderId = orderId;
+						$(elem).html(addRightTabContentOrderHandler($html));
 						if ('TRUE' === data.consolidate) {
 							store.set('consOrder', 'consAverageTr');
 						} else {
 							store.remove('consOrder');
 						}
+						MAIN.curTabRightId = tabId;
+						MAIN.curTabRightName = 'a[href="#' + MAIN.curTabRightId + '"] .tabName';
+						MAIN.orderId = orderId;
 						_orderDetails = {};
 						if (_.isObject(data.orderDescription)) {
 							_orderDetails = data.orderDescription;
@@ -3000,13 +2999,16 @@
 				} ).then( function ( data )
 				{
 					if (data.success) {
-						$(elem).html(addRightTabContentTableHandler($(data.html)));
+						var $html = $(data.html);
+						$(elem).html($html);
+						$(elem).html(addRightTabContentTableHandler($html));
 						if (data.consolidateData) {
 							setTimeout(function () {
 								$('#saveOrderInDBWrapper').hide();
 								$('#consOrderButtonsWrapper').show();
 							}, 1);
 							buildConsolidateOrder(data.consolidateData);
+							$('#addNewSection').parent().remove();
 						}
 						setTimeout(setOrderSum, 100);
 						showBody();
@@ -3353,7 +3355,6 @@
 						data: data,
 						autoOpen: true,
 						dragAndDrop: false,
-						saveState: true,
 						saveState: 'products-Tree',
 						openedIcon: $('<span class="glyphicon glyphicon-minus" aria-hidden="true"></span>'),
 						closedIcon: $('<span class="glyphicon glyphicon-plus" aria-hidden="true"></span>')
@@ -3710,9 +3711,9 @@
 						PREFERENCES.insertFontSizes(['#fontSizeTabs'], '.nav-tabs');
 						PREFERENCES.applyPreferences(MENU.getPreferencesSettings());
 						THEMES.getThemesList();
-						showBody();
 						$('#mainMenuWrapper').hide();
 						$('#topIconsWrapper').show();
+						showBody();
 					});
 				}
 			},
@@ -3734,8 +3735,9 @@
 					{
 						sectionContent.html(addProductsDbHandler($(data)));
 						$('#databaseWrapper').splitPane();
-						showBody();
 						$('#mainMenuWrapper').hide();
+						$('#topIconsWrapper').show();
+						showBody();
 						$.when(TABS.showKim()).done(function () {
 							setTimeout(function(){ spinnerKim.stop(document.getElementById('orderSpinner')); }, 300);
 						});
@@ -3763,9 +3765,9 @@
 					{
 						sectionContent.html(addOrderCreationHandler($(data)));
 						$('#creatingOrderWrapper').splitPane();
-						showBody();
 						$('#mainMenuWrapper').hide();
 						$('#topIconsWrapper').show();
+						showBody();
 						if (!MAIN.orRequested) {
 							TABS.getRightTabsList();
 							CLIENTS.getClientsDetails();
@@ -4013,7 +4015,6 @@
 							data: data.tree,
 							autoOpen: true,
 							dragAndDrop: false,
-							saveState: true,
 							saveState: 'clients-Tree',
 							openedIcon: $('<span class="glyphicon glyphicon-minus" aria-hidden="true"></span>'),
 							closedIcon: $('<span class="glyphicon glyphicon-plus" aria-hidden="true"></span>'),
