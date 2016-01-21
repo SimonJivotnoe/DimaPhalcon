@@ -234,8 +234,16 @@ class OrderController  extends \Phalcon\Mvc\Controller
             $orderId = $this->request->getPost('orderId');
             $this->response->setContentType('application/json', 'UTF-8');
             $res = false;
-            if ($this->deleteProductsFromOrder($orderId) && $this->deleteOrderFromTabs($orderId) && $this->deleteFromConsolidateOrder($orderId) && $this->deleteOrder($orderId)) {
-                $res = true;
+            try {
+                if ($this->deleteProductsFromOrder($orderId)    &&
+                    $this->deleteOrderFromTabs($orderId)        &&
+                    $this->deleteFromConsolidateOrder($orderId) &&
+                    $this->deleteOrder($orderId)
+                ) {
+                    $res = true;
+                }
+            } catch (\Exception $e) {
+                    
             }
             $this->response->setJsonContent($res);
             return $this->response;

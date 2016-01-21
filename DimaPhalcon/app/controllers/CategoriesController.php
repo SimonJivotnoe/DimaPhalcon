@@ -4,59 +4,53 @@ class CategoriesController extends ControllerBase
 {
 
     public function getCategoriesTableAction(){
-        if ( $this->request->isAjax() && $this->request->isGet()) {
-            $categoriesList = '<tr>
+        $this->ajaxGetCheck();
+        $categoriesList = '<tr>
                                     <th>Список категорий</th>
                                     <th>Артикул</th>
                                     <th class="editCategoriesTable"></th>
                                 </tr>';
-            $this->response->setContentType('application/json', 'UTF-8');
-            $category = Categories::find();
-            if ($category) {
-                $names = [];
-                $articles = [];
-                foreach ($category as $val) {
-                    $categoriesList .= '<tr>
-                                            <td><span class="categoryName">' . $val->getCategoryName() . '</span></td>
-                                            <td>' . $val->getArticle() . '</td>
-                                            <td class="editMetallTable">
-                                                <span class="glyphicon glyphicon-pencil triggerCategoryPencil" aria-hidden="true" name="'. $val->getCategoryId() . '"></span>
-                                                <span class="glyphicon glyphicon-remove triggerRemoveCategory" aria-hidden="true" name="'. $val->getCategoryId() . '"></span>
-                                            </td>
-                                        </tr>';
-                    array_push($names, $val->getCategoryName());
-                    array_push($articles, $val->getArticle());
-                }
-                $resObj = ['names' => $names, 'articles' => $articles];
+        $this->response->setContentType('application/json', 'UTF-8');
+        $category = Categories::find();
+        if ($category) {
+            $names = [];
+            $articles = [];
+            foreach ($category as $val) {
+                $categoriesList .= '<tr>
+                                        <td><span class="categoryName">' . $val->getCategoryName() . '</span></td>
+                                        <td>' . $val->getArticle() . '</td>
+                                        <td class="editMetallTable">
+                                            <span class="glyphicon glyphicon-pencil triggerCategoryPencil" aria-hidden="true" name="'. $val->getCategoryId() . '"></span>
+                                            <span class="glyphicon glyphicon-remove triggerRemoveCategory" aria-hidden="true" name="'. $val->getCategoryId() . '"></span>
+                                        </td>
+                                    </tr>';
+                array_push($names, $val->getCategoryName());
+                array_push($articles, $val->getArticle());
             }
-            $this->response->setJsonContent(['html' => $categoriesList, 'categoriesTableContent' => (object)$resObj]);
-            
-            return $this->response;
-        } else {
-            $this->response->redirect('');
+            $resObj = ['names' => $names, 'articles' => $articles];
         }
+        $this->response->setJsonContent(['html' => $categoriesList, 'categoriesTableContent' => (object)$resObj]);
+
+        return $this->response;
     }
 
     public function addAction()
     {
-        if ( $this->request->isAjax() && $this->request->isPost()) {
-            $this->response->setContentType('application/json', 'UTF-8');
-            $res = 'already';
-            $article = $this->request->getPost('article');
-            if (!Categories::findFirst("article = '" . $article . "'")) {
-                $category = new Categories();
-                $category->setCategoryName($this->request->getPost('categoryName'))
-                         ->setArticle($article);
-                if ($category->save()) {
-                    $res = true;
-                }
+        $this->ajaxPostCheck();
+        $this->response->setContentType('application/json', 'UTF-8');
+        $res = 'already';
+        $article = $this->request->getPost('article');
+        if (!Categories::findFirst("article = '" . $article . "'")) {
+            $category = new Categories();
+            $category->setCategoryName($this->request->getPost('categoryName'))
+                     ->setArticle($article);
+            if ($category->save()) {
+                $res = true;
             }
-            $this->response->setJsonContent($res);
-            
-            return $this->response;
-        } else {
-            $this->response->redirect('');
         }
+        $this->response->setJsonContent($res);
+
+        return $this->response;
     }
 
     public function getCategoriesListAction() {

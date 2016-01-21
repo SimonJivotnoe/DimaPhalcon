@@ -41,7 +41,7 @@ class MenuController extends \Phalcon\Mvc\Controller
 
         $categoriesObj = new CategoriesController;
         $categoriesRes = $categoriesObj->createCategoriesList();
-        $categoriesList = '<option name="categoriesAll" selected="selected">Все</option>';
+        $categoriesList = '<option name="categoriesAll" selected="selected">Все Категории</option>';
         $categoriesList .= $categoriesRes['html'];
         $categoriesArr = $categoriesRes['categoriesArr'];
         foreach ($products as $val) {

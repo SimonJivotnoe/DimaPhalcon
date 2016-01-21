@@ -1,17 +1,13 @@
 <?php
-
 use Phalcon\Db\RawValue;
 
-class TabsController extends \Phalcon\Mvc\Controller 
+class TabsController extends ControllerBase
 {    
-    public function getLeftTabsListAction() {      
-        if ($this->request->isAjax() && $this->request->isGet()) {
-            $tabs = Tabs::find();
-            $this->response->setContentType('application/json', 'UTF-8');
-            if ($tabs == false) {
-                $this->response->setJsonContent(['success' => false, 'error' => __METHOD__ . ':' . $tabs->getMessages()]);
-                return $this->response;
-            }
+    public function getLeftTabsListAction() {
+        $this->ajaxGetCheck();
+        $res = ['success' => false];
+        $tabs = Tabs::find();
+        if ($tabs == true) {
             $html = false;
             $active = false;
             $prodId = false;
@@ -21,7 +17,7 @@ class TabsController extends \Phalcon\Mvc\Controller
             ];
             $resObj = [];
             if (count($tabs)) {
-                $substObj = new Substitution();                
+                $substObj = new Substitution();
 
                 foreach ($tabs as $val) {
                     $tabsList = array();
@@ -40,8 +36,9 @@ class TabsController extends \Phalcon\Mvc\Controller
                     $html .= $substObj->subHTMLReplace('tab_li.html', $tabsList);
 
                     $tabArr[$val->getTabId()] = (object)[
-                        'active' => $val->getActive(),
-                        'productId' => $val->getProductId()
+                        'active'    => $val->getActive(),
+                        'productId' => $val->getProductId(),
+                        'article'   => $val->Products->getArticle()
                     ];
                 }
                 $kim = Kim::find();
@@ -49,48 +46,26 @@ class TabsController extends \Phalcon\Mvc\Controller
                     $resObj[$val->getKim()] = $val->getKimHard();
                 }                
             }
-            $this->response->setJsonContent([
-                    'html' => $html,
-                    'active' => $active,
-                    'productId' => $prodId,
-                    'tabsList' => (object)$tabArr,
-                    'kim' => (object)$resObj
-                ]
-            );
-
-            return $this->response;
-            
-        } else {
-            $this->response->redirect('');
+            $res = [
+                'success'        => true,
+                'html'           => $html,
+                'activeTabId'    => $active,
+                'productId'      => $prodId,
+                'tabsList'       => (object)$tabArr,
+                'kim'            => (object)$resObj
+            ];
         }
-    }
-    
-    public function getLastLeftTabAction() {
-        if ($this->request->isAjax() && $this->request->isGet()) {
-            $tabs = Tabs::maximum(array("column" => "id"));
-               if (!empty($tabs)) {
-                   $this->response->setContentType('application/json', 'UTF-8');
-                   $this->response->setJsonContent($tabs);
-               } else {
-                   $this->response->setContentType('application/json', 'UTF-8');
-                   $this->response->setJsonContent(array());
-               }
-               return $this->response;
-           } else {
-               $this->response->redirect('');
-       }
+        $this->response->setJsonContent($res);
+        
+        return $this->response;
     }
     
     public function getLeftTabContentAction($productId) {
-        if ($this->request->isAjax() && $this->request->isGet()) {
-            $sector = $this->request->get('sector');
-            $product = Products::findFirst($productId);
-            $this->response->setContentType('application/json', 'UTF-8');
-            if ($product == false) {
-                $this->response->setJsonContent(['status' => false]);
-                return $this->response;
-            }
-
+        $this->ajaxGetCheck();
+        $res = ['status' => false];
+        $sector = $this->request->get('sector');
+        $product = Products::findFirst($productId);
+        if ($product == true) {
             $productMetall = $product->getMetall();
             $articleFlag = true;
             $tabContent = '';
@@ -175,49 +150,53 @@ class TabsController extends \Phalcon\Mvc\Controller
             );
 
             $tabContent .= $substObj->subHTMLReplace($mainTemplate, $productDetails);
-            $this->response->setJsonContent([
+            $res = [
                 'html'              => $tabContent,
                 'article'           => $articleFlag,
                 'css'               => $css,
                 'detailsForArticle' => (object)$detailsForArticle,
                 'metallId'          => $productMetall,
                 'image'             => $image
-                ]
-            );
-            return $this->response;
-        } else {
-            $this->response->redirect('');
+            ];
         }
+        $this->response->setJsonContent($res);
+        
+        return $this->response;
     }
-
+    
+    public function getLastLeftTabAction() {
+        $this->ajaxGetCheck();
+        $res = array();
+        $tabs = Tabs::maximum(array("column" => "id"));
+        if (!empty($tabs)) {
+            $res = $tabs;
+        }
+        $this->response->setJsonContent($res);
+        
+        return $this->response;
+    }
+    
     public function changeActiveLeftTabAction() {
-        if ($this->request->isAjax() && $this->request->isPost()) {
-            $tabs = Tabs::find("active = 1");
+        $this->ajaxPostCheck();
+        $res = false;
+        $tabs = Tabs::find("active = 1");
+        if ($tabs == true) {
             foreach ($tabs as $val) {
                 $val->setActive(0);
                 $val->save();
             }
-            if ($tabs == false) {
-                echo "Мы не можем сохранить робота прямо сейчас: \n";
-                foreach ($tabs->getMessages() as $message) {
-                    echo $message, "\n";
-                }
-            } else {
-                $id = $this->request->getPost('id');
-                $tabId = $this->request->getPost('tabId');
-                $tabs = Tabs::find(array("id = '$id'", "tab_id = '$tabId'"));
-                foreach ($tabs as $val) {
-                    $val->setActive(1);
-                    $val->save();
-                }
-                $this->response->setContentType('application/json', 'UTF-8');
-                $this->response->setJsonContent('ok');
-
-                return $this->response;
+            $id = $this->request->getPost('id');
+            $tabId = $this->request->getPost('tabId');
+            $tabs = Tabs::find(array("id = '$id'", "tab_id = '$tabId'"));
+            foreach ($tabs as $val) {
+                $val->setActive(1);
+                $val->save();
             }
-        } else {
-            $this->response->redirect('');
+            $res = true;
         }
+        $this->response->setJsonContent($res);
+
+        return $this->response;
     }
 
     public function addNewLeftTabAction($id) {
@@ -432,63 +411,60 @@ class TabsController extends \Phalcon\Mvc\Controller
     }
 
     public function getRightTabsListAction() {
-        if ($this->request->isAjax() && $this->request->isGet()) {
-            $tabs = TabsRight::find();
-            if ($tabs == false) {
-                echo "Мы не можем сохранить робота прямо сейчас: \n";
-                foreach ($tabs->getMessages() as $message) {
-                    echo $message, "\n";
-                }
-            } else {
-                $this->response->setContentType('application/json', 'UTF-8');
-                if (count($tabs)) {
-                    $active = 'fileManagerOrdersTab';
-                    $orderId = '';
-                    $tabsLi = '';
-                    $tabArr = array();
-                    $substObj = new Substitution();
-                    foreach ($tabs as $val) {
-                        $tabsList = array();
-                        if ($val->getActive()) {
-                            $tabsList['%ACTIVE%'] = 'active';
-                            $active = 'or' . $val->getId();
-                            $orderId = $val->getOrderId();
-                        } else {
-                            $tabsList['%ACTIVE%'] = '';
-                        }
-                        $tabsList['%ID%'] = 'or' . $val->getId();
-                        $tabsList['%TABID%'] = $val->getId();
-                        $tabsList['%ORDER_ID%'] = $val->getOrderId();
-                        $order = Orders::findFirst($val->getOrderId());
-                        $tabsList['%ORDER_NAME%'] = $order->getArticle();
-                        $tabsLi .= $substObj->subHTMLReplace('tab_li_right.html', $tabsList);
-
-                        $tabArr['fileManagerOrdersTab'] = (object)[
-                            'active' => '',
-                            'orderId' => 'fileManagerOrdersTab'
-                        ];
-                        $tabArr['or' . $val->getId()] = (object) [
-                            'active'  => $val->getActive(),
-                            'orderId' => $val->getOrderId()
-                        ];
-                    }
-                    $this->response->setJsonContent([
-                        'tabs'    => true,
-                        'tabId'   => $active,
-                        'orderId' => $orderId,
-                        'obj'     => (object) $tabArr,
-                        'html'    => $tabsLi
-                        ]
-                    );
-                    return $this->response;
-                }
-
-                $this->response->setJsonContent(array(false));
-
-                return $this->response;
+        $this->ajaxGetCheck();
+        $tabs = TabsRight::find();
+        if ($tabs == false) {
+            echo "Мы не можем сохранить робота прямо сейчас: \n";
+            foreach ($tabs->getMessages() as $message) {
+                echo $message, "\n";
             }
         } else {
-            $this->response->redirect('');
+            //$this->response->setContentType('application/json', 'UTF-8');
+            if (count($tabs)) {
+                $active = 'fileManagerOrdersTab';
+                $orderId = '';
+                $tabsLi = '';
+                $tabArr = array();
+                $substObj = new Substitution();
+                foreach ($tabs as $val) {
+                    $tabsList = array();
+                    if ($val->getActive()) {
+                        $tabsList['%ACTIVE%'] = 'active';
+                        $active = 'or' . $val->getId();
+                        $orderId = $val->getOrderId();
+                    } else {
+                        $tabsList['%ACTIVE%'] = '';
+                    }
+                    $tabsList['%ID%'] = 'or' . $val->getId();
+                    $tabsList['%TABID%'] = $val->getId();
+                    $tabsList['%ORDER_ID%'] = $val->getOrderId();
+                    $order = Orders::findFirst($val->getOrderId());
+                    $tabsList['%ORDER_NAME%'] = $order->getArticle();
+                    $tabsLi .= $substObj->subHTMLReplace('tab_li_right.html', $tabsList);
+
+                    $tabArr['fileManagerOrdersTab'] = (object)[
+                        'active' => '',
+                        'orderId' => 'fileManagerOrdersTab'
+                    ];
+                    $tabArr['or' . $val->getId()] = (object) [
+                        'active'  => $val->getActive(),
+                        'orderId' => $val->getOrderId()
+                    ];
+                }
+                $this->response->setJsonContent([
+                    'tabs'    => true,
+                    'tabId'   => $active,
+                    'orderId' => $orderId,
+                    'obj'     => (object) $tabArr,
+                    'html'    => $tabsLi
+                    ]
+                );
+                return $this->response;
+            }
+
+            $this->response->setJsonContent(array(false));
+
+            return $this->response;
         }
     }
 
