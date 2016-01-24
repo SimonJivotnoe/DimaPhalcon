@@ -150,6 +150,30 @@ class MetallsController extends \Phalcon\Mvc\Controller
         }
     }
 
+    public function getMetallHistoryAction($id){
+        $this->ajaxGetCheck();
+        $this->response->setJsonContent($this->buildMetallHistoryObj($id));
+
+        return $this->response;
+    }
+
+    public function buildMetallHistoryObj($id)
+    {
+        $res = [];
+        $history = MetallPricesHistory::find(array("metall_id = '$id'"));
+        if ($history) {
+            foreach ($history as $val) {
+                array_push($res, [
+                    'price' => $val->getPrice(),
+                    'outPrice' => $val->getOutPrice(),
+                    'date' => $val->getDate()
+                ]);
+            }
+        }
+
+        return $res;
+    }
+    
     public function createMetallsList ($productMetall, $isArticle = false) {
         $metallsList = '';
         $article = '';

@@ -1,0 +1,76 @@
+<div class="col-md-12 created">
+    <div class="col-md-4">Создано: {{product.created}}</div>
+    <div class="col-md-8 createTableDiv">
+        <select id="selectCreateproductWay">
+            <option value="currentTab">Создать новое изделие по этому шаблону в текущей вкладке</option>
+            <option value="newTab">Создать новое изделие по этому шаблону в новой вкладке</option>
+        </select>
+        <button class="btn btn-warning btn-sm" id="createProductFromTemplate">
+            <span class="glyphicon glyphicon-play" aria-hidden="true"></span>
+        </button>
+    </div>
+</div>
+<div class="col-md-12" id="imageWrapper">
+    <div class="upload-wrapper">
+        <button type="button" class="btn btn-success btn-sm" id="uploadImageProduct"><span class="glyphicon glyphicon-upload" aria-hidden="true"></span>  Загрузить картинку</button>
+        <div class="upload-image" style="display:none"></div>
+        <input type="file" id="input-file-upload" style="display:none" />
+    </div>
+    %IMAGE%
+</div>
+<div class="col-md-8 col-md-offset-0">
+    <table class="table table-bordered">
+        <tr>
+            <th>Артикул</th>
+            <th>Наименование продукта</th>
+            <th>Категория</th>
+            <th>КИМ</th>
+            <th>Металл</th>
+            <th>История цен</th>
+        </tr>
+        <tr>
+            <td>{{product.article}}</td>
+            <td>{{product.name}}</td>
+            <td>{{product.category}}</td>
+            <td>{{product.kim}}</td>
+            <td>{{product.metall}}</td>
+            <td>
+                <select id="metallHistorySelect">
+                    {{#metallHistory}}
+                        <option data-price="{{ price }}" data-outprice="{{ outPrice }}">{{ price }}-{{ outPrice }}-{{ date }}</option>
+                    {{/metallHistory}}
+                </select>
+            </td>
+        </tr>
+    </table>
+</div>
+<div class="col-md-8">
+    <table class="table table-bordered">
+        %TABLE_CONTENT%
+        %ALWAYS_IN_TABLE%
+    </table>
+</div>
+<div class="col-md-10 list-group">
+    <ul name="" id="formulasList">
+        %FORMULAS%
+    </ul>
+</div>
+<div style="display:none;">
+    <div class="col-md-8 tableContent" >
+        <div class="col-md-10 productTableWrapper">
+            <form id="calx">
+                <div class="col-md-12">
+                    <ul id="sortable">
+                        %TABLE_CONTENT_A%
+                    </ul>
+                </div>
+                <div class="col-md-12">
+                    <ul id="alwaysInTable">
+                        %ALWAYS_IN_TABLE_A%
+                    </ul>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<div class="clearer"></div>

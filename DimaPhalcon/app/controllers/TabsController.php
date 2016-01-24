@@ -7,7 +7,7 @@ class TabsController extends ControllerBase
         $this->ajaxGetCheck();
         $res = ['success' => false];
         $tabs = Tabs::find();
-        if ($tabs == true) {
+        if ($tabs) {
             $html = false;
             $active = false;
             $prodId = false;
@@ -38,7 +38,8 @@ class TabsController extends ControllerBase
                     $tabArr[$val->getTabId()] = (object)[
                         'active'    => $val->getActive(),
                         'productId' => $val->getProductId(),
-                        'article'   => $val->Products->getArticle()
+                        'article'   => $val->Products->getArticle(),
+                        'status'    => $val->Products->getStatus()
                     ];
                 }
                 $kim = Kim::find();
@@ -65,7 +66,7 @@ class TabsController extends ControllerBase
         $res = ['status' => false];
         $sector = $this->request->get('sector');
         $product = Products::findFirst($productId);
-        if ($product == true) {
+        if ($product) {
             $productMetall = $product->getMetall();
             $articleFlag = true;
             $tabContent = '';

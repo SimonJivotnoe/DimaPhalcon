@@ -1,8 +1,33 @@
 <?php
 use Phalcon\Db\RawValue;
 
-class ProductsController extends \Phalcon\Mvc\Controller
+class ProductsController extends ControllerBase
 {
+    public function getProductInfoAction()
+    {
+        $this->ajaxGetCheck();
+        $res = false;
+        $productObj = Products::findFirst($this->request->get('productId'));
+        if ($productObj) {
+            $metallObj = new MetallsController();
+            $metallHistory = $metallObj->buildMetallHistoryObj($productObj->getMetall());
+            $res = [
+                'product' => [
+                    'created' => $productObj->getCreated(),
+                    'article' => $productObj->getArticle(),
+                    'name' => $productObj->getProductName(),
+                    'category' => $productObj->Categories->getCategoryName(),
+                    'kim' => $productObj->Kim->getKimHard(),
+                    'metall' => $productObj->Metalls->getName()
+                ],
+                'metallHistory' => $metallHistory
+        ];
+
+        }
+        $this->response->setJsonContent($res);
+
+        return $this->response;
+    }
 
     public function createTableAction()
     {
