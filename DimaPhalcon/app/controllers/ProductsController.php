@@ -11,16 +11,21 @@ class ProductsController extends ControllerBase
         if ($productObj) {
             $metallObj = new MetallsController();
             $metallHistory = $metallObj->buildMetallHistoryObj($productObj->getMetall());
+            $date = new DateTime();
             $res = [
                 'product' => [
-                    'created' => $productObj->getCreated(),
-                    'article' => $productObj->getArticle(),
-                    'name' => $productObj->getProductName(),
+                    'created'  => $productObj->getCreated(),
+                    'article'  => $productObj->getArticle(),
+                    'name'     => $productObj->getProductName(),
                     'category' => $productObj->Categories->getCategoryName(),
-                    'kim' => $productObj->Kim->getKimHard(),
-                    'metall' => $productObj->Metalls->getName()
+                    'kim'      => $productObj->Kim->getKimHard(),
+                    'metall'   => $productObj->Metalls->getName(),
+                    'image'    => $productObj->getImage() . '?' . $date->getTimestamp()
                 ],
-                'metallHistory' => $metallHistory
+                'metallHistory' => $metallHistory,
+                'tableContent'  => json_decode($productObj->getTableContent(), true),
+                'alwaysInTable' => json_decode($productObj->getAlwaysintable(), true),
+                'formulas'      => json_decode($productObj->getFormulas(), true)
         ];
 
         }

@@ -417,22 +417,6 @@
 				return data;
 			});
 		},
-
-		buildArticleProduct: function (productId, tabId) {
-			$.when(getTemplate('articleProduct.html'), _products.getProductInfo(productId)).then(function (template, productInfo) {
-				console.log(productInfo);
-				var rendered = Mustache.render(template, productInfo);
-				var $html = $(rendered);
-				//$html.find('#metallHistorySelect' ).html(Mustache.render($('#metallHistoryOption' ).html(), productInfo.product));
-				$('#dbProductsListList').removeClass('active');
-				$('.currentTab' )
-					.attr('id', tabId)
-					.removeClass('saveInDB addedToOrder')
-					.html(addLeftTabContentHandler($html)).show();
-				$('.removeRow' ).hide();
-				showBody();
-			});
-		}
 	};
 
 	var orderPlaceholder = {
@@ -2727,20 +2711,30 @@
 
 			getLeftTabContent: function (productId, tabId) {
 				var tabObj = MAIN.tabsList[tabId ];
+				var template = 'draftProduct.html';
 				$('#myTab, #leftTabsContent').fadeIn('slow');
 				if (tabObj.status) {
 					switch (tabObj.status) {
-						case 'draft':
-							break;
 						case 'save':
 							if (tabObj.article) {
-								_products.buildArticleProduct(productId, tabId);
+								template = 'articleProduct.html';
 							} else {
 
 							}
 							break;
 					}
 				}
+				$.when(getTemplate(template), _products.getProductInfo(productId)).then(function (template, productInfo) {
+					var rendered = Mustache.render(template, productInfo);
+					var $html = $(rendered);
+					$('#dbProductsListList').removeClass('active');
+					$('.currentTab' )
+						.attr('id', tabId)
+						.removeClass('saveInDB addedToOrder')
+						.html(addLeftTabContentHandler($html)).show();
+					$('.removeRow' ).hide();
+					showBody();
+				});
 			},
 			/*getLeftTabContent: function(productId, tabId) {
 				localStorage.currentCaretPos = 0;

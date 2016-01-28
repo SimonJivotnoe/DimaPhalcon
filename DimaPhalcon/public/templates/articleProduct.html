@@ -1,5 +1,5 @@
 <div class="col-md-12 created">
-    <div class="col-md-4">Создано: {{product.created}}</div>
+    <div class="col-md-4">Создано: {{ product.created }}</div>
     <div class="col-md-8 createTableDiv">
         <select id="selectCreateproductWay">
             <option value="currentTab">Создать новое изделие по этому шаблону в текущей вкладке</option>
@@ -10,13 +10,8 @@
         </button>
     </div>
 </div>
-<div class="col-md-12" id="imageWrapper">
-    <div class="upload-wrapper">
-        <button type="button" class="btn btn-success btn-sm" id="uploadImageProduct"><span class="glyphicon glyphicon-upload" aria-hidden="true"></span>  Загрузить картинку</button>
-        <div class="upload-image" style="display:none"></div>
-        <input type="file" id="input-file-upload" style="display:none" />
-    </div>
-    %IMAGE%
+<div class="col-md-12">
+    <div id="productPicture"><img src="img/{{ product.image }}" style="max-width: 100%; max-height: 200px;"></div>
 </div>
 <div class="col-md-8 col-md-offset-0">
     <table class="table table-bordered">
@@ -29,16 +24,16 @@
             <th>История цен</th>
         </tr>
         <tr>
-            <td>{{product.article}}</td>
-            <td>{{product.name}}</td>
-            <td>{{product.category}}</td>
-            <td>{{product.kim}}</td>
-            <td>{{product.metall}}</td>
+            <td>{{ product.article }}</td>
+            <td>{{ product.name }}</td>
+            <td>{{ product.category }}</td>
+            <td>{{ product.kim }}</td>
+            <td>{{ product.metall }}</td>
             <td>
                 <select id="metallHistorySelect">
-                    {{#metallHistory}}
+                    {{ #metallHistory }}
                         <option data-price="{{ price }}" data-outprice="{{ outPrice }}">{{ price }}-{{ outPrice }}-{{ date }}</option>
-                    {{/metallHistory}}
+                    {{ /metallHistory }}
                 </select>
             </td>
         </tr>
@@ -46,13 +41,31 @@
 </div>
 <div class="col-md-8">
     <table class="table table-bordered">
-        %TABLE_CONTENT%
-        %ALWAYS_IN_TABLE%
+        {{ #tableContent }}
+        <tr>
+            <th>{{ %ROW_NUMBER% }}</th>
+            <td>{{ %ROW_NAME% }}</td>
+            <td data-cellarticle="{{ %ROW_NUMBER% }}">{{ %INPUT_VALUE% }}</td>
+        </tr>
+        {{ /tableContent }}
+        
+        {{ #alwaysInTable }}
+        <tr>
+            <th>{{ %ROW_NUMBER% }}</th>
+            <td>{{ %ROW_NAME% }}</td>
+            <td data-cellarticle="{{ %ROW_NUMBER% }}">{{ %INPUT_VALUE% }}</td>
+        </tr>
+        {{ /alwaysInTable }}
     </table>
 </div>
 <div class="col-md-10 list-group">
     <ul name="" id="formulasList">
-        %FORMULAS%
+        {{ #formulas }}
+            <li class="list-group-item">
+                <span class="formulaValue col-md-9">{{ formula }}</span>
+                <span class="glyphicon glyphicon-arrow-right" aria-hidden="true"> {{ cell }}</span>
+            </li>
+        {{ /formulas }}
     </ul>
 </div>
 <div style="display:none;">
@@ -61,12 +74,36 @@
             <form id="calx">
                 <div class="col-md-12">
                     <ul id="sortable">
-                        %TABLE_CONTENT_A%
+                        {{ #tableContent }}
+                            <li class="">
+                                <span class="rowNumber col-md-2">{{ %ROW_NUMBER% }}</span>
+                                <span class="rowName">
+                                    <input class="rowNameInput" type="text" value="{{ %ROW_NAME% }}">
+                                </span>
+                                <span class="rowValue">
+                                    <input class="rowValueInput" data-cell="{{ %DATA_CELL% }}" data-formula="{{ %DATA_FORMULA% }}" data-format="0[.]00"
+                                           type="tel" style="width: 5em;" value=" {{ %INPUT_VALUE% }}">
+                                </span>
+                                <label><input class="checkToArticle" type="checkbox"></label>
+                                <span class="removeRow glyphicon glyphicon-remove" aria-hidden="true"></span></li>
+                            </li>
+                        {{ /tableContent }}
                     </ul>
                 </div>
                 <div class="col-md-12">
                     <ul id="alwaysInTable">
-                        %ALWAYS_IN_TABLE_A%
+                        {{ #alwaysInTable }}
+                            <li>
+                                <span class="rowNumber col-md-2">{{ %ROW_NUMBER% }}</span>
+                                <span class="rowName">
+                                    <input class="rowNameInput" type="text" value="{{ %ROW_NAME% }}">
+                                </span>
+                                <span class="rowValue">
+                                    <input class="rowValueInput" data-cell="{{ %DATA_CELL% }}" data-formula="{{ %DATA_FORMULA% }}" data-format="0[.]00"
+                                           type="tel" style="width: 5em;" value="{{ %INPUT_VALUE% }}">
+                                </span>
+                            </li>
+                        {{ /alwaysInTable }}
                     </ul>
                 </div>
             </form>

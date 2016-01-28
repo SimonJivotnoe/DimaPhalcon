@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="css/libs/notifcenter.css">
     <link href="js/jquery/colorpicker/dist/css/bootstrap-colorpicker.min.css" rel="stylesheet" type="text/css"/>
     <link rel="shortcut icon" type="image/x-icon" href="favicon.ico" />
+    <?php echo $templates; ?>
 </head>
 <body>
     <div id="waitSpinner"></div>
@@ -76,6 +77,7 @@
     <script src="js/jquery/tree.jquery.js"></script>
     <script src="js/Dima.js"></script>
     <script src="js/main.js"></script>
+    <script src="js/libs/mustache.min.js"></script>
     <?php echo $this->assets->outputJs('jsFooter'); ?>
     <script src="js/libs/jquery.noty.packaged.min.js"></script>
     <script src="js/libs/jquery.notificationcenter.js"></script>
