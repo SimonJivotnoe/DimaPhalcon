@@ -61,6 +61,25 @@
                 </ul>
             </div>
             <div class="col-md-12">
+                <div class="col-md-6 col-md-offset-4 formulaBtnGroupPr">
+                    <button type="button" class="btn custom-cancelInputFormula btn-sm" id="cancelFormulaBtnPr">Отмена</button>
+                    <button type="button" class="btn btn-info btn-sm" id="addFormulaBtnPr">Добавить</button>
+                </div>
+                <input type="text" class="col-md-12" id="addFormulaInputPr" placeholder="Введите формулу">
+                <div class="col-md-12" id="formulasHelper">
+                    %FORMULAS_HELPER%
+       <span id="addNewBtnSpan">
+         <input type="text" id="addNewFhBtnInput"/>
+       <button type="button" class="btn btn-success btn-xs addNewFhBtn"><span class="glyphicon glyphicon-plus-sign"></span> New</button>
+       </span>
+                </div>
+            </div>
+            <div class="col-md-12 list-group">
+                <ul name="" id="formulasList">
+                    %FORMULAS%
+                </ul>
+            </div>
+            <div class="col-md-12">
                 <ul id="alwaysInTable">
                     %ALWAYS_IN_TABLE%
                 </ul>
@@ -73,25 +92,6 @@
     </div>
 </div>
 
-<div class="col-md-12">
-    <div class="col-md-6 col-md-offset-4 formulaBtnGroupPr">
-        <button type="button" class="btn custom-cancelInputFormula btn-sm" id="cancelFormulaBtnPr">Отмена</button>
-        <button type="button" class="btn btn-info btn-sm" id="addFormulaBtnPr">Добавить</button>
-    </div>
-    <input type="text" class="col-md-12" id="addFormulaInputPr" placeholder="Введите формулу">
-   <div class="col-md-12" id="formulasHelper">
-       %FORMULAS_HELPER%
-       <span id="addNewBtnSpan">
-         <input type="text" id="addNewFhBtnInput"/>
-       <button type="button" class="btn btn-success btn-xs addNewFhBtn"><span class="glyphicon glyphicon-plus-sign"></span> New</button>
-       </span>
-   </div>
-</div>
-<div class="col-md-12 list-group">
-    <ul name="" id="formulasList">
-        %FORMULAS%
-    </ul>
-</div>
 <div class="clearer"></div>
 <!--<li class="list-group-item">2*A4+A2*TAN(RADIANS(A5/2))+A3/TAN(RADIANS(A5))</li>
 <li class="list-group-item">

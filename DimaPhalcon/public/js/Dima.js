@@ -2709,7 +2709,7 @@
 				});
 			},
 
-			getLeftTabContent: function (productId, tabId) {
+			/*getLeftTabContent: function (productId, tabId) {
 				var tabObj = MAIN.tabsList[tabId ];
 				var template = 'draftProduct.html';
 				$('#myTab, #leftTabsContent').fadeIn('slow');
@@ -2735,8 +2735,8 @@
 					$('.removeRow' ).hide();
 					showBody();
 				});
-			},
-			/*getLeftTabContent: function(productId, tabId) {
+			},*/
+			getLeftTabContent: function(productId, tabId) {
 				localStorage.currentCaretPos = 0;
 				$.ajax( {
 					url   : URL_TABS + 'getLeftTabContent/' + productId,
@@ -2792,7 +2792,7 @@
 					$('#myTab, #leftTabsContent').fadeIn('slow');
 					setTimeout(function(){ spinnerLeft.stop(document.getElementById('leftTabsSpinner')); }, 200);
 				});
-			},*/
+			},
 
 			changeActiveTab: function (id, tabId, action) {
 				$.ajax({
