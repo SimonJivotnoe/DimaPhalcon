@@ -3,3 +3,11 @@
         <option data-price="{{ price }}" data-outprice="{{ outPrice }}">{{ price }}-{{ outPrice }}-{{ date }}</option>
     {{/metallHistory}}
 </script>
+<script id="categoriesTableTemplate" type="x-tmpl-mustache">
+    {{#categories}}
+        <tr data-id="{{id}}">
+            <td>{{name}}</td>
+            <td>{{article}}</td>
+        </tr>
+    {{/categories}}
+</script>

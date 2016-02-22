@@ -1,7 +1,6 @@
 <div id="databaseWrapper" class="split-pane fixed-left">
         <div class="split-pane-component" id="db-left-component">
             <div id="tabs">
-                <div id="leftTabsSpinner"></div>
                 <div role="tabpanel">
                     <ul class="nav nav-tabs" role="tablist" id="myTab">
                         <li role="presentation" id="dbProductsListTab">
@@ -44,8 +43,24 @@
         </div>
         <div class="split-pane-divider" id="db-divider"></div>
         <div class="split-pane-component" id="db-right-component">
-            <div id="kimSpinner"></div>
-            <div class="col-md-12">
+            <div class="row" id="categoriesWrapper">
+                <div class="col-md-12">
+                    <h4>Категории <span class="glyphicon glyphicon-th-list" aria-hidden="true"></span></h4>
+                </div>
+                <div class="col-md-10 col-md-offset-1 hvr-float-shadow" id="categoriesListTable">
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Категория</th>
+                                <th>Артикул</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <!--<div class="col-md-12">
                 <div class="col-md-12 toCollapse" data-toggle="collapse"
                       data-target="#categoriesCollapse" aria-expanded="true" aria-controls="categoriesCollapse"
                       style="margin-bottom: 8px;">
@@ -60,14 +75,9 @@
                         <input type="text" id="addCategoryArticleInput" placeholder="Артикул">
                         <button type="button" class="btn btn-info btn-sm" id="addCategoryBtn">Добавить</button>
                     </div>
-                    <div class="col-md-8" id="categoriesListTable">
-                        <table class="table table-bordered">
-                            <tbody>
-                            </tbody>
-                        </table>
-                    </div>
+
                 </div>
-            </div>
+            </div>-->
             <div class="col-md-12">
                 <h4>КИМ <span class="glyphicon glyphicon-fire" aria-hidden="true" data-toggle="collapse"
                               data-target="#kimCollapse" aria-expanded="true" aria-controls="kimCollapse">

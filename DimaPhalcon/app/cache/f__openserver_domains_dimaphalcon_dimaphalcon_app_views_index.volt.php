@@ -13,6 +13,8 @@
 </head>
 <body>
     <div id="waitSpinner"></div>
+    <div id="kimSpinner"></div>
+    <div id="leftTabsSpinner"></div>
     <div class="col-md-12" id="mainMenuWrapper">
         <div class="col-md-9 col-md-offset-3" style="margin-top: 18%;">
             <div class="col-md-6 mainMenuIcon hvr-float-shadow btn-primary" id="runPreferences">
@@ -75,6 +77,7 @@
     <script src="js/jquery/colorpicker/dist/js/bootstrap-colorpicker.min.js"></script>
     <script src="js/jquery/spin.min.js"></script>
     <script src="js/jquery/tree.jquery.js"></script>
+    <script src="js/libs/focus-element-overlay.min.js"></script>
     <script src="js/Dima.js"></script>
     <script src="js/main.js"></script>
     <script src="js/libs/mustache.min.js"></script>

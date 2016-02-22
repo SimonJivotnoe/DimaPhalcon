@@ -34,6 +34,23 @@ class CategoriesController extends ControllerBase
         return $this->response;
     }
 
+    public function getCategoriesAction() {
+        $this->ajaxGetCheck();
+        $categories = Categories::find();
+        $categoriesArr = [];
+        if ($categories) {
+            foreach ($categories as $cat) {
+                array_push($categoriesArr, [
+                    'id'      => $cat->getCategoryId(),
+                    'name'    => $cat->getCategoryName(),
+                    'article' => $cat->getArticle()
+                ]);
+            }
+        }
+        $this->response->setJsonContent(['categories' => $categoriesArr]);
+        return $this->response;
+    }
+
     public function addAction()
     {
         $this->ajaxPostCheck();

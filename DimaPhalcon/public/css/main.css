@@ -491,9 +491,9 @@ ol li:hover {
     color: red;
 }
 
-.glyphicon-th-list {
+/*.glyphicon-th-list {
     cursor: pointer;
-}
+}*/
 
 .glyphicon-fire {
     color: orangered;
@@ -940,4 +940,11 @@ table.rc-table-resizing thead,table.rc-table-resizing thead> th,table.rc-table-r
 
 .clearer {
     clear: both;
+}
+
+/* DB */
+/* KIM */
+#categoriesWrapper {
+    min-height: 33%;
+    overflow-y: hidden;
 }
