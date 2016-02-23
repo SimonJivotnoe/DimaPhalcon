@@ -1424,18 +1424,18 @@
 			});
 			
 		return html;
-	}	
-	
+	}
+
 	function addProductsDbHandler(html) {
 		html
 			.find('#db-left-component').css('width', localStorage['db-split']).end()
-	
+
 			.find('#db-divider, #db-right-component').css('left', localStorage['db-split']).end()
-	
+
 			.find('#db-divider').on('mouseleave', function(){
 				localStorage['db-split'] = $('#db-divider').css('left');
 			}).end()
-			
+
 			.find('#showItemFromFileManager').click(function() {
 				var product = [];
 				$(this).hide();
@@ -1446,7 +1446,7 @@
 					window.location.href = LOCATION;
 				});
 			}).end()
-			
+
 			.find('#fileManagerCatogoriesSelect' ).change(function() {
 				var category = $('option:selected', this ).attr('name' );
 				$.each($('.prManProductTableCategory'), function(){
@@ -1456,17 +1456,40 @@
 					}
 				});
 			}).end()
-			
+
 			.find('#dbProductsListTab').click(function(){
 				TABS.setActiveDefaultTab('tabsList', 'dbProductsListTab', 'curTabId');
 				TABS.changeActiveTab('', '', 'changeActiveLeftTab');
 				PRODUCT.createFileManager('PR');
 			}).end()
-			
+
+			.find('.categoriesWrapper' ).click(function(){
+				var $this = $(this);
+				$({blurRadius: 0}).animate({blurRadius: 4}, {
+					duration: 500,
+					easing: 'swing',
+					step: function() {
+						$('#sectionContent').css({
+							"-webkit-filter": "blur("+this.blurRadius+"px)",
+							"filter": "blur("+this.blurRadius+"px)"
+						});
+					}
+				});
+				$('#sectionContent' ).animate({opacity: 0.3});
+				$('#outBodyElements')
+					.html($this.clone() )
+					.offset($this.offset())
+					.width($this.width())
+					.height($this.height());
+				$('#mainIcons' ).hide('scale');
+				setTimeout(function () {$('#kimIcons' ).show('clip');}, 350);
+				$this.find('td, th').css('color', $('body' ).css('backgroundColor'));
+			} ).end()
+
 			.find('#addNewTab').on('click', function(){
 				TABS.getLastLeftTab();
 			}).end()
-			
+
 			.find('#addCategoryBtn').click(function(){
 				var category = VALIDATION.validateInputVal({
 						val: $('#addCategoryInput' ).val(),
@@ -1482,7 +1505,7 @@
 					CATEGORIES.addCategory(category, article);
 				}
 			}).end()
-			
+
 			.find('#addKIM').click(function(){
 				var kim = VALIDATION.validateInputVal({
 						val: $('#kimInput' ).val(),
@@ -1498,7 +1521,7 @@
 					KIM.addKIMtoTable(kim, kimHardInput);
 				}
 			}).end()
-			
+
 			.find('#addMetall').on('click', function(){;
 				var metall = VALIDATION.validateInputVal({
 						val: $('#metallName' ).val(),
@@ -1541,7 +1564,7 @@
 					rows = $('#fileManagerProductsTable tr:gt(0)');
 				MENU.searchInTable(rows, text, 'tr');
 			}).end()
-			
+
 			.find('#tabs').on('dblclick', '#myTab li', function(){
 				localStorage['db-split'] === maxScreenSize ? localStorage['db-split'] = defaultScreenSize : localStorage['db-split'] = maxScreenSize;
 				$('#db-left-component').css('width', localStorage['db-split']);
@@ -1549,7 +1572,7 @@
 			});
 		return html;
 	}
-	
+
 	function addLeftTabContentHandler(html) {
 		html
 			.find('#uploadImageProduct').click(function (e) {
@@ -2445,27 +2468,20 @@
 
     function addCategoriesTableHandler(html) {
         html
-            .filter('tr')
-            .mouseover(function () {
-                var obj = {
-                    pencilRemove: 'triggerCategoryPencil',
-                    pencilAdd: 'editCategoryPencil',
-                    removeRemove: 'triggerRemoveCategory',
-                    removeAdd: 'removeCategory'
-                };
-                kimEditOver(obj, this);
-            })
-            .mouseleave(function () {
-                var obj = {
-                    pencilRemove: 'editCategoryPencil',
-                    pencilAdd: 'triggerCategoryPencil',
-                    removeRemove: 'removeCategory',
-                    removeAdd: 'triggerRemoveCategory'
-                };
-                kimEditOver(obj, this);
-            }).end()
-
-            .on('click', '.removeCategory', function(){
+			.find('.categoriesWrapper' ).click(function(){
+				console.log('here');
+				$({blurRadius: 0}).animate({blurRadius: 4}, {
+					duration: 500,
+					easing: 'swing',
+					step: function() {
+						$('#sectionContent').css({
+							"-webkit-filter": "blur("+this.blurRadius+"px)",
+							"filter": "blur("+this.blurRadius+"px)"
+						});
+					}
+				});
+			})
+			.on('click', '.removeCategory', function(){
                 var catId = $(this ).attr('name');
                 CATEGORIES.removeCategory(catId);
             })
@@ -3786,6 +3802,7 @@
 						}
 					)) {
 					localStorage.siteSector = 'DB';
+					$('#backKimIcon').removeClass('hvr-pulse-grow');
 					$.ajax( {
 						url   : 'templates/productsDB.html',
 						method: 'GET'

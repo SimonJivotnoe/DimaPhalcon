@@ -50,8 +50,11 @@ body {
     font-size: 70px;
     margin-top: 5px;
 }
+#kimIcons {
+    display: none;
+}
 
-#backIcon, #prefIcon, #dbIcon, #menuOpen, #prIcon, #showCustomThemes {
+#backIcon, #prefIcon, #dbIcon, #menuOpen, #prIcon, #showCustomThemes, #addKimIcon, #backKimIcon {
     width: 42px;
     padding: 3px;
     border-radius: 3px;
@@ -60,7 +63,7 @@ body {
     box-shadow: 0 0 10px rgba(0,0,0,0.5);
 }
 
-#backIcon, #prefIcon, #dbIcon, #menuOpen, #prIcon {
+#backIcon, #prefIcon, #dbIcon, #menuOpen, #prIcon, #addKimIcon, #backKimIcon {
     margin-right: 5px;
     color: white;
 }
@@ -111,6 +114,18 @@ body {
 
 #prIcon {
     background-color: #3e8f3e;
+}
+#addKimIcon {
+    background-color: #3e8f3e;
+    margin-left: 40%;
+}
+#backKimIcon {
+    background-color: #f0ad4e;
+    -moz-transform: scaleX(-1);    /* Gecko */
+    -o-transform: scaleX(-1);      /* Opera */
+    -webkit-transform: scaleX(-1); /* Webkit */
+    transform: scaleX(-1);         /* Standard */
+    filter: FlipH;
 }
 
 #prefAlwaysInTable .prefRowName {
@@ -442,12 +457,12 @@ h4 {
     opacity: 0.9;
 }
 
-.glyphicon-pencil:hover {
+/*.glyphicon-pencil:hover {
     cursor: pointer;
     font-size: 18px;
     opacity: 0.9;
     color: blue;
-}
+}*/
 
 .editKimPencil, .editMetallPencil, .editCategoryPencil {
     opacity: 0.5;
@@ -944,7 +959,11 @@ table.rc-table-resizing thead,table.rc-table-resizing thead> th,table.rc-table-r
 
 /* DB */
 /* KIM */
-#categoriesWrapper {
+.categoriesWrapper {
     min-height: 33%;
     overflow-y: hidden;
+    cursor: pointer;
+}
+#outBodyElements {
+    position: absolute;
 }
