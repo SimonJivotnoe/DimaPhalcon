@@ -62,6 +62,7 @@
 </nav>
 <div id="sectionContent"></div>
 <div id="outBodyElements"></div>
+<div id="backLayout" class="clearer"></div>
 <script src="js/jquery/jquery-1.11.2.min.js"></script>
 <script src="js/jquery/jquery-ui.min.js"></script>
 <link rel="stylesheet" href="css/bootstrap/bootstrap-table.css">

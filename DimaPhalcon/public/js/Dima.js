@@ -298,7 +298,11 @@
 	var spinnerLeft;
 	var spinnerRight;
 	var spinnerKim;
-	
+	var focusedElem;
+	var previousTdColor;
+	var previousThColor;
+	var $layout = $('#backLayout');
+	var $outBodyElements = $('#outBodyElements');
 	var currentClietsTree;
 	var getTemplate = function (template) {
 		return $.ajax( {
@@ -309,6 +313,83 @@
 		});
 	}
 	// PRIVATE METHODS SECTION
+	var methods = {
+		toggleMainButtons: function ($hide, $show) {
+			$hide.hide('scale');
+			setTimeout(function () {$show.show('clip');}, 350);
+		},
+		
+		blur: function ($section, off) {
+			var start = 0,
+				end = 4,
+				opacity = 0.3;
+			if (off) {
+				start = 4;
+				end = 0;
+				opacity = 1;
+			}
+			$({blurRadius: start}).animate({blurRadius: end}, {
+				duration: 500,
+				easing: 'swing',
+				step: function() {
+					$section.css({
+						"-webkit-filter": "blur("+this.blurRadius+"px)",
+						"filter": "blur("+this.blurRadius+"px)"
+					});
+				}
+			});
+			$section.animate({opacity: opacity});
+		},
+		
+		showLayout: function ($section) {
+			$layout.width($section.width()).height($section.height()).show();
+		},
+		
+		hideLayout: function () {
+			$layout.width(0).height(0).hide();
+		},
+		
+		setOutBodyElem: function () {
+			$outBodyElements
+				.html(focusedElem.clone())
+				.offset(focusedElem.offset())
+				.width(focusedElem.width())
+				.height(focusedElem.height());
+		},
+		
+		unsetOutBodyElem: function () {
+			$outBodyElements
+				.html('')
+				.offset({top: 0, left: 0})
+				.width(0)
+				.height(0);
+		},
+		
+		focus: function () {
+			var $section = $('#sectionContent');
+			methods.blur($section);
+			focusedElem.addClass('parentFocused');
+			methods.setOutBodyElem();
+			methods.toggleMainButtons($('#mainIcons' ), $('#kimIcons' ));
+			previousThColor = focusedElem.find('th').css('color');
+			previousTdColor = focusedElem.find('td').css('color');
+			focusedElem.find('td, th').css({color: $('body' ).css('backgroundColor')});
+			methods.hideLayout($section);
+		},
+		
+		unfocus: function () {
+			var $section = $('#sectionContent');
+			methods.blur($section, true);
+			methods.unsetOutBodyElem();
+			focusedElem
+					.removeClass('parentFocused')
+					.find('th').css('color', previousThColor).end()
+					.find('td').css('color', previousTdColor);
+			methods.hideLayout();
+			$('#outBodyElements').html('');
+			methods.toggleMainButtons($('#kimIcons' ), $('#mainIcons' ));
+		}
+	};
 	function run() {
 		//THEMES.getThemesList();
 		spinnerLeft = new Spinner(spinnerSettings);
@@ -1464,26 +1545,8 @@
 			}).end()
 
 			.find('.categoriesWrapper' ).click(function(){
-				var $this = $(this);
-				$({blurRadius: 0}).animate({blurRadius: 4}, {
-					duration: 500,
-					easing: 'swing',
-					step: function() {
-						$('#sectionContent').css({
-							"-webkit-filter": "blur("+this.blurRadius+"px)",
-							"filter": "blur("+this.blurRadius+"px)"
-						});
-					}
-				});
-				$('#sectionContent' ).animate({opacity: 0.3});
-				$('#outBodyElements')
-					.html($this.clone() )
-					.offset($this.offset())
-					.width($this.width())
-					.height($this.height());
-				$('#mainIcons' ).hide('scale');
-				setTimeout(function () {$('#kimIcons' ).show('clip');}, 350);
-				$this.find('td, th').css('color', $('body' ).css('backgroundColor'));
+				focusedElem = $(this);
+				methods.focus();
 			} ).end()
 
 			.find('#addNewTab').on('click', function(){
@@ -2468,19 +2531,6 @@
 
     function addCategoriesTableHandler(html) {
         html
-			.find('.categoriesWrapper' ).click(function(){
-				console.log('here');
-				$({blurRadius: 0}).animate({blurRadius: 4}, {
-					duration: 500,
-					easing: 'swing',
-					step: function() {
-						$('#sectionContent').css({
-							"-webkit-filter": "blur("+this.blurRadius+"px)",
-							"filter": "blur("+this.blurRadius+"px)"
-						});
-					}
-				});
-			})
 			.on('click', '.removeCategory', function(){
                 var catId = $(this ).attr('name');
                 CATEGORIES.removeCategory(catId);
@@ -3482,7 +3532,7 @@
                 {
 					console.log(response);
 					var rendered = Mustache.render($('#categoriesTableTemplate').html(), response);
-					$('#categoriesListTable tbody' ).html(addCategoriesTableHandler($(rendered)));
+					$('.categoriesListTable tbody' ).html(addCategoriesTableHandler($(rendered)));
 					/*
 					* var filterVal = 'blur(5px)';
 					 $('#db-left-component')
@@ -4702,6 +4752,8 @@
 		$('#prIcon').click(function () {
 			MENU.runSection('OR');
 		});
+		
+		$('#backKimIcon').click(methods.unfocus);
 		
 		PREFERENCES.applyCss();
 		/*
