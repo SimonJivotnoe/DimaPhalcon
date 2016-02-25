@@ -74,9 +74,13 @@
 <div class="modal fade" id="addNewCategoryModal" tabindex="-1" role="dialog" aria-labelledby="addNewCategoryModal">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
-      <div class="modal-header">
+      <div class="modal-header addNewModalHeader modalFooterAdd">
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
         <h4 class="modal-title" id="myModalLabel">Добавить Категорию</h4>
+      </div>
+        <div class="modal-header editModalHeader modalFooterEdit">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel">Редактировать Категорию</h4>
       </div>
       <div class="modal-body">
           <form>
@@ -93,11 +97,11 @@
       <div class="modal-footer">
         <div class="modalFooterAdd">
             <button type="button" class="btn btn-default" data-dismiss="modal">Отмена</button>
-            <button type="button" class="btn btn-primary" id="addCategoryBtn">Добавить</button>
+            <button type="button" class="btn btn-success" id="addCategoryBtn">Добавить</button>
         </div>  
         <div class="modalFooterEdit" style="display: none;">
             <button type="button" class="btn btn-default" data-dismiss="modal">Отмена</button>
-            <button type="button" class="btn btn-primary" id="editCategoryBtn">Добавить</button>
+            <button type="button" class="btn btn-primary" id="editCategoryBtn">Сохранить</button>
         </div>  
       </div>
     </div>

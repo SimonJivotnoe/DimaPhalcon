@@ -990,3 +990,17 @@ table.rc-table-resizing thead,table.rc-table-resizing thead> th,table.rc-table-r
 .selectedRow tr:hover {
     background-color: #337ab7;
 }
+.addNewModalHeader {
+    background-color: #3e8f3e;
+    color: white;
+}
+.addNewModalHeader .close{
+    color: white;
+}
+.editModalHeader {
+    background-color: #337ab7;
+    color: white;
+}
+.editModalHeader .close{
+    color: white;
+}

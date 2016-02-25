@@ -297,6 +297,8 @@
 	var jq = {
 		$addCategoryModal: $('#addNewCategoryModal'),
 		$kimIcons: $('#kimIcons'),
+		$editKimIcon: $('#editKimIcon'),
+		$deleteKimIcon: $('#deleteKimIcon'),
 		$categoriesTable: function () {
 			return $('#outBodyElements .categoriesListTable table tbody');
 		}
@@ -333,6 +335,7 @@
 	var spinnerRight;
 	var spinnerKim;
 	var focusedElem;
+	var $selectedRow;
 	var previousTdColor;
 	var previousThColor;
 	var $layout = $('#backLayout');
@@ -361,7 +364,8 @@
 		kimIconsToDefault: function (arr) {
 			var arr = arr ? arr : ['#editKimIcon', '#deleteKimIcon'];
 			jq.$kimIcons.find(arr.join(',')).removeClass('activeTopIcon');
-			jq.$categoriesTable().removeClass('selectedRow deleteRow');
+			jq.$categoriesTable().removeClass('selectedRow deleteRow' ).off('click');
+			jq.$categoriesTable().find('tr').off('click');
 		},
 		blur: function ($section, off) {
 			var start = 0,
@@ -437,7 +441,7 @@
 		launchAddNewModal: function () {
 			switch (focusedElem.attr('data-elem')) {
 				case 'categories':
-					sectionAction = 'categoryAdd';
+					sectionAction = false;
 					jq.$addCategoryModal
 						.find('.modalFooterAdd').show().end()
 						.find('.modalFooterEdit').hide().end()
@@ -1259,14 +1263,14 @@
 	// HANDLERS
 	function addAppHandler () {
 		$('#outBodyElements').on('dblclick', '.categoriesListTable tbody tr', function () {
-			var id = $(this).attr('data-id');
-			console.log(id);
-			console.log(MAIN.categoriesTableContent);
+			var $this = $(this);
+			var id = $this.attr('data-id');
 			jq.$addCategoryModal
 				.find('.modalFooterEdit').show().end()
 				.find('.modalFooterAdd').hide().end();
 			$('#addCategoryInput').val(MAIN.categoriesTableContent.data[id].name);		
-			$('#addCategoryArticleInput').val(MAIN.categoriesTableContent.data[id].article);		
+			$('#addCategoryArticleInput').val(MAIN.categoriesTableContent.data[id].article);
+			$selectedRow = $this;
 			jq.$addCategoryModal.modal('show');
 		});
 		
@@ -1275,19 +1279,20 @@
 			methods.launchAddNewModal();
 		});
 		
-		$('#editKimIcon').click(function () {
-			methods.kimIconsToDefault();
+		jq.$editKimIcon.click(function () {
+			methods.kimIconsToDefault(['#deleteKimIcon']);
 			methods.editKim.call(this);
 		});
 		
-		$('#deleteKimIcon').click(function () {
-			methods.kimIconsToDefault();
+		jq.$deleteKimIcon.click(function () {
+			methods.kimIconsToDefault(['#editKimIcon']);
 			methods.deleteKim.call(this);
 		});
 		
 		$('#backKimIcon').click(function () {
 			methods.kimIconsToDefault();
 			methods.unfocus();
+			sectionAction = false;
 		});
 		
 		$('#addCategoryBtn').click(function(){
@@ -1305,6 +1310,24 @@
 				CATEGORIES.addCategory(category, article);
 			}
 		});
+		$('#editCategoryBtn').click(function(){
+			var name = VALIDATION.validateInputVal({
+					val: $('#addCategoryInput').val()
+				});
+			if (name) {
+				$.when(CATEGORIES.postEditCategory(name)).then(function (response) {
+					if (true === response.success) {
+						$.when(CATEGORIES.getCategoriesTable(), CATEGORIES.getCategoriesList() ).then(function () {
+							jq.$editKimIcon.click().click();
+							jq.$addCategoryModal.modal('hide');
+							setTimeout(MESSAGES.show.bind(this, response), 300);
+						});
+					} else {
+						MESSAGES.show(response);
+					}
+				});
+			}
+		})
 	};
 	
 	function addPreferencesHandler(html) {
@@ -3603,28 +3626,28 @@
                         categoryName: categoryName,
                         article: article
                     }
-                } ).then( function ( data )
+                } ).then( function ( response )
                 {
-                    if (true === data) {
+                    if (true === response.success) {
                         $('#addCategoryInput, #addCategoryArticleInput').val('');
-                        CATEGORIES.getCategoriesTable();
-                        CATEGORIES.getCategoriesList();
-						jq.$addCategoryModal.modal('hide');
-                    }
+						$.when(CATEGORIES.getCategoriesTable(), CATEGORIES.getCategoriesList()).then(function () {
+							jq.$addCategoryModal.modal('hide');
+							setTimeout(MESSAGES.show.bind(this, response), 300);
+						});
+                    } else {
+						MESSAGES.show(response);
+					}
                 } );
             },
 
             getCategoriesTable: function() {
                  return $.ajax( {
-                    //url   : URL_CATEG + 'getCategoriesTable',
                     url   : URL_CATEG + 'getCategories',
                     method: 'GET'
                 } ).then( function ( response )
                 {
 					var rendered = Mustache.render($('#categoriesTableTemplate').html(), response);
-					$('categoryDelete' !== sectionAction ? '.categoriesListTable tbody' : '#sectionContent .categoriesListTable tbody').html(addCategoriesTableHandler($(rendered)));
-					/*
-                    $('#categoriesListTable tbody' ).html(addCategoriesTableHandler($(data.html)));*/
+					$('.categoriesListTable tbody').html(addCategoriesTableHandler($(rendered)));
                     MAIN.categoriesTableContent = response.categoriesTableContent;
                 } );
             },
@@ -3645,38 +3668,32 @@
 			
 			editCategory: function () {
 				var $table = jq.$categoriesTable();
+				console.log($(this).attr('id'));
 				if ($(this).hasClass('activeTopIcon')) {
 					$table.find('tr').off('click');
 					methods.activateButton.call(this);
 					$table.removeClass('selectedRow');
+					return true;
 				}
+				$table.find('tr').on('click', function () {
+					$(this).dblclick();
+				});
 				methods.deactivateButton.call(this);
 				$table.addClass('selectedRow');
 			},
 			
-            postEditCategory: function (id, name, save) {
+            postEditCategory: function (name) {
                 _products.cancelArticleBtn();
-                $.ajax( {
+                return $.ajax( {
                     url   : URL_CATEG + 'editCategory',
                     method: 'POST',
                     data: {
-                        id: id,
+                        id: $selectedRow.attr('data-id'),
                         name: name
                     }
-                } ).then( function ( data )
+                } ).then( function ( response )
                 {
-                    if (true === data) {
-                        CATEGORIES.getCategoriesTable();
-                        CATEGORIES.getCategoriesList();
-                    } else {
-                        $(save )
-                            .parents('tr')
-                            .find('.categoryName')
-                            .css({
-                                'border': '3px solid hsl(0, 69%, 22%)',
-                                'border-radius': '2px'
-                            });
-                    }
+					return response;
                 });
             },
 			
@@ -3687,6 +3704,8 @@
 					methods.activateButton.call(this);
 					$table.removeClass('deleteRow');
 				} else {
+					methods.deactivateButton.call(this);
+					$table.addClass('deleteRow');
 					$table.find('tr').on('click', function () {
 						var $this = $(this);
 						noty({
@@ -3700,24 +3719,24 @@
 							},
 							buttons: [
 								{addClass: 'btn btn-success', text: 'Удалить!', onClick: function ($noty) {
-										$.when(CATEGORIES.postRemoveCategory($this.attr('data-id'))).then(function (response) {
-											if (true === response.success) {
-												$this.remove();
-											}
-											setTimeout(MESSAGES.show.bind(this, response), 1000);
-											$noty.close();
-										});
-									}
+									$.when(CATEGORIES.postRemoveCategory($this.attr('data-id'))).then(function (response) {
+										if (true === response.success) {
+											$.when(CATEGORIES.getCategoriesTable(), CATEGORIES.getCategoriesList() ).then(function () {
+												jq.$deleteKimIcon.click().click();
+											});
+										}
+										setTimeout(MESSAGES.show.bind(this, response), 1000);
+										$noty.close();
+									});
+								}
 								},
 								{addClass: 'btn btn-danger', text: 'Передумал', onClick: function ($noty) {
-										$noty.close();
-									}
+									$noty.close();
+								}
 								}
 							]
 						});
 					});
-					methods.deactivateButton.call(this);
-					$table.addClass('deleteRow');
 				}
 			},
 			
@@ -3731,10 +3750,6 @@
                     }
                 }).then(function (response)
                 {
-                    if (true === response) {
-                        CATEGORIES.getCategoriesTable();
-                        CATEGORIES.getCategoriesList();
-                    }
 					return response;
                 });
             }

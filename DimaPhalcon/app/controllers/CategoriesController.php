@@ -66,7 +66,8 @@ class CategoriesController extends ControllerBase
     {
         $this->ajaxPostCheck();
         $this->response->setContentType('application/json', 'UTF-8');
-        $res = 'already';
+        $res = false;
+        $msg = 'Такая Категория уже существует!';
         $article = $this->request->getPost('article');
         if (!Categories::findFirst("article = '" . $article . "'")) {
             $category = new Categories();
@@ -74,9 +75,10 @@ class CategoriesController extends ControllerBase
                      ->setArticle($article);
             if ($category->save()) {
                 $res = true;
+                $msg = 'Категория успешно добавлена';
             }
         }
-        $this->response->setJsonContent($res);
+        $this->response->setJsonContent(['success' => $res, 'msg' => $msg]);
 
         return $this->response;
     }
@@ -100,19 +102,17 @@ class CategoriesController extends ControllerBase
 
     public function editCategoryAction()
     {
-        if ($this->request->isAjax() && $this->request->isPost()) {
-            $this->response->setContentType('application/json', 'UTF-8');
-            $res = 'already';
-            $catQ = Categories::findFirst($this->request->getPost('id'));
-            if ($catQ && $catQ->setCategoryName($this->request->getPost('name'))->save()) {
-                $res = true;
-            }
-            $this->response->setJsonContent($res);
-            
-            return $this->response;
-        } else {
-            $this->response->redirect('');
+        $this->ajaxPostCheck();
+        $res = false;
+        $msg = 'Такая Категория уже существует!';
+        $catQ = Categories::findFirst($this->request->getPost('id'));
+        if ($catQ && $catQ->setCategoryName($this->request->getPost('name'))->save()) {
+            $res = true;
+            $msg = 'Категория успешно отредактирована';
         }
+        $this->response->setJsonContent(['success' => $res, 'msg' => $msg]);
+
+        return $this->response;
     }
 
     public function removeCategoryAction()
