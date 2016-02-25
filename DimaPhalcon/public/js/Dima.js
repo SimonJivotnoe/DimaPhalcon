@@ -86,6 +86,33 @@
 	var PROJECTS;
 	
 	// error messages obj
+	var MESSAGES = {
+		show: function (response) {
+			var type = 'success';
+			if (false === response.success) {
+				type = 'error';
+			}
+			MESSAGES[type](response.msg);
+		},
+		success: function (text) {
+			var text = text ? text : 'Успешно';
+			noty({
+				text: text,
+				type: 'success',
+				layout: 'center',
+				timeout: 600
+			});	
+		},
+		error: function (text) {
+			var text = text ? text : 'Запрещено';
+			noty({
+				text: text,
+				type: 'error',
+				layout: 'center',
+				timeout: 600
+			});	
+		}
+	};
 	var ERR = {
 		ARTICLE: {
 			emptyTable: ' Заполните поля таблицы продукта! ',
@@ -267,12 +294,19 @@
 			cssArr: ['#prefOrderTable td', '#orderTable td', '.sumOrderTableTd']
 		}
 	];
+	var jq = {
+		$addCategoryModal: $('#addNewCategoryModal'),
+		$kimIcons: $('#kimIcons'),
+		$categoriesTable: function () {
+			return $('#outBodyElements .categoriesListTable table tbody');
+		}
+	};
 	var defaultScreenSize   = '60em';
 	var maxScreenSize	    = (window.screen.availWidth - 5) + 'px';
 	var minscreenSize	    = '5px';
 	var sectionContent	    = $('#sectionContent');
 	var clickOnFormulaInput = false;
-	
+	var sectionAction = false;
 	var spinnerSettings = {
 		lines: 15 // The number of lines to draw
 		, length: 0 // The length of each line
@@ -318,7 +352,17 @@
 			$hide.hide('scale');
 			setTimeout(function () {$show.show('clip');}, 350);
 		},
-		
+		activateButton: function () {
+			$(this).addClass('hvr-pulse-grow').removeClass('activeTopIcon');
+		},
+		deactivateButton: function () {
+			$(this).removeClass('hvr-pulse-grow').addClass('activeTopIcon');
+		},
+		kimIconsToDefault: function (arr) {
+			var arr = arr ? arr : ['#editKimIcon', '#deleteKimIcon'];
+			jq.$kimIcons.find(arr.join(',')).removeClass('activeTopIcon');
+			jq.$categoriesTable().removeClass('selectedRow deleteRow');
+		},
 		blur: function ($section, off) {
 			var start = 0,
 				end = 4,
@@ -388,6 +432,37 @@
 			methods.hideLayout();
 			$('#outBodyElements').html('');
 			methods.toggleMainButtons($('#kimIcons' ), $('#mainIcons' ));
+		},
+		
+		launchAddNewModal: function () {
+			switch (focusedElem.attr('data-elem')) {
+				case 'categories':
+					sectionAction = 'categoryAdd';
+					jq.$addCategoryModal
+						.find('.modalFooterAdd').show().end()
+						.find('.modalFooterEdit').hide().end()
+						.find('input').val('');	
+					jq.$addCategoryModal.modal('show');
+					break;
+			}
+		},
+		
+		editKim: function () {
+			switch (focusedElem.attr('data-elem')) {
+				case 'categories':
+					sectionAction = 'categoryEdit';
+					CATEGORIES.editCategory.call(this);
+					break;
+			}
+		},
+		
+		deleteKim: function () {
+			switch (focusedElem.attr('data-elem')) {
+				case 'categories':
+					sectionAction = 'categoryDelete';
+					CATEGORIES.removeCategory.call(this);
+					break;
+			}
 		}
 	};
 	function run() {
@@ -1182,6 +1257,56 @@
 	}
 
 	// HANDLERS
+	function addAppHandler () {
+		$('#outBodyElements').on('dblclick', '.categoriesListTable tbody tr', function () {
+			var id = $(this).attr('data-id');
+			console.log(id);
+			console.log(MAIN.categoriesTableContent);
+			jq.$addCategoryModal
+				.find('.modalFooterEdit').show().end()
+				.find('.modalFooterAdd').hide().end();
+			$('#addCategoryInput').val(MAIN.categoriesTableContent.data[id].name);		
+			$('#addCategoryArticleInput').val(MAIN.categoriesTableContent.data[id].article);		
+			jq.$addCategoryModal.modal('show');
+		});
+		
+		$('#addKimIcon').click(function () {
+			methods.kimIconsToDefault();
+			methods.launchAddNewModal();
+		});
+		
+		$('#editKimIcon').click(function () {
+			methods.kimIconsToDefault();
+			methods.editKim.call(this);
+		});
+		
+		$('#deleteKimIcon').click(function () {
+			methods.kimIconsToDefault();
+			methods.deleteKim.call(this);
+		});
+		
+		$('#backKimIcon').click(function () {
+			methods.kimIconsToDefault();
+			methods.unfocus();
+		});
+		
+		$('#addCategoryBtn').click(function(){
+			var category = VALIDATION.validateInputVal({
+					val: $('#addCategoryInput' ).val(),
+					id: '#addCategoryInput',
+					unique: true
+				}),
+				article = VALIDATION.validateInputVal({
+					val: $('#addCategoryArticleInput' ).val(),
+					id: '#addCategoryArticleInput',
+					unique: true
+				});
+			if (category && article) {
+				CATEGORIES.addCategory(category, article);
+			}
+		});
+	};
+	
 	function addPreferencesHandler(html) {
 		html
 			.find('#globalFontSize').change(function () {
@@ -1551,22 +1676,6 @@
 
 			.find('#addNewTab').on('click', function(){
 				TABS.getLastLeftTab();
-			}).end()
-
-			.find('#addCategoryBtn').click(function(){
-				var category = VALIDATION.validateInputVal({
-						val: $('#addCategoryInput' ).val(),
-						id: '#addCategoryInput',
-						unique: true
-					}),
-					article = VALIDATION.validateInputVal({
-						val: $('#addCategoryArticleInput' ).val(),
-						id: '#addCategoryArticleInput',
-						unique: true
-					});
-				if (category && article) {
-					CATEGORIES.addCategory(category, article);
-				}
 			}).end()
 
 			.find('#addKIM').click(function(){
@@ -2531,25 +2640,6 @@
 
     function addCategoriesTableHandler(html) {
         html
-			.on('click', '.removeCategory', function(){
-                var catId = $(this ).attr('name');
-                CATEGORIES.removeCategory(catId);
-            })
-
-            .on('click', '.editCategoryPencil', function(){
-                $(this )
-                    .attr('class', 'glyphicon glyphicon-floppy-disk saveEditCategory' )
-                    .css('margin-left', '0');
-                $(this )
-                    .parents('tr')
-                    .find('.categoryName')
-                    .attr('contenteditable', 'true')
-                    .css({
-                        'border': '1px solid hsl(195, 79%, 43%)',
-                        'border-radius': '2px'
-                    });
-            })
-
             .on('click', '.saveEditCategory', function(){
                 var id = $(this ).attr('name'),
                     name = VALIDATION.validateInputVal({
@@ -3519,6 +3609,7 @@
                         $('#addCategoryInput, #addCategoryArticleInput').val('');
                         CATEGORIES.getCategoriesTable();
                         CATEGORIES.getCategoriesList();
+						jq.$addCategoryModal.modal('hide');
                     }
                 } );
             },
@@ -3530,20 +3621,11 @@
                     method: 'GET'
                 } ).then( function ( response )
                 {
-					console.log(response);
 					var rendered = Mustache.render($('#categoriesTableTemplate').html(), response);
-					$('.categoriesListTable tbody' ).html(addCategoriesTableHandler($(rendered)));
+					$('categoryDelete' !== sectionAction ? '.categoriesListTable tbody' : '#sectionContent .categoriesListTable tbody').html(addCategoriesTableHandler($(rendered)));
 					/*
-					* var filterVal = 'blur(5px)';
-					 $('#db-left-component')
-					 .css('filter',filterVal)
-					 .css('webkitFilter',filterVal)
-					 .css('mozFilter',filterVal)
-					 .css('oFilter',filterVal)
-					 .css('msFilter',filterVal);
-					* */
-                    /*MAIN.categoriesTableContent = data.categoriesTableContent;
                     $('#categoriesListTable tbody' ).html(addCategoriesTableHandler($(data.html)));*/
+                    MAIN.categoriesTableContent = response.categoriesTableContent;
                 } );
             },
 
@@ -3560,8 +3642,19 @@
 					}
                 });
             },
-
-            editCategory: function (id, name, save) {
+			
+			editCategory: function () {
+				var $table = jq.$categoriesTable();
+				if ($(this).hasClass('activeTopIcon')) {
+					$table.find('tr').off('click');
+					methods.activateButton.call(this);
+					$table.removeClass('selectedRow');
+				}
+				methods.deactivateButton.call(this);
+				$table.addClass('selectedRow');
+			},
+			
+            postEditCategory: function (id, name, save) {
                 _products.cancelArticleBtn();
                 $.ajax( {
                     url   : URL_CATEG + 'editCategory',
@@ -3586,20 +3679,63 @@
                     }
                 });
             },
-            removeCategory: function (id) {
+			
+			removeCategory: function () {
+				var $table = jq.$categoriesTable();
+				if ($(this).hasClass('activeTopIcon')) {
+					$table.find('tr').off('click');
+					methods.activateButton.call(this);
+					$table.removeClass('deleteRow');
+				} else {
+					$table.find('tr').on('click', function () {
+						var $this = $(this);
+						noty({
+							text: 'Вы уверены, что хотите удалить Категорию?',
+							modal: true,
+							type: 'confirm',
+							layout: 'center',
+							animation: {
+								open: 'animated flipInX',
+								close: 'animated flipOutX'
+							},
+							buttons: [
+								{addClass: 'btn btn-success', text: 'Удалить!', onClick: function ($noty) {
+										$.when(CATEGORIES.postRemoveCategory($this.attr('data-id'))).then(function (response) {
+											if (true === response.success) {
+												$this.remove();
+											}
+											setTimeout(MESSAGES.show.bind(this, response), 1000);
+											$noty.close();
+										});
+									}
+								},
+								{addClass: 'btn btn-danger', text: 'Передумал', onClick: function ($noty) {
+										$noty.close();
+									}
+								}
+							]
+						});
+					});
+					methods.deactivateButton.call(this);
+					$table.addClass('deleteRow');
+				}
+			},
+			
+            postRemoveCategory: function (id) {
                 _products.cancelArticleBtn();
-                $.ajax({
+                return $.ajax({
                     url   : URL_CATEG + 'removeCategory',
                     method: 'POST',
                     data: {
                         id: id
                     }
-                }).then(function (data)
+                }).then(function (response)
                 {
-                    if (true === data) {
+                    if (true === response) {
                         CATEGORIES.getCategoriesTable();
                         CATEGORIES.getCategoriesList();
                     }
+					return response;
                 });
             }
         },
@@ -3900,12 +4036,6 @@
 						}
 					});
 				}
-			},
-			
-			showTopIcons: function (px, animate, timeout) {
-				setTimeout(function(){
-					$('#backIcon, #prefIcon, #dbIcon, #prIcon').blur().animate( { "marginTop": px }, animate ); 
-				}, timeout);
 			},
 			
 			activeClassValidation: function (obj) {
@@ -4673,7 +4803,9 @@
 		if (undefined === localStorage['db-split']) {
 			localStorage['db-split'] = defaultScreenSize;
 		}
-
+		
+		addAppHandler();
+		
 		$('#runPreferences').click(function () {
 			$('#mainMenuWrapper').fadeOut();
 			setTimeout(MENU.runPreferences, 300);
@@ -4752,9 +4884,6 @@
 		$('#prIcon').click(function () {
 			MENU.runSection('OR');
 		});
-		
-		$('#backKimIcon').click(methods.unfocus);
-		
 		PREFERENCES.applyCss();
 		/*
 		$("tbody").sortable({

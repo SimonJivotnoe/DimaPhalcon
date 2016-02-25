@@ -35,24 +35,30 @@
     <div class="container" style="margin-top: 4px;">
         <div id="menuIconsTop" class="col-md-12">
             <form class="form-inline" id="mainIcons">
-                <div class="form-group hvr-pulse-grow" id="backIcon">
+                <div class="form-group hvr-pulse-grow defaultIcon" id="backIcon">
                     <span class="glyphicon glyphicon-th-large centerIcon" aria-hidden="true"></span>
                 </div>
-                <div class="form-group hvr-pulse-grow" id="prefIcon">
+                <div class="form-group hvr-pulse-grow defaultIcon" id="prefIcon">
                     <span class="glyphicon glyphicon-cog centerIcon" aria-hidden="true"></span>
                 </div>
-                <div class="form-group hvr-pulse-grow" id="dbIcon">
+                <div class="form-group hvr-pulse-grow defaultIcon" id="dbIcon">
                     <span class="glyphicon glyphicon-folder-close centerIcon" aria-hidden="true"></span>
                 </div>
-                <div class="form-group hvr-pulse-grow" id="prIcon">
+                <div class="form-group hvr-pulse-grow defaultIcon" id="prIcon">
                     <span class="glyphicon glyphicon-check centerIcon" aria-hidden="true"></span>
                 </div>
             </form>
             <form class="form-inline" id="kimIcons">
-                <div class="form-group hvr-pulse-grow" id="addKimIcon">
+                <div class="form-group hvr-pulse-grow defaultIcon" id="addKimIcon">
                     <span class="glyphicon glyphicon-plus centerIcon" aria-hidden="true"></span>
                 </div>
-                <div class="form-group" id="backKimIcon">
+                <div class="form-group hvr-pulse-grow defaultIcon" id="editKimIcon">
+                    <span class="glyphicon glyphicon-pencil centerIcon" aria-hidden="true"></span>
+                </div>
+                <div class="form-group hvr-pulse-grow defaultIcon" id="deleteKimIcon">
+                    <span class="glyphicon glyphicon-minus centerIcon" aria-hidden="true"></span>
+                </div>
+                <div class="form-group defaultIcon" id="backKimIcon">
                     <span class="glyphicon glyphicon-share-alt centerIcon" aria-hidden="true"></span>
                 </div>
             </form>
@@ -63,6 +69,40 @@
 <div id="sectionContent"></div>
 <div id="outBodyElements"></div>
 <div id="backLayout" class="clearer"></div>
+
+<!-- MODALS -->
+<div class="modal fade" id="addNewCategoryModal" tabindex="-1" role="dialog" aria-labelledby="addNewCategoryModal">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel">Добавить Категорию</h4>
+      </div>
+      <div class="modal-body">
+          <form>
+            <div class="form-group">
+              <label for="addCategoryInput" class="control-label">Имя категории:</label>
+              <input type="text" class="form-control" id="addCategoryInput">
+            </div>
+            <div class="form-group">
+              <label for="addCategoryArticleInput" class="control-label">Артикул:</label>
+              <input type="text" class="form-control" id="addCategoryArticleInput">
+            </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <div class="modalFooterAdd">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Отмена</button>
+            <button type="button" class="btn btn-primary" id="addCategoryBtn">Добавить</button>
+        </div>  
+        <div class="modalFooterEdit" style="display: none;">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Отмена</button>
+            <button type="button" class="btn btn-primary" id="editCategoryBtn">Добавить</button>
+        </div>  
+      </div>
+    </div>
+  </div>
+</div>
 <script src="js/jquery/jquery-1.11.2.min.js"></script>
 <script src="js/jquery/jquery-ui.min.js"></script>
 <link rel="stylesheet" href="css/bootstrap/bootstrap-table.css">

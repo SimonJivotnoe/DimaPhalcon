@@ -53,17 +53,13 @@ body {
 #kimIcons {
     display: none;
 }
-
-#backIcon, #prefIcon, #dbIcon, #menuOpen, #prIcon, #showCustomThemes, #addKimIcon, #backKimIcon {
+.defaultIcon {
     width: 42px;
     padding: 3px;
     border-radius: 3px;
     cursor: pointer;
     font-size: 25px;
     box-shadow: 0 0 10px rgba(0,0,0,0.5);
-}
-
-#backIcon, #prefIcon, #dbIcon, #menuOpen, #prIcon, #addKimIcon, #backKimIcon {
     margin-right: 5px;
     color: white;
 }
@@ -118,6 +114,12 @@ body {
 #addKimIcon {
     background-color: #3e8f3e;
     margin-left: 40%;
+}
+#editKimIcon {
+   background-color: #337ab7;
+}
+#deleteKimIcon {
+   background-color: #d9534f;
 }
 #backKimIcon {
     background-color: #f0ad4e;
@@ -308,15 +310,12 @@ a {
 #fileManagerCatogoriesSelect {
     height: 34px;
 }
-#kimListWrapper, #metallListWrapper, #categoriesListTable {
+#kimListWrapper, #metallListWrapper {
     margin-top: 15px;
 }
 
 #kimIconColor {
     color: darkcyan;
-}
-
-#categoriesListTable:hover {
 }
 
 #categoriesListContent {
@@ -961,9 +960,11 @@ table.rc-table-resizing thead,table.rc-table-resizing thead> th,table.rc-table-r
 /* DB */
 /* KIM */
 .categoriesWrapper {
-    min-height: 33%;
-    overflow-y: hidden;
     cursor: pointer;
+}
+.categoriesListTable {
+    max-height: 33vh;
+    overflow-y: auto;
 }
 #outBodyElements {
     position: absolute;
@@ -979,4 +980,13 @@ table.rc-table-resizing thead,table.rc-table-resizing thead> th,table.rc-table-r
 }
 .parentFocused {
     cursor: default;
+}
+.deleteRow, .selectedRow {
+    cursor: pointer;
+}
+.deleteRow tr:hover {
+    background-color: #d9534f;
+}
+.selectedRow tr:hover {
+    background-color: #337ab7;
 }

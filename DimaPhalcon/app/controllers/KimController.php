@@ -1,6 +1,6 @@
 <?php
 
-class KimController extends \Phalcon\Mvc\Controller
+class KimController  extends ControllerBase
 {
 
     public function addKIMtoTableAction()
@@ -108,24 +108,20 @@ class KimController extends \Phalcon\Mvc\Controller
 
     public function removeKimAction()
     {
-        if ($this->request->isAjax() && $this->request->isPost()) {
-            $kimId = $this->request->getPost('kimId');
-            $kim = Kim::findFirst($kimId);
-            if ($kim != false) {
-                if ($kim->delete() == false) {
-                    echo "К сожалению, мы не можем удалить робота прямо сейчас: \n";
-                    foreach ($kim->getMessages() as $message) {
-                        echo $message, "\n";
-                    }
-                } else {
-                    $this->response->setContentType('application/json', 'UTF-8');
-                    $this->response->setJsonContent(true);
-
-                    return $this->response;
+        $this->ajaxPostCheck();
+        $kim = Kim::findFirst($this->request->getPost('kimId'));
+        if ($kim != false) {
+            if ($kim->delete() == false) {
+                echo "К сожалению, мы не можем удалить робота прямо сейчас: \n";
+                foreach ($kim->getMessages() as $message) {
+                    echo $message, "\n";
                 }
+            } else {
+                $this->response->setContentType('application/json', 'UTF-8');
+                $this->response->setJsonContent(true);
+
+                return $this->response;
             }
-        } else {
-            $this->response->redirect('');
         }
     }
 

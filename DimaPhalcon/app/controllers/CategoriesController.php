@@ -38,16 +38,27 @@ class CategoriesController extends ControllerBase
         $this->ajaxGetCheck();
         $categories = Categories::find();
         $categoriesArr = [];
+        $data = [];
         if ($categories) {
+            $names = [];
+            $articles = [];
             foreach ($categories as $cat) {
                 array_push($categoriesArr, [
                     'id'      => $cat->getCategoryId(),
                     'name'    => $cat->getCategoryName(),
                     'article' => $cat->getArticle()
                 ]);
+                array_push($names, $cat->getCategoryName());
+                array_push($articles, $cat->getArticle());
+                $data[$cat->getCategoryId()] = ['name' => $cat->getCategoryName(), 'article' => $cat->getArticle()];
             }
+            $resObj = [
+                'names' => $names,
+                'articles' => $articles,
+                'data' => $data
+            ];
         }
-        $this->response->setJsonContent(['categories' => $categoriesArr]);
+        $this->response->setJsonContent(['categories' => $categoriesArr, 'categoriesTableContent' => $resObj]);
         return $this->response;
     }
 
@@ -106,25 +117,23 @@ class CategoriesController extends ControllerBase
 
     public function removeCategoryAction()
     {
-        if ($this->request->isAjax() && $this->request->isPost()) {
-            $this->response->setContentType('application/json', 'UTF-8');
-            $res = false;
-            $categoryObj = Categories::findFirst($this->request->getPost('id'));
-            if ($categoryObj != false) {
-                try {
-                    if ($categoryObj->delete()) {
-                        $res = true;
-                    }
-                } catch (\Exception $e) {
-                    
+        $this->ajaxPostCheck();
+        $res = false;
+        $msg = 'Эта категория используется в продукте!';
+        $categoryObj = Categories::findFirst($this->request->getPost('id'));
+        if ($categoryObj != false) {
+            try {
+                if ($categoryObj->delete()) {
+                    $res = true;
+                    $msg = 'Категория успешно удалена';
                 }
+            } catch (\Exception $e) {
+
             }
-            $this->response->setJsonContent($res);
-            
-            return $this->response;
-        } else {
-            $this->response->redirect('');
         }
+        $this->response->setJsonContent(['success' => $res, 'msg' => $msg]);
+
+        return $this->response;
     }
 
     public function createCategoriesList($productCatId=null, $isArticle = false){
