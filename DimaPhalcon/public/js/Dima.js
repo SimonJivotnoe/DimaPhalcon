@@ -3668,7 +3668,6 @@
 			
 			editCategory: function () {
 				var $table = jq.$categoriesTable();
-				console.log($(this).attr('id'));
 				if ($(this).hasClass('activeTopIcon')) {
 					$table.find('tr').off('click');
 					methods.activateButton.call(this);

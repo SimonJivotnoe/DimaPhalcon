@@ -20,28 +20,30 @@ class IndexController extends ControllerBase
             $array[] = array('id' => $val->getId());
         }*/
         $sub = new Substitution();
-        $this->assets
+        /*$this->assets
              ->collection('styleHead')
-             ->addCss('css/main.css')
-             ->addCss('css/libs/jqtree.css')
-             ->addCss('css/libs/split-pane.css')
-             ->addCss('css/libs/pretty-split-pane.css')
+             ->addCss('css/main.css', false, false)
+             ->addCss('css/libs/jqtree.css', false, false)
+             ->addCss('css/libs/split-pane.css', false, false)
+             ->addCss('css/libs/pretty-split-pane.css', false, false)
              ->addCss('css/libs/jquery-ui.min.css', false, false)
              ->addCss('css/libs/hover-min.css', false, false)
-             ->setTargetPath('css/productionHead.css')
+             ->addCss('css/bootstrap/bootstrap.min.css', false, false)
+             ->addCss('css/libs/animate.css', false, false)
+             ->addCss('css/libs/notifcenter.css', false, false)
+             ->addCss('js/jquery/colorpicker/dist/css/bootstrap-colorpicker.min.css', false, false)
+             ->join(false);*/
+             /*->setTargetPath('css/productionHead.css')
              ->setTargetUri('css/productionHead.css')
-             ->join(true)
-             ->addFilter(new \Phalcon\Assets\Filters\Cssmin());
+             ->join(false)
+             ->addFilter(new \Phalcon\Assets\Filters\Cssmin());*/
         $this->assets
              ->collection('jsFooter')
-             /*->addJs('js/Dima.js')
-             ->addJs('js/main.js')*/
+             ->addJs('js/Dima.js', false, false)
              ->addJs('js/libs/split-pane.min.js', false, false)
              ->addJs('js/libs/underscore-min.js', false, false)
-             ->setTargetPath('js/production.js')
-             ->setTargetUri('js/production.js')
-             ->join(true)
-             ->addFilter(new \Phalcon\Assets\Filters\Jsmin());
+             ->join(false);
+             //->addFilter(new \Phalcon\Assets\Filters\Jsmin());
         //$left = file_get_contents('../public/files/tabs.volt');
         $this->view->setVars(array(
             //'tabs' => $left,
