@@ -2,38 +2,6 @@
 
 class CategoriesController extends ControllerBase
 {
-
-    public function getCategoriesTableAction(){
-        $this->ajaxGetCheck();
-        $categoriesList = '<tr>
-                                    <th>Список категорий</th>
-                                    <th>Артикул</th>
-                                    <th class="editCategoriesTable"></th>
-                                </tr>';
-        $this->response->setContentType('application/json', 'UTF-8');
-        $category = Categories::find();
-        if ($category) {
-            $names = [];
-            $articles = [];
-            foreach ($category as $val) {
-                $categoriesList .= '<tr>
-                                        <td><span class="categoryName">' . $val->getCategoryName() . '</span></td>
-                                        <td>' . $val->getArticle() . '</td>
-                                        <td class="editMetallTable">
-                                            <span class="glyphicon glyphicon-pencil triggerCategoryPencil" aria-hidden="true" name="'. $val->getCategoryId() . '"></span>
-                                            <span class="glyphicon glyphicon-remove triggerRemoveCategory" aria-hidden="true" name="'. $val->getCategoryId() . '"></span>
-                                        </td>
-                                    </tr>';
-                array_push($names, $val->getCategoryName());
-                array_push($articles, $val->getArticle());
-            }
-            $resObj = ['names' => $names, 'articles' => $articles];
-        }
-        $this->response->setJsonContent(['html' => $categoriesList, 'categoriesTableContent' => (object)$resObj]);
-
-        return $this->response;
-    }
-
     public function getCategoriesAction() {
         $this->ajaxGetCheck();
         $categories = Categories::find();
@@ -65,7 +33,6 @@ class CategoriesController extends ControllerBase
     public function addAction()
     {
         $this->ajaxPostCheck();
-        $this->response->setContentType('application/json', 'UTF-8');
         $res = false;
         $msg = 'Такая Категория уже существует!';
         $article = $this->request->getPost('article');
@@ -73,7 +40,7 @@ class CategoriesController extends ControllerBase
             $category = new Categories();
             $category->setCategoryName($this->request->getPost('categoryName'))
                      ->setArticle($article);
-            if ($category->save()) {
+            if ($category->save() === true) {
                 $res = true;
                 $msg = 'Категория успешно добавлена';
             }

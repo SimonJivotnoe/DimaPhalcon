@@ -23,6 +23,12 @@ class Kim extends \Phalcon\Mvc\Model
      * @var string
      */
     protected $kim;
+    
+    /**
+     *
+     * @var string
+     */
+    protected $description;
 
     /**
      * Method to set the value of field kim_id
@@ -62,6 +68,19 @@ class Kim extends \Phalcon\Mvc\Model
 
         return $this;
     }
+    
+    /**
+     * Method to set the value of field kim
+     *
+     * @param string $description
+     * @return $this
+     */
+    public function setDescription($description)
+    {
+        $this->description = $description;
+
+        return $this;
+    }
 
     /**
      * Returns the value of field kim_id
@@ -92,6 +111,16 @@ class Kim extends \Phalcon\Mvc\Model
     {
         return $this->kim;
     }
+    
+    /**
+     * Returns the value of field kim
+     *
+     * @return string
+     */
+    public function getDescription()
+    {
+        return $this->description;
+    }
 
     /**
      * Validations and business logic
@@ -101,7 +130,7 @@ class Kim extends \Phalcon\Mvc\Model
         $this->validate(
             new Uniqueness(
                 array(
-                    'field'  => 'kim',
+                    'field'  => 'kim_hard',
                     'message' => 'This name already exists'
                 )));
         return $this->validationHasFailed() != true;

@@ -16,5 +16,12 @@ class ControllerBase extends Controller
             $this->response->redirect('');
         }
         $this->response->setContentType('application/json', 'UTF-8');
+    }
+    
+    protected function ajaxDeleteCheck() {
+        if ( !$this->request->isAjax() || !$this->request->isDelete()) {
+            $this->response->redirect('');
+        }
+        $this->response->setContentType('application/json', 'UTF-8');
     } 
 }

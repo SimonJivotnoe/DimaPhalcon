@@ -3,52 +3,56 @@
 class KimController  extends ControllerBase
 {
 
-    public function addKIMtoTableAction()
-    {
-        if ($this->request->isAjax() && $this->request->isPost()) {
-            $kimK = $this->request->getPost('kim');
-            $kimHard = $this->request->getPost('kimHard');
-
-            $this->response->setContentType('application/json', 'UTF-8');
-            $kim = new Kim;
-            $kim->setKim($kimK)
-                ->setKimHard($kimHard);
-            if ($kim->save() == false) {
-                $this->response->setJsonContent('already');
-            } else {
-                $this->response->setJsonContent(true);
+    public function getKimAction () {
+        $this->ajaxGetCheck();
+        $kimObj = Kim::find();
+        $kimArr = [];
+        $names = [];
+        $data = [];
+        if ($kimObj) {
+            foreach ($kimObj as $kim) {
+                $id = $kim->getKimId();
+                $name = $kim->getKimHard();
+                $value =$kim->getKim();
+                $description = $kim->getDescription();
+                array_push($kimArr, [
+                    'id'          => $id,
+                    'name'        => $name,
+                    'value'       => $value,
+                    'description' => $description
+                ]);
+                array_push($names, $name);
+                $data[$id] = [
+                    'name'        => $name,
+                    'value'       => $value,
+                    'description' => $description
+                ];
             }
-
-            return $this->response;
-        } else {
-            $this->response->redirect('');
+            $resObj = [
+                'names' => $names,
+                'data' => $data
+            ];
         }
+        $this->response->setJsonContent(['kim' => $kimArr, 'kimTableContent' => $resObj]);
+        return $this->response;
     }
-
-    public function getKIMTableAction()
+    
+    public function addKIMAction()
     {
-        if ($this->request->isAjax() && $this->request->isGet()) {
-            $kim = Kim::find(array("order" => "kim ASC"));
-            $res = '<tr><th>Сложность изделия</th><th>КИМ</th><th class="editKimTable"></th></tr>';
-            $resObj = [];
-            foreach ($kim as $val) {
-                $res .= '<tr>
-                            <td><span class="kimHardName">' . $val->getKimHard() . '</span></td>
-                            <td><span class="kimName">' . $val->getKim() . '</span></td>
-                            <td class="editKimTable">
-                                <span class="glyphicon glyphicon-pencil triggerKimPencil" aria-hidden="true" name="' . $val->getKimId() . '"></span>
-                                <span class="glyphicon glyphicon-remove triggerRemoveKim" aria-hidden="true" name="' . $val->getKimId() . '"></span>
-                                </td>
-                        </tr>';
-                $resObj[ $val->getKim() ] = $val->getKimHard();
-            }
-            $this->response->setContentType('application/json', 'UTF-8');
-            $this->response->setJsonContent(array('html' => $res, 'kimTableContent' => (object)$resObj));
-
-            return $this->response;
-        } else {
-            $this->response->redirect('');
+        $this->ajaxPostCheck();
+        $res = false;
+        $msg = 'Такой КИМ уже существует!';
+        $kimObj = new Kim;
+        $kimObj->setKim($this->request->getPost('kim'))
+               ->setKimHard($this->request->getPost('kimHard'))
+               ->setDescription($this->request->getPost('description'));
+        if ($kimObj->save() === true) {
+            $res = true;
+            $msg = 'КИМ успешно добавлен';
         }
+        $this->response->setJsonContent(['success' => $res, 'msg' => $msg]);
+
+        return $this->response;
     }
 
     public function editKimAction()
@@ -84,45 +88,38 @@ class KimController  extends ControllerBase
 
     public function getKimListAction()
     {
-        if ($this->request->isAjax() && $this->request->isGet()) {
-            $prId = $this->request->get('prId');
-            $product = Products::findFirst($prId);
-            if ($product == false) {
-                echo "Мы не можем сохранить робота прямо сейчас: \n";
-                foreach ($product->getMessages() as $message) {
-                    echo $message, "\n";
-                }
-            } else {
-                $productKim = $product->getKim();
-                $kimList = $this->createKimList($productKim);
-
-                $this->response->setContentType('application/json', 'UTF-8');
-                $this->response->setJsonContent($kimList);
-
-                return $this->response;
-            }
-        } else {
-            $this->response->redirect('');
+        $this->ajaxGetCheck();
+        $prId = $this->request->get('prId');
+        $product = Products::findFirst($prId);
+        $kimList = ['html' => []];
+        if ($product) {
+            $productKim = $product->getKim();
+            $kimList = $this->createKimList($productKim);
         }
+        $this->response->setJsonContent($kimList);
+
+        return $this->response;
     }
 
-    public function removeKimAction()
+    public function removeKimAction($kimId)
     {
-        $this->ajaxPostCheck();
-        $kim = Kim::findFirst($this->request->getPost('kimId'));
-        if ($kim != false) {
-            if ($kim->delete() == false) {
-                echo "К сожалению, мы не можем удалить робота прямо сейчас: \n";
-                foreach ($kim->getMessages() as $message) {
-                    echo $message, "\n";
+        $this->ajaxDeleteCheck();
+        $res = false;
+        $msg = 'Этот КИМ используется в продукте!';
+        $kimObj = Kim::findFirst($kimId);
+        if ($kimObj != false) {
+            try {
+                if ($kimObj->delete()) {
+                    $res = true;
+                    $msg = 'КИМ успешно удален';
                 }
-            } else {
-                $this->response->setContentType('application/json', 'UTF-8');
-                $this->response->setJsonContent(true);
+            } catch (\Exception $e) {
 
-                return $this->response;
             }
         }
+        $this->response->setJsonContent(['success' => $res, 'msg' => $msg]);
+        
+        return $this->response;
     }
 
     public function createKimList($productKim, $isArticle = false)

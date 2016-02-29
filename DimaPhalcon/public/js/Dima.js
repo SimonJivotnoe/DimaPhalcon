@@ -296,11 +296,15 @@
 	];
 	var jq = {
 		$addCategoryModal: $('#addNewCategoryModal'),
+		$addKimModal: $('#addNewKimModal'),
 		$kimIcons: $('#kimIcons'),
 		$editKimIcon: $('#editKimIcon'),
 		$deleteKimIcon: $('#deleteKimIcon'),
 		$categoriesTable: function () {
 			return $('#outBodyElements .categoriesListTable table tbody');
+		},
+		$kimTable: function () {
+			return $('#outBodyElements .kimListTable table tbody');
 		}
 	};
 	var defaultScreenSize   = '60em';
@@ -308,7 +312,6 @@
 	var minscreenSize	    = '5px';
 	var sectionContent	    = $('#sectionContent');
 	var clickOnFormulaInput = false;
-	var sectionAction = false;
 	var spinnerSettings = {
 		lines: 15 // The number of lines to draw
 		, length: 0 // The length of each line
@@ -341,6 +344,11 @@
 	var $layout = $('#backLayout');
 	var $outBodyElements = $('#outBodyElements');
 	var currentClietsTree;
+	var cases = {
+		categories: {modal: jq.$addCategoryModal, table: jq.$categoriesTable},
+		kim: {modal: jq.$addKimModal, table: jq.$kimTable},
+		metalls: {modal: jq.$addMetallModal, table: jq.$metallTable}
+	};
 	var getTemplate = function (template) {
 		return $.ajax( {
 			url   : 'templates/' + template,
@@ -348,25 +356,29 @@
 		} ).then(function (data) {
 			return data;
 		});
-	}
+	};
 	// PRIVATE METHODS SECTION
 	var methods = {
 		toggleMainButtons: function ($hide, $show) {
 			$hide.hide('scale');
 			setTimeout(function () {$show.show('clip');}, 350);
 		},
+		
 		activateButton: function () {
 			$(this).addClass('hvr-pulse-grow').removeClass('activeTopIcon');
 		},
+		
 		deactivateButton: function () {
 			$(this).removeClass('hvr-pulse-grow').addClass('activeTopIcon');
 		},
+		
 		kimIconsToDefault: function (arr) {
 			var arr = arr ? arr : ['#editKimIcon', '#deleteKimIcon'];
 			jq.$kimIcons.find(arr.join(',')).removeClass('activeTopIcon');
-			jq.$categoriesTable().removeClass('selectedRow deleteRow' ).off('click');
-			jq.$categoriesTable().find('tr').off('click');
+			cases[focusedElem.attr('data-elem')].table().removeClass('selectedRow deleteRow' ).off('click');
+			cases[focusedElem.attr('data-elem')].table().find('tr').off('click');
 		},
+		
 		blur: function ($section, off) {
 			var start = 0,
 				end = 4,
@@ -439,32 +451,35 @@
 		},
 		
 		launchAddNewModal: function () {
-			switch (focusedElem.attr('data-elem')) {
-				case 'categories':
-					sectionAction = false;
-					jq.$addCategoryModal
-						.find('.modalFooterAdd').show().end()
-						.find('.modalFooterEdit').hide().end()
-						.find('input').val('');	
-					jq.$addCategoryModal.modal('show');
-					break;
-			}
+			cases[focusedElem.attr('data-elem')].modal
+					.find('.modalFooterAdd').show().end()
+					.find('.modalFooterEdit').hide().end()
+					.find('input').val('').end()
+					.modal('show');
 		},
 		
 		editKim: function () {
-			switch (focusedElem.attr('data-elem')) {
-				case 'categories':
-					sectionAction = 'categoryEdit';
-					CATEGORIES.editCategory.call(this);
-					break;
+			var $table = cases[focusedElem.attr('data-elem')].table();
+			if ($(this).hasClass('activeTopIcon')) {
+				$table.find('tr').off('click');
+				methods.activateButton.call(this);
+				$table.removeClass('selectedRow');
+				return true;
 			}
+			$table.find('tr').on('click', function () {
+				$(this).dblclick();
+			});
+			methods.deactivateButton.call(this);
+			$table.addClass('selectedRow');
 		},
 		
 		deleteKim: function () {
 			switch (focusedElem.attr('data-elem')) {
 				case 'categories':
-					sectionAction = 'categoryDelete';
 					CATEGORIES.removeCategory.call(this);
+					break;
+				case 'kim':
+					KIM.removeKim.call(this);
 					break;
 			}
 		}
@@ -1274,6 +1289,19 @@
 			jq.$addCategoryModal.modal('show');
 		});
 		
+		$('#outBodyElements').on('dblclick', '.kimListTable tbody tr', function () {
+			var $this = $(this);
+			var id = $this.attr('data-id');
+			jq.$addKimModal
+				.find('.modalFooterEdit').show().end()
+				.find('.modalFooterAdd').hide().end();
+			$('#kimHardInput').val(MAIN.kimTableContent.data[id].name);		
+			$('#kimInput').val(MAIN.kimTableContent.data[id]['value']);
+			$('#kimDescrInput').val(MAIN.kimTableContent.data[id].description);
+			$selectedRow = $this;
+			jq.$addKimModal.modal('show');
+		});
+		
 		$('#addKimIcon').click(function () {
 			methods.kimIconsToDefault();
 			methods.launchAddNewModal();
@@ -1292,7 +1320,6 @@
 		$('#backKimIcon').click(function () {
 			methods.kimIconsToDefault();
 			methods.unfocus();
-			sectionAction = false;
 		});
 		
 		$('#addCategoryBtn').click(function(){
@@ -1315,9 +1342,9 @@
 					val: $('#addCategoryInput').val()
 				});
 			if (name) {
-				$.when(CATEGORIES.postEditCategory(name)).then(function (response) {
+				$.when(CATEGORIES.editCategory(name)).then(function (response) {
 					if (true === response.success) {
-						$.when(CATEGORIES.getCategoriesTable(), CATEGORIES.getCategoriesList() ).then(function () {
+						$.when(CATEGORIES.getCategories(), CATEGORIES.getCategoriesList() ).then(function () {
 							jq.$editKimIcon.click().click();
 							jq.$addCategoryModal.modal('hide');
 							setTimeout(MESSAGES.show.bind(this, response), 300);
@@ -1327,7 +1354,23 @@
 					}
 				});
 			}
-		})
+		});
+		
+		$('#addKIMBtn').click(function(){
+			var kim = VALIDATION.validateInputVal({
+					val: $('#kimInput' ).val(),
+					id: '#kimInput',
+					digitsOnly: true
+				}),
+				kimHardInput = VALIDATION.validateInputVal({
+					val: $('#kimHardInput' ).val(),
+					id: '#kimHardInput',
+					unique: true
+				});
+			if (kim && kimHardInput) {
+				KIM.addKIM(kim, kimHardInput, $('#kimDescrInput').val());
+			}
+		});
 	};
 	
 	function addPreferencesHandler(html) {
@@ -1693,6 +1736,11 @@
 			}).end()
 
 			.find('.categoriesWrapper' ).click(function(){
+				focusedElem = $(this);
+				methods.focus();
+			} ).end()
+			
+			.find('.kimWrapper' ).click(function(){
 				focusedElem = $(this);
 				methods.focus();
 			} ).end()
@@ -2661,62 +2709,8 @@
 		return html;
 	}
 
-    function addCategoriesTableHandler(html) {
-        html
-            .on('click', '.saveEditCategory', function(){
-                var id = $(this ).attr('name'),
-                    name = VALIDATION.validateInputVal({
-                        val: $(this ).parents('tr').find('.categoryName' ).text()
-                    }),
-                    self = this;
-                if (name) {
-                    CATEGORIES.editCategory(id, name, self);
-                }
-            });
-        return html;
-    }
-
 	function addKimTableHandler(html) {
 		html
-			.filter('tr')
-				.mouseover(function () {
-					var obj = {
-						pencilRemove: 'triggerKimPencil',
-						pencilAdd: 'editKimPencil',
-						removeRemove: 'triggerRemoveKim',
-						removeAdd: 'removeKim'
-					};
-					kimEditOver(obj, this);
-				})
-				.mouseleave(function () {
-					var obj = {
-						pencilRemove: 'editKimPencil',
-						pencilAdd: 'triggerKimPencil',
-						removeRemove: 'removeKim',
-						removeAdd: 'triggerRemoveKim'
-					};
-					kimEditOver(obj, this);
-				}).end()
-
-			.on('click', '.removeKim', function(){
-				var kimId = $(this ).attr('name');
-				KIM.removeKim(kimId);
-			})
-
-			.on('click', '.editKimPencil', function(){
-				$(this )
-					.attr('class', 'glyphicon glyphicon-floppy-disk saveEditKim' )
-					.css('margin-left', '0');
-				$(this )
-					.parents('tr')
-					.find('.kimHardName, .kimName, .kimArticle')
-					.attr('contenteditable', 'true')
-					.css({
-						'border': '1px solid hsl(195, 79%, 43%)',
-						'border-radius': '2px'
-					});
-			})
-
 			.on('click', '.saveEditKim', function(){
 				var kimId = $(this ).attr('name'),
 					kim = VALIDATION.validateInputVal({
@@ -3250,7 +3244,7 @@
 			},
 
 			showKim: function() {
-				$.when(CATEGORIES.getCategoriesTable(), KIM.getKIMTable(), METALLS.getMetallsTable()).done(function () {
+				$.when(CATEGORIES.getCategories(), KIM.getKIM(), METALLS.getMetallsTable()).done(function () {
 					setTimeout(function(){ spinnerKim.stop(document.getElementById('orderSpinner')); }, 500);
 				});
 			},
@@ -3618,6 +3612,17 @@
 		
         // categories section
         categories: {
+            getCategories: function() {
+                 return $.ajax( {
+                    url   : URL_CATEG + 'getCategories',
+                    method: 'GET'
+                } ).then( function ( response )
+                {
+					$('.categoriesListTable tbody').html(Mustache.render($('#categoriesTableTemplate').html(), response));
+                    MAIN.categoriesTableContent = response.categoriesTableContent;
+                } );
+            },
+			
             addCategory: function(categoryName, article) {
                 $.ajax( {
                     url   :  URL_CATEG +'add',
@@ -3630,7 +3635,7 @@
                 {
                     if (true === response.success) {
                         $('#addCategoryInput, #addCategoryArticleInput').val('');
-						$.when(CATEGORIES.getCategoriesTable(), CATEGORIES.getCategoriesList()).then(function () {
+						$.when(CATEGORIES.getCategories(), CATEGORIES.getCategoriesList()).then(function () {
 							jq.$addCategoryModal.modal('hide');
 							setTimeout(MESSAGES.show.bind(this, response), 300);
 						});
@@ -3639,19 +3644,7 @@
 					}
                 } );
             },
-
-            getCategoriesTable: function() {
-                 return $.ajax( {
-                    url   : URL_CATEG + 'getCategories',
-                    method: 'GET'
-                } ).then( function ( response )
-                {
-					var rendered = Mustache.render($('#categoriesTableTemplate').html(), response);
-					$('.categoriesListTable tbody').html(addCategoriesTableHandler($(rendered)));
-                    MAIN.categoriesTableContent = response.categoriesTableContent;
-                } );
-            },
-
+			
             getCategoriesList: function () {
                 return $.ajax({
                     url: URL_CATEG + 'getCategoriesList',
@@ -3666,22 +3659,7 @@
                 });
             },
 			
-			editCategory: function () {
-				var $table = jq.$categoriesTable();
-				if ($(this).hasClass('activeTopIcon')) {
-					$table.find('tr').off('click');
-					methods.activateButton.call(this);
-					$table.removeClass('selectedRow');
-					return true;
-				}
-				$table.find('tr').on('click', function () {
-					$(this).dblclick();
-				});
-				methods.deactivateButton.call(this);
-				$table.addClass('selectedRow');
-			},
-			
-            postEditCategory: function (name) {
+            editCategory: function (name) {
                 _products.cancelArticleBtn();
                 return $.ajax( {
                     url   : URL_CATEG + 'editCategory',
@@ -3720,7 +3698,7 @@
 								{addClass: 'btn btn-success', text: 'Удалить!', onClick: function ($noty) {
 									$.when(CATEGORIES.postRemoveCategory($this.attr('data-id'))).then(function (response) {
 										if (true === response.success) {
-											$.when(CATEGORIES.getCategoriesTable(), CATEGORIES.getCategoriesList() ).then(function () {
+											$.when(CATEGORIES.getCategories(), CATEGORIES.getCategoriesList() ).then(function () {
 												jq.$deleteKimIcon.click().click();
 											});
 										}
@@ -3756,19 +3734,20 @@
 
 		// kim section
 		kim: {
-			getKIMTable: function () {
+			getKIM: function () {
 				return $.ajax({
-					url: URL_KIM + 'getKIMTable',
+					url: URL_KIM + 'getKIM',
 					method: 'GET'
-				}).then(function (data)
+				}).then(function (response)
 				{
-					MAIN.fileManagerOrdersWrapperleContent = data.fileManagerOrdersWrapperleContent;
-					$('#tbodyKIM').html(addKimTableHandler($(data.html)));
+					console.log(response);
+					$('.kimListTable tbody').html(Mustache.render($('#kimTableTemplate').html(), response));
+					MAIN.kimTableContent = response.kimTableContent;
 				});
 			},
 
 			getKimList: function () {
-				$.ajax({
+				return $.ajax({
 					url: URL_KIM + 'getKimList',
 					method: 'GET',
 					data: {
@@ -3782,30 +3761,33 @@
 				});
 			},
 
-			addKIMtoTable: function (kim, kimHard) {
+			addKIM: function (kim, kimHard, description) {
                 _products.cancelArticleBtn();
 				$.ajax({
-					url: URL_KIM + 'addKIMtoTable',
+					url: URL_KIM + 'addKIM',
 					method: 'POST',
 					data: {
 						kim: kim,
-						kimHard: kimHard
+						kimHard: kimHard,
+						description: description
 					}
-				}).then(function (data)
+				}).then(function (response)
 				{
-					if (true === data) {
-						$('#kimInput, #kimHardInput, #kimArticle').val('');
-						KIM.getKIMTable();
-						KIM.getKimList();
+					if (true === response.success) {
+						$('#kimInput, #kimHardInput, #kimDescrInput').val('');
+						$.when(KIM.getKIM(), KIM.getKimList()).then(function () {
+							jq.$addKimModal.modal('hide');
+							setTimeout(MESSAGES.show.bind(this, response), 300);
+						});
 					} else {
-
+						MESSAGES.show(response);
 					}
 				});
 			},
-
-			editKim: function (kimId, kim, kimHard, save) {
-                _products.cancelArticleBtn();
-				$.ajax( {
+			
+			editKim: function () {
+				 _products.cancelArticleBtn();
+				return $.ajax( {
 					url   : URL_KIM + 'editKim',
 					method: 'POST',
 					data: {
@@ -3813,37 +3795,64 @@
 						kim: kim,
 						kimHard : kimHard
 					}
-				} ).then( function ( data )
+				} ).then( function ( response )
 				{
-					if (true === data) {
-						KIM.getKIMTable();
-						KIM.getKimList();
-					} else {
-						$(save )
-							.parents('tr')
-							.find('.kimHardName, .kimName')
-							.css({
-								'border': '3px solid hsl(0, 69%, 22%)',
-								'border-radius': '2px'
-							});
-					}
+					return response;
 				});
 			},
 
-			removeKim: function (kimId) {
-                _products.cancelArticleBtn();
-				$.ajax({
-					url   : URL_KIM + 'removeKim',
-					method: 'POST',
-					data: {
-					kimId: kimId
-					}
-				}).then(function (data)
+			removeKim: function () {
+				var $table = jq.$kimTable();
+				if ($(this).hasClass('activeTopIcon')) {
+					$table.find('tr').off('click');
+					methods.activateButton.call(this);
+					$table.removeClass('deleteRow');
+				} else {
+					methods.deactivateButton.call(this);
+					$table.addClass('deleteRow');
+					$table.find('tr').on('click', function () {
+						var $this = $(this);
+						noty({
+							text: 'Вы уверены, что хотите удалить КИМ?',
+							modal: true,
+							type: 'confirm',
+							layout: 'center',
+							animation: {
+								open: 'animated flipInX',
+								close: 'animated flipOutX'
+							},
+							buttons: [
+								{addClass: 'btn btn-success', text: 'Удалить!', onClick: function ($noty) {
+										$.when(KIM.postRemoveKim($this.attr('data-id'))).then(function (response) {
+											if (true === response.success) {
+												$.when(KIM.getKIM(), KIM.getKimList()).then(function () {
+													jq.$deleteKimIcon.click().click();
+												});
+											}
+											setTimeout(MESSAGES.show.bind(this, response), 1000);
+											$noty.close();
+										});
+									}
+								},
+								{addClass: 'btn btn-danger', text: 'Передумал', onClick: function ($noty) {
+										$noty.close();
+									}
+								}
+							]
+						});
+					});
+				}
+			},
+			
+			postRemoveKim: function (id) {
+				_products.cancelArticleBtn();
+				return $.ajax({
+					url   : URL_KIM + 'removeKim/' + id,
+					method: 'DELETE',
+					data: {kimId: id}
+				}).then(function (response)
 				{
-					if (true === data) {
-						KIM.getKIMTable();
-						KIM.getKimList();
-					}
+					return response;
 				});
 			}
 		},
@@ -4214,7 +4223,7 @@
 				var splitRes = res.split('.');
 				res = splitRes[0];
 				if (1 < splitRes.length) {
-					res += '.' + splitRes[1][0] + splitRes[1][1];
+					res += '.' + splitRes[1];
 				}
                 return res;
             },
@@ -4246,6 +4255,12 @@
                             val = VALIDATION.parseArray(articles, val);
                         }
                         break;
+                    case '#kimHardInput':
+                        articles = MAIN.categoriesTableContent.names;
+                        if (0 < articles.length) {
+                            val = VALIDATION.parseArray(articles, val);
+                        }
+                        break;
                 }
                 return val;
             },
@@ -4257,8 +4272,9 @@
 
             parseArray: function (arr, val) {
                 var i;
+				var low = val.toLowerCase();
                 for (i = 0; i < arr.length; i++) {
-                    if (val.toLowerCase() === arr[i].toLowerCase()) {
+                    if (low === arr[i].toLowerCase()) {
                         val = false;
                         break;
                     }

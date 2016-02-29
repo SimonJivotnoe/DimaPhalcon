@@ -20,6 +20,7 @@ class IndexController extends ControllerBase
             $array[] = array('id' => $val->getId());
         }*/
         $sub = new Substitution();
+        $indexFolder = '../public/files/index/';
         /*$this->assets
              ->collection('styleHead')
              ->addCss('css/main.css', false, false)
@@ -37,24 +38,20 @@ class IndexController extends ControllerBase
              ->setTargetUri('css/productionHead.css')
              ->join(false)
              ->addFilter(new \Phalcon\Assets\Filters\Cssmin());*/
-        $this->assets
+        /*$this->assets
              ->collection('jsFooter')
              ->addJs('js/Dima.js', false, false)
              ->addJs('js/libs/split-pane.min.js', false, false)
              ->addJs('js/libs/underscore-min.js', false, false)
-             ->join(false);
+             ->join(false);*/
              //->addFilter(new \Phalcon\Assets\Filters\Jsmin());
         //$left = file_get_contents('../public/files/tabs.volt');
         $this->view->setVars(array(
-            //'tabs' => $left,
-            'templates' => file_get_contents('../public/files/templates.html'),
-            'categoryModal' => $this->file_get_contents_utf8('../public/files/categoryModal.html')
+            'css'       => file_get_contents($indexFolder . 'css.html'),
+            'templates' => file_get_contents($indexFolder . 'templates.html'),
+            'mainIcons' => file_get_contents($indexFolder . 'mainIcons.html'),
+            'js'        => file_get_contents($indexFolder . 'js.html')
         ));
-    }
-    function file_get_contents_utf8($fn) {
-        $content = file_get_contents($fn);
-        return mb_convert_encoding($content, 'UTF-8',
-            mb_detect_encoding($content, 'UTF-8, ISO-8859-1', true));
     }
 }
 

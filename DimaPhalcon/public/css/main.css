@@ -512,7 +512,6 @@ ol li:hover {
 
 .glyphicon-fire {
     color: orangered;
-    cursor: pointer;
 }
 
 .glyphicon-oil {
@@ -959,10 +958,10 @@ table.rc-table-resizing thead,table.rc-table-resizing thead> th,table.rc-table-r
 
 /* DB */
 /* KIM */
-.categoriesWrapper {
+.categoriesWrapper, .kimWrapper {
     cursor: pointer;
 }
-.categoriesListTable {
+.categoriesListTable, .kimListTable {
     max-height: 33vh;
     overflow-y: auto;
 }

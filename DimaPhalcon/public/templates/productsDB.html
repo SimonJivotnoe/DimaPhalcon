@@ -55,46 +55,33 @@
                                 <th>Артикул</th>
                             </tr>
                         </thead>
-                        <tbody>
-                        </tbody>
+                        <tbody></tbody>
                     </table>
                 </div>
             </div>
-            <!--<div class="col-md-12">
-                <div class="col-md-12 toCollapse" data-toggle="collapse"
-                      data-target="#categoriesCollapse" aria-expanded="true" aria-controls="categoriesCollapse"
-                      style="margin-bottom: 8px;">
-                    <h4>
-                        Категории
-                        <span class="glyphicon glyphicon-th-list toCollapse" aria-hidden="true"></span>
-                    </h4>
-                </div>
-                <div class="collapse in" id="categoriesCollapse">
-                    <div class="col-md-8">
-                        <input type="text" id="addCategoryInput" placeholder="Имя категории">
-                        <input type="text" id="addCategoryArticleInput" placeholder="Артикул">
-                        <button type="button" class="btn btn-info btn-sm" id="addCategoryBtn">Добавить</button>
-                    </div>
-
-                </div>
-            </div>-->
-            <div class="col-md-12">
-                <h4>КИМ <span class="glyphicon glyphicon-fire" aria-hidden="true" data-toggle="collapse"
-                              data-target="#kimCollapse" aria-expanded="true" aria-controls="kimCollapse">
-                    </span>
-                </h4>
-
-                <div class="collapse in" id="kimCollapse">
+            <div class="row kimWrapper" data-elem="kim">
+                <div class="col-md-12">
                     <div class="col-md-12">
-                        <input type="text" id="kimHardInput" placeholder="Сложность изделия"/>
-                        <input type="number" id="kimInput" step="0.1" min="0.1" placeholder="КИМ"/>
-                        <button class="btn btn-info btn-sm" id="addKIM">Добавить</button>
+                        <h4>КИМ <span class="glyphicon glyphicon-fire" aria-hidden="true"></span></h4>
                     </div>
-                    <div class="col-md-8" id="kimListWrapper">
+                    <div class="col-md-10 col-md-offset-1 kimListTable">
                         <table class="table table-bordered">
-                            <tbody id="tbodyKIM">
-                            </tbody>
+                            <thead>
+                                <tr>
+                                    <th>Сложность изделия</th>
+                                    <th>КИМ</th>
+                                    <th>Описание</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
                         </table>
+                        <!--<div class="col-md-12">
+                            <input type="text" id="kimHardInput" placeholder="Сложность изделия"/>
+                            <input type="number" id="kimInput" step="0.1" min="0.1" placeholder="КИМ"/>
+                            <button class="btn btn-info btn-sm" id="addKIM">Добавить</button>
+                        </div>
+                        <div class="col-md-8" id="kimListWrapper">
+                        </div>-->
                     </div>
                 </div>
             </div>
