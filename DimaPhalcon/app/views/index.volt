@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="css/libs/split-pane.css">
     <link rel="stylesheet" href="css/libs/pretty-split-pane.css">
     <link rel="stylesheet" href="css/libs/jquery-ui.min.css">
-    <link rel="stylesheet" href="css/libs/hover-min.min.css">
+    <link rel="stylesheet" href="css/libs/hover-min.css">
     <link rel="stylesheet" href="css/bootstrap/bootstrap.min.css">
     <link rel="stylesheet" href="css/libs/animate.css">
     <link rel="stylesheet" href="css/libs/notifcenter.css">
@@ -53,44 +53,7 @@
     </nav>
     <div id="sectionContent"></div>
     <div id="outBodyElements"></div>
-    <div id="backLayout" class="clearer"></div>
-    <!-- MODALS-->
-    <div id="addNewCategoryModal" tabindex="-1" role="dialog" aria-labelledby="addNewCategoryModal" class="modal fade">
-      <div role="document" class="modal-dialog">
-        <div class="modal-content">
-          <div class="modal-header addNewModalHeader modalFooterAdd">
-            <button type="button" data-dismiss="modal" aria-label="Close" class="close"><span aria-hidden="true">×</span></button>
-            <h4 id="myModalLabel" class="modal-title">Добавить Категорию</h4>
-          </div>
-          <div class="modal-header editModalHeader modalFooterEdit">
-            <button type="button" data-dismiss="modal" aria-label="Close" class="close"><span aria-hidden="true">×</span></button>
-            <h4 id="myModalLabel" class="modal-title">Редактировать Категорию</h4>
-          </div>
-          <div class="modal-body">
-            <form>
-              <div class="form-group">
-                <label for="addCategoryInput" class="control-label">Имя категории:</label>
-                <input id="addCategoryInput" type="text" class="form-control">
-              </div>
-              <div class="form-group">
-                <label for="addCategoryArticleInput" class="control-label modalFooterAdd">Артикул:</label>
-                <input id="addCategoryArticleInput" type="text" class="form-control modalFooterAdd">
-              </div>
-            </form>
-          </div>
-          <div class="modal-footer">
-            <div class="modalFooterAdd">
-              <button type="button" data-dismiss="modal" class="btn btn-default">Отмена</button>
-              <button id="addCategoryBtn" type="button" class="btn btn-success">Добавить</button>
-            </div>
-            <div style="display: none;" class="modalFooterEdit">
-              <button type="button" data-dismiss="modal" class="btn btn-default">Отмена</button>
-              <button id="editCategoryBtn" type="button" class="btn btn-primary">Сохранить</button>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
+    <div id="backLayout" class="clearer"></div>{{ categoryModal }}
     <script src="js/jquery/jquery-1.11.2.min.js"></script>
     <script src="js/jquery/jquery-ui.min.js"></script>
     <link rel="stylesheet" href="css/bootstrap/bootstrap-table.css">

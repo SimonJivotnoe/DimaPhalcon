@@ -24,15 +24,7 @@ html
     nav#topIconsWrapper.navbar.navbar-default.navbar-fixed-top(style='min-height: 46px;')
       .container(style='margin-top: 4px;')
         #menuIconsTop.col-md-12
-          form#mainIcons.form-inline
-            #backIcon.form-group.hvr-pulse-grow.defaultIcon
-              span.glyphicon.glyphicon-th-large.centerIcon(aria-hidden='true')
-            #prefIcon.form-group.hvr-pulse-grow.defaultIcon
-              span.glyphicon.glyphicon-cog.centerIcon(aria-hidden='true')
-            #dbIcon.form-group.hvr-pulse-grow.defaultIcon
-              span.glyphicon.glyphicon-folder-close.centerIcon(aria-hidden='true')
-            #prIcon.form-group.hvr-pulse-grow.defaultIcon
-              span.glyphicon.glyphicon-check.centerIcon(aria-hidden='true')
+          include includes/menuIconsTop
           form#kimIcons.form-inline
             #addKimIcon.form-group.hvr-pulse-grow.defaultIcon
               span.glyphicon.glyphicon-plus.centerIcon(aria-hidden='true')
@@ -46,33 +38,9 @@ html
     #sectionContent
     #outBodyElements
     #backLayout.clearer
-    // MODALS
-    #addNewCategoryModal.modal.fade(tabindex='-1', role='dialog', aria-labelledby='addNewCategoryModal')
-      .modal-dialog(role='document')
-        .modal-content
-          .modal-header.addNewModalHeader.modalFooterAdd
-            button.close(type='button', data-dismiss='modal', aria-label='Close')
-              span(aria-hidden='true') ×
-            h4#myModalLabel.modal-title Добавить Категорию
-          .modal-header.editModalHeader.modalFooterEdit
-            button.close(type='button', data-dismiss='modal', aria-label='Close')
-              span(aria-hidden='true') ×
-            h4#myModalLabel.modal-title Редактировать Категорию
-          .modal-body
-            form
-              .form-group
-                label.control-label(for='addCategoryInput') Имя категории:
-                input#addCategoryInput.form-control(type='text')
-              .form-group
-                label.control-label.modalFooterAdd(for='addCategoryArticleInput') Артикул:
-                input#addCategoryArticleInput.form-control.modalFooterAdd(type='text')
-          .modal-footer
-            .modalFooterAdd
-              button.btn.btn-default(type='button', data-dismiss='modal') Отмена
-              button#addCategoryBtn.btn.btn-success(type='button') Добавить
-            .modalFooterEdit(style='display: none;')
-              button.btn.btn-default(type='button', data-dismiss='modal') Отмена
-              button#editCategoryBtn.btn.btn-primary(type='button') Сохранить
+
+    | {{ categoryModal }}
+
     script(src='js/jquery/jquery-1.11.2.min.js')
     script(src='js/jquery/jquery-ui.min.js')
     link(rel='stylesheet', href='css/bootstrap/bootstrap-table.css')

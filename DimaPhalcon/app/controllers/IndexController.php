@@ -47,8 +47,14 @@ class IndexController extends ControllerBase
         //$left = file_get_contents('../public/files/tabs.volt');
         $this->view->setVars(array(
             //'tabs' => $left,
-            'templates' => file_get_contents('../public/files/templates.html')
+            'templates' => file_get_contents('../public/files/templates.html'),
+            'categoryModal' => $this->file_get_contents_utf8('../public/files/categoryModal.html')
         ));
+    }
+    function file_get_contents_utf8($fn) {
+        $content = file_get_contents($fn);
+        return mb_convert_encoding($content, 'UTF-8',
+            mb_detect_encoding($content, 'UTF-8, ISO-8859-1', true));
     }
 }
 
