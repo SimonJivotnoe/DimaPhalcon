@@ -48,10 +48,6 @@
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                     <h4 class="modal-title">Добавить Категорию</h4>
                 </div>
-                <div class="modal-header editModalHeader modalFooterEdit">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                    <h4 class="modal-title">Редактировать Категорию</h4>
-                </div>
                 <div class="modal-body">
                     <form>
                         <div class="form-group">
@@ -59,17 +55,37 @@
                             <input type="text" class="form-control" id="addCategoryInput">
                         </div>
                         <div class="form-group">
-                            <label for="addCategoryArticleInput" class="control-label modalFooterAdd">Артикул:</label>
-                            <input type="text" class="form-control modalFooterAdd" id="addCategoryArticleInput">
+                            <label for="addCategoryArticleInput" class="control-label">Артикул:</label>
+                            <input type="text" class="form-control" id="addCategoryArticleInput">
                         </div>
                     </form>
                 </div>
                 <div class="modal-footer">
-                    <div class="modalFooterAdd">
+                    <div>
                         <button type="button" class="btn btn-default" data-dismiss="modal">Отмена</button>
                         <button type="button" class="btn btn-success" id="addCategoryBtn">Добавить</button>
                     </div>
-                    <div class="modalFooterEdit" style="display: none;">
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="editCategoryModal" tabindex="-1" role="dialog" aria-labelledby="editCategoryModal">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header editModalHeader">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">Редактировать Категорию</h4>
+                </div>
+                <div class="modal-body">
+                    <form>
+                        <div class="form-group">
+                            <label for="addCategoryInput" class="control-label">Имя категории:</label>
+                            <input type="text" class="form-control" id="editCategoryInput">
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <div class="modalFooterEdit">
                         <button type="button" class="btn btn-default" data-dismiss="modal">Отмена</button>
                         <button type="button" class="btn btn-primary" id="editCategoryBtn">Сохранить</button>
                     </div>
@@ -80,13 +96,9 @@
     <div class="modal fade" id="addNewKimModal" tabindex="-1" role="dialog" aria-labelledby="addNewKimModal">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
-                <div class="modal-header addNewModalHeader modalFooterAdd">
+                <div class="modal-header addNewModalHeader">
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                     <h4 class="modal-title">Добавить Ким</h4>
-                </div>
-                <div class="modal-header editModalHeader modalFooterEdit">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                    <h4 class="modal-title">Редактировать Ким</h4>
                 </div>
                 <div class="modal-body">
                     <form>
@@ -105,11 +117,39 @@
                     </form>
                 </div>
                 <div class="modal-footer">
-                    <div class="modalFooterAdd">
+                    <div>
                         <button type="button" class="btn btn-default" data-dismiss="modal">Отмена</button>
                         <button type="button" class="btn btn-success" id="addKIMBtn">Добавить</button>
                     </div>
-                    <div class="modalFooterEdit" style="display: none;">
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="editKimModal" tabindex="-1" role="dialog" aria-labelledby="addNewKimModal">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header editModalHeader">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">Редактировать Ким</h4>
+                </div>
+                <div class="modal-body">
+                    <form>
+                        <div class="form-group">
+                            <label for="addCategoryInput" class="control-label">Сложность изделия:</label>
+                            <input type="text" class="form-control" id="editKimHardInput">
+                        </div>
+                        <div class="form-group">
+                            <label for="addCategoryArticleInput" class="control-label">Ким:</label>
+                            <input class="form-control" id="editKimInput" type="number" step="0.1" min="0.1">
+                        </div>
+                        <div class="form-group">
+                            <label for="addCategoryArticleInput" class="control-label">Описание:</label>
+                            <input type="text" class="form-control" id="editKimDescrInput">
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <div class="modalFooterEdit">
                         <button type="button" class="btn btn-default" data-dismiss="modal">Отмена</button>
                         <button type="button" class="btn btn-primary" id="editKimBtn">Сохранить</button>
                     </div>

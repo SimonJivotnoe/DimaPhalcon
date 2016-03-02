@@ -958,10 +958,10 @@ table.rc-table-resizing thead,table.rc-table-resizing thead> th,table.rc-table-r
 
 /* DB */
 /* KIM */
-.categoriesWrapper, .kimWrapper {
+.categoriesWrapper, .kimWrapper, .metallWrapper {
     cursor: pointer;
 }
-.categoriesListTable, .kimListTable {
+.categoriesListTable, .kimListTable, .metallListTable {
     max-height: 33vh;
     overflow-y: auto;
 }

@@ -295,8 +295,28 @@
 		}
 	];
 	var jq = {
+		// Add Category Modal
 		$addCategoryModal: $('#addNewCategoryModal'),
+			$addCategoryInput: $('#addCategoryInput'),
+			$addCategoryArticleInput: $('#addCategoryArticleInput'),
+		
+		// Edit Category Modal
+		$editCategoryModal: $('#editCategoryModal'),
+			$editCategoryInput: $('#editCategoryInput'),
+			
+		// Add KIM Modal
 		$addKimModal: $('#addNewKimModal'),
+			$kimHardInput: $('#kimHardInput'),
+			$kimInput: $('#kimInput'),
+			$kimDescrInput: $('#kimDescrInput'),
+			
+		// Edit KIM Modal
+		$editKimModal: $('#editKimModal'),
+			$editKimHardInput: $('#editKimHardInput'),
+			$editKimInput: $('#editKimInput'),
+			$editKimDescrInput: $('#editKimDescrInput'),
+		// Edit METALL Modal
+		$$addMetallModal: $('#addMetallModal'),
 		$kimIcons: $('#kimIcons'),
 		$editKimIcon: $('#editKimIcon'),
 		$deleteKimIcon: $('#deleteKimIcon'),
@@ -305,6 +325,9 @@
 		},
 		$kimTable: function () {
 			return $('#outBodyElements .kimListTable table tbody');
+		},
+		$metallTable: function () {
+			return $('#outBodyElements .metallListTable table tbody');
 		}
 	};
 	var defaultScreenSize   = '60em';
@@ -375,6 +398,7 @@
 		kimIconsToDefault: function (arr) {
 			var arr = arr ? arr : ['#editKimIcon', '#deleteKimIcon'];
 			jq.$kimIcons.find(arr.join(',')).removeClass('activeTopIcon');
+			console.log(focusedElem.attr('data-elem'));
 			cases[focusedElem.attr('data-elem')].table().removeClass('selectedRow deleteRow' ).off('click');
 			cases[focusedElem.attr('data-elem')].table().find('tr').off('click');
 		},
@@ -415,6 +439,7 @@
 				.offset(focusedElem.offset())
 				.width(focusedElem.width())
 				.height(focusedElem.height());
+			$outBodyElements.find('table').closest('div').scrollTop(focusedElem.find('table').closest('div').scrollTop());	
 		},
 		
 		unsetOutBodyElem: function () {
@@ -1280,26 +1305,19 @@
 		$('#outBodyElements').on('dblclick', '.categoriesListTable tbody tr', function () {
 			var $this = $(this);
 			var id = $this.attr('data-id');
-			jq.$addCategoryModal
-				.find('.modalFooterEdit').show().end()
-				.find('.modalFooterAdd').hide().end();
-			$('#addCategoryInput').val(MAIN.categoriesTableContent.data[id].name);		
-			$('#addCategoryArticleInput').val(MAIN.categoriesTableContent.data[id].article);
+			jq.$editCategoryInput.val(MAIN.categoriesTableContent.data[id].name);
 			$selectedRow = $this;
-			jq.$addCategoryModal.modal('show');
+			jq.$editCategoryModal.modal('show');
 		});
 		
 		$('#outBodyElements').on('dblclick', '.kimListTable tbody tr', function () {
 			var $this = $(this);
 			var id = $this.attr('data-id');
-			jq.$addKimModal
-				.find('.modalFooterEdit').show().end()
-				.find('.modalFooterAdd').hide().end();
-			$('#kimHardInput').val(MAIN.kimTableContent.data[id].name);		
-			$('#kimInput').val(MAIN.kimTableContent.data[id]['value']);
-			$('#kimDescrInput').val(MAIN.kimTableContent.data[id].description);
+			jq.$editKimHardInput.val(MAIN.kimTableContent.data[id].name);		
+			jq.$editKimInput.val(MAIN.kimTableContent.data[id]['value']);
+			jq.$editKimDescrInput.val(MAIN.kimTableContent.data[id].description);
 			$selectedRow = $this;
-			jq.$addKimModal.modal('show');
+			jq.$editKimModal.modal('show');
 		});
 		
 		$('#addKimIcon').click(function () {
@@ -1324,12 +1342,12 @@
 		
 		$('#addCategoryBtn').click(function(){
 			var category = VALIDATION.validateInputVal({
-					val: $('#addCategoryInput' ).val(),
+					val: jq.$addCategoryInput.val(),
 					id: '#addCategoryInput',
 					unique: true
 				}),
 				article = VALIDATION.validateInputVal({
-					val: $('#addCategoryArticleInput' ).val(),
+					val: jq.$addCategoryArticleInput.val(),
 					id: '#addCategoryArticleInput',
 					unique: true
 				});
@@ -1339,14 +1357,14 @@
 		});
 		$('#editCategoryBtn').click(function(){
 			var name = VALIDATION.validateInputVal({
-					val: $('#addCategoryInput').val()
+					val: jq.$editCategoryInput.val()
 				});
 			if (name) {
 				$.when(CATEGORIES.editCategory(name)).then(function (response) {
 					if (true === response.success) {
 						$.when(CATEGORIES.getCategories(), CATEGORIES.getCategoriesList() ).then(function () {
 							jq.$editKimIcon.click().click();
-							jq.$addCategoryModal.modal('hide');
+							jq.$editCategoryModal.modal('hide');
 							setTimeout(MESSAGES.show.bind(this, response), 300);
 						});
 					} else {
@@ -1358,17 +1376,39 @@
 		
 		$('#addKIMBtn').click(function(){
 			var kim = VALIDATION.validateInputVal({
-					val: $('#kimInput' ).val(),
+					val: jq.$kimInput.val(),
 					id: '#kimInput',
 					digitsOnly: true
 				}),
 				kimHardInput = VALIDATION.validateInputVal({
-					val: $('#kimHardInput' ).val(),
+					val: jq.$kimHardInput.val(),
 					id: '#kimHardInput',
 					unique: true
 				});
 			if (kim && kimHardInput) {
-				KIM.addKIM(kim, kimHardInput, $('#kimDescrInput').val());
+				KIM.addKIM(kim, kimHardInput, jq.$kimDescrInput.val());
+			}
+		});
+		$('#editKimBtn').click(function(){
+			var kim = VALIDATION.validateInputVal({
+					val: jq.$editKimInput.val(),
+					digitsOnly: true
+				}),
+				kimHard = VALIDATION.validateInputVal({
+					val: jq.$editKimHardInput.val()
+				});
+			if (kim && kimHard) {
+				$.when(KIM.editKim(kim, kimHard, jq.$editKimDescrInput.val())).then(function (response) {
+					if (true === response.success) {
+						$.when(KIM.getKIM(), KIM.getKimList() ).then(function () {
+							jq.$editKimIcon.click().click();
+							jq.$editKimModal.modal('hide');
+							setTimeout(MESSAGES.show.bind(this, response), 300);
+						});
+					} else {
+						MESSAGES.show(response);
+					}
+				});
 			}
 		});
 	};
@@ -1735,34 +1775,13 @@
 				PRODUCT.createFileManager('PR');
 			}).end()
 
-			.find('.categoriesWrapper' ).click(function(){
-				focusedElem = $(this);
-				methods.focus();
-			} ).end()
-			
-			.find('.kimWrapper' ).click(function(){
+			.find('.categoriesWrapper, .kimWrapper, .metallWrapper' ).click(function(){
 				focusedElem = $(this);
 				methods.focus();
 			} ).end()
 
 			.find('#addNewTab').on('click', function(){
 				TABS.getLastLeftTab();
-			}).end()
-
-			.find('#addKIM').click(function(){
-				var kim = VALIDATION.validateInputVal({
-						val: $('#kimInput' ).val(),
-						id: '#kimInput',
-						digitsOnly: true
-					}),
-					kimHardInput = VALIDATION.validateInputVal({
-						val: $('#kimHardInput' ).val(),
-						id: '#kimHardInput'
-					});
-
-				if (kim && kimHardInput) {
-					KIM.addKIMtoTable(kim, kimHardInput);
-				}
 			}).end()
 
 			.find('#addMetall').on('click', function(){;
@@ -3785,15 +3804,16 @@
 				});
 			},
 			
-			editKim: function () {
+			editKim: function (kim, kimHard, description) {
 				 _products.cancelArticleBtn();
 				return $.ajax( {
 					url   : URL_KIM + 'editKim',
 					method: 'POST',
 					data: {
-						kimId: kimId,
+						kimId: $selectedRow.attr('data-id'),
 						kim: kim,
-						kimHard : kimHard
+						kimHard : kimHard,
+						description: description
 					}
 				} ).then( function ( response )
 				{

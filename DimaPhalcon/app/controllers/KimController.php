@@ -57,33 +57,26 @@ class KimController  extends ControllerBase
 
     public function editKimAction()
     {
-        if ($this->request->isAjax() && $this->request->isPost()) {
-            $kimId = $this->request->getPost('kimId');
-            $kim = $this->request->getPost('kim');
-            $kimHard = $this->request->getPost('kimHard');
-
-            $this->response->setContentType('application/json', 'UTF-8');
-
-            $kimQ = Kim::findFirst($kimId);
-            if ($kimQ == false) {
-                echo "Мы не можем сохранить робота прямо сейчас: \n";
-                foreach ($kimQ->getMessages() as $message) {
-                    echo $message, "\n";
-                }
-            } else {
-                $kimQ->setKim($kim)
-                    ->setKimHard($kimHard);
-                if ($kimQ->save() == false) {
-                    $this->response->setJsonContent('already');
-                } else {
-                    $this->response->setJsonContent(true);
-                }
-
-                return $this->response;
+        $this->ajaxPostCheck();
+        $res = false;
+        $msg = 'Такой КИМ уже существует!';
+        $name = $this->request->getPost('kimHard');
+        $id = $this->request->getPost('kimId');
+        $kimQ = Kim::findFirst(
+                "kim_hard = '" . $name . "' AND kim_id != '" . $id . "'");
+        if ($kimQ == false) {
+            $kimObj = Kim::findFirst($id);
+            if ($kimObj &&
+                    $kimObj->setKimHard($name)
+                         ->setKim($this->request->getPost('kim'))
+                         ->setDescription($this->request->getPost('description'))->save()) {
+                $res = true;
+                $msg = 'КИМ успешно отредактирован';
             }
-        } else {
-            $this->response->redirect('');
         }
+        $this->response->setJsonContent(['success' => $res, 'msg' => $msg]);
+
+        return $this->response;
     }
 
     public function getKimListAction()
