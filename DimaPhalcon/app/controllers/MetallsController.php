@@ -2,7 +2,7 @@
 
 use Phalcon\Db\RawValue;
 
-class MetallsController extends \Phalcon\Mvc\Controller
+class MetallsController extends ControllerBase
 {
     public function getMetallsTableAction(){
         if ($this->request->isAjax() && $this->request->isGet()) {
@@ -41,6 +41,37 @@ class MetallsController extends \Phalcon\Mvc\Controller
         } else {
             $this->response->redirect('');
         }
+    }
+
+    public function getMetallsAction() {
+        $this->ajaxGetCheck();
+        $metallObj = Metalls::find(array("order" => "price ASC"));
+        $metallsArr = [];
+        $data = [];
+        $names = [];
+        $articles = [];
+        if ($metallObj) {
+            foreach ($metallObj as $met) {
+                array_push($metallsArr, [
+                    'id'        => $met->getId(),
+                    'name'      => $met->getName(),
+                    'price'     => $met->getPrice(),
+                    'mass'      => $met->getMass(),
+                    'out_price' => $met->getOutPrice(),
+                    'article'   => $met->getArticle()
+                ]);
+                array_push($names, $met->getName());
+                array_push($articles, $met->getArticle());
+                $data[$met->getId()] = ['name' => $met->getName(), 'article' => $met->getArticle()];
+            }
+            $resObj = [
+                'names'    => $names,
+                'articles' => $articles,
+                'data'     => $data
+            ];
+        }
+        $this->response->setJsonContent(['metalls' => $metallsArr, 'metallTableContent' => $resObj]);
+        return $this->response;
     }
 
     public function addMetallToTableAction(){

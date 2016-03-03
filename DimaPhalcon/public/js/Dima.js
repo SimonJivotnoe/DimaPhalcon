@@ -398,7 +398,6 @@
 		kimIconsToDefault: function (arr) {
 			var arr = arr ? arr : ['#editKimIcon', '#deleteKimIcon'];
 			jq.$kimIcons.find(arr.join(',')).removeClass('activeTopIcon');
-			console.log(focusedElem.attr('data-elem'));
 			cases[focusedElem.attr('data-elem')].table().removeClass('selectedRow deleteRow' ).off('click');
 			cases[focusedElem.attr('data-elem')].table().find('tr').off('click');
 		},
@@ -3759,7 +3758,6 @@
 					method: 'GET'
 				}).then(function (response)
 				{
-					console.log(response);
 					$('.kimListTable tbody').html(Mustache.render($('#kimTableTemplate').html(), response));
 					MAIN.kimTableContent = response.kimTableContent;
 				});
@@ -3881,11 +3879,11 @@
 		metalls: {
 			getMetallsTable: function() {
 				return $.ajax({
-					url: URL_METALLS + 'getMetallsTable',
+					url: URL_METALLS + 'getMetalls',
 					method: 'GET'
-				}).then(function (data){
-                    MAIN.metallTableContent = data.metallTableContent;
-					 $('#tbodyMetalls').html(addMetallsTableHandler($(data.html)));
+				}).then(function (response){
+					$('.metallListTable tbody').html(Mustache.render($('#metallsTableTemplate').html(), response));
+					MAIN.metallTableContent = response.metallTableContent;
 				}); 
 			},
 
