@@ -4,45 +4,6 @@ use Phalcon\Db\RawValue;
 
 class MetallsController extends ControllerBase
 {
-    public function getMetallsTableAction(){
-        if ($this->request->isAjax() && $this->request->isGet()) {
-            $met = Metalls::find(array(
-                "order" => "price ASC"));
-            $res = '<tr>
-                        <th>Металл</th>
-                        <th>Цена</th>
-                        <th>Масса</th>
-                        <th>Исходящая цена</th>
-                        <th>Артикул</th>
-                        <th class="editMetallTable"></th>
-                    </tr>';
-            $names = [];
-            $article = [];
-            foreach ($met as $val) {
-                $res .= '<tr>
-                            <td><span class="metallName">' . $val->getName() . '</span></td>
-                            <td><span class="metallPrice">'. $val->getPrice() . '</span></td>
-                            <td><span class="metallMass">'. $val->getMass() . '</span></td>
-                            <td><span class="metallOutPrice">'. $val->getOutPrice() . '</span></td>
-                            <td><span class="metallArticle">'. $val->getArticle() . '</span></td>
-                            <td class="editMetallTable">
-                                <span class="glyphicon glyphicon-pencil triggerMetallPencil" aria-hidden="true" name="'. $val->getId() . '"></span>
-                                <span class="glyphicon glyphicon-remove triggerRemoveMetall" aria-hidden="true" name="'. $val->getId() . '"></span>
-                            </td>
-                        </tr>';
-                array_push($names, $val->getName());
-                array_push($article, $val->getArticle());
-            }
-            $resObj = ['names' => $names, 'articles' => $article];
-            $this->response->setContentType('application/json', 'UTF-8');
-            $this->response->setJsonContent(array('html' => $res, 'metallTableContent' => (object)$resObj));
-
-            return $this->response;
-        } else {
-            $this->response->redirect('');
-        }
-    }
-
     public function getMetallsAction() {
         $this->ajaxGetCheck();
         $metallObj = Metalls::find(array("order" => "price ASC"));
@@ -52,17 +13,29 @@ class MetallsController extends ControllerBase
         $articles = [];
         if ($metallObj) {
             foreach ($metallObj as $met) {
+                $id        = $met->getId();
+                $name      = $met->getName();
+                $price     = $met->getPrice();
+                $mass      = $met->getMass();
+                $out_price = $met->getOutPrice();
+                $article   = $met->getArticle();
                 array_push($metallsArr, [
-                    'id'        => $met->getId(),
-                    'name'      => $met->getName(),
-                    'price'     => $met->getPrice(),
-                    'mass'      => $met->getMass(),
-                    'out_price' => $met->getOutPrice(),
-                    'article'   => $met->getArticle()
+                    'id'        => $id,
+                    'name'      => $name,
+                    'price'     => $price,
+                    'mass'      => $mass,
+                    'out_price' => $out_price,
+                    'article'   => $article
                 ]);
-                array_push($names, $met->getName());
-                array_push($articles, $met->getArticle());
-                $data[$met->getId()] = ['name' => $met->getName(), 'article' => $met->getArticle()];
+                array_push($names, $name);
+                array_push($articles, $article);
+                $data[$id] = [
+                    'name'      => $name,
+                    'price'     => $price,
+                    'mass'      => $mass,
+                    'out_price' => $out_price,
+                    'article'   => $article
+                ];
             }
             $resObj = [
                 'names'    => $names,
@@ -74,37 +47,32 @@ class MetallsController extends ControllerBase
         return $this->response;
     }
 
-    public function addMetallToTableAction(){
-        if ($this->request->isAjax() && $this->request->isPost()) {
-            $name = $this->request->getPost('metall');
-            $price = $this->request->getPost('price');
-            $mass = $this->request->getPost('mass');
-            $outPrice = $this->request->getPost('outPrice');
-            $article = $this->request->getPost('article');
-
-            $this->response->setContentType('application/json', 'UTF-8');
-
-            $checkArticle = Metalls::findFirst("article = '" . $article . "'");
-            if ($checkArticle) {
-                $this->response->setJsonContent('already');
-                return $this->response;
-            }
+    public function addMetallAction(){
+        $this->ajaxPostCheck();
+        $name = $this->request->getPost('metall');
+        $price = $this->request->getPost('price');
+        $mass = $this->request->getPost('mass');
+        $outPrice = $this->request->getPost('outPrice');
+        $article = $this->request->getPost('article');
+        $res = false;
+        $msg = 'Такой Металл уже существует!';
+        
+        if (!Metalls::findFirst("article = '" . $article . "'")) {
             $metalls = new Metalls();
             $metalls->setName($name)
                     ->setPrice($price)
                     ->setMass($mass)
                     ->setOutPrice($outPrice)
                     ->setArticle($article);
-            if ($metalls->save() == false) {
-                $this->response->setJsonContent('already');
-            } else {
+            if ($metalls->save() != false) {
                 $this->addToMetallHistory($metalls->getId(), $metalls->getPrice(), $metalls->getOutPrice());
-                $this->response->setJsonContent(TRUE);
+                $res = true;
+                $msg = 'Металл успешно добавлен';
             }
-            return $this->response;
-        } else {
-            $this->response->redirect('');
         }
+        $this->response->setJsonContent(['success' => $res, 'msg' => $msg]);
+        
+        return $this->response;
     }
     
     public function editMetallAction() {

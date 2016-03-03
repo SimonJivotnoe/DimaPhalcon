@@ -157,6 +157,83 @@
             </div>
         </div>
     </div>
+    
+    <div class="modal fade" id="addNewMetallModal" tabindex="-1" role="dialog" aria-labelledby="addNewKimModal">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header addNewModalHeader">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">Добавить Металл</h4>
+                </div>
+                <div class="modal-body">
+                    <form>
+                        <div class="form-group">
+                            <label for="addCategoryInput" class="control-label">Металл:</label>
+                            <input type="text" class="form-control" id="metallNameInput">
+                        </div>
+                        <div class="form-group">
+                            <label for="addCategoryArticleInput" class="control-label">Цена Входящая:</label>
+                            <input class="form-control" id="metallPriceInput" type="number">
+                        </div>
+                        <div class="form-group">
+                            <label for="addCategoryArticleInput" class="control-label">Масса:</label>
+                            <input type="number" class="form-control" id="metallMassInput">
+                        </div>
+                        <div class="form-group">
+                            <label for="addCategoryArticleInput" class="control-label">Цена Исходящая:</label>
+                            <input type="number" class="form-control" id="metallOutPriceInput">
+                        </div>
+                        <div class="form-group">
+                            <label for="addCategoryArticleInput" class="control-label">Артикул:</label>
+                            <input type="text" class="form-control" id="metallArticleInput">
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <div>
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Отмена</button>
+                        <button type="button" class="btn btn-success" id="addMetallBtn">Добавить</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="editMetallModal" tabindex="-1" role="dialog" aria-labelledby="addNewKimModal">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header editModalHeader">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">Редактировать Ким</h4>
+                </div>
+                <div class="modal-body">
+                    <form>
+                        <div class="form-group">
+                            <label for="addCategoryInput" class="control-label">Металл:</label>
+                            <input type="text" class="form-control" id="editMetallNameInput">
+                        </div>
+                        <div class="form-group">
+                            <label for="addCategoryArticleInput" class="control-label">Цена Входящая:</label>
+                            <input class="form-control" id="editMetallPriceInput" type="number">
+                        </div>
+                        <div class="form-group">
+                            <label for="addCategoryArticleInput" class="control-label">Масса:</label>
+                            <input type="number" class="form-control" id="editMetallMassInput">
+                        </div>
+                        <div class="form-group">
+                            <label for="addCategoryArticleInput" class="control-label">Цена Исходящая:</label>
+                            <input type="number" class="form-control" id="editMetallOutPriceInput">
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <div class="modalFooterEdit">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Отмена</button>
+                        <button type="button" class="btn btn-primary" id="editKimBtn">Сохранить</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
     <?php echo $js; ?>
   </body>
 </html>
