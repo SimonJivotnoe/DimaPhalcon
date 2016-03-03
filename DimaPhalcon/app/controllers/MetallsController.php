@@ -56,7 +56,7 @@ class MetallsController extends ControllerBase
         $article = $this->request->getPost('article');
         $res = false;
         $msg = 'Такой Металл уже существует!';
-        
+
         if (!Metalls::findFirst("article = '" . $article . "'")) {
             $metalls = new Metalls();
             $metalls->setName($name)
@@ -71,43 +71,54 @@ class MetallsController extends ControllerBase
             }
         }
         $this->response->setJsonContent(['success' => $res, 'msg' => $msg]);
-        
+
         return $this->response;
     }
-    
+
     public function editMetallAction() {
-        if ($this->request->isAjax() && $this->request->isPost()) {
-            $metallId = $this->request->getPost('metallId');
-            $metallName = $this->request->getPost('metallName');
-            $metallPrice = $this->request->getPost('metallPrice');
-            $metallMass = $this->request->getPost('metallMass');
-            $metallOutPrice = $this->request->getPost('metallOutPrice');
-
-            $this->response->setContentType('application/json', 'UTF-8');
-
-            $metallQ = Metalls::findFirst($metallId);
-            if ($metallQ == false) {
-                echo "Мы не можем сохранить робота прямо сейчас: \n";
-                foreach ($metallQ->getMessages() as $message) {
-                    echo $message, "\n";
-                }
-            } else {
-                $metallQ->setName($metallName)
-                         ->setPrice($metallPrice)
-                         ->setMass($metallMass)
-                         ->setOutPrice($metallOutPrice);
-                if ($metallQ->save() == false) {
-                    $this->response->setJsonContent('already');
-                } else {
-                    $this->addToMetallHistory($metallId, $metallPrice, $metallOutPrice);
-                    $this->response->setJsonContent(true);
-                }
-
-                return $this->response;
-            }
-        } else {
-            $this->response->redirect('');
+        $this->ajaxPostCheck();
+        $metallId = $this->request->getPost('metallId');
+        $metallName = $this->request->getPost('metallName');
+        $metallPrice = $this->request->getPost('metallPrice');
+        $metallMass = $this->request->getPost('metallMass');
+        $metallOutPrice = $this->request->getPost('metallOutPrice');
+        $res = false;
+        $msg = 'Такой Металл уже существует!';
+        $metallQ = Metalls::findFirst($metallId);
+        if ($metallQ && $metallQ->setName($metallName)
+                ->setPrice($metallPrice)
+                ->setMass($metallMass)
+                ->setOutPrice($metallOutPrice)->save()) {
+            $res = true;
+            $msg = 'Металл успешно отредактирован';
+            $this->addToMetallHistory($metallId, $metallPrice, $metallOutPrice);
         }
+        $this->response->setJsonContent(['success' => $res, 'msg' => $msg]);
+
+        return $this->response;
+    }
+
+    public function removeMetallAction (){
+        $this->ajaxPostCheck();
+        $res = false;
+        $msg = 'Этот Металл используется в продукте!';
+        $metallId = $this->request->getPost('metallId');
+        $res = false;
+        $metall = Metalls::findFirst($metallId);
+        $metallHistory = MetallPricesHistory::find(array("metall_id = '$metallId'"));
+        if ($metall != false && $metallHistory != false) {
+            try {
+                if ($metallHistory->delete() && $metall->delete()) {
+                    $res = true;
+                    $msg = 'Категория успешно удалена';
+                }
+            } catch (\Exception $e) {
+
+            }
+        }
+        $this->response->setJsonContent(['success' => $res, 'msg' => $msg]);
+
+        return $this->response;
     }
 
     public function getMetallsListAction() {
@@ -126,24 +137,6 @@ class MetallsController extends ControllerBase
                 $this->response->setJsonContent($metallsList);
                 return $this->response;
             }
-        } else {
-            $this->response->redirect('');
-        }
-    }
-
-    public function removeMetallAction (){
-        if ($this->request->isAjax() && $this->request->isPost()) {
-            $metallId = $this->request->getPost('metallId');
-            $this->response->setContentType('application/json', 'UTF-8');
-            $res = false;
-            $metall = Metalls::findFirst($metallId);
-            $metallHistory = MetallPricesHistory::find(array("metall_id = '$metallId'"));
-            $metallHistory->delete();
-            if ($metall != false && $metallHistory && $metallHistory->delete() && $metall->delete()) {
-                $res = true;
-            }
-            $this->response->setJsonContent($res);
-            return $this->response;
         } else {
             $this->response->redirect('');
         }

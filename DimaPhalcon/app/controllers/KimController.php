@@ -62,7 +62,15 @@ class KimController  extends ControllerBase
         $msg = 'Такой КИМ уже существует!';
         $name = $this->request->getPost('kimHard');
         $id = $this->request->getPost('kimId');
-        $kimQ = Kim::findFirst(
+        $kimObj = Kim::findFirst($id);
+        if ($kimObj &&
+            $kimObj->setKimHard($name)
+                ->setKim($this->request->getPost('kim'))
+                ->setDescription($this->request->getPost('description'))->save()) {
+            $res = true;
+            $msg = 'КИМ успешно отредактирован';
+        }
+        /*$kimQ = Kim::findFirst(
                 "kim_hard = '" . $name . "' AND kim_id != '" . $id . "'");
         if ($kimQ == false) {
             $kimObj = Kim::findFirst($id);
@@ -73,7 +81,7 @@ class KimController  extends ControllerBase
                 $res = true;
                 $msg = 'КИМ успешно отредактирован';
             }
-        }
+        }*/
         $this->response->setJsonContent(['success' => $res, 'msg' => $msg]);
 
         return $this->response;

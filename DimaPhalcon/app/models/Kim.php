@@ -125,7 +125,7 @@ class Kim extends \Phalcon\Mvc\Model
     /**
      * Validations and business logic
      */
-    /*public function validation()
+    public function validation()
     {
         $this->validate(
             new Uniqueness(
@@ -134,7 +134,7 @@ class Kim extends \Phalcon\Mvc\Model
                     'message' => 'This name already exists'
                 )));
         return $this->validationHasFailed() != true;
-    }*/
+    }
 
     /**
      * Initialize method for model.

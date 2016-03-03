@@ -322,7 +322,11 @@
 			$metallMassInput: $('#metallMassInput'),
 			$metallOutPriceInput: $('#metallOutPriceInput'),
 			$metallArticleInput: $('#metallArticleInput'),
-		   
+		$editMetallModal: $('#editMetallModal'),
+			$editMetallNameInput: $('#editMetallNameInput'),
+			$editMetallPriceInput: $('#editMetallPriceInput'),
+			$editMetallMassInput: $('#editMetallMassInput'),
+			$editMetallOutPriceInput: $('#editMetallOutPriceInput'),
 		$kimIcons: $('#kimIcons'),
 		$editKimIcon: $('#editKimIcon'),
 		$deleteKimIcon: $('#deleteKimIcon'),
@@ -1348,11 +1352,10 @@
 		$('#outBodyElements').on('dblclick', '.metallListTable tbody tr', function () {
 			var $this = $(this);
 			var id = $this.attr('data-id');
-			jq.$metallNameInput.val(MAIN.metallTableContent.data[id].name);		
-			jq.$metallPriceInput.val(MAIN.metallTableContent.data[id].price);
-			jq.$metallMassInput.val(MAIN.metallTableContent.data[id].mass);
-			jq.$metallOutPriceInput.val(MAIN.metallTableContent.data[id]['out_price']);
-			jq.$metallArticleInput.val(MAIN.metallTableContent.data[id].article);
+			jq.$editMetallNameInput.val(MAIN.metallTableContent.data[id].name);
+			jq.$editMetallPriceInput.val(MAIN.metallTableContent.data[id].price);
+			jq.$editMetallMassInput.val(MAIN.metallTableContent.data[id].mass);
+			jq.$editMetallOutPriceInput.val(MAIN.metallTableContent.data[id]['out_price']);
 			$selectedRow = $this;
 			jq.$editMetallModal.modal('show');
 		});
@@ -1485,28 +1488,46 @@
 				});
 			}
 		});
-		/*$('#editKimBtn').click(function(){
-			var kim = VALIDATION.validateInputVal({
-					val: jq.$editKimInput.val(),
+		$('#editMetallBtn').click(function(){
+			var id = $selectedRow.attr('data-id' ),
+				metallName = VALIDATION.validateInputVal({
+					val: jq.$editMetallNameInput.val()
+				}),
+				metallPrice =  VALIDATION.validateInputVal({
+					val: jq.$editMetallPriceInput.val(),
 					digitsOnly: true
 				}),
-				kimHard = VALIDATION.validateInputVal({
-					val: jq.$editKimHardInput.val()
+				metallMass =  VALIDATION.validateInputVal({
+					val: jq.$editMetallMassInput.val(),
+					digitsOnly: true
+				}),
+				metallOutPrice =  VALIDATION.validateInputVal({
+					val: jq.$editMetallOutPriceInput.val(),
+					digitsOnly: true
 				});
-			if (kim && kimHard) {
-				$.when(KIM.editKim(kim, kimHard, jq.$editKimDescrInput.val())).then(function (response) {
+			if (metallName && metallPrice && metallMass && metallOutPrice) {
+				$.when(METALLS.editMetall({
+					metallId: id,
+					metallName: metallName,
+					metallPrice: metallPrice,
+					metallMass: metallMass,
+					metallOutPrice: metallOutPrice
+				})).then(function (response) {
 					if (true === response.success) {
-						$.when(KIM.getKIM(), KIM.getKimList() ).then(function () {
+						$.when(METALLS.getMetalls(), METALLS.getMetallsList()).then(function () {
 							jq.$editKimIcon.click().click();
-							jq.$editKimModal.modal('hide');
+							jq.$editMetallModal.modal('hide');
 							setTimeout(MESSAGES.show.bind(this, response), 300);
 						});
 					} else {
 						MESSAGES.show(response);
 					}
+					if (MAIN.isArticle && (id === MAIN.metallId)) {
+						TABS.getLeftTabContent(MAIN.productId, MAIN.curTabId);
+					}
 				});
 			}
-		});*/
+		});
 	};
 	
 	function addPreferencesHandler(html) {
@@ -3905,29 +3926,15 @@
 				});
 			},
 			
-			editMetall: function (obj, scope) {
+			editMetall: function (obj) {
                 _products.cancelArticleBtn();
-				$.ajax({
+				return $.ajax({
 					url: URL_METALLS + 'editMetall',
 					method: 'POST',
 					data: obj
-				}).then(function (data)
+				}).then(function (response)
 				{
-					if (true === data) {
-						METALLS.getMetalls();
-						METALLS.getMetallsList();
-					} else {
-						$(scope)
-							.parents('tr')
-							.find('.metallName, .metallPrice, .metallMass, .metallOutPrice')
-							.css({
-								'border': '3px solid hsl(0, 69%, 22%)',
-								'border-radius': '2px'
-							});
-					}
-					if (MAIN.isArticle && (obj.metallId === MAIN.metallId)) {
-						TABS.getLeftTabContent(MAIN.productId, MAIN.curTabId);
-					}
+					return response;
 				});
 			},
 

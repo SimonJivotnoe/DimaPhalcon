@@ -228,7 +228,7 @@
                 <div class="modal-footer">
                     <div class="modalFooterEdit">
                         <button type="button" class="btn btn-default" data-dismiss="modal">Отмена</button>
-                        <button type="button" class="btn btn-primary" id="editKimBtn">Сохранить</button>
+                        <button type="button" class="btn btn-primary" id="editMetallBtn">Сохранить</button>
                     </div>
                 </div>
             </div>
