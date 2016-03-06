@@ -295,6 +295,7 @@
 		}
 	];
 	var jq = {
+		$productsTreeDBButtons: $('#productsTreeDBButtons'),
 		// Add Category Modal
 		$addCategoryModal: $('#addNewCategoryModal'),
 			$addCategoryInput: $('#addCategoryInput'),
@@ -455,20 +456,22 @@
 				.height(0);
 		},
 		
-		focus: function () {
+		focus: function (buttons) {
 			var $section = $('#sectionContent');
+			var $buttons = buttons ? buttons : $('#kimIcons');
 			methods.blur($section);
 			focusedElem.addClass('parentFocused');
 			methods.setOutBodyElem();
-			methods.toggleMainButtons($('#mainIcons' ), $('#kimIcons' ));
+			methods.toggleMainButtons($('#mainIcons' ), $buttons);
 			previousThColor = focusedElem.find('th').css('color');
 			previousTdColor = focusedElem.find('td').css('color');
 			focusedElem.find('td, th').css({color: $('body' ).css('backgroundColor')});
 			methods.hideLayout($section);
 		},
 		
-		unfocus: function () {
+		unfocus: function (buttons) {
 			var $section = $('#sectionContent');
+			var $buttons = buttons ? buttons : $('#kimIcons');
 			methods.blur($section, true);
 			methods.unsetOutBodyElem();
 			focusedElem
@@ -477,7 +480,7 @@
 					.find('td').css('color', previousTdColor);
 			methods.hideLayout();
 			$('#outBodyElements').html('');
-			methods.toggleMainButtons($('#kimIcons' ), $('#mainIcons' ));
+			methods.toggleMainButtons($buttons, $('#mainIcons' ));
 		},
 		
 		launchAddNewModal: function () {
@@ -1865,6 +1868,9 @@
 				localStorage['db-split'] = $('#db-divider').css('left');
 			}).end()
 
+			.find('#dbProductsListList .productsTreeDB' ).on('changed.jstree', function(){
+				return false;
+			}).end()
 			.find('#showItemFromFileManager').click(function() {
 				var product = [];
 				$(this).hide();
@@ -1895,6 +1901,12 @@
 			.find('.categoriesWrapper, .kimWrapper, .metallWrapper' ).click(function(){
 				focusedElem = $(this);
 				methods.focus();
+			} ).end()
+
+			.find('.productsTreeDBWrapper').click(function(){
+				console.log('here');
+				focusedElem = $(this);
+				methods.focus(jq.$productsTreeDBButtons);
 			} ).end()
 
 			.find('#addNewTab').on('click', function(){
@@ -3651,13 +3663,15 @@
 			
 			createFileManager: function(param) {
 				$.ajax( {
-					url   : URL_MENU + 'createFileManager',
+					url   : URL_MENU + 'getProductsTree',
 					method: 'GET',
 					data: {param: param}
-				} ).then( function ( data )
+				} ).then( function ( response )
 				{
-					$('#fileManagerCatogoriesSelect' ).html(data.categories);
-					$('#fileManagerProductsTable' ).html(addMenuProductHandler($(data.products)));
+					console.log(response);
+					$('.productsTreeDB' ).jstree(response.tree);
+					/*$('#fileManagerCatogoriesSelect' ).html(data.categories);
+					$('#fileManagerProductsTable' ).html(addMenuProductHandler($(data.products)));*/
 				});
 			},
 			

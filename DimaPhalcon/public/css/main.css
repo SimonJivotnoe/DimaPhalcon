@@ -958,12 +958,20 @@ table.rc-table-resizing thead,table.rc-table-resizing thead> th,table.rc-table-r
 
 /* DB */
 /* KIM */
-.categoriesWrapper, .kimWrapper, .metallWrapper {
+.categoriesWrapper, .kimWrapper, .metallWrapper, .productsTreeDBWrapper {
     cursor: pointer;
+}
+.categoriesWrapper .glyphicon-th-list, .productsTreeDB .glyphicon-th-list{
+    color: #eb9316;
 }
 .categoriesListTable, .kimListTable, .metallListTable {
     max-height: 33vh;
     overflow-y: auto;
+}
+.productsTreeDBWrapper {
+    height: 97%;
+    max-height: 97%;
+    overflow-y: hidden;
 }
 #outBodyElements {
     position: absolute;

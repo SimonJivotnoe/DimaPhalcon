@@ -50,6 +50,8 @@ class IndexController extends ControllerBase
             'css'       => file_get_contents($indexFolder . 'css.html'),
             'templates' => file_get_contents($indexFolder . 'templates.html'),
             'mainIcons' => file_get_contents($indexFolder . 'mainIcons.html'),
+            'kimIcons' => file_get_contents($indexFolder . 'kimIcons.html'),
+            'productTreeDBIcons' => file_get_contents($indexFolder . 'productTreeDBIcons.html'),
             'js'        => file_get_contents($indexFolder . 'js.html')
         ));
     }

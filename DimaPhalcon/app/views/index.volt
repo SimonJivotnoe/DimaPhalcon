@@ -28,12 +28,8 @@
       <div style="margin-top: 4px;" class="container">
         <div id="menuIconsTop" class="col-md-12">
           {{ mainIcons }}
-          <form id="kimIcons" class="form-inline">
-            <div id="addKimIcon" class="form-group hvr-pulse-grow defaultIcon"><span aria-hidden="true" class="glyphicon glyphicon-plus centerIcon"></span></div>
-            <div id="editKimIcon" class="form-group hvr-pulse-grow defaultIcon"><span aria-hidden="true" class="glyphicon glyphicon-pencil centerIcon"></span></div>
-            <div id="deleteKimIcon" class="form-group hvr-pulse-grow defaultIcon"><span aria-hidden="true" class="glyphicon glyphicon-minus centerIcon"></span></div>
-            <div id="backKimIcon" class="form-group defaultIcon"><span aria-hidden="true" class="glyphicon glyphicon-share-alt centerIcon"></span></div>
-          </form>
+          {{ kimIcons }}
+          {{ productTreeDBIcons }}
           <div class="clearer"></div>
         </div>
       </div>

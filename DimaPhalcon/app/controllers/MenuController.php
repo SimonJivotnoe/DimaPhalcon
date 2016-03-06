@@ -1,6 +1,6 @@
 <?php
 
-class MenuController extends \Phalcon\Mvc\Controller
+class MenuController extends ControllerBase
 {
     public function createFileManagerAction(){
         if ($this->request->isAjax() && $this->request->isGet()) {
@@ -19,6 +19,82 @@ class MenuController extends \Phalcon\Mvc\Controller
         } else {
             $this->response->redirect();
         }
+    }
+
+    public function getProductsTreeAction() {
+        $this->ajaxGetCheck();
+        $preData = [];
+        $categArr = [];
+        $metallsArr = [];
+        $tree = [
+            'core' => [
+                'data' => []
+            ]
+        ];
+        $i = 1;
+        $productsObj = Products::find();
+        if (count($productsObj)) {
+            foreach ($productsObj as $product) {
+                $productId = $product->getProductId();
+                $categoryId = $product->getCategoryId();
+                $metallId = $product->getMetall();
+                if (!$preData[$categoryId]) {
+                    $preData[$categoryId] = [];
+                }
+                if (!$preData[$categoryId][$metallId]) {
+                    $preData[$categoryId][$metallId] = [];
+                }
+                array_push($preData[$categoryId][$metallId], [
+                    'id' => $productId,
+                    'name' => $product->getProductName(),
+                    'article' => $product->getArticle(),
+                    'category' => $categoryId,
+                    'created' => $product->getCreated()
+                ]);
+                $categArr[$categoryId] = $product->Categories->getCategoryName();
+                $metallsArr[$metallId] = $product->Metalls->getName();
+            }
+        }
+        if ($categArr) {
+            foreach ($categArr as $catId => $catName) {
+                $catNode = [
+                    'id'       => $i,
+                    'icon' => 'glyphicon glyphicon-th-list',
+                    'li_attr'  => ['data-section' => 'category','data-categoryId' => $catId],
+                    'text'     => $catName,
+                    'children' => []
+                ];
+                foreach ( $preData[$catId] as $metId => $productsArr) {
+                    $i++;
+                    $metNode = [
+                        'id'       => $i,
+                        'icon'     => 'glyphicon glyphicon-oil',
+                        'li_attr'  => ['data-section' => 'metall', 'data-metallId' => $metId],
+                        'text'     => $metallsArr[$metId],
+                        'children' => []
+                    ];
+                    foreach ($productsArr as $key => $obj) {
+                        $i++;
+                        array_push($metNode['children'], [
+                            'id'       => $i,
+                            'icon'     => 'glyphicon glyphicon-list-alt',
+                            'li_attr'  => ['data-section' => 'product', 'data-productId' => $obj['id']],
+                            'text'     => $obj['name'] . ' | ' . $obj['article'] . ' - ' . $obj['created']
+                        ]);
+                    }
+
+                    array_push($catNode['children'], $metNode);
+                    $i++;
+                }
+                array_push($tree['core']['data'], $catNode);
+            }
+        }
+        $tree['state'] = [ 'key' => 'productsTreeDB' ];
+        //$tree['checkbox'] = [ 'keep_selected_style' => true ];
+        $tree['plugins'] = ['state', 'sort'/*, 'checkbox'*/];
+        $this->response->setJsonContent(['tree' => $tree]);
+
+        return $this->response;
     }
 
     private function getProducts() {
