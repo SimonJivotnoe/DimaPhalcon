@@ -6,7 +6,7 @@
                 <!--<i class="fa fa-cog fa-1.5x fa-fw"></i>-->
             </a>
         </li>
-        <li role="presentation" id="addNewTab"><a>+</a></li>
+        <!--<li role="presentation" id="addNewTab"><a>+</a></li>-->
     </ul>
 
     <div class="tab-content" id="leftTabsContent">

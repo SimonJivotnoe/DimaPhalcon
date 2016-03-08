@@ -295,7 +295,6 @@
 		}
 	];
 	var jq = {
-		$productsTreeDBButtons: $('#productsTreeDBButtons'),
 		// Add Category Modal
 		$addCategoryModal: $('#addNewCategoryModal'),
 			$addCategoryInput: $('#addCategoryInput'),
@@ -328,9 +327,15 @@
 			$editMetallPriceInput: $('#editMetallPriceInput'),
 			$editMetallMassInput: $('#editMetallMassInput'),
 			$editMetallOutPriceInput: $('#editMetallOutPriceInput'),
+		$mainIcons: $('#mainIcons'),
 		$kimIcons: $('#kimIcons'),
+		$productsTreeDBButtons: $('#productsTreeDBButtons'),
+			$backDBTreeIcon: $('#backDBTreeIcon'),
 		$editKimIcon: $('#editKimIcon'),
 		$deleteKimIcon: $('#deleteKimIcon'),
+		$dbProductsListList: function () {
+			return $('#dbProductsListList');
+		},
 		$categoriesTable: function () {
 			return $('#outBodyElements .categoriesListTable table tbody');
 		},
@@ -432,7 +437,11 @@
 		},
 		
 		showLayout: function ($section) {
-			$layout.width($section.width()).height($section.height()).show();
+			$layout
+				.width($section.width())
+				.height($section.height())
+				.css({left: $section.offset().left})
+				.show();
 		},
 		
 		hideLayout: function () {
@@ -458,15 +467,15 @@
 		
 		focus: function (buttons) {
 			var $section = $('#sectionContent');
-			var $buttons = buttons ? buttons : $('#kimIcons');
+			var $buttons = buttons ? buttons : jq.$kimIcons;
 			methods.blur($section);
 			focusedElem.addClass('parentFocused');
 			methods.setOutBodyElem();
-			methods.toggleMainButtons($('#mainIcons' ), $buttons);
+			methods.toggleMainButtons(jq.$mainIcons, $buttons);
 			previousThColor = focusedElem.find('th').css('color');
 			previousTdColor = focusedElem.find('td').css('color');
 			focusedElem.find('td, th').css({color: $('body' ).css('backgroundColor')});
-			methods.hideLayout($section);
+			methods.hideLayout();
 		},
 		
 		unfocus: function (buttons) {
@@ -1382,7 +1391,12 @@
 			methods.kimIconsToDefault();
 			methods.unfocus();
 		});
-		
+		jq.$backDBTreeIcon.click(function () {
+			$('#dbProductsListList .innerBackLayout').show();
+			methods.toggleMainButtons(jq.$productsTreeDBButtons, jq.$mainIcons);
+			methods.hideLayout();
+		});
+
 		$('#addCategoryBtn').click(function(){
 			var category = VALIDATION.validateInputVal({
 					val: jq.$addCategoryInput.val(),
@@ -1903,10 +1917,10 @@
 				methods.focus();
 			} ).end()
 
-			.find('.productsTreeDBWrapper').click(function(){
-				console.log('here');
-				focusedElem = $(this);
-				methods.focus(jq.$productsTreeDBButtons);
+			.find('#dbProductsListList .innerBackLayout').click(function(){
+				$(this ).hide();
+				methods.toggleMainButtons(jq.$mainIcons, jq.$productsTreeDBButtons);
+				methods.showLayout($('#settingsMetallsWrapper'));
 			} ).end()
 
 			.find('#addNewTab').on('click', function(){
@@ -3668,10 +3682,12 @@
 					data: {param: param}
 				} ).then( function ( response )
 				{
-					console.log(response);
+					var $productsList = jq.$dbProductsListList();
 					$('.productsTreeDB' ).jstree(response.tree);
-					/*$('#fileManagerCatogoriesSelect' ).html(data.categories);
-					$('#fileManagerProductsTable' ).html(addMenuProductHandler($(data.products)));*/
+					$('#databaseWrapper .innerBackLayout')
+						.width($productsList.width())
+						.height('100vh' )
+						.css({top: $productsList.offset().top});
 				});
 			},
 			
@@ -4061,7 +4077,7 @@
 						}
 					)) {
 					localStorage.siteSector = 'DB';
-					$('#backKimIcon').removeClass('hvr-pulse-grow');
+					$('#backKimIcon, #backDBTreeIcon').removeClass('hvr-pulse-grow');
 					$.ajax( {
 						url   : 'templates/productsDB.html',
 						method: 'GET'

@@ -8,7 +8,7 @@
                                 <span class="glyphicon glyphicon-folder-open" aria-hidden="true" style="color:#eb9316;"></span>
                             </a>
                         </li>
-                        <li role="presentation" id="addNewTab"><a>+</a></li>
+                        <!--<li role="presentation" id="addNewTab"><a>+</a></li>-->
                     </ul>
                     <div class="tab-content" id="leftTabsContent">
                         <div role="tabpanel" class="tab-pane" id="dbProductsListList">
@@ -38,6 +38,7 @@
                                     </tbody>
                                 </table>
                             </div>-->
+                            <div class="innerBackLayout"></div>
                         </div>
                         <div role="tabpanel" class="tab-pane currentTab"></div>
                     </div>
@@ -46,77 +47,60 @@
         </div>
         <div class="split-pane-divider" id="db-divider"></div>
         <div class="split-pane-component" id="db-right-component">
-            <div class="row categoriesWrapper" data-elem="categories">
-                <div class="col-md-12">
-                    <h4>Категории <span class="glyphicon glyphicon-th-list" aria-hidden="true"></span></h4>
-                </div>
-                <div class="col-md-10 col-md-offset-1 categoriesListTable">
-                    <table class="table table-bordered">
-                        <thead>
-                        <tr>
-                            <th>Категория</th>
-                            <th>Артикул</th>
-                        </tr>
-                        </thead>
-                        <tbody></tbody>
-                    </table>
-                </div>
-            </div>
-            <div class="row kimWrapper" data-elem="kim">
-                <div class="col-md-12">
-                    <h4>КИМ <span class="glyphicon glyphicon-fire" aria-hidden="true"></span></h4>
-                </div>
-                <div class="col-md-10 col-md-offset-1 kimListTable">
-                    <table class="table table-bordered">
-                        <thead>
-                        <tr>
-                            <th>Сложность изделия</th>
-                            <th>КИМ</th>
-                            <th>Описание</th>
-                        </tr>
-                        </thead>
-                        <tbody></tbody>
-                    </table>
-                </div>
-            </div>
-            <div class="row metallWrapper" data-elem="metalls">
-                <div class="col-md-12">
-                    <h4>Металлы <span class="glyphicon glyphicon-oil" aria-hidden="true"></span></h4>
-                </div>
-                <div class="col-md-10 col-md-offset-1 metallListTable">
-                    <table class="table table-bordered">
-                        <thead>
-                        <tr>
-                            <th>Металл</th>
-                            <th>Цена Входящая</th>
-                            <th>Масса</th>
-                            <th>Цена Исходящая</th>
-                            <th>Артикул</th>
-                        </tr>
-                        </thead>
-                        <tbody></tbody>
-                    </table>
-                </div>
-            </div>
-            <!--<div class="col-md-12">
-                <h4>Металлы <span class="glyphicon glyphicon-oil" aria-hidden="true"></span></h4>
-                <div class="collapse in" id="metallsCollapse">
+            <div id="settingsMetallsWrapper">
+                <div class="row categoriesWrapper" data-elem="categories">
                     <div class="col-md-12">
-                        <input type="text" id="metallName" placeholder="Металл"/>
-                        <input type="number" id="metallPrice" step="10" placeholder="Цена"/>
-                        <input type="number" id="metallMass" step="0.1" min="0.1" placeholder="Масса"/>
-                        <input type="number" id="metallOutPrice" step="10" placeholder="Исходящая цена"/>
-                        <input type="text" id="metallArticle" placeholder="Артикул"/>
-                        <button class="btn btn-info btn-sm" id="addMetall">Добавить</button>
+                        <h4>Категории <span class="glyphicon glyphicon-th-list" aria-hidden="true"></span></h4>
                     </div>
-                    <div class="col-md-12" id="metallListWrapper">
+                    <div class="col-md-10 col-md-offset-1 categoriesListTable">
                         <table class="table table-bordered">
-                            <tbody id="tbodyMetalls">
-                            </tbody>
+                            <thead>
+                            <tr>
+                                <th>Категория</th>
+                                <th>Артикул</th>
+                            </tr>
+                            </thead>
+                            <tbody></tbody>
                         </table>
                     </div>
                 </div>
-            </div>-->
+                <div class="row kimWrapper" data-elem="kim">
+                    <div class="col-md-12">
+                        <h4>КИМ <span class="glyphicon glyphicon-fire" aria-hidden="true"></span></h4>
+                    </div>
+                    <div class="col-md-10 col-md-offset-1 kimListTable">
+                        <table class="table table-bordered">
+                            <thead>
+                            <tr>
+                                <th>Сложность изделия</th>
+                                <th>КИМ</th>
+                                <th>Описание</th>
+                            </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="row metallWrapper" data-elem="metalls">
+                    <div class="col-md-12">
+                        <h4>Металлы <span class="glyphicon glyphicon-oil" aria-hidden="true"></span></h4>
+                    </div>
+                    <div class="col-md-10 col-md-offset-1 metallListTable">
+                        <table class="table table-bordered">
+                            <thead>
+                            <tr>
+                                <th>Металл</th>
+                                <th>Цена Входящая</th>
+                                <th>Масса</th>
+                                <th>Цена Исходящая</th>
+                                <th>Артикул</th>
+                            </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
         </div>
         <div class="clearer"></div>
     </div>

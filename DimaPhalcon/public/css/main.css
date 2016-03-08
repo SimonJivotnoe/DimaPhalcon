@@ -50,7 +50,7 @@ body {
     font-size: 70px;
     margin-top: 5px;
 }
-#kimIcons {
+#kimIcons, #productsTreeDBButtons {
     display: none;
 }
 .defaultIcon {
@@ -111,7 +111,7 @@ body {
 #prIcon {
     background-color: #3e8f3e;
 }
-#addKimIcon {
+#addKimIcon, #addNewProductIcon {
     background-color: #3e8f3e;
     margin-left: 40%;
 }
@@ -121,7 +121,7 @@ body {
 #deleteKimIcon {
    background-color: #d9534f;
 }
-#backKimIcon {
+#backKimIcon, #backDBTreeIcon {
     background-color: #f0ad4e;
     -moz-transform: scaleX(-1);    /* Gecko */
     -o-transform: scaleX(-1);      /* Opera */
@@ -977,13 +977,18 @@ table.rc-table-resizing thead,table.rc-table-resizing thead> th,table.rc-table-r
     position: absolute;
     z-index: 10;
 }
-#backLayout {
+#backLayout, .innerBackLayout {
     display: none;
     z-index: 2;
     position: fixed;
     top: 0px;
     left: 0px;
     text-align: center;
+}
+
+.innerBackLayout {
+    display: block;
+    cursor: pointer;
 }
 .parentFocused {
     cursor: default;
