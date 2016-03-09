@@ -26,7 +26,7 @@ class CategoriesController extends ControllerBase
                 'data' => $data
             ];
         }
-        $this->response->setJsonContent(['categories' => $categoriesArr, 'categoriesTableContent' => $resObj]);
+        $this->response->setJsonContent(['template' => $categoriesArr, 'categoriesTableContent' => $resObj]);
         return $this->response;
     }
 

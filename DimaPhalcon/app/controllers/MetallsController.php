@@ -43,7 +43,7 @@ class MetallsController extends ControllerBase
                 'data'     => $data
             ];
         }
-        $this->response->setJsonContent(['metalls' => $metallsArr, 'metallTableContent' => $resObj]);
+        $this->response->setJsonContent(['template' => $metallsArr, 'metallTableContent' => $resObj]);
         return $this->response;
     }
 

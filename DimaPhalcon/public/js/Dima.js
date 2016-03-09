@@ -1545,6 +1545,10 @@
 				});
 			}
 		});
+		
+		$('#addNewProductIcon').click(function () {
+			
+		});
 	};
 	
 	function addPreferencesHandler(html) {
@@ -3748,6 +3752,7 @@
                 } ).then( function ( response )
                 {
 					$('.categoriesListTable tbody').html(Mustache.render($('#categoriesTableTemplate').html(), response));
+					$('#addNewProductModal .categoriesList').html(Mustache.render($('#optionListTemplate').html(), response));
                     MAIN.categoriesTableContent = response.categoriesTableContent;
                 } );
             },
@@ -3839,6 +3844,7 @@
 				}).then(function (response)
 				{
 					$('.kimListTable tbody').html(Mustache.render($('#kimTableTemplate').html(), response));
+					$('#addNewProductModal .kimList').html(Mustache.render($('#optionListTemplate').html(), response));
 					MAIN.kimTableContent = response.kimTableContent;
 				});
 			},
@@ -3932,6 +3938,7 @@
 					method: 'GET'
 				}).then(function (response){
 					$('.metallListTable tbody').html(Mustache.render($('#metallsTableTemplate').html(), response));
+					$('#addNewProductModal .metallsList').html(Mustache.render($('#optionListTemplate').html(), response));
 					MAIN.metallTableContent = response.metallTableContent;
 				}); 
 			},

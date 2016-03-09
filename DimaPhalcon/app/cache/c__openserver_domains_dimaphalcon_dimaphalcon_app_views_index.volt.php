@@ -28,12 +28,8 @@
       <div style="margin-top: 4px;" class="container">
         <div id="menuIconsTop" class="col-md-12">
           <?php echo $mainIcons; ?>
-          <form id="kimIcons" class="form-inline">
-            <div id="addKimIcon" class="form-group hvr-pulse-grow defaultIcon"><span aria-hidden="true" class="glyphicon glyphicon-plus centerIcon"></span></div>
-            <div id="editKimIcon" class="form-group hvr-pulse-grow defaultIcon"><span aria-hidden="true" class="glyphicon glyphicon-pencil centerIcon"></span></div>
-            <div id="deleteKimIcon" class="form-group hvr-pulse-grow defaultIcon"><span aria-hidden="true" class="glyphicon glyphicon-minus centerIcon"></span></div>
-            <div id="backKimIcon" class="form-group defaultIcon"><span aria-hidden="true" class="glyphicon glyphicon-share-alt centerIcon"></span></div>
-          </form>
+          <?php echo $kimIcons; ?>
+          <?php echo $productTreeDBIcons; ?>
           <div class="clearer"></div>
         </div>
       </div>
@@ -125,7 +121,7 @@
             </div>
         </div>
     </div>
-    <div class="modal fade" id="editKimModal" tabindex="-1" role="dialog" aria-labelledby="addNewKimModal">
+    <div class="modal fade" id="editKimModal" tabindex="-1" role="dialog" aria-labelledby="editKimModal">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header editModalHeader">
@@ -158,7 +154,7 @@
         </div>
     </div>
     
-    <div class="modal fade" id="addNewMetallModal" tabindex="-1" role="dialog" aria-labelledby="addNewKimModal">
+    <div class="modal fade" id="addNewMetallModal" tabindex="-1" role="dialog" aria-labelledby="addNewMetallModal">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header addNewModalHeader">
@@ -198,7 +194,8 @@
             </div>
         </div>
     </div>
-    <div class="modal fade" id="editMetallModal" tabindex="-1" role="dialog" aria-labelledby="addNewKimModal">
+    
+    <div class="modal fade" id="editMetallModal" tabindex="-1" role="dialog" aria-labelledby="editMetallModal">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header editModalHeader">
@@ -228,7 +225,44 @@
                 <div class="modal-footer">
                     <div class="modalFooterEdit">
                         <button type="button" class="btn btn-default" data-dismiss="modal">Отмена</button>
-                        <button type="button" class="btn btn-primary" id="editKimBtn">Сохранить</button>
+                        <button type="button" class="btn btn-primary" id="editMetallBtn">Сохранить</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="modal fade" id="addNewProductModal" tabindex="-1" role="dialog" aria-labelledby="addNewProductModal">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header addNewModalHeader">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">Создать Новое Изделие</h4>
+                </div>
+                <div class="modal-body">
+                    <form>
+                        <div class="form-group">
+                            <label for="addCategoryInput" class="control-label">Название Изделия:</label>
+                            <input type="text" class="form-control productNameInput">
+                        </div>
+                        <div class="form-group">
+                            <label for="addCategoryInput" class="control-label">Выберите Категорию:</label>
+                            <select class="form-control categoriesList"></select>
+                        </div>
+                        <div class="form-group">
+                            <label for="addCategoryInput" class="control-label">Выберите КИМ:</label>
+                            <select class="form-control kimList"></select>
+                        </div>
+                        <div class="form-group">
+                            <label for="addCategoryInput" class="control-label">Выберите Металл:</label>
+                            <select class="form-control metallsList"></select>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <div class="modalFooterEdit">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Отмена</button>
+                        <button type="button" class="btn btn-success" id="addNewProductBtn">Сохранить</button>
                     </div>
                 </div>
             </div>

@@ -955,7 +955,10 @@ table.rc-table-resizing thead,table.rc-table-resizing thead> th,table.rc-table-r
 .clearer {
     clear: both;
 }
-
+#addNewProductModal .modal-body {
+    max-height: calc(100vh - 15vh);
+    overflow-y: auto; 
+}
 /* DB */
 /* KIM */
 .categoriesWrapper, .kimWrapper, .metallWrapper, .productsTreeDBWrapper {

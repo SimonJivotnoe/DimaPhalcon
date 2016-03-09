@@ -4,24 +4,24 @@
     {{/metallHistory}}
 </script>
 <script id="categoriesTableTemplate" type="x-tmpl-mustache">
-    {{#categories}}
+    {{#template}}
         <tr data-id="{{id}}">
             <td>{{name}}</td>
             <td>{{article}}</td>
         </tr>
-    {{/categories}}
+    {{/template}}
 </script>
 <script id="kimTableTemplate" type="x-tmpl-mustache">
-    {{#kim}}
+    {{#template}}
         <tr data-id="{{id}}">
             <td>{{name}}</td>
             <td>{{value}}</td>
             <td>{{description}}</td>
         </tr>
-    {{/kim}}
+    {{/template}}
 </script>
 <script id="metallsTableTemplate" type="x-tmpl-mustache">
-    {{#metalls}}
+    {{#template}}
         <tr data-id="{{id}}">
             <td>{{name}}</td>
             <td>{{price}}</td>
@@ -29,5 +29,10 @@
             <td>{{out_price}}</td>
             <td>{{article}}</td>
         </tr>
-    {{/metalls}}
+    {{/template}}
+</script>
+<script id="optionListTemplate" type="x-tmpl-mustache">
+    {{#template}}
+        <option data-id="{{id}}">{{name}}</option>
+    {{/template}}
 </script>

@@ -33,7 +33,7 @@ class KimController  extends ControllerBase
                 'data' => $data
             ];
         }
-        $this->response->setJsonContent(['kim' => $kimArr, 'kimTableContent' => $resObj]);
+        $this->response->setJsonContent(['template' => $kimArr, 'kimTableContent' => $resObj]);
         return $this->response;
     }
     

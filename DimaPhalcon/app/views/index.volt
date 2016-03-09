@@ -121,7 +121,7 @@
             </div>
         </div>
     </div>
-    <div class="modal fade" id="editKimModal" tabindex="-1" role="dialog" aria-labelledby="addNewKimModal">
+    <div class="modal fade" id="editKimModal" tabindex="-1" role="dialog" aria-labelledby="editKimModal">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header editModalHeader">
@@ -154,7 +154,7 @@
         </div>
     </div>
     
-    <div class="modal fade" id="addNewMetallModal" tabindex="-1" role="dialog" aria-labelledby="addNewKimModal">
+    <div class="modal fade" id="addNewMetallModal" tabindex="-1" role="dialog" aria-labelledby="addNewMetallModal">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header addNewModalHeader">
@@ -194,7 +194,8 @@
             </div>
         </div>
     </div>
-    <div class="modal fade" id="editMetallModal" tabindex="-1" role="dialog" aria-labelledby="addNewKimModal">
+    
+    <div class="modal fade" id="editMetallModal" tabindex="-1" role="dialog" aria-labelledby="editMetallModal">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header editModalHeader">
@@ -225,6 +226,43 @@
                     <div class="modalFooterEdit">
                         <button type="button" class="btn btn-default" data-dismiss="modal">Отмена</button>
                         <button type="button" class="btn btn-primary" id="editMetallBtn">Сохранить</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="modal fade" id="addNewProductModal" tabindex="-1" role="dialog" aria-labelledby="addNewProductModal">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header addNewModalHeader">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">Создать Новое Изделие</h4>
+                </div>
+                <div class="modal-body">
+                    <form>
+                        <div class="form-group">
+                            <label for="addCategoryInput" class="control-label">Название Изделия:</label>
+                            <input type="text" class="form-control productNameInput">
+                        </div>
+                        <div class="form-group">
+                            <label for="addCategoryInput" class="control-label">Выберите Категорию:</label>
+                            <select class="form-control categoriesList"></select>
+                        </div>
+                        <div class="form-group">
+                            <label for="addCategoryInput" class="control-label">Выберите КИМ:</label>
+                            <select class="form-control kimList"></select>
+                        </div>
+                        <div class="form-group">
+                            <label for="addCategoryInput" class="control-label">Выберите Металл:</label>
+                            <select class="form-control metallsList"></select>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <div class="modalFooterEdit">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Отмена</button>
+                        <button type="button" class="btn btn-success" id="addNewProductBtn">Сохранить</button>
                     </div>
                 </div>
             </div>
