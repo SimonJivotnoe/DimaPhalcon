@@ -89,10 +89,10 @@ class MenuController extends ControllerBase
                 array_push($tree['core']['data'], $catNode);
             }
         }
-        $tree['state'] = [ 'key' => 'productsTreeDB' ];
+        //$tree['state'] = [ 'key' => 'productsTreeDB' ];
         //$tree['checkbox'] = [ 'keep_selected_style' => true ];
-        $tree['plugins'] = ['state', 'sort'/*, 'checkbox'*/];
-        $this->response->setJsonContent(['tree' => $tree]);
+        //$tree['plugins'] = ['state', 'sort', 'checkbox'];
+        $this->response->setJsonContent(['tree' => $tree['core']['data']]);
 
         return $this->response;
     }

@@ -130,7 +130,13 @@ body {
     filter: FlipH;
     margin-left: 10%;
 }
-
+#selectProductIcon {
+    background-color: #265a88;
+}
+#showItemFromFileManager {
+    background-color: black;
+    color: red;
+}
 #prefAlwaysInTable .prefRowName {
     margin-right: -4px;
 }

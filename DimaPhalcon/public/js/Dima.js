@@ -336,6 +336,9 @@
 		$dbProductsListList: function () {
 			return $('#dbProductsListList');
 		},
+		$productsTreeDB: function () {
+			return $('.productsTreeDB');
+		},
 		$categoriesTable: function () {
 			return $('#outBodyElements .categoriesListTable table tbody');
 		},
@@ -384,6 +387,13 @@
 	var $outBodyElements = $('#outBodyElements');
 	var currentClietsTree;
 	var cases;
+	var productsTreeDB = {
+		core: {
+
+		},
+		state: {key: 'productsTreeDB'},
+		plugins: ['state', 'sort'/*, 'checkbox'*/]
+	};
 	var getTemplate = function (template) {
 		return $.ajax( {
 			url   : 'templates/' + template,
@@ -1549,6 +1559,29 @@
 		$('#addNewProductIcon').click(function () {
 			
 		});
+		$('#selectProductIcon').click(function () {
+			var $productsTreeDB = jq.$productsTreeDB();
+			if ($(this ).hasClass('activeTopIcon')) {
+				methods.activateButton.call(this);
+				productsTreeDB.plugins = _.difference(productsTreeDB.plugins, ['checkbox']);
+			} else {
+				methods.deactivateButton.call(this);
+				productsTreeDB.plugins.push('checkbox');
+				productsTreeDB.plugins = _.uniq(productsTreeDB.plugins);
+			}
+			$productsTreeDB.jstree('destroy');
+			$productsTreeDB.jstree(productsTreeDB);
+		});
+		$('#showItemFromFileManager').click(function() {
+				var product = [];
+				$(this).hide();
+				$.each($('.productsTreeDB li[data-section=product][aria-selected=true]' ), function (num, obj) {
+					product.push($(obj).attr('data-productid'));
+				});
+				$.when(TABS.openSavedProduct(product, 'new', false, false)).done(function(){
+					window.location.href = LOCATION;
+				});
+			});
 	};
 	
 	function addPreferencesHandler(html) {
@@ -1888,16 +1921,6 @@
 
 			.find('#dbProductsListList .productsTreeDB' ).on('changed.jstree', function(){
 				return false;
-			}).end()
-			.find('#showItemFromFileManager').click(function() {
-				var product = [];
-				$(this).hide();
-				$.each($('.openProductTabSelected'), function (num, obj) {
-					product.push($(obj).attr('data-id'));
-				});
-				$.when(TABS.openSavedProduct(product, 'new', false, false)).done(function(){
-					window.location.href = LOCATION;
-				});
 			}).end()
 
 			.find('#fileManagerCatogoriesSelect' ).change(function() {
@@ -3687,7 +3710,9 @@
 				} ).then( function ( response )
 				{
 					var $productsList = jq.$dbProductsListList();
-					$('.productsTreeDB' ).jstree(response.tree);
+					productsTreeDB.core.data = response.tree;
+					console.log(productsTreeDB);
+					$('.productsTreeDB' ).jstree(productsTreeDB);
 					$('#databaseWrapper .innerBackLayout')
 						.width($productsList.width())
 						.height('100vh' )
