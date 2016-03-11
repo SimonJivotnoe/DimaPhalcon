@@ -47,13 +47,15 @@ class TabsController extends ControllerBase
                     $resObj[$val->getKim()] = $val->getKimHard();
                 }                
             }
+            $formulaHelperObj = new FormulasController;
             $res = [
                 'success'        => true,
                 'html'           => $html,
                 'activeTabId'    => $active,
                 'productId'      => $prodId,
                 'tabsList'       => (object)$tabArr,
-                'kim'            => (object)$resObj
+                'kim'            => (object)$resObj,
+                'formulasHelper' => $formulaHelperObj->createFormulaHelperList()
             ];
         }
         $this->response->setJsonContent($res);

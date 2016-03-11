@@ -3028,6 +3028,7 @@
 						TABS.showPreferences();
 						PRODUCT.createFileManager('PR');
 					}
+					$('#formulasList').html(data.formulasHelper);
 					$(function () {
 						$('[data-toggle="tooltip"]').tooltip();
 					});
@@ -4122,10 +4123,11 @@
 						showBody();
 						$.when(TABS.showKim()).done(function () {
 							setTimeout(function(){ spinnerKim.stop(document.getElementById('kimSpinner')); }, 300);
+							console.log(MAIN);
+							if (!MAIN.prRequested) {
+								TABS.getLeftTabsList();
+							}
 						});
-						if (!MAIN.prRequested) {
-							TABS.getLeftTabsList();
-						}
 					});
 				}
 			},
