@@ -133,6 +133,9 @@ body {
 #selectProductIcon {
     background-color: #265a88;
 }
+#addToFamily {
+    background-color: #6f5499;
+}
 #showItemFromFileManager {
     background-color: black;
     color: red;
