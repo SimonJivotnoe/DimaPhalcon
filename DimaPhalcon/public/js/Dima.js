@@ -485,7 +485,7 @@
 			previousThColor = focusedElem.find('th').css('color');
 			previousTdColor = focusedElem.find('td').css('color');
 			focusedElem.find('td, th').css({color: $('body' ).css('backgroundColor')});
-			methods.hideLayout();
+			methods.showLayout($section);
 		},
 		
 		unfocus: function (buttons) {
@@ -1402,7 +1402,11 @@
 			methods.unfocus();
 		});
 		jq.$backDBTreeIcon.click(function () {
+			var $productsTreeDB = jq.$productsTreeDB();
 			$('#dbProductsListList .innerBackLayout').show();
+			productsTreeDB.plugins = _.difference(productsTreeDB.plugins, ['checkbox']);
+			$productsTreeDB.jstree('destroy');
+			$productsTreeDB.jstree(productsTreeDB);
 			methods.toggleMainButtons(jq.$productsTreeDBButtons, jq.$mainIcons);
 			methods.hideLayout();
 		});
@@ -1558,19 +1562,6 @@
 		
 		$('#addNewProductIcon').click(function () {
 			
-		});
-		$('#selectProductIcon').click(function () {
-			var $productsTreeDB = jq.$productsTreeDB();
-			if ($(this ).hasClass('activeTopIcon')) {
-				methods.activateButton.call(this);
-				productsTreeDB.plugins = _.difference(productsTreeDB.plugins, ['checkbox']);
-			} else {
-				methods.deactivateButton.call(this);
-				productsTreeDB.plugins.push('checkbox');
-				productsTreeDB.plugins = _.uniq(productsTreeDB.plugins);
-			}
-			$productsTreeDB.jstree('destroy');
-			$productsTreeDB.jstree(productsTreeDB);
 		});
 		$('#showItemFromFileManager').click(function() {
 				var product = [];
@@ -1945,7 +1936,12 @@
 			} ).end()
 
 			.find('#dbProductsListList .innerBackLayout').click(function(){
+				var $productsTreeDB = jq.$productsTreeDB();
 				$(this ).hide();
+				productsTreeDB.plugins.push('checkbox');
+				productsTreeDB.plugins = _.uniq(productsTreeDB.plugins);
+				$productsTreeDB.jstree('destroy');
+				$productsTreeDB.jstree(productsTreeDB);
 				methods.toggleMainButtons(jq.$mainIcons, jq.$productsTreeDBButtons);
 				methods.showLayout($('#settingsMetallsWrapper'));
 			} ).end()

@@ -130,9 +130,6 @@ body {
     filter: FlipH;
     margin-left: 10%;
 }
-#selectProductIcon {
-    background-color: #265a88;
-}
 #addToFamily {
     background-color: #6f5499;
 }
@@ -987,11 +984,11 @@ table.rc-table-resizing thead,table.rc-table-resizing thead> th,table.rc-table-r
 }
 #outBodyElements {
     position: absolute;
-    z-index: 10;
+    z-index: 600;
 }
 #backLayout, .innerBackLayout {
     display: none;
-    z-index: 2;
+    z-index: 500;
     position: fixed;
     top: 0px;
     left: 0px;
@@ -999,6 +996,7 @@ table.rc-table-resizing thead,table.rc-table-resizing thead> th,table.rc-table-r
 }
 
 .innerBackLayout {
+    z-index: 400;
     display: block;
     cursor: pointer;
 }
