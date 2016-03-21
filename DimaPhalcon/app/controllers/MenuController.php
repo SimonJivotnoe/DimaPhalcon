@@ -68,7 +68,7 @@ class MenuController extends ControllerBase
                     $i++;
                     $metNode = [
                         'id'       => $i,
-                        'icon'     => 'glyphicon glyphicon-oil',
+                        'icon'     => 'glyphicon glyphicon-link',
                         'li_attr'  => ['data-section' => 'metall', 'data-metallId' => $metId],
                         'text'     => $metallsArr[$metId],
                         'children' => []

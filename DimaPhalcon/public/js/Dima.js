@@ -1906,8 +1906,9 @@
 
 			.find('#db-divider, #db-right-component').css('left', localStorage['db-split']).end()
 
-			.find('#db-divider').on('mouseleave', function(){
+			.find('#db-divider').on('mousemove', function(){
 				localStorage['db-split'] = $('#db-divider').css('left');
+				$('.categoriesListTable table').bootstrapTable('resetView');
 			}).end()
 
 			.find('#dbProductsListList .productsTreeDB' ).on('changed.jstree', function(){

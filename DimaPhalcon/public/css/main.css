@@ -520,7 +520,7 @@ ol li:hover {
     color: orangered;
 }
 
-.glyphicon-oil {
+.glyphicon-link {
     color: blue;
     cursor: pointer;
 }
@@ -974,8 +974,9 @@ table.rc-table-resizing thead,table.rc-table-resizing thead> th,table.rc-table-r
     color: #eb9316;
 }
 .categoriesListTable, .kimListTable, .metallListTable {
-    max-height: 33vh;
-    overflow-y: auto;
+    height: 134px;
+    /*overflow-x: auto;
+    overflow-y: auto;*/
 }
 .productsTreeDBWrapper {
     height: 97%;
