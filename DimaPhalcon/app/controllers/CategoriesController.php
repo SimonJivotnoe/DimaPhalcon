@@ -35,7 +35,7 @@ class CategoriesController extends ControllerBase
         $this->ajaxPostCheck();
         $res = false;
         $msg = 'Такая Категория уже существует!';
-        $article = $this->request->getPost('article');
+        $article = quotemeta($this->request->getPost('article'));
         if (!Categories::findFirst("article = '" . $article . "'")) {
             $category = new Categories();
             $category->setCategoryName($this->request->getPost('categoryName'))

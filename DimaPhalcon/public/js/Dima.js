@@ -403,7 +403,8 @@
 		});
 	};
 	var scrollTables = {
-		categoriesTable: false
+		categoriesTable: false,
+		scrollTop: 0
 	};
 	// PRIVATE METHODS SECTION
 	var methods = {
@@ -411,22 +412,22 @@
 			$hide.hide('scale');
 			setTimeout(function () {$show.show('clip');}, 350);
 		},
-		
+
 		activateButton: function () {
 			$(this).addClass('hvr-pulse-grow').removeClass('activeTopIcon');
 		},
-		
+
 		deactivateButton: function () {
 			$(this).removeClass('hvr-pulse-grow').addClass('activeTopIcon');
 		},
-		
+
 		kimIconsToDefault: function (arr) {
 			var arr = arr ? arr : ['#editKimIcon', '#deleteKimIcon'];
 			jq.$kimIcons.find(arr.join(',')).removeClass('activeTopIcon');
 			cases[focusedElem.attr('data-elem')].table().removeClass('selectedRow deleteRow' ).off('click');
 			cases[focusedElem.attr('data-elem')].table().find('tr').off('click');
 		},
-		
+
 		blur: function ($section, off) {
 			var start = 0,
 				end = 4,
@@ -448,7 +449,7 @@
 			});
 			$section.animate({opacity: opacity});
 		},
-		
+
 		showLayout: function ($section) {
 			$layout
 				.width($section.width())
@@ -456,20 +457,20 @@
 				.css({left: $section.offset().left})
 				.show();
 		},
-		
+
 		hideLayout: function () {
 			$layout.width(0).height(0).hide();
 		},
-		
+
 		setOutBodyElem: function () {
 			$outBodyElements
 				.html(focusedElem.clone())
 				.offset(focusedElem.offset())
 				.width(focusedElem.width())
 				.height(focusedElem.height());
-			$outBodyElements.find('table').closest('div').scrollTop(focusedElem.find('table').closest('div').scrollTop());	
+			$outBodyElements.find('table').closest('div').scrollTop(focusedElem.find('table').closest('div').scrollTop());
 		},
-		
+
 		unsetOutBodyElem: function () {
 			$outBodyElements
 				.html('')
@@ -477,13 +478,14 @@
 				.width(0)
 				.height(0);
 		},
-		
+
 		addDataTable: function (elem) {
 			return elem.DataTable({
 				destroy: true,
-				scrollY: '150px',
+				scrollY: '148px',
 				searching: false,
 				scrollCollapse: true,
+				scroller: true,
 				paging: false,
 				ordering: false,
 				info: false
@@ -495,8 +497,9 @@
 			methods.blur($section);
 			focusedElem.addClass('parentFocused');
 			methods.setOutBodyElem();
-			if (scrollable) {
-				scrollTables[scrollable] = methods.addDataTable($outBodyElements.find('table'));
+			if (scrollable && MAIN.scrollTables) {
+				MAIN.scrollTables[scrollable + 'Copy'] = methods.addDataTable($outBodyElements.find('table'));
+				$outBodyElements.find('.dataTables_scrollBody').scrollTop(scrollTables.scrollTop);
 			}
 			methods.toggleMainButtons(jq.$mainIcons, $buttons);
 			previousThColor = focusedElem.find('th').css('color');
@@ -504,17 +507,26 @@
 			focusedElem.find('td, th').css({color: $('body' ).css('backgroundColor')});
 			methods.showLayout($section);
 		},
-		
+
 		unfocus: function (buttons) {
 			var $section = $('#sectionContent');
 			var $buttons = buttons ? buttons : $('#kimIcons');
+			var scrollTable = focusedElem.find('table').attr('data-scroll');
 			methods.blur($section, true);
+			scrollTables.scrollTop = $outBodyElements.find('.dataTables_scrollBody').scrollTop();
 			methods.unsetOutBodyElem();
+			methods.hideLayout();
 			focusedElem
 					.removeClass('parentFocused')
 					.find('th').css('color', previousThColor).end()
-					.find('td').css('color', previousTdColor);
-			methods.hideLayout();
+					.find('td').css('color', previousTdColor );
+			if (MAIN.scrollTables[scrollTable]) {
+				MAIN.scrollTables[scrollTable].destroy();
+			}
+			MAIN.scrollTables[scrollTable] = methods.addDataTable(focusedElem.find('table'));
+			console.log(scrollTables.scrollTop);
+			console.log(focusedElem.find('.dataTables_scrollBody').scrollTop());
+			focusedElem.find('.dataTables_scrollBody').scrollTop(scrollTables.scrollTop);
 			$('#outBodyElements').html('');
 			methods.toggleMainButtons($buttons, $('#mainIcons' ));
 		},
@@ -1951,8 +1963,10 @@
 			.find('.categoriesWrapper, .kimWrapper, .metallWrapper' ).click(function(){
 				focusedElem = $(this);
 				var scrollTable = focusedElem.find('table').attr('data-scroll');
-				if (scrollTables[scrollTable]) {
-					scrollTables[scrollTable].destroy();
+				scrollTables.scrollTop = focusedElem.find('.dataTables_scrollBody').scrollTop();
+				if (MAIN.scrollTables[scrollTable]) {
+					MAIN.scrollTables[scrollTable].destroy();
+					MAIN.scrollTables[scrollTable] = false;
 				}
 				methods.focus(scrollTable);
 			} ).end()
@@ -3790,19 +3804,22 @@
         // categories section
         categories: {
             getCategories: function() {
+				window.getCategories = this.getCategories;
                  return $.ajax( {
                     url   : URL_CATEG + 'getCategories',
                     method: 'GET'
                 } ).then( function ( response )
                 {
+					if (!MAIN.scrollTables) {
+						MAIN.scrollTables = {};
+					}
+					if (MAIN.scrollTables.categoriesTable) {
+						MAIN.scrollTables.categoriesTable.destroy();
+					}
 					$('.categoriesListTable tbody').html(Mustache.render($('#categoriesTableTemplate').html(), response));
 					$('#addNewProductModal .categoriesList').html(Mustache.render($('#optionListTemplate').html(), response));
-					if (!scrollTables.categoriesTable) {
-						scrollTables.categoriesTable = methods.addDataTable($('#settingsMetallsWrapper .categoriesListTable table'));
-					} else {
-						scrollTables.categoriesTable.draw();
-					}
-                    MAIN.categoriesTableContent = response.categoriesTableContent;
+					MAIN.scrollTables.categoriesTable = methods.addDataTable($('#settingsMetallsWrapper .categoriesListTable table'));
+					MAIN.categoriesTableContent = response.categoriesTableContent;
                 } );
             },
 			
