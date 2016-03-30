@@ -974,9 +974,13 @@ table.rc-table-resizing thead,table.rc-table-resizing thead> th,table.rc-table-r
     color: #eb9316;
 }
 .categoriesListTable, .kimListTable, .metallListTable {
-    height: 134px;
+    height: 30%;
     /*overflow-x: auto;
     overflow-y: auto;*/
+}
+#settingsMetallsWrapper .categoriesListTable, #settingsMetallsWrapper .kimListTable, #settingsMetallsWrapper .metallListTable{
+    max-width: 575px;
+    min-width: 575px;
 }
 .productsTreeDBWrapper {
     height: 97%;

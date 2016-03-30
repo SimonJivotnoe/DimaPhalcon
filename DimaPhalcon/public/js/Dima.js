@@ -402,6 +402,9 @@
 			return data;
 		});
 	};
+	var scrollTables = {
+		categoriesTable: false
+	};
 	// PRIVATE METHODS SECTION
 	var methods = {
 		toggleMainButtons: function ($hide, $show) {
@@ -475,12 +478,26 @@
 				.height(0);
 		},
 		
-		focus: function (buttons) {
+		addDataTable: function (elem) {
+			return elem.DataTable({
+				destroy: true,
+				scrollY: '150px',
+				searching: false,
+				scrollCollapse: true,
+				paging: false,
+				ordering: false,
+				info: false
+			});
+		},
+		focus: function (scrollable, buttons) {
 			var $section = $('#sectionContent');
 			var $buttons = buttons ? buttons : jq.$kimIcons;
 			methods.blur($section);
 			focusedElem.addClass('parentFocused');
 			methods.setOutBodyElem();
+			if (scrollable) {
+				scrollTables[scrollable] = methods.addDataTable($outBodyElements.find('table'));
+			}
 			methods.toggleMainButtons(jq.$mainIcons, $buttons);
 			previousThColor = focusedElem.find('th').css('color');
 			previousTdColor = focusedElem.find('td').css('color');
@@ -558,7 +575,8 @@
 					});
 				});
 			}
-		}
+		},
+		
 	};
 	function run() {
 		//THEMES.getThemesList();
@@ -1908,7 +1926,6 @@
 
 			.find('#db-divider').on('mousemove', function(){
 				localStorage['db-split'] = $('#db-divider').css('left');
-				$('.categoriesListTable table').bootstrapTable('resetView');
 			}).end()
 
 			.find('#dbProductsListList .productsTreeDB' ).on('changed.jstree', function(){
@@ -1933,7 +1950,11 @@
 
 			.find('.categoriesWrapper, .kimWrapper, .metallWrapper' ).click(function(){
 				focusedElem = $(this);
-				methods.focus();
+				var scrollTable = focusedElem.find('table').attr('data-scroll');
+				if (scrollTables[scrollTable]) {
+					scrollTables[scrollTable].destroy();
+				}
+				methods.focus(scrollTable);
 			} ).end()
 
 			.find('#dbProductsListList .innerBackLayout').click(function(){
@@ -3776,6 +3797,11 @@
                 {
 					$('.categoriesListTable tbody').html(Mustache.render($('#categoriesTableTemplate').html(), response));
 					$('#addNewProductModal .categoriesList').html(Mustache.render($('#optionListTemplate').html(), response));
+					if (!scrollTables.categoriesTable) {
+						scrollTables.categoriesTable = methods.addDataTable($('#settingsMetallsWrapper .categoriesListTable table'));
+					} else {
+						scrollTables.categoriesTable.draw();
+					}
                     MAIN.categoriesTableContent = response.categoriesTableContent;
                 } );
             },
