@@ -404,6 +404,8 @@
 	};
 	var scrollTables = {
 		categoriesTable: false,
+		kimTable: false,
+		metallsTable: false,
 		scrollTop: 0
 	};
 	// PRIVATE METHODS SECTION
@@ -462,13 +464,25 @@
 			$layout.width(0).height(0).hide();
 		},
 
+		checkCrollInTable: function (table) {
+			if (!MAIN.scrollTables) {
+				MAIN.scrollTables = {};
+			}
+			if (MAIN.scrollTables[table]) {
+				MAIN.scrollTables[table].destroy();
+			}
+		},
+		
 		setOutBodyElem: function () {
+			var tableWrapper = focusedElem.find('table').closest('div');
 			$outBodyElements
 				.html(focusedElem.clone())
 				.offset(focusedElem.offset())
 				.width(focusedElem.width())
-				.height(focusedElem.height());
-			$outBodyElements.find('table').closest('div').scrollTop(focusedElem.find('table').closest('div').scrollTop());
+				.height(focusedElem.height())
+				.find('table').closest('div')
+					.scrollTop(tableWrapper.scrollTop())
+					.width(tableWrapper.css('max-width'));
 		},
 
 		unsetOutBodyElem: function () {
@@ -491,6 +505,7 @@
 				info: false
 			});
 		},
+		
 		focus: function (scrollable, buttons) {
 			var $section = $('#sectionContent');
 			var $buttons = buttons ? buttons : jq.$kimIcons;
@@ -524,8 +539,6 @@
 				MAIN.scrollTables[scrollTable].destroy();
 			}
 			MAIN.scrollTables[scrollTable] = methods.addDataTable(focusedElem.find('table'));
-			console.log(scrollTables.scrollTop);
-			console.log(focusedElem.find('.dataTables_scrollBody').scrollTop());
 			focusedElem.find('.dataTables_scrollBody').scrollTop(scrollTables.scrollTop);
 			$('#outBodyElements').html('');
 			methods.toggleMainButtons($buttons, $('#mainIcons' ));
@@ -3804,18 +3817,12 @@
         // categories section
         categories: {
             getCategories: function() {
-				window.getCategories = this.getCategories;
                  return $.ajax( {
                     url   : URL_CATEG + 'getCategories',
                     method: 'GET'
                 } ).then( function ( response )
                 {
-					if (!MAIN.scrollTables) {
-						MAIN.scrollTables = {};
-					}
-					if (MAIN.scrollTables.categoriesTable) {
-						MAIN.scrollTables.categoriesTable.destroy();
-					}
+					methods.checkCrollInTable('categoriesTable');
 					$('.categoriesListTable tbody').html(Mustache.render($('#categoriesTableTemplate').html(), response));
 					$('#addNewProductModal .categoriesList').html(Mustache.render($('#optionListTemplate').html(), response));
 					MAIN.scrollTables.categoriesTable = methods.addDataTable($('#settingsMetallsWrapper .categoriesListTable table'));
@@ -3909,8 +3916,10 @@
 					method: 'GET'
 				}).then(function (response)
 				{
+					methods.checkCrollInTable('kimTable');
 					$('.kimListTable tbody').html(Mustache.render($('#kimTableTemplate').html(), response));
 					$('#addNewProductModal .kimList').html(Mustache.render($('#optionListTemplate').html(), response));
+					MAIN.scrollTables.kimTable = methods.addDataTable($('#settingsMetallsWrapper .kimListTable table'));
 					MAIN.kimTableContent = response.kimTableContent;
 				});
 			},
@@ -4003,8 +4012,10 @@
 					url: URL_METALLS + 'getMetalls',
 					method: 'GET'
 				}).then(function (response){
+					methods.checkCrollInTable('metallsTable');
 					$('.metallListTable tbody').html(Mustache.render($('#metallsTableTemplate').html(), response));
 					$('#addNewProductModal .metallsList').html(Mustache.render($('#optionListTemplate').html(), response));
+					MAIN.scrollTables.metallsTable = methods.addDataTable($('#settingsMetallsWrapper .metallListTable table'));
 					MAIN.metallTableContent = response.metallTableContent;
 				}); 
 			},

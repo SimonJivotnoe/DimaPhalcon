@@ -978,6 +978,9 @@ table.rc-table-resizing thead,table.rc-table-resizing thead> th,table.rc-table-r
     /*overflow-x: auto;
     overflow-y: auto;*/
 }
+#settingsMetallsWrapper {
+    width: 98%;
+}
 #settingsMetallsWrapper .categoriesListTable, #settingsMetallsWrapper .kimListTable, #settingsMetallsWrapper .metallListTable{
     max-width: 575px;
     min-width: 575px;
