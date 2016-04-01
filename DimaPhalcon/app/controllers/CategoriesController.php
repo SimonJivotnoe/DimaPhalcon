@@ -21,9 +21,9 @@ class CategoriesController extends ControllerBase
                 $data[$cat->getCategoryId()] = ['name' => $cat->getCategoryName(), 'article' => $cat->getArticle()];
             }
             $resObj = [
-                'names' => $names,
+                'names'    => $names,
                 'articles' => $articles,
-                'data' => $data
+                'data'     => $data
             ];
         }
         $this->response->setJsonContent(['template' => $categoriesArr, 'categoriesTableContent' => $resObj]);
@@ -51,20 +51,21 @@ class CategoriesController extends ControllerBase
     }
 
     public function getCategoriesListAction() {
-        if ($this->request->isAjax() && $this->request->isGet()) {
+        $this->ajaxGetCheck();
+        $categoriesList = false;
+        $product = Products::findFirst($this->request->get('prId'));
+        if ($product) {
+            $productCategory = $product->getCategoryId();
+            $categoriesList = $this->createCategoriesList($productCategory);
+        }
+        $this->response->setJsonContent($categoriesList);
+
+        return $this->response;
+        /*if ($this->request->isAjax() && $this->request->isGet()) {
             $this->response->setContentType('application/json', 'UTF-8');
-            $categoriesList = false;
-            $product = Products::findFirst($this->request->get('prId'));
-            if ($product) {
-                $productCategory = $product->getCategoryId();
-                $categoriesList = $this->createCategoriesList($productCategory);
-            }
-            $this->response->setJsonContent($categoriesList);
-            
-            return $this->response;
         } else {
             $this->response->redirect('');
-        }
+        }*/
     }
 
     public function editCategoryAction()

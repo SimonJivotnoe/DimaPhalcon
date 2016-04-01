@@ -38,6 +38,7 @@ class ProductsController extends ControllerBase
     {
         if ($this->request->isAjax() && $this->request->isPost()) {
             $prId = $this->request->getPost('prId');
+            var_dump($prId);die();
             $tableContent = $this->request->getPost('tableContent');
             $alwaysInTable = $this->request->getPost('alwaysInTable');
             $product = Products::findFirst($prId);

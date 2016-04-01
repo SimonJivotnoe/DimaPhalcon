@@ -1616,6 +1616,46 @@
 					window.location.href = LOCATION;
 				});
 			});
+		$('#addNewRow').click(function () {
+			var numbersOfRows = $('#duration').val(),
+				tableContent = {},
+				temp,
+				alwaysInTable,
+				arr = [],
+				max = 0,
+				i;
+			_products.cancelArticleBtn();
+			if (0 === $('#sortable li').size()) {
+				for (i = 0; i < numbersOfRows; i++) {
+					temp = _.clone(_products.tempTable);
+					temp['%ROW_NUMBER%'] = 'A' + (i + 1);
+					temp['%DATA_CELL%'] = 'A' + (i + 1);
+					tableContent[i] = temp;
+				}
+				alwaysInTable = PRODUCT.getTableContent('#alwaysInTable li');
+				PRODUCT.createTable(tableContent, alwaysInTable);
+			} else {
+				$.map($('#sortable .rowNumber'), function (val) {
+					if ('' !== $(val).text()) {
+						arr.push(parseInt($(val).text().substring(1)));
+					}
+				});
+				if (0 !== arr.length) {
+					max = Math.max.apply(Math, arr);
+				}
+
+				tableContent = PRODUCT.getTableContent('#sortable li');
+				for (var i = 0; i < numbersOfRows; i++) {
+					temp = _.clone(_products.tempTable);
+					temp['%ROW_NUMBER%'] = 'A' + (max + 1);
+					temp['%DATA_CELL%'] = 'A' + (max + 1);
+					tableContent[max] = temp;
+					max++;
+				}
+				alwaysInTable = PRODUCT.getTableContent('#alwaysInTable li');
+				PRODUCT.createTable(tableContent, alwaysInTable);
+			}
+		});
 	};
 	
 	function addPreferencesHandler(html) {
