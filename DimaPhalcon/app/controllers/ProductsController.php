@@ -26,8 +26,7 @@ class ProductsController extends ControllerBase
                 'tableContent'  => json_decode($productObj->getTableContent(), true),
                 'alwaysInTable' => json_decode($productObj->getAlwaysintable(), true),
                 'formulas'      => json_decode($productObj->getFormulas(), true)
-        ];
-
+            ];
         }
         $this->response->setJsonContent($res);
 
