@@ -423,10 +423,6 @@ h4 {
     margin: 1px;
 }
 
-.tableContent {
-    margin-top: 10px;
-}
-
 .blockNameAndCat, .tableContent {
     border: 1px white solid;
     padding: 15px 0;
@@ -434,7 +430,7 @@ h4 {
     max-width: 670px;
 }
 
-.blockNameAndCat:hover, .tableContent:hover {
+.blockNameAndCat:hover,{
     border: 1px rgba(149, 171, 153, 0.5) solid;
 }
 
@@ -479,7 +475,8 @@ h4 {
 }
 
 .createTableDiv {
-    margin-bottom: 20px;
+    margin-bottom: 5px;
+    margin-top: -25px;
 }
 
 ol li {
@@ -1033,4 +1030,8 @@ table.rc-table-resizing thead,table.rc-table-resizing thead> th,table.rc-table-r
 }
 .editModalHeader .close{
     color: white;
+}
+
+#duration {
+    display: none;
 }

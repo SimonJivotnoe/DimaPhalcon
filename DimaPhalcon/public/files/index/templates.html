@@ -38,13 +38,13 @@
 </script>
 <script id="productTableRowTemplate" type="x-tmpl-mustache">
     <li class="">
-        <span class="rowNumber col-md-2">{{number}}</span>
+        <span class="rowNumber col-md-2">{{%ROW_NUMBER%}}</span>
         <span class="rowName">
-            <input class="rowNameInput" type="text" value="{{name}}">
+            <input class="rowNameInput" type="text" value="{{%INPUT_VALUE%}}">
         </span>
         <span class="rowValue">
-            <input class="rowValueInput" data-cell="%DATA_CELL%" data-formula="%DATA_FORMULA%" data-format="0[.]00"
-                   type="tel" style="width: 5em;" value="%INPUT_VALUE%">
+            <input class="rowValueInput" data-cell="{{%DATA_CELL%}}" data-formula="{{%DATA_FORMULA%}}" data-format="0[.]00"
+                   type="tel" style="width: 5em;" value="{{%INPUT_VALUE%}}">
         </span>
         <label><input class="checkToArticle" type="checkbox"></label>
         <span class="removeRow glyphicon glyphicon-remove" aria-hidden="true"></span></li>
