@@ -1,6 +1,24 @@
 body {
     display: none;
 }
+.appSpinner {
+    display: none;
+    position: fixed;
+    z-index: 1060;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    background: rgba( 255, 255, 255, .8 ) url('../img/spinner.svg') 50% 50% no-repeat;
+}
+
+.loading {
+    overflow: hidden;
+}
+
+.loading .appSpinner {
+    display: block;
+}
 .collapse.width {
     height: auto;
     -webkit-transition: width 0.35s ease;
@@ -329,8 +347,8 @@ a {
 }
 
 .productTableWrapper {
-    min-width: 500px;
-    max-width: 500px;
+    /*min-width: 500px;
+    max-width: 500px;*/
 }
 
 #prefProductsTableWrapper {
@@ -351,7 +369,12 @@ a {
 .refRowValueInput, .rowValueInput, .rowNumber, .prefRowNumber {
     font-weight: bold;
 }
-
+.rowNumber {
+    width: 38px !important;
+}
+#alwaysInTable .rowNumber {
+    width: 63px !important;
+}
 th {
     text-align: center !important;
     background-color: rgba(43, 41, 51, 0.100);
@@ -426,8 +449,8 @@ h4 {
 .blockNameAndCat, .tableContent {
     border: 1px white solid;
     padding: 15px 0;
-    min-width: 670px;
-    max-width: 670px;
+    /*min-width: 670px;
+    max-width: 670px;*/
 }
 
 .blockNameAndCat:hover,{

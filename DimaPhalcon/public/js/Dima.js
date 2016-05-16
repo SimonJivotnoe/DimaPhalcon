@@ -2387,6 +2387,7 @@
 			}).end()
 
 			.find('#addToOrderBtn').click(function () {
+				console.log(MAIN);
 				if (MAIN.orderId) {
 					ORDER.addToOrder();
 				} else {
