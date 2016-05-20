@@ -233,158 +233,193 @@
     </div>
     
     <div class="modal fade" id="addNewProductModal" tabindex="-1" role="dialog" aria-labelledby="addNewProductModal">
-        <div class="modal-dialog" role="document">
+        <div class="modal-dialog modal-lg" role="document">
             <div class="modal-content">
                 <div class="modal-header addNewModalHeader">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                    <h4 class="modal-title">Создать Новое Изделие</h4>
-                </div>
-                <div class="modal-body">
-                    <form>
-                        <div class="form-group">
-                            <label for="addCategoryInput" class="control-label">Название Изделия:</label>
-                            <input type="text" class="form-control productNameInput">
-                        </div>
-                        <div class="form-group">
-                            <label for="addCategoryInput" class="control-label">Выберите Категорию:</label>
-                            <select class="form-control categoriesList"></select>
-                        </div>
-                        <div class="form-group">
-                            <label for="addCategoryInput" class="control-label">Выберите КИМ:</label>
-                            <select class="form-control kimList"></select>
-                        </div>
-                        <div class="form-group">
-                            <label for="addCategoryInput" class="control-label">Выберите Металл:</label>
-                            <select class="form-control metallsList"></select>
-                        </div>
-                    </form>
                     <div class="row">
-                        <div class="col-md-12 createTableDiv">
-                            <div class="col-md-8">
-                            Количество строк: <input type="number" id="duration" value="1" type="number" min="1" name="duration" maxlength="1" style = " width: 4em">
-                                <button type="button" class="btn btn-info btn-sm" id="addNewRow" >Создать</button>
-                            </div>
+                        <div class="col-md-3">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Отмена</button>
                         </div>
-                        <div class="col-md-8 tableContent" >
-                            <div class="col-md-10 productTableWrapper">
-                                <form id="calx">
-                                    <div class="col-md-12">
-                                        <ul id="sortable">
-                                            <li class="">
-                                                <span class="rowNumber col-md-2">A1</span>
-                                                <span class="rowName">
-                                                    <input class="rowNameInput" type="text" value="">
-                                                </span>
-                                                <span class="rowValue">
-                                                    <input class="rowValueInput" data-cell="A1" data-formula="" data-format="0[.]00"
-                                                           type="tel" style="width: 5em;" value="">
-                                                </span>
-                                                <label><input class="checkToArticle" type="checkbox"></label>
-                                                <span class="removeRow glyphicon glyphicon-remove" aria-hidden="true"></span></li>
-                                            </li>
-                                        </ul>
-                                    </div>
-                                    <div class="col-md-12">
-                                        <div class="col-md-6 col-md-offset-4 formulaBtnGroupPr">
-                                            <button type="button" class="btn custom-cancelInputFormula btn-sm" id="cancelFormulaBtnPr">Отмена</button>
-                                            <button type="button" class="btn btn-info btn-sm" id="addFormulaBtnPr">Добавить</button>
-                                        </div>
-                                        <input type="text" class="col-md-12" id="addFormulaInputPr" placeholder="Введите формулу">
-                                        <div class="col-md-12" id="formulasHelper">
-                                            %FORMULAS_HELPER%
-                                            <span id="addNewBtnSpan">
-                                                <input type="text" id="addNewFhBtnInput"/>
-                                                <button type="button" class="btn btn-success btn-xs addNewFhBtn"><span class="glyphicon glyphicon-plus-sign"></span> New</button>
-                                            </span>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-12 list-group">
-                                        <ul name="" id="formulasList">
-                                            
-                                        </ul>
-                                    </div>
-                                    <div class="col-md-12">
-                                        <ul id="alwaysInTable">
-                                            <li>
-                                                <span class="rowNumber col-md-2">KIM1</span>
-                                                <span class="rowName">
-                                                    <input class="rowNameInput" type="text" value="KIM1">
-                                                </span>
-                                                <span class="rowValue">
-                                                    <input class="rowValueInput" data-cell="KIM1" data-formula="" data-format="0[.]00"
-                                                        type="tel" style="width: 5em;" value="">
-                                                </span>
-                                            </li>
-                                            <li>
-                                                <span class="rowNumber col-md-2">S1</span>
-                                                <span class="rowName">
-                                                    <input class="rowNameInput" type="text" value="Площадь, м2">
-                                                </span>
-                                                <span class="rowValue">
-                                                    <input class="rowValueInput" data-cell="S1" data-formula="" data-format="0[.]00"
-                                                        type="tel" style="width: 5em;" value="">
-                                                </span>
-                                            </li>
-                                            <li>
-                                                <span class="rowNumber col-md-2">PR1</span>
-                                                <span class="rowName">
-                                                    <input class="rowNameInput" type="text" value="Цена входящая за м2, грн">
-                                                </span>
-                                                <span class="rowValue">
-                                                    <input class="rowValueInput" data-cell="PR1" data-formula="" data-format="0[.]00"
-                                                        type="tel" style="width: 5em;" value="">
-                                                </span>
-                                            </li>
-                                            <li>
-                                                <span class="rowNumber col-md-2">SUM1</span>
-                                                <span class="rowName">
-                                                    <input class="rowNameInput" type="text" value="Цена изделия входящая, грн">
-                                                </span>
-                                                <span class="rowValue">
-                                                    <input class="rowValueInput" data-cell="SUM1" data-formula="PRODUCT(S1,PR1)" data-format="0[.]00"
-                                                        type="tel" style="width: 5em;" value="">
-                                                </span>
-                                            </li>
-                                            <li>
-                                                <span class="rowNumber col-md-2">PR2</span>
-                                                <span class="rowName">
-                                                    <input class="rowNameInput" type="text" value="Цена исходящая, грн">
-                                                </span>
-                                                <span class="rowValue">
-                                                    <input class="rowValueInput" data-cell="PR2" data-formula="" data-format="0[.]00"
-                                                        type="tel" style="width: 5em;" value="">
-                                                </span>
-                                            </li>
-                                            <li>
-                                                <span class="rowNumber col-md-2">SUM2</span>
-                                                <span class="rowName">
-                                                    <input class="rowNameInput" type="text" value="Цена изделия исходящая, грн">
-                                                </span>
-                                                <span class="rowValue">
-                                                    <input class="rowValueInput" data-cell="SUM2" data-formula="PRODUCT(S1,PR2)" data-format="0[.]00"
-                                                        type="tel" style="width: 5em;" value="">
-                                                </span>
-                                            </li>
-                                        </ul>
-                                    </div>
-                                </form>
-
-                            </div>
-                            <div class="col-md-2">
-                                <span class="glyphicon glyphicon-pencil leftTable" id="editTableContent" aria-hidden="true"></span>
-                            </div>
+                        <div class="col-md-6">
+                            <h4 class="modal-title">Создать Новое Изделие</h4>
+                        </div>
+                        <div class="col-md-3">
+                            <button type="button" class="btn btn-primary pull-right" id="addNewProductBtn">Сохранить</button>
                         </div>
                     </div>
                 </div>
-                <div class="modal-footer">
-                    <div class="modalFooterEdit">
-                        <button type="button" class="btn btn-default" data-dismiss="modal">Отмена</button>
-                        <button type="button" class="btn btn-success" id="addNewProductBtn">Сохранить</button>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <form>
+                                <div class="form-group">
+                                    <label for="addCategoryInput" class="control-label">Название Изделия:</label>
+                                    <input type="text" class="form-control productNameInput">
+                                </div>
+                                <div class="form-group">
+                                    <label for="addCategoryInput" class="control-label">Выберите Категорию:</label>
+                                    <select class="form-control categoriesList"></select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="addCategoryInput" class="control-label">Выберите КИМ:</label>
+                                    <select class="form-control kimList"></select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="addCategoryInput" class="control-label">Выберите Металл:</label>
+                                    <select class="form-control metallsList"></select>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="col-md-12" id="imageWrapper">
+                                <div class="upload-wrapper">
+                                    <button type="button" class="btn btn-success btn-sm" id="uploadImageProduct"><span class="glyphicon glyphicon-upload" aria-hidden="true"></span>  Загрузить картинку</button>
+                                    <div class="upload-image" style="display:none"></div>
+                                    <input type="file" id="input-file-upload" style="display:none" />
+                                </div>
+                                %IMAGE%
+                            </div>
+                        </div>
+                    </div>
+                    <hr />
+                    <div class="row">
+                        <form id="calx">
+                            <div class="col-md-12 tableContent">
+                                <div class="col-md-6 createTableDiv productTableWrapper">
+                                    <button type="button" class="btn btn-info btn-sm pull-right" id="addNewRow">
+                                        <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+                                    </button>
+                                </div>
+                                <div class="col-md-6">&nbsp;</div>
+                                <div class="col-md-6 productTableWrapper">
+                                    <ul id="sortable">
+                                        <li class="">
+                                            <span class="rowNumber col-md-2">A1</span>
+                                            <span class="rowName">
+                                                <input class="rowNameInput" type="text" value="">
+                                            </span>
+                                            <span class="rowValue">
+                                                <input class="rowValueInput" data-cell="A1" data-formula="" data-format="0[.]00"
+                                                       type="tel" style="width: 5em;" value="">
+                                            </span>
+                                            <label><input class="checkToArticle" type="checkbox"></label>
+                                            <span class="removeRow glyphicon glyphicon-remove" aria-hidden="true"></span></li>
+                                        </li>
+                                    </ul>
+                                </div>
+                                <div class="col-md-6">
+                                    <ul id="alwaysInTable">
+                                        <li>
+                                            <span class="rowNumber col-md-2">KIM1</span>
+                                            <span class="rowName">
+                                                <input class="rowNameInput" type="text" value="KIM1">
+                                            </span>
+                                            <span class="rowValue">
+                                                <input class="rowValueInput" data-cell="KIM1" data-formula="" data-format="0[.]00"
+                                                       type="tel" style="width: 5em;" value="">
+                                            </span>
+                                        </li>
+                                        <li>
+                                            <span class="rowNumber col-md-2">S1</span>
+                                            <span class="rowName">
+                                                <input class="rowNameInput" type="text" value="Площадь, м2">
+                                            </span>
+                                            <span class="rowValue">
+                                                <input class="rowValueInput" data-cell="S1" data-formula="" data-format="0[.]00"
+                                                       type="tel" style="width: 5em;" value="">
+                                            </span>
+                                        </li>
+                                        <li>
+                                            <span class="rowNumber col-md-2">PR1</span>
+                                            <span class="rowName">
+                                                <input class="rowNameInput" type="text" value="Цена входящая за м2, грн">
+                                            </span>
+                                            <span class="rowValue">
+                                                <input class="rowValueInput" data-cell="PR1" data-formula="" data-format="0[.]00"
+                                                       type="tel" style="width: 5em;" value="">
+                                            </span>
+                                        </li>
+                                        <li>
+                                            <span class="rowNumber col-md-2">SUM1</span>
+                                            <span class="rowName">
+                                                <input class="rowNameInput" type="text" value="Цена изделия входящая, грн">
+                                            </span>
+                                            <span class="rowValue">
+                                                <input class="rowValueInput" data-cell="SUM1" data-formula="PRODUCT(S1,PR1)" data-format="0[.]00"
+                                                       type="tel" style="width: 5em;" value="">
+                                            </span>
+                                        </li>
+                                        <li>
+                                            <span class="rowNumber col-md-2">PR2</span>
+                                            <span class="rowName">
+                                                <input class="rowNameInput" type="text" value="Цена исходящая, грн">
+                                            </span>
+                                            <span class="rowValue">
+                                                <input class="rowValueInput" data-cell="PR2" data-formula="" data-format="0[.]00"
+                                                       type="tel" style="width: 5em;" value="">
+                                            </span>
+                                        </li>
+                                        <li>
+                                            <span class="rowNumber col-md-2">SUM2</span>
+                                            <span class="rowName">
+                                                <input class="rowNameInput" type="text" value="Цена изделия исходящая, грн">
+                                            </span>
+                                            <span class="rowValue">
+                                                <input class="rowValueInput" data-cell="SUM2" data-formula="PRODUCT(S1,PR2)" data-format="0[.]00"
+                                                       type="tel" style="width: 5em;" value="">
+                                            </span>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </form>
+                        <div class="col-md-12">
+                            <!--<div class="col-md-12 createTableDiv productTableWrapper">
+                                <button type="button" class="btn btn-info btn-sm pull-right" id="addNewRow">
+                                    <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+                                </button>
+                            </div>
+                                <div class="col-md-12 productTableWrapper">
+                                    <ul id="sortable">
+                                        <li class="">
+                                            <span class="rowNumber col-md-2">A1</span>
+                                            <span class="rowName">
+                                                <input class="rowNameInput" type="text" value="">
+                                            </span>
+                                            <span class="rowValue">
+                                                <input class="rowValueInput" data-cell="A1" data-formula="" data-format="0[.]00"
+                                                       type="tel" style="width: 5em;" value="">
+                                            </span>
+                                            <label><input class="checkToArticle" type="checkbox"></label>
+                                            <span class="removeRow glyphicon glyphicon-remove" aria-hidden="true"></span></li>
+                                        </li>
+                                    </ul>
+                                </div>-->
+                                <div class="col-md-12">
+                                    <div class="col-md-12 col-md-offset-0 formulaBtnGroupPr">
+                                        <button type="button" class="btn custom-cancelInputFormula btn-sm" id="cancelFormulaBtnPr">Отмена</button>
+                                        <button type="button" class="btn btn-info btn-sm" id="addFormulaBtnPr">Добавить</button>
+                                    </div>
+                                    <input type="text" class="col-md-12" id="addFormulaInputPr" placeholder="Введите формулу">
+                                    <div class="col-md-12" id="formulasHelper">
+                                        <span id="addNewBtnSpan">
+                                            <input type="text" id="addNewFhBtnInput"/>
+                                            <button type="button" class="btn btn-success btn-xs addNewFhBtn"><span class="glyphicon glyphicon-plus-sign"></span> New</button>
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="col-md-12 list-group">
+                                    <ul name="" id="formulasList">
+
+                                    </ul>
+                                </div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+    <div class="appSpinner"></div>
     <?php echo $js; ?>
   </body>
 </html>

@@ -1,13 +1,13 @@
-(function () {var
+define(['jq', 'methods', 'menu'], function ($jq, methods, MENU) {var
     MAIN = {
         defaultScreenSize: '60em'
     },
-    $jq = {
+    /*$jq = {
         body: $('body'),
         topIconsWrapper: $('#topIconsWrapper'),
         mainMenuWrapper: $('#mainMenuWrapper')
-    },
-    methods = {
+    },*/
+    /*methods = {
         startWaitAnimation: function () { $jq.body.addClass('loading'); },
         stopWaitAnimation: function () { $jq.body.removeClass('loading'); },
         showBody: function() {
@@ -16,8 +16,8 @@
             $jq.body.fadeIn(350);
             return true;
         }
-    },
-    MENU = {
+    },*/
+    /*MENU = {
         showMainMenu: function () {
             MENU.activeClassValidation('#backIcon');
             localStorage.siteSector = 'MENU';
@@ -35,9 +35,10 @@
             }
             return false;
         }
-    },
+    },*/
    init = function () {
        var sector = localStorage.siteSector;
+		console.log($jq);
        if (!sector) {
            localStorage.siteSector = 'MENU';
            MENU.showMainMenu();
@@ -71,4 +72,4 @@
        });
    };
    init();
-}());
+});
