@@ -15,7 +15,7 @@
 <div id="waitSpinner"></div>
 <div id="kimSpinner"></div>
 <div id="leftTabsSpinner"></div>
-<div class="col-md-12" id="mainMenuWrapper">
+<div class="col-md-12" id="startPageWrapper">
     <div class="col-md-9 col-md-offset-3" style="margin-top: 18%;">
         <div class="col-md-6 mainMenuIcon hvr-float-shadow btn-primary" id="runPreferences">
             <span class="glyphicon glyphicon-cog" aria-hidden="true"></span>

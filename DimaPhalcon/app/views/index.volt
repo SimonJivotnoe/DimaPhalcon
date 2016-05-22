@@ -11,7 +11,7 @@
     <div id="waitSpinner"></div>
     <div id="kimSpinner"></div>
     <div id="leftTabsSpinner"></div>
-    <div id="mainMenuWrapper" class="col-md-12">
+    <div id="startPageWrapper" class="col-md-12">
       <div style="margin-top: 18%;" class="col-md-9 col-md-offset-3">
         <div id="runPreferences" class="col-md-6 mainMenuIcon hvr-float-shadow btn-primary"><span aria-hidden="true" class="glyphicon glyphicon-cog"></span>
           <h4>Найстройки</h4>

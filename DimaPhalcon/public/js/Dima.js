@@ -4263,7 +4263,7 @@
 				localStorage.siteSector = 'MENU';
 				showBody();
 				$('#topIconsWrapper').hide();
-				$('#mainMenuWrapper').fadeIn();
+				$('#startPageWrapper').fadeIn();
 			},
 			
 			runPreferences: function () {
@@ -4286,7 +4286,7 @@
 						PREFERENCES.insertFontSizes(['#fontSizeTabs'], '.nav-tabs');
 						PREFERENCES.applyPreferences(MENU.getPreferencesSettings());
 						THEMES.getThemesList();
-						$('#mainMenuWrapper').hide();
+						$('#startPageWrapper').hide();
 						$('#topIconsWrapper').show();
 						showBody();
 					});
@@ -4311,7 +4311,7 @@
 					{
 						sectionContent.html(addProductsDbHandler($(data)));
 						$('#databaseWrapper').splitPane();
-						$('#mainMenuWrapper').hide();
+						$('#startPageWrapper').hide();
 						$('#topIconsWrapper').show();
 						showBody();
 						$.when(TABS.showKim()).done(function () {
@@ -4342,7 +4342,7 @@
 					{
 						sectionContent.html(addOrderCreationHandler($(data)));
 						$('#creatingOrderWrapper').splitPane();
-						$('#mainMenuWrapper').hide();
+						$('#startPageWrapper').hide();
 						$('#topIconsWrapper').show();
 						showBody();
 						if (!MAIN.orRequested) {
@@ -5149,12 +5149,12 @@
 		addAppHandler();
 		
 		$('#runPreferences').click(function () {
-			$('#mainMenuWrapper').fadeOut();
+			$('#startPageWrapper').fadeOut();
 			setTimeout(MENU.runPreferences, 300);
 		});
 		
 		$('#runPR').click(function () {
-			$('#mainMenuWrapper').fadeOut();
+			$('#startPageWrapper').fadeOut();
 			if (!MAIN.prRequested) {
 				setTimeout(MENU.runProductCreation, 500);
 			} else {
@@ -5163,7 +5163,7 @@
 		});
 
 		$('#runDB').click(function () {
-			$('#mainMenuWrapper').fadeOut();
+			$('#startPageWrapper').fadeOut();
 			setTimeout(MENU.runDB, 300);
 		});
 		

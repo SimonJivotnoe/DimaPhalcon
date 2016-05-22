@@ -1,8 +1,13 @@
 define([], function () {
 	var jq = {
 		body: $('body'),
+		sectionContent: $('#sectionContent'),
+		// TOP icons
         topIconsWrapper: $('#topIconsWrapper'),
-        mainMenuWrapper: $('#mainMenuWrapper')
+		menuIconsTop: $('#menuIconsTop'),
+
+        startPageWrapper: $('#startPageWrapper'),
+		databaseWrapper: $('#databaseWrapper'),
 	};
 	
 	return jq;

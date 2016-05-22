@@ -49,10 +49,13 @@ require.config({
         
         // MODULES
         jq: 'modules/jq',
+        MAIN: 'modules/MAIN',
         methods: 'modules/methods',
-        menu: 'modules/menu',
-        url: 'modules/url',
-        
+        startPage: 'modules/startPage',
+        PRODUCT: 'modules/PRODUCT',
+        URLs: 'modules/URLs',
+        appHandler: 'modules/appHandler',
+
         app: 'app'
     },
     urlArgs: "v=" +  (new Date()).getTime(),
@@ -63,8 +66,12 @@ require.config({
         bootstrap: {
             deps: ['jquery']
         },
-        jq: {exports: '$jq'},
+        caret: {deps: ['jquery']},
+        resizableColumns: {deps: ['jquery']},
+        tree: {deps: ['jquery']},
+        'split-pane': {deps: ['jquery']},
         app: {deps: [
+            'MAIN',
             'jquery',
             'underscore',
             'jquery-ui',

@@ -1,60 +1,23 @@
-define(['jq', 'methods', 'menu'], function ($jq, methods, MENU) {var
-    MAIN = {
-        defaultScreenSize: '60em'
-    },
-    /*$jq = {
-        body: $('body'),
-        topIconsWrapper: $('#topIconsWrapper'),
-        mainMenuWrapper: $('#mainMenuWrapper')
-    },*/
-    /*methods = {
-        startWaitAnimation: function () { $jq.body.addClass('loading'); },
-        stopWaitAnimation: function () { $jq.body.removeClass('loading'); },
-        showBody: function() {
-            //PREFERENCES.applyCss();
-            if ($jq.body.is(":visible")) {return false;}
-            $jq.body.fadeIn(350);
-            return true;
-        }
-    },*/
-    /*MENU = {
-        showMainMenu: function () {
-            MENU.activeClassValidation('#backIcon');
-            localStorage.siteSector = 'MENU';
-            methods.showBody();
-            $jq.topIconsWrapper.hide();
-            $jq.mainMenuWrapper.fadeIn();
-        },
-        activeClassValidation: function (id) {
-            if (!$(id).hasClass('activeTopIcon')) {
-                $('#menuIconsTop div')
-                    .removeClass('activeTopIcon')
-                    .addClass('hvr-pulse-grow');
-                $(id).addClass('activeTopIcon').removeClass('hvr-pulse-grow');
-                return true;
-            }
-            return false;
-        }
-    },*/
+define(['jq', 'methods', 'startPage', 'appHandler'], function ($jq, methods, startPage, appHandler) {var
    init = function () {
+       appHandler();
        var sector = localStorage.siteSector;
-		console.log($jq);
        if (!sector) {
            localStorage.siteSector = 'MENU';
-           MENU.showMainMenu();
+           startPage.runStartPage();
        } else {
            switch (sector) {
                case 'MENU':
-                   MENU.showMainMenu();
+                   startPage.runStartPage();
                    break;
                case 'PR':
-                   MENU.runPreferences();
+                   startPage.runPreferences();
                    break;
                case 'DB':
-                   MENU.runDB();
+                   startPage.runDB();
                    break;
                case 'OR':
-                   MENU.runProductCreation();
+                   startPage.runProductCreation();
                    break;
                default:
                    $('#runPR').click();
