@@ -8,6 +8,7 @@ define([], function () {
 
         startPageWrapper: $('#startPageWrapper'),
 		databaseWrapper: $('#databaseWrapper'),
+		runDB: $('#runDB'),
 	};
 	
 	return jq;

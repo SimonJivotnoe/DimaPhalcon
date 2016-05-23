@@ -1,4 +1,9 @@
-define(['jq', 'methods', 'URLs', 'PRODUCT'], function ($jq, methods, URLs, PRODUCT) {
+define(function (require) {
+	var $jq = require('jq');
+	var methods = require('methods');
+	var URLs = require('URLs');
+	var PRODUCT = require('PRODUCT');
+	
 	var startPage = {
         runStartPage: function () {
             startPage.activeClassValidation('#backIcon');
@@ -12,16 +17,15 @@ define(['jq', 'methods', 'URLs', 'PRODUCT'], function ($jq, methods, URLs, PRODU
             if (startPage.activeClassValidation('#dbIcon')) {
                 localStorage.siteSector = 'DB';
                 $('#backKimIcon, #backDBTreeIcon').removeClass('hvr-pulse-grow');
-                $.get(URLs.loadDBTemplate, function ( data )
-                {
+                $.get(URLs.loadDBTemplate, function ( data ) {
                     $jq.sectionContent.html(PRODUCT.addProductsDbHandler($(data)));
                     $jq.databaseWrapper.splitPane();
                     $jq.databaseWrapper.hide();
                     $jq.topIconsWrapper.show();
                     methods.showBody();
-                    $.when(TABS.showKim()).done(function () {
+                    $.when(PRODUCT.loadKimSection()).done(function () {
                         if (!MAIN.prRequested) {
-                            TABS.getLeftTabsList();
+                            PRODUCT.getLeftTabsList();
                         }
                     });
                 });

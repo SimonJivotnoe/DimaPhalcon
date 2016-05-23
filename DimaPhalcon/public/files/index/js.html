@@ -44,16 +44,20 @@ require.config({
         colorpicker: 'jquery/colorpicker/dist/js/bootstrap-colorpicker.min',
         tree: 'jquery/tree.jquery',
         mustache: 'libs/mustache.min',
+        datatables: 'libs/datatables.min',
         'split-pane': 'libs/split-pane.min',
         noty: 'libs/jquery.noty.packaged.min',
         
         // MODULES
         jq: 'modules/jq',
         MAIN: 'modules/MAIN',
+        URLs: 'modules/URLs',
         methods: 'modules/methods',
         startPage: 'modules/startPage',
         PRODUCT: 'modules/PRODUCT',
-        URLs: 'modules/URLs',
+        CATEGORIES: 'modules/CATEGORIES',
+        METALLS: 'modules/METALLS',
+        KIM: 'modules/KIM',
         appHandler: 'modules/appHandler',
 
         app: 'app'
@@ -70,6 +74,7 @@ require.config({
         resizableColumns: {deps: ['jquery']},
         tree: {deps: ['jquery']},
         'split-pane': {deps: ['jquery']},
+        mustache: {exports: 'Mustache'},
         app: {deps: [
             'MAIN',
             'jquery',

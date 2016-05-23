@@ -1,6 +1,6 @@
 define(['jq', 'startPage'], function ($jq, startPage) {
     var appHandler = function () {
-        $('#runDB').click(function () {
+        $jq.runDB.click(function () {
             $jq.startPageWrapper.fadeOut();
             setTimeout(startPage.runDB, 300);
         });
