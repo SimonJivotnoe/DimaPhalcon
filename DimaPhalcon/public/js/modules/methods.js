@@ -1,4 +1,4 @@
-define(['jq', 'datatables'], function ($jq, DataTable) {
+define(['jq', 'datatables.net'], function ($jq, DataTable) {
 	var methods = {
         startWaitAnimation: function () { $jq.body.addClass('loading'); },
         stopWaitAnimation: function () { $jq.body.removeClass('loading'); },

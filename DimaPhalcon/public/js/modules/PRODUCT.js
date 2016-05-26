@@ -1,4 +1,4 @@
-define(function (require) {
+define(['require', 'jq', 'methods', 'URLs', 'CATEGORIES', 'KIM', 'METALLS'], function (require) {
 	var $jq = require('jq');
 	var methods = require('methods');
 	var URLs = require('URLs');
@@ -196,7 +196,23 @@ define(function (require) {
                     $('#db-divider, #db-right-component').css('left', localStorage['db-split']);
                 });
             return html;
-        }
+        },
+		createFileManager: function(param) {
+			$.ajax( {
+				url   : URLs.getProductsTree,
+				method: 'GET',
+				data: {param: param}
+			} ).then( function ( response )
+			{
+				var $productsList = $jq.dbProductsListList();
+				MAIN.productsTreeDB.core.data = response.tree;
+				$('.productsTreeDB' ).jstree(MAIN.productsTreeDB);
+				$('#databaseWrapper .innerBackLayout')
+					.width($productsList.width())
+					.height('100vh' )
+					.css({top: $productsList.offset().top});
+			});
+		}
     };
 
     return PRODUCT;

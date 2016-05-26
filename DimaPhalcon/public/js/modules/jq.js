@@ -7,8 +7,13 @@ define([], function () {
 		menuIconsTop: $('#menuIconsTop'),
 
         startPageWrapper: $('#startPageWrapper'),
-		databaseWrapper: $('#databaseWrapper'),
+		databaseWrapper: function () {
+			return $('#databaseWrapper');
+		},
 		runDB: $('#runDB'),
+		dbProductsListList: function () {
+			return $('#dbProductsListList');
+		}
 	};
 	
 	return jq;

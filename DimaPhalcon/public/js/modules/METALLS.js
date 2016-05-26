@@ -1,4 +1,8 @@
-define(['jq', 'methods', 'URLs', 'mustache'], function ($jq, methods, URLs, Mustache) {
+define(['require', 'jq', 'methods', 'URLs', 'mustache'], function (require) {
+	var $jq = require('jq');
+	var methods = require('methods');
+	var URLs = require('URLs');
+	var Mustache = require('mustache');
 	var METALLS = {
 		getMetalls: function() {
 			return $.ajax({

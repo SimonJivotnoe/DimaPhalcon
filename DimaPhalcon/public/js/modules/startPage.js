@@ -1,9 +1,4 @@
-define(function (require) {
-	var $jq = require('jq');
-	var methods = require('methods');
-	var URLs = require('URLs');
-	var PRODUCT = require('PRODUCT');
-	
+define(['jq', 'methods', 'URLs', 'PRODUCT'], function ($jq, methods, URLs, PRODUCT) {
 	var startPage = {
         runStartPage: function () {
             startPage.activeClassValidation('#backIcon');
@@ -19,8 +14,8 @@ define(function (require) {
                 $('#backKimIcon, #backDBTreeIcon').removeClass('hvr-pulse-grow');
                 $.get(URLs.loadDBTemplate, function ( data ) {
                     $jq.sectionContent.html(PRODUCT.addProductsDbHandler($(data)));
-                    $jq.databaseWrapper.splitPane();
-                    $jq.databaseWrapper.hide();
+                    $jq.databaseWrapper().splitPane();
+                    $jq.startPageWrapper.hide();
                     $jq.topIconsWrapper.show();
                     methods.showBody();
                     $.when(PRODUCT.loadKimSection()).done(function () {
@@ -29,24 +24,6 @@ define(function (require) {
                         }
                     });
                 });
-                /*$.ajax( {
-                    url   : 'templates/productsDB.html',
-                    method: 'GET'
-                } ).then( function ( data )
-                {
-                    $jq.sectionContent.html(addProductsDbHandler($(data)));
-                    $('#databaseWrapper').splitPane();
-                    $('#startPageWrapper').hide();
-                    $('#topIconsWrapper').show();
-                    showBody();
-                    $.when(TABS.showKim()).done(function () {
-                        setTimeout(function(){ spinnerKim.stop(document.getElementById('kimSpinner')); }, 300);
-                        console.log(MAIN);
-                        if (!MAIN.prRequested) {
-                            TABS.getLeftTabsList();
-                        }
-                    });
-                });*/
             }
         },
 

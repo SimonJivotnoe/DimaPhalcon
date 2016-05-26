@@ -367,7 +367,7 @@ define(['jq', 'startPage'], function ($jq, startPage) {
             $('body').css('cursor', 'pointer');
             $('#addFormulaInputPr' ).click();
             PRODUCT.addBtnToFormulasHelper(newFl);
-        })
+        });
 
         // focus on formula helper input
         $('#addNewFhBtnInput').click(function(){

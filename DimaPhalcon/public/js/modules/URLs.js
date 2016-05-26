@@ -19,7 +19,8 @@ define([], function () {
 		getKim: URLs.KIM + 'getKim',
 		getMetalls: URLs.METALLS + 'getMetalls',
 		getLeftTabsList: URLs.TABS + 'getLeftTabsList',
-		getLeftTabContent: URLs.TABS + 'getLeftTabContent'
+		getLeftTabContent: URLs.TABS + 'getLeftTabContent',
+		getProductsTree: URLs.MENU + 'getProductsTree'
 	});
 
     return URLs;
