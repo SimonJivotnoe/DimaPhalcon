@@ -1,14 +1,34 @@
-define(['require', 'jq', 'methods', 'URLs', 'CATEGORIES', 'KIM', 'METALLS'], function (require) {
+define(function (require) {
 	var $jq = require('jq');
 	var methods = require('methods');
 	var URLs = require('URLs');
 	var CATEGORIES = require('CATEGORIES');
 	var KIM = require('KIM');
 	var METALLS = require('METALLS');
+	var TABS = require('TABS');
 	
     var PRODUCT = {
+		cases: {
+			categories: {
+				modal: $jq.addCategoryModal,
+				table: $jq.categoriesTable,
+				deleteText: 'Вы уверены, что хотите удалить Категорию?',
+				confirmDelete: CATEGORIES.confirmDelete
+			},
+			kim: {
+				modal: $jq.addKimModal,
+				table: $jq.kimTable,
+				deleteText: 'Вы уверены, что хотите удалить КИМ?',
+				confirmDelete: KIM.confirmDelete
+			},
+			metalls: {
+				modal: $jq.addMetallModal,
+				table: $jq.metallTable,
+				deleteText: 'Вы уверены, что хотите удалить Металл?',
+				confirmDelete: METALLS.confirmDelete
+			}
+		},
 		loadKimSection: function () {
-			//console.log(CATEGORIES);
 			CATEGORIES.getCategories();
 			KIM.getKIM();
 			METALLS.getMetalls();
@@ -35,7 +55,7 @@ define(['require', 'jq', 'methods', 'URLs', 'CATEGORIES', 'KIM', 'METALLS'], fun
 					PRODUCT.getLeftTabContent(response.productId, response.activeTabId);
 				} else {
 					$('#myTab, #leftTabsContent').fadeIn('slow');
-					//PRODUCT.showPreferences();
+					TABS.showPreferences();
 					PRODUCT.createFileManager('PR');
 				}
 				$(response.formulasHelper).insertBefore('#addNewBtnSpan');
@@ -88,7 +108,7 @@ define(['require', 'jq', 'methods', 'URLs', 'CATEGORIES', 'KIM', 'METALLS'], fun
 					li.find('.addAvailableCellList').html(PRODUCT.addAvailableCellList(li.find('.formulaValue').text()));
 				});
 				$('#calx').calx();
-				showBody();
+				methods.showBody();
 				if (localStorage.addToOrder) {
 					ORDER.addToOrder();
 					delete localStorage.addToOrder;
@@ -159,9 +179,9 @@ define(['require', 'jq', 'methods', 'URLs', 'CATEGORIES', 'KIM', 'METALLS'], fun
                 }).end()
 
                 .find('.categoriesWrapper, .kimWrapper, .metallWrapper' ).click(function(){
-                    focusedElem = $(this);
-                    var scrollTable = focusedElem.find('table').attr('data-scroll');
-                    scrollTables.scrollTop = focusedElem.find('.dataTables_scrollBody').scrollTop();
+                    MAIN.focusedElem = $(this);
+                    var scrollTable = MAIN.focusedElem.find('table').attr('data-scroll');
+                    MAIN.scrollTables.scrollTop = MAIN.focusedElem.find('.dataTables_scrollBody').scrollTop();
                     if (MAIN.scrollTables[scrollTable]) {
                         MAIN.scrollTables[scrollTable].destroy();
                         MAIN.scrollTables[scrollTable] = false;
@@ -170,13 +190,13 @@ define(['require', 'jq', 'methods', 'URLs', 'CATEGORIES', 'KIM', 'METALLS'], fun
                 } ).end()
 
                 .find('#dbProductsListList .innerBackLayout').click(function(){
-                    var $productsTreeDB = jq.$productsTreeDB();
+                    var $productsTreeDB = $jq.productsTreeDB();
                     $(this ).hide();
-                    productsTreeDB.plugins.push('checkbox');
-                    productsTreeDB.plugins = _.uniq(productsTreeDB.plugins);
+                    MAIN.productsTreeDB.plugins.push('checkbox');
+                    MAIN.productsTreeDB.plugins = _.uniq(MAIN.productsTreeDB.plugins);
                     $productsTreeDB.jstree('destroy');
-                    $productsTreeDB.jstree(productsTreeDB);
-                    methods.toggleMainButtons(jq.$mainIcons, jq.$productsTreeDBButtons);
+                    $productsTreeDB.jstree(MAIN.productsTreeDB);
+                    methods.toggleMainButtons($jq.mainIcons, $jq.productsTreeDBButtons);
                     methods.showLayout($('#settingsMetallsWrapper'));
                 } ).end()
 
@@ -191,7 +211,7 @@ define(['require', 'jq', 'methods', 'URLs', 'CATEGORIES', 'KIM', 'METALLS'], fun
                 }).end()
 
                 .find('#tabs').on('dblclick', '#myTab li', function(){
-                    localStorage['db-split'] === maxScreenSize ? localStorage['db-split'] = defaultScreenSize : localStorage['db-split'] = maxScreenSize;
+                    localStorage['db-split'] === MAIN.maxScreenSize ? localStorage['db-split'] = MAIN.defaultScreenSize : localStorage['db-split'] = MAIN.maxScreenSize;
                     $('#db-left-component').css('width', localStorage['db-split']);
                     $('#db-divider, #db-right-component').css('left', localStorage['db-split']);
                 });

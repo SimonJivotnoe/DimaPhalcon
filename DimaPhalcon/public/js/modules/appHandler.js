@@ -1,44 +1,48 @@
-define(['jq', 'startPage'], function ($jq, startPage) {
+define(function (require) {
+	var $jq = require('jq');
+	var startPage = require('startPage');
+	var methods = require('methods');
+	
     var appHandler = function () {
         $jq.runDB.click(function () {
             $jq.startPageWrapper.fadeOut();
             setTimeout(startPage.runDB, 300);
         });
-        $('#outBodyElements').on('dblclick', '.categoriesListTable tbody tr', function () {
+        $jq.outBodyElements.on('dblclick', '.categoriesListTable tbody tr', function () {
             var $this = $(this);
             var id = $this.attr('data-id');
-            $jq.$editCategoryInput.val(MAIN.categoriesTableContent.data[id].name);
-            $selectedRow = $this;
-            $jq.$editCategoryModal.modal('show');
+            $jq.editCategoryInput.val(MAIN.categoriesTableContent.data[id].name);
+            MAIN.$selectedRow = $this;
+            $jq.editCategoryModal.modal('show');
         });
 
-        $('#outBodyElements').on('dblclick', '.kimListTable tbody tr', function () {
+        $jq.outBodyElements.on('dblclick', '.kimListTable tbody tr', function () {
             var $this = $(this);
             var id = $this.attr('data-id');
-            $jq.$editKimHardInput.val(MAIN.kimTableContent.data[id].name);
-            $jq.$editKimInput.val(MAIN.kimTableContent.data[id]['value']);
-            $jq.$editKimDescrInput.val(MAIN.kimTableContent.data[id].description);
-            $selectedRow = $this;
-            $jq.$editKimModal.modal('show');
+            $jq.editKimHardInput.val(MAIN.kimTableContent.data[id].name);
+            $jq.editKimInput.val(MAIN.kimTableContent.data[id]['value']);
+            $jq.editKimDescrInput.val(MAIN.kimTableContent.data[id].description);
+            MAIN.$selectedRow = $this;
+            $jq.editKimModal.modal('show');
         });
 
-        $('#outBodyElements').on('dblclick', '.metallListTable tbody tr', function () {
+        $jq.outBodyElements.on('dblclick', '.metallListTable tbody tr', function () {
             var $this = $(this);
             var id = $this.attr('data-id');
-            $jq.$editMetallNameInput.val(MAIN.metallTableContent.data[id].name);
-            $jq.$editMetallPriceInput.val(MAIN.metallTableContent.data[id].price);
-            $jq.$editMetallMassInput.val(MAIN.metallTableContent.data[id].mass);
-            $jq.$editMetallOutPriceInput.val(MAIN.metallTableContent.data[id]['out_price']);
-            $selectedRow = $this;
-            $jq.$editMetallModal.modal('show');
+            $jq.editMetallNameInput.val(MAIN.metallTableContent.data[id].name);
+            $jq.editMetallPriceInput.val(MAIN.metallTableContent.data[id].price);
+            $jq.editMetallMassInput.val(MAIN.metallTableContent.data[id].mass);
+            $jq.editMetallOutPriceInput.val(MAIN.metallTableContent.data[id]['out_price']);
+            MAIN.$selectedRow = $this;
+            $jq.editMetallModal.modal('show');
         });
 
-        $('#addKimIcon').click(function () {
+        $jq.addKimIcon.click(function () {
             methods.kimIconsToDefault();
             methods.launchAddNewModal();
         });
 
-        /*$jq.editKimIcon.click(function () {
+        $jq.editKimIcon.click(function () {
             methods.kimIconsToDefault(['#deleteKimIcon']);
             methods.editKim.call(this);
         });
@@ -48,21 +52,22 @@ define(['jq', 'startPage'], function ($jq, startPage) {
             methods.deleteKim.call(this);
         });
 
-        $('#backKimIcon').click(function () {
+        $jq.backKimIcon.click(function () {
             methods.kimIconsToDefault();
             methods.unfocus();
         });
+		
         $jq.backDBTreeIcon.click(function () {
-            var $productsTreeDB = $jq.$productsTreeDB();
+            var $productsTreeDB = $jq.productsTreeDB();
             $('#dbProductsListList .innerBackLayout').show();
-            productsTreeDB.plugins = _.difference(productsTreeDB.plugins, ['checkbox']);
+            MAIN.productsTreeDB.plugins = _.difference(MAIN.productsTreeDB.plugins, ['checkbox']);
             $productsTreeDB.jstree('destroy');
-            $productsTreeDB.jstree(productsTreeDB);
-            methods.toggleMainButtons($jq.$productsTreeDBButtons, $jq.$mainIcons);
+            $productsTreeDB.jstree(MAIN.productsTreeDB);
+            methods.toggleMainButtons($jq.productsTreeDBButtons, $jq.mainIcons);
             methods.hideLayout();
-        });*/
+        });
 
-        $('#addCategoryBtn').click(function(){
+        $jq.addCategoryBtn.click(function(){
             var category = VALIDATION.validateInputVal({
                     val: $jq.$addCategoryInput.val(),
                     id: '#addCategoryInput',
@@ -171,7 +176,7 @@ define(['jq', 'startPage'], function ($jq, startPage) {
             }
         });
         $('#editMetallBtn').click(function(){
-            var id = $selectedRow.attr('data-id' ),
+            var id = MAIN.$selectedRow.attr('data-id' ),
                 metallName = VALIDATION.validateInputVal({
                     val: $jq.$editMetallNameInput.val()
                 }),
