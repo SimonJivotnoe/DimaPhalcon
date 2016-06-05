@@ -1,7 +1,4 @@
-define(function (require) {
-	var $jq = require('jq');
-	var startPage = require('startPage');
-	var methods = require('methods');
+define(['jq', 'methods', 'startPage', 'dbHandler', 'VALIDATION', 'METALLS', 'CATEGORIES', 'KIM'], function ($jq, methods, startPage, dbHandler, VALIDATION, METALLS, CATEGORIES, KIM) {
 	
     var appHandler = function () {
         $jq.runDB.click(function () {
@@ -38,23 +35,23 @@ define(function (require) {
         });
 
         $jq.addKimIcon.click(function () {
-            methods.kimIconsToDefault();
-            methods.launchAddNewModal();
+            dbHandler.kimIconsToDefault();
+            dbHandler.launchAddNewModal();
         });
 
         $jq.editKimIcon.click(function () {
-            methods.kimIconsToDefault(['#deleteKimIcon']);
-            methods.editKim.call(this);
+            dbHandler.kimIconsToDefault(['#deleteKimIcon']);
+            dbHandler.editKim.call(this);
         });
 
         $jq.deleteKimIcon.click(function () {
-            methods.kimIconsToDefault(['#editKimIcon']);
-            methods.deleteKim.call(this);
+            dbHandler.kimIconsToDefault(['#editKimIcon']);
+            dbHandler.deleteKim.call(this);
         });
 
         $jq.backKimIcon.click(function () {
-            methods.kimIconsToDefault();
-            methods.unfocus();
+            dbHandler.kimIconsToDefault();
+            dbHandler.unfocus();
         });
 		
         $jq.backDBTreeIcon.click(function () {
@@ -69,12 +66,12 @@ define(function (require) {
 
         $jq.addCategoryBtn.click(function(){
             var category = VALIDATION.validateInputVal({
-                    val: $jq.$addCategoryInput.val(),
+                    val: $jq.addCategoryInput.val(),
                     id: '#addCategoryInput',
                     unique: true
                 }),
                 article = VALIDATION.validateInputVal({
-                    val: $jq.$addCategoryArticleInput.val(),
+                    val: $jq.addCategoryArticleInput.val(),
                     id: '#addCategoryArticleInput',
                     unique: true
                 });
@@ -84,18 +81,18 @@ define(function (require) {
         });
         $('#editCategoryBtn').click(function(){
             var name = VALIDATION.validateInputVal({
-                val: $jq.$editCategoryInput.val()
+                val: $jq.editCategoryInput.val()
             });
             if (name) {
                 $.when(CATEGORIES.editCategory(name)).then(function (response) {
                     if (true === response.success) {
                         $.when(CATEGORIES.getCategories(), CATEGORIES.getCategoriesList() ).then(function () {
-                            $jq.$editKimIcon.click().click();
-                            $jq.$editCategoryModal.modal('hide');
-                            setTimeout(MESSAGES.show.bind(this, response), 300);
+                            $jq.editKimIcon.click().click();
+                            $jq.editCategoryModal.modal('hide');
+                            setTimeout(methods.MESSAGES.show.bind(this, response), 300);
                         });
                     } else {
-                        MESSAGES.show(response);
+                        methods.MESSAGES.show(response);
                     }
                 });
             }
@@ -103,37 +100,38 @@ define(function (require) {
 
         $('#addKIMBtn').click(function(){
             var kim = VALIDATION.validateInputVal({
-                    val: $jq.$kimInput.val(),
+                    val: $jq.kimInput.val(),
                     id: '#kimInput',
                     digitsOnly: true
                 }),
                 kimHardInput = VALIDATION.validateInputVal({
-                    val: $jq.$kimHardInput.val(),
+                    val: $jq.kimHardInput.val(),
                     id: '#kimHardInput',
                     unique: true
                 });
             if (kim && kimHardInput) {
-                KIM.addKIM(kim, kimHardInput, $jq.$kimDescrInput.val());
+                KIM.addKIM(kim, kimHardInput, $jq.kimDescrInput.val());
             }
         });
         $('#editKimBtn').click(function(){
             var kim = VALIDATION.validateInputVal({
-                    val: $jq.$editKimInput.val(),
+                    val: $jq.editKimInput.val(),
                     digitsOnly: true
                 }),
                 kimHard = VALIDATION.validateInputVal({
-                    val: $jq.$editKimHardInput.val()
+                    val: $jq.editKimHardInput.val()
                 });
             if (kim && kimHard) {
-                $.when(KIM.editKim(kim, kimHard, $jq.$editKimDescrInput.val())).then(function (response) {
+                $.when(KIM.editKim(kim, kimHard, $jq.editKimDescrInput.val())).then(function (response) {
+                    console.log(response);
                     if (true === response.success) {
                         $.when(KIM.getKIM(), KIM.getKimList() ).then(function () {
-                            $jq.$editKimIcon.click().click();
-                            $jq.$editKimModal.modal('hide');
-                            setTimeout(MESSAGES.show.bind(this, response), 300);
+                            $jq.editKimIcon.click().click();
+                            $jq.editKimModal.modal('hide');
+                            setTimeout(methods.MESSAGES.show.bind(this, response), 300);
                         });
                     } else {
-                        MESSAGES.show(response);
+                        methods.MESSAGES.show(response);
                     }
                 });
             }
@@ -141,27 +139,27 @@ define(function (require) {
 
         $('#addMetallBtn').click(function(){
             var metall = VALIDATION.validateInputVal({
-                    val: $jq.$metallNameInput.val(),
+                    val: $jq.metallNameInput.val(),
                     id: '#metallName',
                     unique: true
                 }),
                 price =  VALIDATION.validateInputVal({
-                    val: $jq.$metallPriceInput.val(),
+                    val: $jq.metallPriceInput.val(),
                     id: '#metallPrice',
                     digitsOnly: true
                 }),
                 mass =  VALIDATION.validateInputVal({
-                    val: $jq.$metallMassInput.val(),
+                    val: $jq.metallMassInput.val(),
                     id: '#metallMass',
                     digitsOnly: true
                 }),
                 outPrice =  VALIDATION.validateInputVal({
-                    val: $jq.$metallOutPriceInput.val(),
+                    val: $jq.metallOutPriceInput.val(),
                     id: '#metallOutPrice',
                     digitsOnly: true
                 }),
                 article = VALIDATION.validateInputVal({
-                    val: $jq.$metallArticleInput.val(),
+                    val: $jq.metallArticleInput.val(),
                     id: '#metallArticle',
                     unique: true
                 });
@@ -178,18 +176,18 @@ define(function (require) {
         $('#editMetallBtn').click(function(){
             var id = MAIN.$selectedRow.attr('data-id' ),
                 metallName = VALIDATION.validateInputVal({
-                    val: $jq.$editMetallNameInput.val()
+                    val: $jq.editMetallNameInput.val()
                 }),
                 metallPrice =  VALIDATION.validateInputVal({
-                    val: $jq.$editMetallPriceInput.val(),
+                    val: $jq.editMetallPriceInput.val(),
                     digitsOnly: true
                 }),
                 metallMass =  VALIDATION.validateInputVal({
-                    val: $jq.$editMetallMassInput.val(),
+                    val: $jq.editMetallMassInput.val(),
                     digitsOnly: true
                 }),
                 metallOutPrice =  VALIDATION.validateInputVal({
-                    val: $jq.$editMetallOutPriceInput.val(),
+                    val: $jq.editMetallOutPriceInput.val(),
                     digitsOnly: true
                 });
             if (metallName && metallPrice && metallMass && metallOutPrice) {
@@ -202,12 +200,12 @@ define(function (require) {
                 })).then(function (response) {
                     if (true === response.success) {
                         $.when(METALLS.getMetalls(), METALLS.getMetallsList()).then(function () {
-                            $jq.$editKimIcon.click().click();
-                            $jq.$editMetallModal.modal('hide');
-                            setTimeout(MESSAGES.show.bind(this, response), 300);
+                            $jq.editKimIcon.click().click();
+                            $jq.editMetallModal.modal('hide');
+                            setTimeout(methods.MESSAGES.show.bind(this, response), 300);
                         });
                     } else {
-                        MESSAGES.show(response);
+                        methods.MESSAGES.show(response);
                     }
                     if (MAIN.isArticle && (id === MAIN.metallId)) {
                         TABS.getLeftTabContent(MAIN.productId, MAIN.curTabId);

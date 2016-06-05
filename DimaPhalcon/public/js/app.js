@@ -1,5 +1,9 @@
 define(['jq', 'methods', 'startPage', 'appHandler'], function ($jq, methods, startPage, appHandler) {var
    init = function () {
+       $(document).on({
+           ajaxStart: methods.startWaitAnimation,
+           ajaxStop: methods.stopWaitAnimation
+       });
        appHandler();
        var sector = localStorage.siteSector;
        if (!sector) {
@@ -29,10 +33,6 @@ define(['jq', 'methods', 'startPage', 'appHandler'], function ($jq, methods, sta
        if (undefined === localStorage['db-split']) {
            localStorage['db-split'] = MAIN.defaultScreenSize;
        }
-       $(document).on({
-           ajaxStart: function() { methods.startWaitAnimation(); },
-           ajaxStop: function() { methods.stopWaitAnimation(); }
-       });
    };
    init();
 });

@@ -15,8 +15,20 @@ define([], function () {
     };
 	_.extend(URLs, {
 		loadDBTemplate: 'templates/productsDB.html',
-		getCategories: URLs.CATEG + 'getCategories',
+		// KIM
 		getKim: URLs.KIM + 'getKim',
+		getKimList: URLs.KIM + 'getKimList',
+		addKIM: URLs.KIM + 'addKIM',
+		editKim: URLs.KIM + 'editKim',
+		removeKim: URLs.KIM + 'removeKim',
+
+		// CATEGORIES
+		getCategories: URLs.CATEG + 'getCategories',
+		addCategories: URLs.CATEG + 'add',
+		getCategoriesList: URLs.CATEG + 'getCategoriesList',
+		editCategory: URLs.CATEG + 'editCategory',
+
+		removeCategory: URLs.CATEG + 'removeCategory',
 		getMetalls: URLs.METALLS + 'getMetalls',
 		getLeftTabsList: URLs.TABS + 'getLeftTabsList',
 		getLeftTabContent: URLs.TABS + 'getLeftTabContent',

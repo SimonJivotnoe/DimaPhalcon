@@ -101,7 +101,7 @@ define(function (require) {
 					$('.glyphicon-retweet').removeClass('glyphicon-retweet');
 					$('.removeFormula, .editFormula').remove();
 					$('#metallHistorySelect option:last-child').prop('selected', true);
-					_products.recalculateArticleTable();
+					PRODUCT.recalculateArticleTable();
 				}
 				$.each($('.bindFormulaWithCell'), function (num, obj) {
 					var li = $(obj).closest('li');
@@ -120,6 +120,53 @@ define(function (require) {
 				$('#myTab, #leftTabsContent').fadeIn('slow');
 			});
 		},
+		tempTable: {
+			"%ROW_NUMBER%":   "",
+			"%ROW_NAME%":	  "",
+			"%DATA_CELL%":	  "",
+			"%DATA_FORMULA%": "",
+			"%INPUT_VALUE%":  ""
+		},
+
+		createProductFromTemplate: function () {
+			var obj = {prId: MAIN.productId, tab: 'new'};
+			if ('currentTab' === $('#selectCreateproductWay').val()) {
+				obj.tab = MAIN.curTabId;
+			}
+			$.ajax( {
+				url   : URL_PRODUCT + 'createProductFromTemplate',
+				method: 'POST',
+				data: obj
+			} ).then( function ( data )
+			{
+				if (true === data) {
+					window.location.href = LOCATION;
+				}
+			});
+		},
+
+		recalculateArticleTable: function () {
+			var selected = $('#metallHistorySelect option:selected');
+			$('[data-cell="PR1"]' ).val(selected.attr('data-price'));
+			$('[data-cell="PR2"]' ).val(selected.attr('data-outprice'));
+			$('#calx' ).calx();
+			$.each($('.rowValue input'), function(num, obj){
+				var cell = $(obj).attr('data-cell');
+				$('[data-cellarticle="' + cell + '"]').text($(obj).val());
+			});
+		},
+
+		getProductInfo: function (productId) {
+			return $.ajax( {
+				url   : URL_PRODUCT + 'getProductInfo',
+				method: 'GET',
+				data: {productId: productId}
+			} ).then( function ( data )
+			{
+				return data;
+			});
+		},
+
 		addLeftTabsHandler: function (html) {
 
 			html

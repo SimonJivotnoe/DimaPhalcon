@@ -6,7 +6,7 @@
 <script id="categoriesTableTemplate" type="x-tmpl-mustache">
     {{#template}}
         <tr data-id="{{id}}">
-            <td>{{name}}</td>
+            <td data-name-noty="{{name}}" class="nameForNoty">{{name}}</td>
             <td>{{article}}</td>
         </tr>
     {{/template}}
@@ -14,7 +14,7 @@
 <script id="kimTableTemplate" type="x-tmpl-mustache">
     {{#template}}
         <tr data-id="{{id}}">
-            <td>{{name}}</td>
+            <td data-name-noty="{{name}}" class="nameForNoty">{{name}}</td>
             <td>{{value}}</td>
             <td>{{description}}</td>
         </tr>
@@ -23,7 +23,7 @@
 <script id="metallsTableTemplate" type="x-tmpl-mustache">
     {{#template}}
         <tr data-id="{{id}}">
-            <td>{{name}}</td>
+            <td data-name-noty="{{name}}" class="nameForNoty">{{name}}</td>
             <td>{{price}}</td>
             <td>{{mass}}</td>
             <td>{{out_price}}</td>
