@@ -1,10 +1,40 @@
 define(['jq', 'methods', 'startPage', 'dbHandler', 'VALIDATION', 'METALLS', 'CATEGORIES', 'KIM'], function ($jq, methods, startPage, dbHandler, VALIDATION, METALLS, CATEGORIES, KIM) {
 	
     var appHandler = function () {
+		// TOP BUTTONS
+		$jq.backIcon.click( function () { startPage.runSection(); });
+
+		$jq.prefIcon.click(function () {
+			startPage.runSection('PR');
+		});
+
+		$jq.dbIcon.click(function () {
+			startPage.runSection('DB');
+		});
+
+		$jq.prIcon.click(function () {
+			startPage.runSection('OR');
+		});
+		
+		// START PAGE
+		$jq.runPreferences.click(function () {
+			$jq.startPageWrapper.fadeOut();
+			setTimeout(startPage.runPreferences, 300);
+		});
+		
         $jq.runDB.click(function () {
             $jq.startPageWrapper.fadeOut();
             setTimeout(startPage.runDB, 300);
         });
+		
+		$jq.runPR.click(function () {
+			$jq.startPageWrapper.fadeOut();
+			if (!MAIN.prRequested) {
+				setTimeout(startPage.runProductCreation, 500);
+			} else {
+				setTimeout(startPage.runProductCreation, 300);
+			}
+		});
         $jq.outBodyElements.on('dblclick', '.categoriesListTable tbody tr', function () {
             var $this = $(this);
             var id = $this.attr('data-id');

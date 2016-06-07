@@ -6,6 +6,7 @@ define(function (require) {
 	var KIM = require('KIM');
 	var METALLS = require('METALLS');
 	var TABS = require('TABS');
+	var Mustache = require('mustache');
 	
     var PRODUCT = {
 		cases: {
@@ -45,13 +46,11 @@ define(function (require) {
 				MAIN.tabsList = response.tabsList;
 				MAIN.tableContent = response.kim;
 				MAIN.prRequested = true;
-
-				if (response.html) {
-					html = $(response.html);
-					PRODUCT.addLeftTabsHandler(html);
-					html.insertBefore('#addNewTab');
+				
+				if (response.template) {
+					PRODUCT.addLeftTabsHandler($(Mustache.render($jq.leftTabsTemplate.html(), response))).insertBefore('#addNewTab');
 				}
-				if (response.activeTabId && response.html) {
+				if (response.activeTabId && response.template) {
 					PRODUCT.getLeftTabContent(response.productId, response.activeTabId);
 				} else {
 					$('#myTab, #leftTabsContent').fadeIn('slow');
@@ -193,6 +192,8 @@ define(function (require) {
 					$(this ).attr('class', 'glyphicon glyphicon-remove');
 					TABS.closeLeftTab(idDb, currentID);
 				});
+			
+			return html;
 		},
 		
         addProductsDbHandler: function(html) {
@@ -264,6 +265,7 @@ define(function (require) {
                 });
             return html;
         },
+
 		createFileManager: function(param) {
 			$.ajax( {
 				url   : URLs.getProductsTree,

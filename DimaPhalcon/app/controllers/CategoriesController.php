@@ -83,14 +83,12 @@ class CategoriesController extends ControllerBase
         return $this->response;
     }
 
-    public function removeCategoryAction()
+    public function removeCategoryAction($id)
     {
         $this->ajaxDeleteCheck();
         $res = false;
         $msg = 'Эта категория используется в продукте!';
-        var_dump($this->request->delete);
-        die();
-        $categoryObj = Categories::findFirst($this->request->getPost('id'));
+        $categoryObj = Categories::findFirst($id);
         if ($categoryObj != false) {
             try {
                 if ($categoryObj->delete()) {

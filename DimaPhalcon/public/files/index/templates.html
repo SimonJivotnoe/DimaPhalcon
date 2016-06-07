@@ -50,3 +50,15 @@
         <span class="removeRow glyphicon glyphicon-remove" aria-hidden="true"></span></li>
     </li>
 </script>
+
+<script id="leftTabsTemplate" type="x-tmpl-mustache">
+    {{#template}}
+        <li role="presentation" class="{{active}}">
+            <a href="{{tabId}}" aria-controls="{{tabId}}" name="{{productId}}" role="tab" data-toggle="tab"
+               aria-expanded="true">
+                <span class="tabName">{{productName}}</span>
+                <span class="closeTab glyphicon glyphicon-remove" name="{{id}}" aria-hidden="true"></span>
+            </a>
+        </li>
+    {{/template}}
+</script>

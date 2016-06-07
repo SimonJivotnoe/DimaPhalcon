@@ -8,7 +8,6 @@ class TabsController extends ControllerBase
         $res = ['success' => false];
         $tabs = Tabs::find();
         if ($tabs) {
-            $html = false;
             $active = false;
             $prodId = false;
             $tabArr['dbProductsListTab'] = (object)[
@@ -17,29 +16,32 @@ class TabsController extends ControllerBase
             ];
             $resObj = [];
             if (count($tabs)) {
-                $substObj = new Substitution();
-
+                $template = [];    
                 foreach ($tabs as $val) {
-                    $tabsList = array();
-                    if ($val->getActive()) {
-                        $tabsList['%ACTIVE%'] = 'active';
-                        $active = $val->getTabId();
-                        $prodId = $val->getProductId();
-                    } else {
-                        $tabsList['%ACTIVE%'] = '';
-                    }
-                    $tabsList['%ID%'] = $val->getId();
-                    $tabsList['%TABID%'] = $val->getTabId();
-                    $tabsList['%PRODUCT_ID%'] = $val->getProductId();
-                    $product = Products::findFirst($val->getProductId());
-                    $tabsList['%PRODUCT_NAME%'] = $product->getProductName();
-                    $html .= $substObj->subHTMLReplace('tab_li.html', $tabsList);
+                    $id = $val->getId();
+                    $tabId = $val->getTabId();
+                    $productId = $val->getProductId();
+                    $getActive = $val->getActive();
+                    $article = $val->Products->getArticle();
+                    $status = $val->Products->getStatus();
 
-                    $tabArr[$val->getTabId()] = (object)[
-                        'active'    => $val->getActive(),
-                        'productId' => $val->getProductId(),
-                        'article'   => $val->Products->getArticle(),
-                        'status'    => $val->Products->getStatus()
+                    $product = Products::findFirst($productId);
+                    $template['active'] = '';
+                    if ($getActive) {
+                        $template['active'] = 'active';
+                        $active = $tabId;
+                        $prodId = $productId;
+                    }
+                    $template['id'] = $id;
+                    $template['tabId'] = $tabId;
+                    $template['productId'] = $productId;
+                    $template['productName'] = $product->getProductName();
+
+                    $tabArr[$tabId] = /*(object)*/[
+                        'active'    => $getActive,
+                        'productId' => $productId,
+                        'article'   => $article,
+                        'status'    => $status
                     ];
                 }
                 $kim = Kim::find();
@@ -50,17 +52,16 @@ class TabsController extends ControllerBase
             $formulaHelperObj = new FormulasController;
             $res = [
                 'success'        => true,
-                'html'           => $html,
+                'template'        => $template,
                 'activeTabId'    => $active,
                 'productId'      => $prodId,
-                'tabsList'       => (object)$tabArr,
-                'kim'            => (object)$resObj,
+                'tabsList'       => /*(object)*/$tabArr,
+                'kim'            => /*(object)*/$resObj,
                 'formulasHelper' => $formulaHelperObj->createFormulaHelperList()
             ];
         }
-        $this->response->setJsonContent($res);
         
-        return $this->response;
+        return $this->response->setJsonContent($res);
     }
     
     public function getLeftTabContentAction($productId) {

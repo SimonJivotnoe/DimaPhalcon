@@ -6,25 +6,25 @@ define(['jq', 'methods', 'URLs', 'mustache'], function ($jq, methods, URLs, Must
 			   method: 'GET'
 			} ).then( function ( response ) {
 			   methods.checkCrollInTable('categoriesTable');
-			   $('.categoriesListTable tbody').html(Mustache.render($('#categoriesTableTemplate').html(), response));
-			   $('#addNewProductModal .categoriesList').html(Mustache.render($('#optionListTemplate').html(), response));
+			   $('.categoriesListTable tbody').html(Mustache.render($jq.categoriesTableTemplate.html(), response));
+			   $('#addNewProductModal .categoriesList').html(Mustache.render($jq.optionListTemplate.html(), response));
 			   MAIN.scrollTables.categoriesTable = methods.addDataTable($('#settingsMetallsWrapper .categoriesListTable table'));
 			   MAIN.categoriesTableContent = response.categoriesTableContent;
 			} );
 		},
+		
 		getCategoriesList: function () {
 			return $.ajax({
 				url: URLs.getCategoriesList,
 				method: 'GET',
-				data: {
-					prId: MAIN.productId
-				}
+				data: { prId: MAIN.productId }
 			}).then(function (response) {
 				if (response) {
 					$('.listOfCategories').html(response.html);
 				}
 			});
 		},
+		
 		addCategory: function(categoryName, article) {
 			$.ajax( {
 				url   :  URLs.addCategories,
@@ -45,8 +45,7 @@ define(['jq', 'methods', 'URLs', 'mustache'], function ($jq, methods, URLs, Must
 				}
 			} );
 		},
-
-
+		
 		editCategory: function (name) {
 			methods.cancelArticleBtn();
 			return $.ajax( {
@@ -74,9 +73,8 @@ define(['jq', 'methods', 'URLs', 'mustache'], function ($jq, methods, URLs, Must
 		removeCategory: function (id) {
 			methods.cancelArticleBtn();
 			return $.ajax({
-				url   : URLs.removeCategory,
-				method: 'DELETE',
-				data: {	id: id }
+				url   : URLs.removeCategory + '/' + id,
+				method: 'DELETE'
 			});
 		}
 	};

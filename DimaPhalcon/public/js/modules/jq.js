@@ -1,19 +1,32 @@
 define(function () {
 	var $jq = {
+		// TEMPLATES
+		leftTabsTemplate: $('#leftTabsTemplate'),
+		categoriesTableTemplate: $('#categoriesTableTemplate'),
+		optionListTemplate: $('#optionListTemplate'),
+		
 		body: $('body'),
 		outBodyElements: $('#outBodyElements'),
 		sectionContent: $('#sectionContent'),
 		// TOP icons
         topIconsWrapper: $('#topIconsWrapper'),
 		menuIconsTop: $('#menuIconsTop'),
-
+		backIcon: $('#backIcon'),
+		prefIcon: $('#prefIcon'),
+		dbIcon: $('#dbIcon'),
+		prIcon: $('#prIcon'),
+		
+		// START PAGE
+		runPreferences: $('#runPreferences'),
+		runDB: $('#runDB'),
+		runPR: $('#runPR'),
+		
         startPageWrapper: $('#startPageWrapper'),
 		layout: $('#backLayout'),
 		//Database Section
 		databaseWrapper: function () {
 			return $('#databaseWrapper');
 		},
-		runDB: $('#runDB'),
 		dbProductsListList: function () { return $('#dbProductsListList'); },
 		productsTreeDB: function () { return $('.productsTreeDB'); },
 		

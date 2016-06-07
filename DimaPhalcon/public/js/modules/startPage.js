@@ -8,6 +8,38 @@ define(['jq', 'methods', 'URLs', 'PRODUCT'], function ($jq, methods, URLs, PRODU
             $jq.startPageWrapper.fadeIn();
         },
 
+        runSection: function (section) {
+            if (section) {
+                if (section !== localStorage.siteSector) {
+                    localStorage.siteSector = section;
+                    window.location.href = '/';
+                }
+            } else {
+                delete localStorage.siteSector;
+                window.location.href = '';
+            }
+        },
+		
+		runPreferences: function () {
+			if (startPage.activeClassValidation('#prefIcon')) {
+				localStorage.siteSector = 'PR';
+				$.ajax( {
+					url   : 'templates/preferences.html',
+					method: 'GET'
+				} ).then( function ( data )
+				{
+					$jq.sectionContent.html(addPreferencesHandler($(data)));
+					PREFERENCES.insertFontSizes(['#globalFontSize'], 'body');
+					PREFERENCES.insertFontSizes(['#fontSizeTabs'], '.nav-tabs');
+					PREFERENCES.applyPreferences(MENU.getPreferencesSettings());
+					THEMES.getThemesList();
+					$('#startPageWrapper').hide();
+					$('#topIconsWrapper').show();
+					showBody();
+				});
+			}
+		},
+		
         runDB: function () {
             if (startPage.activeClassValidation('#dbIcon')) {
                 localStorage.siteSector = 'DB';
@@ -26,19 +58,29 @@ define(['jq', 'methods', 'URLs', 'PRODUCT'], function ($jq, methods, URLs, PRODU
                 });
             }
         },
-
-        runSection: function (section) {
-            if (section) {
-                if (section !== localStorage.siteSector) {
-                    localStorage.siteSector = section;
-                    window.location.href = '/';
-                }
-            } else {
-                delete localStorage.siteSector;
-                window.location.href = '/';
-            }
-        },
-
+		
+		runProductCreation: function () {
+			if (startPage.activeClassValidation('#prIcon')) {
+				localStorage.siteSector = 'OR';
+				$.ajax({
+					url: 'templates/creatingOrder.html',
+					method: 'GET'
+				}).then(function (data)
+				{
+					$jq.sectionContent.html(addOrderCreationHandler($(data)));
+					$('#creatingOrderWrapper').splitPane();
+					$('#startPageWrapper').hide();
+					$('#topIconsWrapper').show();
+					showBody();
+					if (!MAIN.orRequested) {
+						TABS.getRightTabsList();
+						CLIENTS.getClientsDetails();
+						PRODUCT.getProductsTree();
+					}
+				});
+			}
+		},
+		
         activeClassValidation: function (id) {
             if (!$(id).hasClass('activeTopIcon')) {
                 $jq.menuIconsTop.find('div')
