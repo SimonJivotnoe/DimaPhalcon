@@ -4,7 +4,8 @@ define(function () {
 		leftTabsTemplate: $('#leftTabsTemplate'),
 		categoriesTableTemplate: $('#categoriesTableTemplate'),
 		optionListTemplate: $('#optionListTemplate'),
-		
+		metallsTableTemplate: $('#metallsTableTemplate'),
+
 		body: $('body'),
 		outBodyElements: $('#outBodyElements'),
 		sectionContent: $('#sectionContent'),

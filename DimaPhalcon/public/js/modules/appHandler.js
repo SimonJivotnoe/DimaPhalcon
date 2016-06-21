@@ -153,7 +153,6 @@ define(['jq', 'methods', 'startPage', 'dbHandler', 'VALIDATION', 'METALLS', 'CAT
                 });
             if (kim && kimHard) {
                 $.when(KIM.editKim(kim, kimHard, $jq.editKimDescrInput.val())).then(function (response) {
-                    console.log(response);
                     if (true === response.success) {
                         $.when(KIM.getKIM(), KIM.getKimList() ).then(function () {
                             $jq.editKimIcon.click().click();

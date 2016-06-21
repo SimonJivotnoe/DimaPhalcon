@@ -98,12 +98,10 @@ class MetallsController extends ControllerBase
         return $this->response;
     }
 
-    public function removeMetallAction (){
-        $this->ajaxPostCheck();
+    public function removeMetallAction ($metallId){
+        $this->ajaxDeleteCheck();
         $res = false;
         $msg = 'Этот Металл используется в продукте!';
-        $metallId = $this->request->getPost('metallId');
-        $res = false;
         $metall = Metalls::findFirst($metallId);
         $metallHistory = MetallPricesHistory::find(array("metall_id = '$metallId'"));
         if ($metall != false && $metallHistory != false) {

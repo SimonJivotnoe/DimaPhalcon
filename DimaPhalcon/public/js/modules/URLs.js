@@ -15,6 +15,12 @@ define([], function () {
     };
 	_.extend(URLs, {
 		loadDBTemplate: 'templates/productsDB.html',
+		// METALLS
+		getMetalls: URLs.METALLS + 'getMetalls',
+		getMetallsList: URLs.METALLS + 'getMetallsList',
+		addMetall: URLs.METALLS + 'addMetall',
+		editMetall: URLs.METALLS + 'editMetall',
+		removeMetall: URLs.METALLS + 'removeMetall',
 		// KIM
 		getKim: URLs.KIM + 'getKim',
 		getKimList: URLs.KIM + 'getKimList',
@@ -29,7 +35,6 @@ define([], function () {
 		editCategory: URLs.CATEG + 'editCategory',
 
 		removeCategory: URLs.CATEG + 'removeCategory',
-		getMetalls: URLs.METALLS + 'getMetalls',
 		getLeftTabsList: URLs.TABS + 'getLeftTabsList',
 		getLeftTabContent: URLs.TABS + 'getLeftTabContent',
 		getProductsTree: URLs.MENU + 'getProductsTree'

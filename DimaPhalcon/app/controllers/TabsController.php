@@ -18,6 +18,7 @@ class TabsController extends ControllerBase
             if (count($tabs)) {
                 $template = [];    
                 foreach ($tabs as $val) {
+                    $tabTemplate = [];
                     $id = $val->getId();
                     $tabId = $val->getTabId();
                     $productId = $val->getProductId();
@@ -26,16 +27,16 @@ class TabsController extends ControllerBase
                     $status = $val->Products->getStatus();
 
                     $product = Products::findFirst($productId);
-                    $template['active'] = '';
+                    $tabTemplate['active'] = '';
                     if ($getActive) {
-                        $template['active'] = 'active';
+                        $tabTemplate['active'] = 'active';
                         $active = $tabId;
                         $prodId = $productId;
                     }
-                    $template['id'] = $id;
-                    $template['tabId'] = $tabId;
-                    $template['productId'] = $productId;
-                    $template['productName'] = $product->getProductName();
+                    $tabTemplate['id'] = $id;
+                    $tabTemplate['tabId'] = $tabId;
+                    $tabTemplate['productId'] = $productId;
+                    $tabTemplate['productName'] = $product->getProductName();
 
                     $tabArr[$tabId] = /*(object)*/[
                         'active'    => $getActive,
@@ -43,6 +44,7 @@ class TabsController extends ControllerBase
                         'article'   => $article,
                         'status'    => $status
                     ];
+                    array_push($template, $tabTemplate);
                 }
                 $kim = Kim::find();
                 foreach ($kim as $val) {
