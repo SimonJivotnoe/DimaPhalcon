@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="WebServers">
+    <option name="servers">
+      <webServer id="18eaf32d-d9db-49c9-9f36-c888cd8fe65c" name="wsos" url="http://localhost">
+        <fileTransfer host="localhost" port="13666" accessType="SFTP" password="dff2dfd2dfecdf89df9fdf9ddfeadfdf" username="amaximov">
+          <advancedOptions>
+            <advancedOptions dataProtectionLevel="Private" />
+          </advancedOptions>
+          <option name="port" value="13666" />
+        </fileTransfer>
+      </webServer>
+    </option>
+  </component>
+</project>

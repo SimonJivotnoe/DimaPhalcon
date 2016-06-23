@@ -1,5 +1,5 @@
-define(['jq', 'methods', 'startPage', 'dbHandler', 'VALIDATION', 'METALLS', 'CATEGORIES', 'KIM'], function ($jq, methods, startPage, dbHandler, VALIDATION, METALLS, CATEGORIES, KIM) {
-	
+define(['jq', 'methods', 'startPage', 'dbHandler', 'VALIDATION', 'PRODUCT', 'METALLS', 'CATEGORIES', 'KIM'], function ($jq, methods, startPage, dbHandler, VALIDATION, PRODUCT, METALLS, CATEGORIES, KIM) {
+
     var appHandler = function () {
 		// TOP BUTTONS
 		$jq.backIcon.click( function () { startPage.runSection(); });
@@ -109,7 +109,7 @@ define(['jq', 'methods', 'startPage', 'dbHandler', 'VALIDATION', 'METALLS', 'CAT
                 CATEGORIES.addCategory(category, article);
             }
         });
-        $('#editCategoryBtn').click(function(){
+        $jq.editCategoryBtn.click(function(){
             var name = VALIDATION.validateInputVal({
                 val: $jq.editCategoryInput.val()
             });
@@ -143,28 +143,7 @@ define(['jq', 'methods', 'startPage', 'dbHandler', 'VALIDATION', 'METALLS', 'CAT
                 KIM.addKIM(kim, kimHardInput, $jq.kimDescrInput.val());
             }
         });
-        $('#editKimBtn').click(function(){
-            var kim = VALIDATION.validateInputVal({
-                    val: $jq.editKimInput.val(),
-                    digitsOnly: true
-                }),
-                kimHard = VALIDATION.validateInputVal({
-                    val: $jq.editKimHardInput.val()
-                });
-            if (kim && kimHard) {
-                $.when(KIM.editKim(kim, kimHard, $jq.editKimDescrInput.val())).then(function (response) {
-                    if (true === response.success) {
-                        $.when(KIM.getKIM(), KIM.getKimList() ).then(function () {
-                            $jq.editKimIcon.click().click();
-                            $jq.editKimModal.modal('hide');
-                            setTimeout(methods.MESSAGES.show.bind(this, response), 300);
-                        });
-                    } else {
-                        methods.MESSAGES.show(response);
-                    }
-                });
-            }
-        });
+        $('#editKimBtn').click(KIM.editKimBtn);
 
         $('#addMetallBtn').click(function(){
             var metall = VALIDATION.validateInputVal({
@@ -237,14 +216,83 @@ define(['jq', 'methods', 'startPage', 'dbHandler', 'VALIDATION', 'METALLS', 'CAT
                         methods.MESSAGES.show(response);
                     }
                     if (MAIN.isArticle && (id === MAIN.metallId)) {
-                        TABS.getLeftTabContent(MAIN.productId, MAIN.curTabId);
+                        PRODUCT.getLeftTabContent(MAIN.productId, MAIN.curTabId);
                     }
                 });
             }
         });
+        $('#uploadImageProduct').click(function (e) {
+            $('#input-file-upload').trigger('click');
+        });
+
+        $('#input-file-upload').change(function () {
+            if(!window.File || !window.FileReader || !window.FileList || !window.Blob){
+                window.alert("Can't upload! Your browser does not support File API!");
+                return;
+            }
+
+            var fileReader = new FileReader();
+            var filter = /^(?:image\/bmp|image\/cis\-cod|image\/gif|image\/ief|image\/jpeg|image\/jpeg|image\/jpeg|image\/pipeg|image\/png|image\/svg\+xml|image\/tiff|image\/x\-cmu\-raster|image\/x\-cmx|image\/x\-icon|image\/x\-portable\-anymap|image\/x\-portable\-bitmap|image\/x\-portable\-graymap|image\/x\-portable\-pixmap|image\/x\-rgb|image\/x\-xbitmap|image\/x\-xpixmap|image\/x\-xwindowdump)$/i;
+            if (this.files.length == 0) {
+                window.alert('Нужно выбрать файл');
+                return;
+            }
+            var file = this.files[0];
+            var size = file.size;
+            var type = file.type;
+
+            if (!filter.test(type)) {
+                window.alert('Формат файла не поддерживается');
+                return;
+            }
+
+            var max = 2000000;
+            if (size > max) {
+                window.alert('Файл больше чем 2 MB');
+                return;
+            }
+
+            $('.upload-image').show();
+            fileReader.onload = imageIsLoaded;
+            fileReader.readAsDataURL(this.files[0]);
+            function imageIsLoaded(e) {
+                $('#productImgWrapper').html(`<img id="productImg" height="250px" src="${e.target.result}" alt="your image" />`);
+            };
+            //$('#uploadImageProduct').hide();
+
+            var formData = new FormData();
+            formData.append('image_data', file);
+            /*$.ajax({
+                type: 'POST',
+                processData: false,
+                contentType: false,
+                url: URL_PRODUCT + 'uploadImage/' + MAIN.productId,
+                data: formData,
+                dataType: 'json',
+                success: function(data) {
+                    $('.upload-image').hide();
+                    $('#uploadImageProduct, #productPicture').show();
+                    if (data) {
+                        TABS.getLeftTabContent(MAIN.productId, MAIN.curTabId);
+                    }
+                }
+            });*/
+        });
+        $('.productTableWrapper').on('click', '.removeRow', function () {
+            console.log('here');
+            var rowName = $(this).parent().find('.rowValueInput').attr('data-cell'),
+                checkBinding = $('.list-group-item').find('.glyphicon:contains(' + rowName + ')');
+            checkBinding.length ? checkBinding.remove() : 0;
+            $(this).parent().hide('drop');
+            $(this).parent().find('.rowNumber').text('');
+            $(this).parent().find('.rowValueInput').attr('data-cell', '');
+            setTimeout(function () {
+                $(this).parent().remove();
+            }, 500);
+        });
 
         $('#addNewProductIcon').click(function () {
-
+           // $('#productImgWrapper').html('');
         });
         $('#showItemFromFileManager').click(function() {
             var product = [];
@@ -264,7 +312,7 @@ define(['jq', 'methods', 'startPage', 'dbHandler', 'VALIDATION', 'METALLS', 'CAT
                 arr = [],
                 max = 0,
                 i;
-            _products.cancelArticleBtn();
+            methods.cancelArticleBtn();
             if (0 === $('#sortable li').size()) {
                 for (i = 0; i < numbersOfRows; i++) {
                     temp = _.clone(_products.tempTable);
@@ -287,7 +335,7 @@ define(['jq', 'methods', 'startPage', 'dbHandler', 'VALIDATION', 'METALLS', 'CAT
                 tableContent = PRODUCT.getTableContent('#sortable li');
                 var row = {};
                 for (var i = 0; i < numbersOfRows; i++) {
-                    row = _.clone(_products.tempTable);
+                    row = _.clone(PRODUCT.tempTable);
                     row['%ROW_NUMBER%'] = 'A' + (max + 1);
                     row['%DATA_CELL%'] = 'A' + (max + 1);
                     //tableContent[max] = temp;

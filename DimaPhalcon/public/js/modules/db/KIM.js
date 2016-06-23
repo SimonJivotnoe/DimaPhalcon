@@ -1,4 +1,4 @@
-define(['jq', 'methods', 'URLs', 'mustache', 'calx'], function ($jq, methods, URLs, Mustache) {
+define(['jq', 'methods', 'URLs', 'mustache', 'VALIDATION', 'calx'], function ($jq, methods, URLs, Mustache, VALIDATION) {
 	var KIM = {
 		getKIM: function () {
 			return $.ajax({
@@ -49,6 +49,29 @@ define(['jq', 'methods', 'URLs', 'mustache', 'calx'], function ($jq, methods, UR
 					methods.MESSAGES.show(response);
 				}
 			});
+		},
+
+		editKimBtn: function () {
+			var kim = VALIDATION.validateInputVal({
+					val: $jq.editKimInput.val(),
+					digitsOnly: true
+				}),
+				kimHard = VALIDATION.validateInputVal({
+					val: $jq.editKimHardInput.val()
+				});
+			if (kim && kimHard) {
+				$.when(KIM.editKim(kim, kimHard, $jq.editKimDescrInput.val())).then(function (response) {
+					if (true === response.success) {
+						$.when(KIM.getKIM(), KIM.getKimList() ).then(function () {
+							$jq.editKimIcon.click().click();
+							$jq.editKimModal.modal('hide');
+							setTimeout(methods.MESSAGES.show.bind(this, response), 300);
+						});
+					} else {
+						methods.MESSAGES.show(response);
+					}
+				});
+			}
 		},
 
 		editKim: function (kim, kimHard, description) {

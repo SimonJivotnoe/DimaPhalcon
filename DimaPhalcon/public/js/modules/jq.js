@@ -40,7 +40,8 @@ define(function () {
 		// Edit Category Modal
 		editCategoryModal: $('#editCategoryModal'),
 		editCategoryInput: $('#editCategoryInput'),
-			
+		editCategoryBtn: $('#editCategoryBtn'),
+
 		// Add KIM Modal
 		addKimModal: $('#addNewKimModal'),
 		kimHardInput: $('#kimHardInput'),

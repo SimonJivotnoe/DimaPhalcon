@@ -277,7 +277,7 @@
                                     <div class="upload-image" style="display:none"></div>
                                     <input type="file" id="input-file-upload" style="display:none" />
                                 </div>
-                                %IMAGE%
+                                <div id="productImgWrapper"></div>
                             </div>
                         </div>
                     </div>
