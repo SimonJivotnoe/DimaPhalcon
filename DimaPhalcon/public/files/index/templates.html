@@ -36,6 +36,11 @@
         <option data-id="{{id}}">{{name}}</option>
     {{/template}}
 </script>
+<script id="kimListTemplate" type="x-tmpl-mustache">
+    {{#template}}
+        <option data-id="{{id}}" data-val={{value}} >{{name}} | {{value}}</option>
+    {{/template}}
+</script>
 <script id="productTableRowTemplate" type="x-tmpl-mustache">
     <li class="">
         <span class="rowNumber col-md-2">{{%ROW_NUMBER%}}</span>

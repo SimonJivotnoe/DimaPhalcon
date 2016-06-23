@@ -82,7 +82,8 @@ define(function () {
 		},
 		metallTable: function () {
 			return $('#outBodyElements .metallListTable table tbody');
-		}
+		},
+		productTableWrapper: $('#productTableWrapper'),
 	};
 	
 	return $jq;

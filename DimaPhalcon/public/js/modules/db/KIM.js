@@ -7,7 +7,7 @@ define(['jq', 'methods', 'URLs', 'mustache', 'VALIDATION', 'calx'], function ($j
 			}).then(function (response) {
 				methods.checkCrollInTable('kimTable');
 				$('.kimListTable tbody').html(Mustache.render($('#kimTableTemplate').html(), response));
-				$('#addNewProductModal .kimList').html(Mustache.render($('#optionListTemplate').html(), response));
+				$('#addNewProductModal .kimList').html(Mustache.render($('#kimListTemplate').html(), response));
 				MAIN.scrollTables.kimTable = methods.addDataTable($('#settingsMetallsWrapper .kimListTable table'));
 				MAIN.kimTableContent = response.kimTableContent;
 			});

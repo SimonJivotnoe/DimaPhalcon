@@ -277,7 +277,7 @@
                                     <div class="upload-image" style="display:none"></div>
                                     <input type="file" id="input-file-upload" style="display:none" />
                                 </div>
-                                %IMAGE%
+                                <div id="productImgWrapper"></div>
                             </div>
                         </div>
                     </div>
@@ -291,7 +291,7 @@
                                     </button>
                                 </div>
                                 <div class="col-md-6">&nbsp;</div>
-                                <div class="col-md-6 productTableWrapper">
+                                <div class="col-md-6" id="productTableWrapper">
                                     <ul id="sortable">
                                         <li class="">
                                             <span class="rowNumber col-md-2">A1</span>

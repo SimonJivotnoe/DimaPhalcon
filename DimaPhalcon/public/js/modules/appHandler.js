@@ -1,5 +1,5 @@
-define(['jq', 'methods', 'startPage', 'dbHandler', 'VALIDATION', 'PRODUCT', 'METALLS', 'CATEGORIES', 'KIM'], function ($jq, methods, startPage, dbHandler, VALIDATION, PRODUCT, METALLS, CATEGORIES, KIM) {
-
+define(['jq', 'methods', 'startPage', 'dbHandler', 'VALIDATION', 'PRODUCT', 'METALLS', 'CATEGORIES', 'KIM', 'newProductHandler'], function ($jq, methods, startPage, dbHandler, VALIDATION, PRODUCT, METALLS, CATEGORIES, KIM, newProductHandler) {
+    newProductHandler();
     var appHandler = function () {
 		// TOP BUTTONS
 		$jq.backIcon.click( function () { startPage.runSection(); });
@@ -278,7 +278,7 @@ define(['jq', 'methods', 'startPage', 'dbHandler', 'VALIDATION', 'PRODUCT', 'MET
                 }
             });*/
         });
-        $('.productTableWrapper').on('click', '.removeRow', function () {
+        /*$('.productTableWrapper').on('click', '.removeRow', function () {
             console.log('here');
             var rowName = $(this).parent().find('.rowValueInput').attr('data-cell'),
                 checkBinding = $('.list-group-item').find('.glyphicon:contains(' + rowName + ')');
@@ -289,7 +289,7 @@ define(['jq', 'methods', 'startPage', 'dbHandler', 'VALIDATION', 'PRODUCT', 'MET
             setTimeout(function () {
                 $(this).parent().remove();
             }, 500);
-        });
+        });*/
 
         $('#addNewProductIcon').click(function () {
            // $('#productImgWrapper').html('');
