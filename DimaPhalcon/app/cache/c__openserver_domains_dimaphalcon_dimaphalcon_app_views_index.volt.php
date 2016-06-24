@@ -291,7 +291,7 @@
                                     </button>
                                 </div>
                                 <div class="col-md-6">&nbsp;</div>
-                                <div class="col-md-6 productTableWrapper">
+                                <div class="col-md-6" id="productTableWrapper">
                                     <ul id="sortable">
                                         <li class="">
                                             <span class="rowNumber col-md-2">A1</span>

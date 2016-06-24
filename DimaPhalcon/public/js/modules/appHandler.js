@@ -1,99 +1,31 @@
-define(['jq', 'methods', 'startPage', 'dbHandler', 'VALIDATION', 'PRODUCT', 'METALLS', 'CATEGORIES', 'KIM', 'newProductHandler'], function ($jq, methods, startPage, dbHandler, VALIDATION, PRODUCT, METALLS, CATEGORIES, KIM, newProductHandler) {
+define([
+    'jq',
+    'methods',
+    'startPage',
+    'dbHandler',
+    'VALIDATION',
+    'PRODUCT',
+    'METALLS',
+    'CATEGORIES',
+    'KIM',
+    'newProductHandler',
+    'startPageHandler',
+], function (
+    $jq,
+    methods,
+    startPage,
+    dbHandler,
+    VALIDATION,
+    PRODUCT,
+    METALLS,
+    CATEGORIES,
+    KIM,
+    newProductHandler,
+    startPageHandler
+) {
+    startPageHandler();
     newProductHandler();
     var appHandler = function () {
-		// TOP BUTTONS
-		$jq.backIcon.click( function () { startPage.runSection(); });
-
-		$jq.prefIcon.click(function () {
-			startPage.runSection('PR');
-		});
-
-		$jq.dbIcon.click(function () {
-			startPage.runSection('DB');
-		});
-
-		$jq.prIcon.click(function () {
-			startPage.runSection('OR');
-		});
-		
-		// START PAGE
-		$jq.runPreferences.click(function () {
-			$jq.startPageWrapper.fadeOut();
-			setTimeout(startPage.runPreferences, 300);
-		});
-		
-        $jq.runDB.click(function () {
-            $jq.startPageWrapper.fadeOut();
-            setTimeout(startPage.runDB, 300);
-        });
-		
-		$jq.runPR.click(function () {
-			$jq.startPageWrapper.fadeOut();
-			if (!MAIN.prRequested) {
-				setTimeout(startPage.runProductCreation, 500);
-			} else {
-				setTimeout(startPage.runProductCreation, 300);
-			}
-		});
-        $jq.outBodyElements.on('dblclick', '.categoriesListTable tbody tr', function () {
-            var $this = $(this);
-            var id = $this.attr('data-id');
-            $jq.editCategoryInput.val(MAIN.categoriesTableContent.data[id].name);
-            MAIN.$selectedRow = $this;
-            $jq.editCategoryModal.modal('show');
-        });
-
-        $jq.outBodyElements.on('dblclick', '.kimListTable tbody tr', function () {
-            var $this = $(this);
-            var id = $this.attr('data-id');
-            $jq.editKimHardInput.val(MAIN.kimTableContent.data[id].name);
-            $jq.editKimInput.val(MAIN.kimTableContent.data[id]['value']);
-            $jq.editKimDescrInput.val(MAIN.kimTableContent.data[id].description);
-            MAIN.$selectedRow = $this;
-            $jq.editKimModal.modal('show');
-        });
-
-        $jq.outBodyElements.on('dblclick', '.metallListTable tbody tr', function () {
-            var $this = $(this);
-            var id = $this.attr('data-id');
-            $jq.editMetallNameInput.val(MAIN.metallTableContent.data[id].name);
-            $jq.editMetallPriceInput.val(MAIN.metallTableContent.data[id].price);
-            $jq.editMetallMassInput.val(MAIN.metallTableContent.data[id].mass);
-            $jq.editMetallOutPriceInput.val(MAIN.metallTableContent.data[id]['out_price']);
-            MAIN.$selectedRow = $this;
-            $jq.editMetallModal.modal('show');
-        });
-
-        $jq.addKimIcon.click(function () {
-            dbHandler.kimIconsToDefault();
-            dbHandler.launchAddNewModal();
-        });
-
-        $jq.editKimIcon.click(function () {
-            dbHandler.kimIconsToDefault(['#deleteKimIcon']);
-            dbHandler.editKim.call(this);
-        });
-
-        $jq.deleteKimIcon.click(function () {
-            dbHandler.kimIconsToDefault(['#editKimIcon']);
-            dbHandler.deleteKim.call(this);
-        });
-
-        $jq.backKimIcon.click(function () {
-            dbHandler.kimIconsToDefault();
-            dbHandler.unfocus();
-        });
-		
-        $jq.backDBTreeIcon.click(function () {
-            var $productsTreeDB = $jq.productsTreeDB();
-            $('#dbProductsListList .innerBackLayout').show();
-            MAIN.productsTreeDB.plugins = _.difference(MAIN.productsTreeDB.plugins, ['checkbox']);
-            $productsTreeDB.jstree('destroy');
-            $productsTreeDB.jstree(MAIN.productsTreeDB);
-            methods.toggleMainButtons($jq.productsTreeDBButtons, $jq.mainIcons);
-            methods.hideLayout();
-        });
-
         $jq.addCategoryBtn.click(function(){
             var category = VALIDATION.validateInputVal({
                     val: $jq.addCategoryInput.val(),
@@ -260,8 +192,8 @@ define(['jq', 'methods', 'startPage', 'dbHandler', 'VALIDATION', 'PRODUCT', 'MET
             };
             //$('#uploadImageProduct').hide();
 
-            var formData = new FormData();
-            formData.append('image_data', file);
+            MAIN.formData = new FormData();
+            MAIN.formData.append('image_data', file);
             /*$.ajax({
                 type: 'POST',
                 processData: false,
@@ -293,7 +225,17 @@ define(['jq', 'methods', 'startPage', 'dbHandler', 'VALIDATION', 'PRODUCT', 'MET
 
         $('#addNewProductIcon').click(function () {
            // $('#productImgWrapper').html('');
+            var kimVal = $jq.addNewProductModal.find('.kimList option:selected').attr('data-val');
+            $('[data-cell="KIM1"]').val(kimVal);
+            $( '#calx').calx();
         });
+        // change kim in table
+        $('.kimList').change(function(){
+            var kim = $('option:selected', this ).attr('data-val');
+            $('[data-cell="KIM1"]' ).val(kim);
+            $( '#calx').calx();
+        });
+
         $('#showItemFromFileManager').click(function() {
             var product = [];
             $(this).hide();
