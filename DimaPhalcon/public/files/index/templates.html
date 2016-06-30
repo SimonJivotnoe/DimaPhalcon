@@ -38,7 +38,12 @@
 </script>
 <script id="kimListTemplate" type="x-tmpl-mustache">
     {{#template}}
-        <option data-id="{{id}}" data-val={{value}} >{{name}} | {{value}}</option>
+        <option data-id="{{id}}" data-val="{{value}}">{{name}} | {{value}}</option>
+    {{/template}}
+</script>
+<script id="metallListTemplate" type="x-tmpl-mustache">
+    {{#template}}
+        <option data-id="{{id}}" data-price="{{price}}" data-outprice="{{out_price}}">{{name}} | {{price}} | {{out_price}}</option>
     {{/template}}
 </script>
 <script id="productTableRowTemplate" type="x-tmpl-mustache">

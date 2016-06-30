@@ -9,7 +9,7 @@ define(['jq', 'datatables.net'], function ($jq, DataTable) {
 				methods.MESSAGES[type](response.msg);
 			},
 			success: function (text) {
-				var text = text ? text : 'Успешно';
+				var text = text ? text : 'пїЅпїЅпїЅпїЅпїЅпїЅпїЅ';
 				noty({
 					text: text,
 					type: 'success',
@@ -18,7 +18,7 @@ define(['jq', 'datatables.net'], function ($jq, DataTable) {
 				});
 			},
 			error: function (text) {
-				var text = text ? text : 'Запрещено';
+				var text = text ? text : 'пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ';
 				noty({
 					text: text,
 					type: 'error',
@@ -141,7 +141,9 @@ define(['jq', 'datatables.net'], function ($jq, DataTable) {
 			});
 			$('.checkToArticle, #saveArticle').hide();
 			$('#productArticle' ).html('');
-		}
+		},
+
+		excel: function (id = '#newProductTableCalc') { $(id).calx(); }
 	};
 	
 	return methods;

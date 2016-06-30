@@ -97,7 +97,7 @@ define(['jq', 'methods', 'URLs', 'CATEGORIES', 'KIM', 'METALLS', 'TABS', 'mustac
 					var li = $(obj).closest('li');
 					li.find('.addAvailableCellList').html(PRODUCT.addAvailableCellList(li.find('.formulaValue').text()));
 				});
-				$('#calx').calx();
+				methods.excel();
 				methods.showBody();
 				if (localStorage.addToOrder) {
 					ORDER.addToOrder();
@@ -163,7 +163,7 @@ define(['jq', 'methods', 'URLs', 'CATEGORIES', 'KIM', 'METALLS', 'TABS', 'mustac
 			var selected = $('#metallHistorySelect option:selected');
 			$('[data-cell="PR1"]' ).val(selected.attr('data-price'));
 			$('[data-cell="PR2"]' ).val(selected.attr('data-outprice'));
-			$('#calx' ).calx();
+			methods.excel();
 			$.each($('.rowValue input'), function(num, obj){
 				var cell = $(obj).attr('data-cell');
 				$('[data-cellarticle="' + cell + '"]').text($(obj).val());
@@ -490,7 +490,7 @@ define(['jq', 'methods', 'URLs', 'CATEGORIES', 'KIM', 'METALLS', 'TABS', 'mustac
 				.find('.listOfKim').change(function(){
 				var kim = $('option:selected', this ).attr('kim');
 				$('[data-cell="KIM1"]' ).val(kim);
-				$( '#calx' ).calx();
+				methods.excel();
 			}).end()
 
 			// change metall in table
@@ -499,7 +499,7 @@ define(['jq', 'methods', 'URLs', 'CATEGORIES', 'KIM', 'METALLS', 'TABS', 'mustac
 				var metallOut = $('.listOfMetalls option:selected' ).attr('metallOut');
 				$('[data-cell="PR1"]' ).val(metall);
 				$('[data-cell="PR2"]' ).val(metallOut);
-				$( '#calx' ).calx();
+				methods.excel();
 			}).end()
 
 			// add new row in product table
@@ -545,20 +545,6 @@ define(['jq', 'methods', 'URLs', 'CATEGORIES', 'KIM', 'METALLS', 'TABS', 'mustac
 			 }
 			 }).end()*/
 
-			// remove tr in product table
-				.on('click', '.removeRow', function () {
-					console.log('here');
-					var rowName = $(this).parent().find('.rowValueInput').attr('data-cell'),
-						checkBinding = $('.list-group-item').find('.glyphicon:contains(' + rowName + ')');
-					checkBinding.length ? checkBinding.remove() : 0;
-					$(this).parent().hide('drop');
-					$(this).parent().find('.rowNumber').text('');
-					$(this).parent().find('.rowValueInput').attr('data-cell', '');
-					setTimeout(function () {
-						$(this).parent().remove();
-					}, 500);
-				})
-
 				// change row name in product table
 				.on('keyup', '.rowNameInput', function () {
 					$(this).attr('value', $(this).val());
@@ -573,12 +559,13 @@ define(['jq', 'methods', 'URLs', 'CATEGORIES', 'KIM', 'METALLS', 'TABS', 'mustac
 					} else if (-1 === e.deltaY) {
 						$(this).val((thisVal - 0.01).toFixed(2)).attr('value', (thisVal - 0.01).toFixed(2));
 					}
-					$('#calx').calx();
+					methods.excel();
 					PRODUCT.saveTable();
 				})
 
 				// change value in product table by keys
 				.on('keydown', '.rowValueInput', function (e) {
+					console.log('here');
 					switch (e.keyCode) {
 						case 38: // UP
 							PRODUCT.catchKey(this, '+', 1);
@@ -625,7 +612,7 @@ define(['jq', 'methods', 'URLs', 'CATEGORIES', 'KIM', 'METALLS', 'TABS', 'mustac
 						if (96 === e.keyCode && '.' === text.charAt((text.length - 2))) {
 
 						} else {
-							$('#calx').calx();
+							methods.excel();
 							text = '' + $(this).val();
 							$(this).caret(caretPos);
 							if ('.' === text.charAt((text.length - 2))) {
@@ -742,7 +729,7 @@ define(['jq', 'methods', 'URLs', 'CATEGORIES', 'KIM', 'METALLS', 'TABS', 'mustac
 					cellList = li.find('.addAvailableCellList');
 				if ('true' === cellStatus && cell) {
 					$('[data-cell="' + cell + '"]').attr('data-formula', formula);
-					$( '#calx' ).calx();
+					methods.excel();
 					cellList.remove();
 					$( '<span class="glyphicon glyphicon-retweet cellBind" aria-hidden="true"> ' + cell + '</span>' ).insertAfter( $(this) );
 					$(this).remove();

@@ -23,7 +23,7 @@ define(['jq', 'methods', 'URLs', 'mustache', 'VALIDATION', 'calx'], function ($j
 				$('.listOfKim').html(data.html);
 				var kim = $('.listOfKim option:selected').attr('kim');
 				$('[data-cell="KIM1"]').val(kim);
-				$('#calx').calx();
+				methods.excel();
 			});
 		},
 

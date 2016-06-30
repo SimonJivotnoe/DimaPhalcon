@@ -2509,7 +2509,7 @@
 				} else if (-1 === e.deltaY) {
 					$(this).val((thisVal - 0.01).toFixed(2)).attr('value', (thisVal - 0.01).toFixed(2));
 				}
-				$('#calx').calx();
+				methods.excel();
 				PRODUCT.saveTable();
 			})
 
@@ -2561,7 +2561,7 @@
 					if (96 === e.keyCode && '.' === text.charAt((text.length - 2))) {
 
 					} else {
-						$('#calx').calx();
+						methods.excel();
 						text = '' + $(this).val();
 						$(this).caret(caretPos);
 						if ('.' === text.charAt((text.length - 2))) {
@@ -3288,7 +3288,7 @@
 						var li = $(obj).closest('li');
 						li.find('.addAvailableCellList').html(PRODUCT.addAvailableCellList(li.find('.formulaValue').text()));
 					});
-					$('#calx').calx();
+					methods.excel();
 					showBody();
 					if (localStorage.addToOrder) {
 						ORDER.addToOrder();
@@ -3721,7 +3721,7 @@
 				} else {
 					$(el).val((thisVal - step).toFixed(2)).attr('value', (thisVal - step).toFixed(2));
 				}
-				$('#calx').calx();
+				methods.excel();
 				PRODUCT.saveTable();
 			},
 
@@ -3742,7 +3742,7 @@
 							var li = $(obj).closest('li');
 							li.find('.addAvailableCellList').html(PRODUCT.addAvailableCellList(li.find('.formulaValue').text()));
 						});
-						$('#calx').calx();
+						methods.excel();
 					}
 				});
 			},
@@ -4077,7 +4077,7 @@
 					$('.listOfKim').html(data.html);
 					var kim = $('.listOfKim option:selected').attr('kim');
 					$('[data-cell="KIM1"]').val(kim);
-					$('#calx').calx();
+					methods.excel();
 				});
 			},
 
@@ -4207,7 +4207,7 @@
 					var metallOut = $('.listOfMetalls option:selected').attr('metallOut');
 					$('[data-cell="PR1"]').val(metall);
 					$('[data-cell="PR2"]').val(metallOut);
-					$('#calx').calx();
+					methods.excel();
 				});
 			},
 

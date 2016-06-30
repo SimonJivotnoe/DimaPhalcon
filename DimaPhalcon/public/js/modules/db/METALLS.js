@@ -7,7 +7,7 @@ define(['jq', 'methods', 'URLs', 'mustache', 'calx'], function ($jq, methods, UR
 			}).then(function (response) {
 				methods.checkCrollInTable('metallsTable');
 				$('.metallListTable tbody').html(Mustache.render($jq.metallsTableTemplate.html(), response));
-				$('#addNewProductModal .metallsList').html(Mustache.render($jq.optionListTemplate.html(), response));
+				$('#addNewProductModal .metallsList').html(Mustache.render($('#metallListTemplate').html(), response));
 				MAIN.scrollTables.metallsTable = methods.addDataTable($('#settingsMetallsWrapper .metallListTable table'));
 				MAIN.metallTableContent = response.metallTableContent;
 			}); 
@@ -25,7 +25,7 @@ define(['jq', 'methods', 'URLs', 'mustache', 'calx'], function ($jq, methods, UR
 				var metallOut = $('.listOfMetalls option:selected').attr('metallOut');
 				$('[data-cell="PR1"]').val(metall);
 				$('[data-cell="PR2"]').val(metallOut);
-				$('#calx').calx();
+				methods.excel();
 			});
 		},
 

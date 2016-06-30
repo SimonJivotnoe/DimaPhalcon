@@ -283,7 +283,7 @@
                     </div>
                     <hr />
                     <div class="row">
-                        <form id="calx">
+                        <form id="newProductTableCalc">
                             <div class="col-md-12 tableContent">
                                 <div class="col-md-6 createTableDiv productTableWrapper">
                                     <button type="button" class="btn btn-info btn-sm pull-right" id="addNewRow">
@@ -303,7 +303,6 @@
                                                        type="tel" style="width: 5em;" value="">
                                             </span>
                                             <label><input class="checkToArticle" type="checkbox"></label>
-                                            <span class="removeRow glyphicon glyphicon-remove" aria-hidden="true"></span></li>
                                         </li>
                                     </ul>
                                 </div>

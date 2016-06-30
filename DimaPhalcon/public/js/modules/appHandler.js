@@ -10,6 +10,7 @@ define([
     'KIM',
     'newProductHandler',
     'startPageHandler',
+    'calx'
 ], function (
     $jq,
     methods,
@@ -225,15 +226,12 @@ define([
 
         $('#addNewProductIcon').click(function () {
            // $('#productImgWrapper').html('');
-            var kimVal = $jq.addNewProductModal.find('.kimList option:selected').attr('data-val');
-            $('[data-cell="KIM1"]').val(kimVal);
-            $( '#calx').calx();
-        });
-        // change kim in table
-        $('.kimList').change(function(){
-            var kim = $('option:selected', this ).attr('data-val');
-            $('[data-cell="KIM1"]' ).val(kim);
-            $( '#calx').calx();
+            var kimVal = $jq.addNewProductModal.find('.kimList option:selected').attr('data-val'),
+                metallList = $jq.addNewProductModal.find('.metallsList option:selected');
+            $('#addNewProductModal [data-cell="KIM1"]').val(kimVal);
+            $('#addNewProductModal [data-cell="PR1"]' ).val(metallList.attr('data-price'));
+            $('#addNewProductModal [data-cell="PR2"]' ).val(metallList.attr('data-outprice'));
+            methods.excel();
         });
 
         $('#showItemFromFileManager').click(function() {
@@ -246,48 +244,7 @@ define([
                 window.location.href = LOCATION;
             });
         });
-        $('#addNewRow').click(function () {
-            var numbersOfRows = 1,
-                tableContent = {},
-                temp,
-                alwaysInTable,
-                arr = [],
-                max = 0,
-                i;
-            methods.cancelArticleBtn();
-            if (0 === $('#sortable li').size()) {
-                for (i = 0; i < numbersOfRows; i++) {
-                    temp = _.clone(_products.tempTable);
-                    temp['%ROW_NUMBER%'] = 'A' + (i + 1);
-                    temp['%DATA_CELL%'] = 'A' + (i + 1);
-                    tableContent[i] = temp;
-                }
-                alwaysInTable = PRODUCT.getTableContent('#alwaysInTable li');
-                PRODUCT.createTable(tableContent, alwaysInTable);
-            } else {
-                $.map($('#sortable .rowNumber'), function (val) {
-                    if ('' !== $(val).text()) {
-                        arr.push(parseInt($(val).text().substring(1)));
-                    }
-                });
-                if (0 !== arr.length) {
-                    max = Math.max.apply(Math, arr);
-                }
-
-                tableContent = PRODUCT.getTableContent('#sortable li');
-                var row = {};
-                for (var i = 0; i < numbersOfRows; i++) {
-                    row = _.clone(PRODUCT.tempTable);
-                    row['%ROW_NUMBER%'] = 'A' + (max + 1);
-                    row['%DATA_CELL%'] = 'A' + (max + 1);
-                    //tableContent[max] = temp;
-                    max++;
-                }
-                //alwaysInTable = PRODUCT.getTableContent('#alwaysInTable li');
-                //PRODUCT.createTable(tableContent, alwaysInTable);
-                PRODUCT.addRowToTable(row);
-            }
-        });
+        
         // add new formula
         $('#addFormulaBtnPr').click(function(){
             if ('' !== $('#addFormulaInputPr').val()) {

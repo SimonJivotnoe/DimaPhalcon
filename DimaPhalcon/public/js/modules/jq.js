@@ -86,6 +86,8 @@ define(function () {
         // MODALS
         addNewProductModal: $('#addNewProductModal'),
 		    productTableWrapper: $('#productTableWrapper'),
+			kimList: $('.kimList'),
+			metallsList: $('.metallsList'),
 	};
 	
 	return $jq;
