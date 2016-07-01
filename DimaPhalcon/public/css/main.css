@@ -453,7 +453,7 @@ h4 {
     max-width: 670px;*/
 }
 
-.blockNameAndCat:hover,{
+.blockNameAndCat:hover{
     border: 1px rgba(149, 171, 153, 0.5) solid;
 }
 
@@ -1057,4 +1057,8 @@ table.rc-table-resizing thead,table.rc-table-resizing thead> th,table.rc-table-r
 
 #duration {
     display: none;
+}
+
+.upload-wrapper {
+    margin-bottom: 5px;
 }

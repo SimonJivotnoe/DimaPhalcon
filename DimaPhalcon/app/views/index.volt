@@ -283,6 +283,24 @@
                     </div>
                     <hr />
                     <div class="row">
+                        <div class="col-md-12">
+                            <table border="1px">
+                                <tr>
+                                    <td>Доступно управление клавишами:</td>
+                                    <td><button>КМВ</button> +0.01</td>
+                                    <td><button>КМН</button> -0.01</td>
+                                    <td><button><span class="glyphicon glyphicon-triangle-top" aria-hidden="true"></span></button> +1</td>
+                                    <td><button><span class="glyphicon glyphicon-triangle-bottom" aria-hidden="true"></span></button> -1</td>
+                                    <td><button>/</button> +10</td>
+                                    <td><button>Ctrl</button> -10</td>
+                                    <td><button><span class="glyphicon glyphicon-menu-right" aria-hidden="true"></span></button> +100</td>
+                                    <td><button>Alt</button> -100</td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                    <hr />
+                    <div class="row">
                         <form id="newProductTableCalc">
                             <div class="col-md-12 tableContent">
                                 <div class="col-md-6 createTableDiv productTableWrapper">

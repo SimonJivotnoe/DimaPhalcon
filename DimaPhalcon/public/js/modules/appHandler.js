@@ -229,89 +229,21 @@ define([
             var kimVal = $jq.addNewProductModal.find('.kimList option:selected').attr('data-val'),
                 metallList = $jq.addNewProductModal.find('.metallsList option:selected');
             $('#addNewProductModal [data-cell="KIM1"]').val(kimVal);
-            $('#addNewProductModal [data-cell="PR1"]' ).val(metallList.attr('data-price'));
-            $('#addNewProductModal [data-cell="PR2"]' ).val(metallList.attr('data-outprice'));
+            $('#addNewProductModal [data-cell="PR1"]').val(metallList.attr('data-price'));
+            $('#addNewProductModal [data-cell="PR2"]').val(metallList.attr('data-outprice'));
             methods.excel();
         });
 
         $('#showItemFromFileManager').click(function() {
             var product = [];
             $(this).hide();
-            $.each($('.productsTreeDB li[data-section=product][aria-selected=true]' ), function (num, obj) {
+            $.each($('.productsTreeDB li[data-section=product][aria-selected=true]'), function (num, obj) {
                 product.push($(obj).attr('data-productid'));
             });
             $.when(TABS.openSavedProduct(product, 'new', false, false)).done(function(){
                 window.location.href = LOCATION;
             });
         });
-        
-        // add new formula
-        $('#addFormulaBtnPr').click(function(){
-            if ('' !== $('#addFormulaInputPr').val()) {
-                $( '#formulasList' )
-                    .append('<li class="list-group-item formula"><span class="formulaValue">'
-                    + $( '#addFormulaInputPr' ).val() + '<span class="glyphicon glyphicon-resize-small bindFormulaWithCell" aria-hidden="true"></span></span><span class="addAvailableCellList">' + PRODUCT.addAvailableCellList($( '#addFormulaInputPr' ).val()) + '</span>' +
-                    '<span class="glyphicon glyphicon-pencil editFormula" aria-hidden="true"></span><span class="glyphicon glyphicon-remove removeFormula" aria-hidden="true"></span></li>');
-                $('.removeFormula' ).hide();
-                $('.editFormula' ).hide();
-                PRODUCT.cancelInputFormula();
-                $( '#addFormulaInputPr' ).val('');
-                PRODUCT.addNewFormula(PRODUCT.getFormulasList, true);
-            }
-        });
-
-        // create formula
-        $('#addFormulaInputPr')
-            .click(function(){
-                var currentVal, ls;
-                localStorage.currentCaretPos = document.getElementById('addFormulaInputPr').selectionStart;
-                $('#addNewFhBtnInput' ).val('');
-                if (!clickOnFormulaInput) {
-                    clickOnFormulaInput = true;
-                    $('.removeFhBtn').hide();
-                    $('#addFormulaInputPr' ).css('border-color', 'rgba(82, 168, 236, 0.8)');
-                    $('#formulasHelper' ).show('scale');
-                    $('#addFormulaBtnPr' ).hide();
-                    $('.formulaBtnGroupPr' ).show('drop');
-                    $('body').css('cursor', 'pointer');
-                    $('#addNewProductModal ').attr('tabindex', '1').css('outline', 'none');
-                    $('#addNewProductModal ')
-                        .unbind('keydown')
-                        .bind('keydown',function (e) {
-                            if (e.keyCode === 8) {
-                                currentVal =  $('#addFormulaInputPr').val();
-                                ls = localStorage.currentCaretPos;
-                                currentVal = PRODUCT.removeChar(currentVal, ls - 1);
-                                $('#addFormulaInputPr').val(currentVal);
-                                localStorage.currentCaretPos--;
-                                e.preventDefault();
-                            }
-                        })
-                        .unbind('keypress')
-                        .bind('keypress', function(e) {
-                            if (!$('#addFormulaInputPr').is(":focus")) {
-                                if (32 !== e.keyCode) {
-                                    PRODUCT.addWhereCaret(localStorage.currentCaretPos, String.fromCharCode(e.keyCode));
-                                    localStorage.currentCaretPos++;
-                                }
-                            }
-                        })
-                        .unbind('keyup')
-                        .bind('keyup', function() {
-                            PRODUCT.toggleAddFormula();
-                            localStorage.currentCaretPos = document.getElementById('addFormulaInputPr').selectionStart;
-                        })
-                        .off('click')
-                        .on('click', '.rowNumber', function(){
-                            PRODUCT.addElementToFormulaInput(this);
-                        });
-                }
-            })
-            .keydown(function(e){
-                if (32 === e.keyCode) {
-                    return false;
-                }
-            } );
 
         //cancel create new formula
        // $('#cancelFormulaBtnPr' ).click(PRODUCT.cancelInputFormula);
@@ -350,7 +282,7 @@ define([
 
         // focus on formula helper input
         $('#addNewFhBtnInput').click(function(){
-            clickOnFormulaInput = false;
+            MAIN.clickOnFormulaInput = false;
             $('.currentTab ')
                 .unbind('keydown keypress keyup');
             $('body').off('keypress')

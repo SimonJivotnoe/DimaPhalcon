@@ -60,7 +60,17 @@
         <span class="removeRow glyphicon glyphicon-remove" aria-hidden="true"></span></li>
     </li>
 </script>
-
+<script id="formulaTemplate" type="x-tmpl-mustache">
+    <li class="list-group-item formula">
+        <span class="formulaValue">
+            {{formula}}
+            <span class="glyphicon glyphicon-resize-small bindFormulaWithCell" aria-hidden="true"></span>
+        </span>
+        <span class="addAvailableCellList">S1
+        </span>
+        <span class="glyphicon glyphicon-pencil editFormula" aria-hidden="true"></span><span class="glyphicon glyphicon-remove removeFormula" aria-hidden="true"></span>
+    </li>
+</script>
 <script id="leftTabsTemplate" type="x-tmpl-mustache">
     {{#template}}
         <li role="presentation" class="{{active}}">

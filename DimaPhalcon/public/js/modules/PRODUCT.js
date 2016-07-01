@@ -502,49 +502,6 @@ define(['jq', 'methods', 'URLs', 'CATEGORIES', 'KIM', 'METALLS', 'TABS', 'mustac
 				methods.excel();
 			}).end()
 
-			// add new row in product table
-			/*.find('#addNewRow').click(function () {
-			 var numbersOfRows = 1,
-			 tableContent = {},
-			 temp,
-			 alwaysInTable,
-			 arr = [],
-			 max = 0,
-			 i;
-			 PRODUCT.cancelArticleBtn();
-			 if (0 === $('#sortable li').size()) {
-			 for (i = 0; i < numbersOfRows; i++) {
-			 temp = _.clone(PRODUCT.tempTable);
-			 temp['%ROW_NUMBER%'] = 'A' + (i + 1);
-			 temp['%DATA_CELL%'] = 'A' + (i + 1);
-			 tableContent[i] = temp;
-			 }
-			 alwaysInTable = PRODUCT.getTableContent('#alwaysInTable li');
-			 PRODUCT.createTable(tableContent, alwaysInTable);
-			 } else {
-			 $.each($('#sortable .rowNumber'), function (key, val) {
-			 if ('' !== $(val).text()) {
-			 arr.push(parseInt($(val).text().substring(1)));
-			 }
-			 });
-			 if (0 !== arr.length) {
-			 max = Math.max.apply(Math, arr);
-			 }
-
-			 tableContent = PRODUCT.getTableContent('#sortable li');
-			 for (var i = 0; i < numbersOfRows; i++) {
-			 temp = _.clone(PRODUCT.tempTable);
-			 temp['%ROW_NUMBER%'] = 'A' + (max + 1);
-			 temp['%DATA_CELL%'] = 'A' + (max + 1);
-			 tableContent[max] = temp;
-			 max++;
-			 }
-			 alwaysInTable = PRODUCT.getTableContent('#alwaysInTable li');
-			 PRODUCT.createTable(tableContent, alwaysInTable);
-			 PRODUCT.addRowToTable(tableContent);
-			 }
-			 }).end()*/
-
 				// change row name in product table
 				.on('keyup', '.rowNameInput', function () {
 					$(this).attr('value', $(this).val());

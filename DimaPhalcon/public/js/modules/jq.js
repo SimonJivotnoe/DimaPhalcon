@@ -5,6 +5,7 @@ define(function () {
 		categoriesTableTemplate: $('#categoriesTableTemplate'),
 		optionListTemplate: $('#optionListTemplate'),
 		metallsTableTemplate: $('#metallsTableTemplate'),
+		formulaTemplate: $('#formulaTemplate'),
 
 		body: $('body'),
 		outBodyElements: $('#outBodyElements'),
@@ -88,6 +89,15 @@ define(function () {
 		    productTableWrapper: $('#productTableWrapper'),
 			kimList: $('.kimList'),
 			metallsList: $('.metallsList'),
+		
+			addNewRow: $('#addNewRow'),
+
+			formulaBtnGroupPr: $('.formulaBtnGroupPr'),
+				cancelFormulaBtnPr: $('#cancelFormulaBtnPr'),
+				addFormulaBtnPr: $('#addFormulaBtnPr'),
+			addFormulaInputPr: $('#addFormulaInputPr'),
+			formulasHelper: $('#formulasHelper'),
+			formulasList: $('#formulasList'),
 	};
 	
 	return $jq;
