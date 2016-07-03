@@ -9,7 +9,7 @@ class FormulasController extends \Phalcon\Mvc\Controller
         $formulasHelper = FormulasHelper::find();
         foreach ( $formulasHelper as $val) {
             $formHelpList .= '<span><button type="button" class="btn custom-addRowsToTable btn-xs fhBtn">'. $val->getName().
-                '<span class="glyphicon glyphicon-remove removeFhBtn" aria-hidden="true"></span></button></span>';
+                '<span class="glyphicon glyphicon-remove removeFhBtn" data-id="' . $val->getId() . '" aria-hidden="true"></span></button></span>';
         }
         return $formHelpList;
     }

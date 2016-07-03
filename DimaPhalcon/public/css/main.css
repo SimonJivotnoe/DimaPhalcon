@@ -498,8 +498,8 @@ h4 {
 }
 
 .createTableDiv {
-    margin-bottom: 5px;
-    margin-top: -25px;
+    /*margin-bottom: 5px;
+    margin-top: -25px;*/
 }
 
 ol li {
@@ -542,11 +542,6 @@ ol li:hover {
 
 .glyphicon-link {
     color: blue;
-    cursor: pointer;
-}
-
-#formulasList {
-    list-style: none;
     cursor: pointer;
 }
 
@@ -1061,4 +1056,24 @@ table.rc-table-resizing thead,table.rc-table-resizing thead> th,table.rc-table-r
 
 .upload-wrapper {
     margin-bottom: 5px;
+}
+.formulaValue {
+    width: 90%;
+}
+#formulasList {
+    margin-top: 5px;
+}
+#formulasList .checkbox{
+    margin-top: 0px;
+    margin-bottom: 0px;
+}
+.plusBold {
+    font-weight: 900;
+    font-family: "Lucida Grande", tahoma, arial, sans-serif;
+}
+.likeNumber {
+    color: #245580;
+}
+.Acolor {
+    color: rgba(20, 167, 7, 1);
 }

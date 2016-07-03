@@ -1,4 +1,4 @@
-define(['jq', 'methods', 'URLs', 'mustache', 'VALIDATION', 'calx'], function ($jq, methods, URLs, Mustache, VALIDATION) {
+﻿define(['jq', 'methods', 'URLs', 'mustache', 'VALIDATION', 'calx'], function ($jq, methods, URLs, Mustache, VALIDATION) {
 	var KIM = {
 		getKIM: function () {
 			return $.ajax({
@@ -35,7 +35,7 @@ define(['jq', 'methods', 'URLs', 'mustache', 'VALIDATION', 'calx'], function ($j
 				data: {
 					kim: kim,
 					kimHard: kimHard,
-					description: description
+					description: description ? description : 'Нет описания'
 				}
 			}).then(function (response)
 			{

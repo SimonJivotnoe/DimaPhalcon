@@ -17,18 +17,18 @@ define(['jq', 'datatables.net'], function ($jq, DataTable) {
 					timeout: 600
 				});
 			},
-			error: function (text) {
+			error: function (text, timeout = 600) {
 				var text = text ? text : '���������';
 				noty({
 					text: text,
 					type: 'error',
 					layout: 'center',
-					timeout: 600
+					timeout: timeout
 				});
 			}
 		},
-        startWaitAnimation: function () { $jq.body.addClass('loading'); },
-        stopWaitAnimation: function () { $jq.body.removeClass('loading'); },
+        startWaitAnimation: function () { /*$jq.body.addClass('loading');*/ },
+        stopWaitAnimation: function () { /*$jq.body.removeClass('loading');*/ },
         showBody: function() {
             //PREFERENCES.applyCss();
             if ($jq.body.is(":visible")) {return false;}
@@ -143,7 +143,16 @@ define(['jq', 'datatables.net'], function ($jq, DataTable) {
 			$('#productArticle' ).html('');
 		},
 
-		excel: function (id = '#newProductTableCalc') { $(id).calx(); }
+		excel: function (id = '#newProductTableCalc') {
+			try {
+				$(id).calx();
+				return true;
+			} catch (e) {
+				methods.MESSAGES.error('ОШИБКА! Зацикливание', 1500);
+				return false;
+			}
+
+		}
 	};
 	
 	return methods;

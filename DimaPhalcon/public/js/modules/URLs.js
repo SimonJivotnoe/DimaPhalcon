@@ -37,7 +37,12 @@ define([], function () {
 		removeCategory: URLs.CATEG + 'removeCategory',
 		getLeftTabsList: URLs.TABS + 'getLeftTabsList',
 		getLeftTabContent: URLs.TABS + 'getLeftTabContent',
-		getProductsTree: URLs.MENU + 'getProductsTree'
+		getProductsTree: URLs.MENU + 'getProductsTree',
+
+		// PRODUCT
+		addBtnToFormulasHelper: URLs.PRODUCT + 'addBtnToFormulasHelper',
+		removeBtnFromFormulasHelper: URLs.PRODUCT + 'removeBtnFromFormulasHelper',
+		saveProduct: URLs.PRODUCT + 'saveProduct',
 	});
 
     return URLs;

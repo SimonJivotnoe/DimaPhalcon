@@ -131,38 +131,40 @@ class ProductsController extends ControllerBase
     }
     
     public function addBtnToFormulasHelperAction(){
-        if ($this->request->isAjax() && $this->request->isPost()) {
-            $newFl = $this->request->getPost('newFl');
-            $fh = new FormulasHelper();
-            $fh->setName($newFl);
-            if ($fh->save() == false) {
-                $this->response->setContentType('application/json', 'UTF-8');
-                $this->response->setJsonContent('already');
-            } else {
-                $this->response->setContentType('application/json', 'UTF-8');
-                $this->response->setJsonContent(true);
-            }
-            return $this->response;
-        } else {
-            $this->response->redirect('');
+        $this->ajaxPostCheck();
+        $success = 0;
+        $msg = 'Ошибка при добавлении шаблона формулы';
+        $newFl = $this->request->getPost('newFl');
+        $fh = new FormulasHelper();
+        $fh->setName($newFl);
+        if ($fh->save()) {
+            $success = 1;
+            $data = ['id' => $fh->getId()];
         }
+
+        $this->response->setJsonContent(['success' => $success, 'msg' => $msg, 'data' => $data]);
+
+        return $this->response;
     }
 
-    public function removeBtnFromFormulasHelperAction(){
-        if ($this->request->isAjax() && $this->request->isPost()) {
-            $fhText = $this->request->getPost('fhText');
-            $fh = FormulasHelper::findFirst(array("name = '$fhText'"));
-            if ($fh->delete() == false) {
-                $this->response->setContentType('application/json', 'UTF-8');
-                $this->response->setJsonContent('already');
-            } else {
-                $this->response->setContentType('application/json', 'UTF-8');
-                $this->response->setJsonContent(true);
+    public function removeBtnFromFormulasHelperAction($id){
+        $this->ajaxDeleteCheck();
+        $res = false;
+        $msg = 'Ошибка при удалении шаблона формулы';
+        $fh = FormulasHelper::findFirst($id);
+        if ($fh != false) {
+            try {
+                if ($fh->delete()) {
+                    $res = true;
+                    $msg = true;
+                }
+            } catch (\Exception $e) {
+
             }
-            return $this->response;
-        } else {
-            $this->response->redirect('');
         }
+        $this->response->setJsonContent(['success' => $res, 'msg' => $msg]);
+
+        return $this->response;
     }
 
     public function addNewFormulaAction(){
@@ -309,7 +311,15 @@ class ProductsController extends ControllerBase
             $this->response->redirect('');
         }
     }
-    
+
+    public function saveProductAction () {
+        $this->ajaxPostCheck();
+        var_dump($this->request->getPost());
+        die();
+        $tableContent = $this->request->getPost('tableContent');
+        $alwaysInTable = $this->request->getPost('alwaysInTable');
+    }
+
     public function uploadImageAction ($productId) {
         if ($this->request->isAjax() && $this->request->isPost()) {
             $prObj = Products::findFirst(array("product_id = '$productId'"));

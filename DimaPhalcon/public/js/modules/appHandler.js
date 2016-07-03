@@ -248,47 +248,6 @@ define([
         //cancel create new formula
        // $('#cancelFormulaBtnPr' ).click(PRODUCT.cancelInputFormula);
 
-        // add formulas helper to formula input
-        $('#formulasHelper')
-            .on('click', '.fhBtn', function(){
-                PRODUCT.addElementToFormulaInput(this);
-            })
-
-            // show remove formulas helper
-            .on('mouseover', '.fhBtn', function() {
-                $( '.removeFhBtn', this).show('fast');
-            })
-
-            // hide remove formulas helper
-            .on('mouseleave', '.fhBtn', function() {
-                $( '.removeFhBtn', this).hide('fast');
-            })
-
-            // remove formulas helper
-            .on('click', '.removeFhBtn', function(e) {
-                e.stopPropagation();
-                e.preventDefault();
-                var fhText = $(this ).parent().text();
-                PRODUCT.removeFormulasHelper(this, fhText);
-            });
-
-        // add new formula helper
-        $('.addNewFhBtn').click(function(){
-            var newFl = $('#addNewFhBtnInput' ).val();
-            $('body').css('cursor', 'pointer');
-            $('#addFormulaInputPr' ).click();
-            PRODUCT.addBtnToFormulasHelper(newFl);
-        });
-
-        // focus on formula helper input
-        $('#addNewFhBtnInput').click(function(){
-            MAIN.clickOnFormulaInput = false;
-            $('.currentTab ')
-                .unbind('keydown keypress keyup');
-            $('body').off('keypress')
-                .css('cursor', 'auto');
-        });
-
         // hide all removeFormula icons
         //.find('.removeFormula' ).hide();
     };

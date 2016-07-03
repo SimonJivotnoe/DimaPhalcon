@@ -61,15 +61,24 @@
     </li>
 </script>
 <script id="formulaTemplate" type="x-tmpl-mustache">
-    <li class="list-group-item formula">
-        <span class="formulaValue">
-            {{formula}}
-            <span class="glyphicon glyphicon-resize-small bindFormulaWithCell" aria-hidden="true"></span>
-        </span>
-        <span class="addAvailableCellList">S1
-        </span>
-        <span class="glyphicon glyphicon-pencil editFormula" aria-hidden="true"></span><span class="glyphicon glyphicon-remove removeFormula" aria-hidden="true"></span>
-    </li>
+    <tr class="formula">
+        <td class="formulaValue">{{{beautyFormula}}}</td>
+        <td><span class="glyphicon glyphicon-remove removeFormula" aria-hidden="true"></span></td>
+        <td><span class="glyphicon glyphicon-pencil editFormula" aria-hidden="true"></span></td>
+        <td><span class="checkbox checkbox-slider--b-flat checkbox-slider-md">
+				<label>
+					<input type="checkbox" class="applyFormula" data-formula="{{formula}}"><span>&nbsp;</span>
+				</label>
+			</span>
+        </td>
+    </tr>
+</script>
+<script id="justCreatedFormula" type="x-tmpl-mustache">
+    <span class="justCreated">
+        <button type="button" class="btn custom-addRowsToTable btn-xs fhBtn">{{formula}}
+            <span class="glyphicon glyphicon-remove removeFhBtn" data-id="{{id}}" aria-hidden="true"></span>
+        </button>
+    </span>
 </script>
 <script id="leftTabsTemplate" type="x-tmpl-mustache">
     {{#template}}
