@@ -194,12 +194,8 @@ define(['jq', 'methods', 'URLs', 'mustache', 'PRODUCT', 'VALIDATION'], function 
                 formula = formula.replace(new RegExp(escapeRegex(operator),"g"), ` <span class="plusBold">${operator}</span> `);
             });
             formula = formula.replace(/\*/g, `<span class="plusBold">*</span>`);
-            for ( var i = 1; i <= 20; i++) {
-                formula = formula.replace(new RegExp(escapeRegex('A' + i),"g"), `<span class="Acolor">A${i}</span>`);
-            }
-            /*formula = formula.replace(/>(\d+\.?\d{0,3})</g, function (elem) {
-                return `<span class="likeNumber">${elem}</span>`;
-            });*/
+			formula = formula.replace(/(A\d+)/g, '<span class="Acolor">$1</span>');
+            formula = formula.replace(/>([ ]*\d+\.?\d{0,3}[ ]*)</g, '><span class="likeNumber">$1</span><');
             return formula;
         },
         addNewFormula: function(){
