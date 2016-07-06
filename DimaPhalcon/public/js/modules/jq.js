@@ -95,8 +95,9 @@ define(function () {
 		
 			addNewRow: $('#addNewRow'),
 			
-			createArticle: $('#createArticle'),
 			productArticle: $('#productArticle'),
+			createArticle: $('#createArticle'),
+			cancelArticleBtn: $('#cancelArticleBtn'),
 
 			formulaBtnGroupPr: $('.formulaBtnGroupPr'),
 				cancelFormulaBtnPr: $('#cancelFormulaBtnPr'),

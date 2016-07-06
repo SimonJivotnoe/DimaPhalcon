@@ -52,30 +52,62 @@ define(['jq', 'methods', 'URLs', 'mustache', 'PRODUCT', 'VALIDATION'], function 
             PRODUCT.addRowToTable(row);
         }
     },
-	
-	createArticle = function (parameters) {
-		var check = 0,
-			rowValueInput,
-			categoryArticle = $('.categoriesList option:selected').attr('data-article'),
-			metallArticle = $('.metallsList option:selected').attr('data-article');	
-		$jq.productArticle.html(categoryArticle + metallArticle);
-		$.map($('.checkToArticle'), function(row){
-			rowValueInput = $(row).closest('li').find('.rowValueInput');
-			if(rowValueInput.val()) {
-				check++;
-				$(this).show();
-			}
-		});
-		if (check) {
-			$('#saveArticle, #cancelArticleBtn').show();
-			$('#errorArticle' ).hide();
-			$(this ).hide();
-		} else {
-			$('#errorArticle' ).text(ERR.ARTICLE.emptyTable).show();
-			setTimeout(function(){ $('#errorArticle' ).text('').hide('slow'); }, 2000);
-		}
-	},
-	
+	article = {
+        checkToArticle: function () {
+            var $this = $(this),
+                val = $this.closest('li' ).find('.rowValueInput' ).val(),
+                cell = $this.closest('li' ).find('.rowNumber' ).text(),
+                appendSpan;
+            if ($this.prop('checked') && val) {
+                appendSpan = $(`<span articlepart="${cell}" style="display: none;">
+                                ${VALIDATION.validateInputVal({val: val, digitsOnly: true})}</span>`);
+                $jq.productArticle.append(appendSpan);
+                appendSpan.show('slow');
+                return true;
+            }
+            $.each($jq.productArticle.find('span'), function() {
+                var $this = $(this);
+                if (cell === $this.attr('articlepart')) {
+                    $this.slideUp();
+                    setTimeout(function(){ $this.remove(); }, 400);
+                }
+            });
+        },
+        createArticle: function () {
+            var check = 0,
+                rowValueInput,
+                categoryArticle = $('.categoriesList option:selected').attr('data-article'),
+                metallArticle = $('.metallsList option:selected').attr('data-article');
+            $jq.productArticle.html(categoryArticle + metallArticle);
+            $.map($('.checkToArticle'), function(row){
+                var $row = $(row);
+                rowValueInput = $row.closest('li').find('.rowValueInput');
+                if(rowValueInput.val()) {
+                    check++;
+                    $row.show();
+                    $row.closest('li').find('.removeRow').hide();
+                }
+            });
+            if (!check) {
+                methods.MESSAGES.error('Заполните поля таблицы продукта!');
+            }
+            $('#saveArticle, #cancelArticleBtn').show();
+            $(this).hide();
+        },
+        cancelArticleBtn: function () {
+            $jq.createArticle.show();
+            $('#cancelArticleBtn, #errorArticle' ).hide();
+            $.each($('.checkToArticle'), function(){
+                var $this = $(this);
+                if($this.prop('checked')) {
+                    $this.click();
+                };
+            });
+            $('.checkToArticle, #saveArticle').hide();
+            $jq.productArticle.html('');
+        },
+    },
+
     rowValueInputMousewheel = function (e) {
         var mathAction = '-';
         if (1 === e.deltaY) {
@@ -371,10 +403,12 @@ define(['jq', 'methods', 'URLs', 'mustache', 'PRODUCT', 'VALIDATION'], function 
             .on('mousewheel', '.rowValueInput', rowValueInputMousewheel)
             .on('keydown', '.rowValueInput', rowValueInputKeydown)
             .on('keyup', '.rowValueInput', rowValueInputKeyup)
-            .on('click', '.removeRow', removeRow);
-	
-		$jq.createArticle.click(createArticle);
-		
+            .on('click', '.removeRow', removeRow)
+            .on('change', '.checkToArticle', article.checkToArticle);
+
+		$jq.createArticle.click(article.createArticle);
+		$jq.cancelArticleBtn.click(article.cancelArticleBtn);
+
         // create formula
         $jq.addFormulaInputPr
             .click(formulas.startCreateNewFormula)

@@ -310,12 +310,11 @@
                                         </button>
                                     </div>
                                     <div class="col-md-6" id="productArticleWrapper">
-                                        Артикул : <span id="productArticle"></span><span class="bg-primary">
+                                        Артикул : <span id="productArticle" class="bg-primary"></span>
                                                 <button type="button" class="btn btn-info btn-sm" id="createArticle">Создать артикул</button>
-                                                <button type="button" class="btn btn-success btn-sm" id="saveArticle">Сохранить</button>
+                                                <!--<button type="button" class="btn btn-success btn-sm" id="saveArticle">Сохранить</button>-->
                                                 <button type="button" class="btn btn-danger btn-sm" id="cancelArticleBtn">Отмена</button>
                                                 <span id="errorArticle" class="bg-danger"></span>
-                                            </span>
                                     </div>
                                     <div class="col-md-6" id="productTableWrapper">
                                         <ul id="sortable">
