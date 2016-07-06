@@ -52,6 +52,30 @@ define(['jq', 'methods', 'URLs', 'mustache', 'PRODUCT', 'VALIDATION'], function 
             PRODUCT.addRowToTable(row);
         }
     },
+	
+	createArticle = function (parameters) {
+		var check = 0,
+			rowValueInput,
+			categoryArticle = $('.categoriesList option:selected').attr('data-article'),
+			metallArticle = $('.metallsList option:selected').attr('data-article');	
+		$jq.productArticle.html(categoryArticle + metallArticle);
+		$.map($('.checkToArticle'), function(row){
+			rowValueInput = $(row).closest('li').find('.rowValueInput');
+			if(rowValueInput.val()) {
+				check++;
+				$(this).show();
+			}
+		});
+		if (check) {
+			$('#saveArticle, #cancelArticleBtn').show();
+			$('#errorArticle' ).hide();
+			$(this ).hide();
+		} else {
+			$('#errorArticle' ).text(ERR.ARTICLE.emptyTable).show();
+			setTimeout(function(){ $('#errorArticle' ).text('').hide('slow'); }, 2000);
+		}
+	},
+	
     rowValueInputMousewheel = function (e) {
         var mathAction = '-';
         if (1 === e.deltaY) {
@@ -348,7 +372,9 @@ define(['jq', 'methods', 'URLs', 'mustache', 'PRODUCT', 'VALIDATION'], function 
             .on('keydown', '.rowValueInput', rowValueInputKeydown)
             .on('keyup', '.rowValueInput', rowValueInputKeyup)
             .on('click', '.removeRow', removeRow);
-
+	
+		$jq.createArticle.click(createArticle);
+		
         // create formula
         $jq.addFormulaInputPr
             .click(formulas.startCreateNewFormula)
@@ -409,6 +435,7 @@ define(['jq', 'methods', 'URLs', 'mustache', 'PRODUCT', 'VALIDATION'], function 
             $('body').css('cursor', 'auto');
         });
         $jq.addNewFhBtn.click(formulas.addNewFhBtn);
+		
         $jq.addNewProductBtn.click(saveProduct.addNewProductBtn);
     }
 

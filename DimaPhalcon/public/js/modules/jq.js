@@ -89,10 +89,14 @@ define(function () {
         addNewProductModal: $('#addNewProductModal'),
 			productNameInput: $('.productNameInput'),
 		    productTableWrapper: $('#productTableWrapper'),
+			categoriesList: $('.categoriesList'),
 			kimList: $('.kimList'),
 			metallsList: $('.metallsList'),
 		
 			addNewRow: $('#addNewRow'),
+			
+			createArticle: $('#createArticle'),
+			productArticle: $('#productArticle'),
 
 			formulaBtnGroupPr: $('.formulaBtnGroupPr'),
 				cancelFormulaBtnPr: $('#cancelFormulaBtnPr'),
