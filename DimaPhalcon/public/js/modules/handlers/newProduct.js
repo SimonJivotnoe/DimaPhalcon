@@ -359,7 +359,9 @@ define(['jq', 'methods', 'URLs', 'mustache', 'PRODUCT', 'VALIDATION'], function 
                 }),
                 category: $jq.addNewProductModal.find('.categoriesList option:selected').attr('data-id'),
                 kim: $jq.addNewProductModal.find('.kimList option:selected').attr('data-id'),
-                metall: $jq.addNewProductModal.find('.metallsList option:selected').attr('data-id')
+                metall: $jq.addNewProductModal.find('.metallsList option:selected').attr('data-id'),
+				tableContent: saveProduct.getTableContent('#sortable li'),
+				alwaysInTable: saveProduct.getTableContent('#alwaysInTable li')
             };
             return data;
         },
@@ -381,13 +383,10 @@ define(['jq', 'methods', 'URLs', 'mustache', 'PRODUCT', 'VALIDATION'], function 
             return tableContent;
         },
         addNewProductBtn: function () {
-            var data = saveProduct.getData();
-            data.tableContent = saveProduct.getTableContent('#sortable li'),
-            data.alwaysInTable = saveProduct.getTableContent('#alwaysInTable li');
             $.ajax({
-                url   : URLs.saveProduct,
+                url: URLs.saveProduct,
                 method: 'POST',
-                data: data
+                data: saveProduct.getData()
             });
         }
 
@@ -424,7 +423,7 @@ define(['jq', 'methods', 'URLs', 'mustache', 'PRODUCT', 'VALIDATION'], function 
             .keydown(function (e) {
                 if (MAIN.clickOnFormulaInput) {
                     if (e.keyCode === 8) {
-                        var currentVal =  $jq.addFormulaInputPr.val();
+                        var currentVal = $jq.addFormulaInputPr.val();
                         var ls = localStorage.currentCaretPos;
                         currentVal = formulas.removeChar(currentVal, ls - 1);
                         $jq.addFormulaInputPr.val(currentVal);

@@ -314,8 +314,6 @@ class ProductsController extends ControllerBase
 
     public function saveProductAction () {
         $this->ajaxPostCheck();
-        var_dump($this->request->getPost());
-        die();
         $tableContent = $this->request->getPost('tableContent');
         $alwaysInTable = $this->request->getPost('alwaysInTable');
     }
