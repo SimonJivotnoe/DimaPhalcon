@@ -69,10 +69,10 @@ define(['jq', 'datatables.net'], function ($jq, DataTable) {
 				end = 4,
 				opacity = 0.3;
 				if (off) {
-		start = 4;
-				end = 0;
-				opacity = 1;
-		}
+					start = 4;
+					end = 0;
+					opacity = 1;
+				}
 		$({blurRadius: start}).animate({blurRadius: end}, {
 		duration: 500,
 				easing: 'swing',

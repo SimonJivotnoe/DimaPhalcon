@@ -93,6 +93,7 @@ define(['jq', 'methods', 'URLs', 'startPage', 'dbHandler', 'mustache'], function
             $productsTreeDB.jstree(MAIN.productsTreeDB);
             methods.toggleMainButtons($jq.productsTreeDBButtons, $jq.mainIcons);
             methods.hideLayout();
+            methods.blur($('#settingsMetallsWrapper'), true);
         });
     }
 

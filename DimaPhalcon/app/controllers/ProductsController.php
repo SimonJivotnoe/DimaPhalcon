@@ -314,8 +314,33 @@ class ProductsController extends ControllerBase
 
     public function saveProductAction () {
         $this->ajaxPostCheck();
-        $tableContent = $this->request->getPost('tableContent');
-        $alwaysInTable = $this->request->getPost('alwaysInTable');
+        $success = 0;
+        $msg = 'Вы не создали Артикул или Такой Артикул уже существует!';
+        $article = $this->request->getPost('article');
+        $productName = $this->request->getPost('productName');
+        $category = $this->request->getPost('category');
+        $kim = $this->request->getPost('kim');
+        $metall = $this->request->getPost('metall');
+        $tableContent = json_encode($this->request->getPost('tableContent'));
+        $alwaysInTable = json_encode($this->request->getPost('alwaysInTable'));
+        if ($article && !Products::findFirst(array("article = '$article'"))) {
+            $product = new Products();
+            $product->setArticle($article)
+                ->setProductName($productName)
+                ->setCategoryId($category)
+                ->setKim($kim)
+                ->setMetall($metall)
+                ->setTableContent($tableContent)
+                ->setAlwaysInTable($alwaysInTable);
+            if ($product->save()) {
+                $success = 1;
+                $msg = '';
+                $data = ['id' => $product->getProductId()];
+            }
+        }
+        $this->response->setJsonContent(['success' => $success, 'msg' => $msg, 'data' => $data]);
+
+        return $this->response;
     }
 
     public function uploadImageAction ($productId) {

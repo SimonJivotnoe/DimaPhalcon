@@ -353,6 +353,7 @@ define(['jq', 'methods', 'URLs', 'mustache', 'PRODUCT', 'VALIDATION'], function 
     saveProduct = {
         getData: function () {
             var data = {
+                article: $jq.productArticle.text().trim().replace(/\s+/g, ''),
                 productName: VALIDATION.validateInputVal({
                     val: $jq.productNameInput.val(),
                     id: '.productNameInput',
@@ -367,7 +368,6 @@ define(['jq', 'methods', 'URLs', 'mustache', 'PRODUCT', 'VALIDATION'], function 
         },
         getTableContent: function (elem) {
             var tableContent = [],
-                i = 0,
                 temp;
             $.map($(elem), function(row) {
                 temp = {
@@ -383,11 +383,34 @@ define(['jq', 'methods', 'URLs', 'mustache', 'PRODUCT', 'VALIDATION'], function 
             return tableContent;
         },
         addNewProductBtn: function () {
-            $.ajax({
-                url: URLs.saveProduct,
-                method: 'POST',
-                data: saveProduct.getData()
-            });
+            var data = saveProduct.getData();
+            if (!data.article) {
+                methods.MESSAGES.error('Создайте Артикул!');
+            }
+            if (!data.productName) {
+                methods.MESSAGES.error('Создайте Имя Продукта!');
+            }
+            if (data.article && data.productName) {
+                $.ajax({
+                    url: URLs.saveProduct,
+                    method: 'POST',
+                    data: saveProduct.getData()
+                }).then(function (response) {
+                    if (response.success && response.data.id) {
+                        PRODUCT.createFileManager('PR');
+                        $.ajax({
+                            type: 'POST',
+                            processData: false,
+                            contentType: false,
+                            url: URLs.uploadImage + '/' +response.data.id,
+                            data: MAIN.formData,
+                            dataType: 'json'
+                        }).then(function () {
+                            $jq.addNewProductModal.modal('hide');
+                        });
+                    }
+                });
+            }
         }
 
     }

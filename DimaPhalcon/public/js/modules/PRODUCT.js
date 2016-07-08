@@ -265,6 +265,7 @@ define(['jq', 'methods', 'URLs', 'CATEGORIES', 'KIM', 'METALLS', 'TABS', 'mustac
                     $productsTreeDB.jstree(MAIN.productsTreeDB);
                     methods.toggleMainButtons($jq.mainIcons, $jq.productsTreeDBButtons);
                     methods.showLayout($('#settingsMetallsWrapper'));
+					methods.blur($('#settingsMetallsWrapper'));
                 } ).end()
 
                 .find('#addNewTab').on('click', function(){
@@ -760,7 +761,7 @@ define(['jq', 'methods', 'URLs', 'CATEGORIES', 'KIM', 'METALLS', 'TABS', 'mustac
 			{
 				var $productsList = $jq.dbProductsListList();
 				MAIN.productsTreeDB.core.data = response.tree;
-				$('.productsTreeDB' ).jstree(MAIN.productsTreeDB);
+				$jq.productsTreeDB().jstree('destroy').jstree(MAIN.productsTreeDB);
 				$('#databaseWrapper .innerBackLayout')
 					.width($productsList.width())
 					.height('100vh' )

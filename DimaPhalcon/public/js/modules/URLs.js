@@ -43,6 +43,7 @@ define([], function () {
 		addBtnToFormulasHelper: URLs.PRODUCT + 'addBtnToFormulasHelper',
 		removeBtnFromFormulasHelper: URLs.PRODUCT + 'removeBtnFromFormulasHelper',
 		saveProduct: URLs.PRODUCT + 'saveProduct',
+		uploadImage: URLs.PRODUCT + 'uploadImage',
 	});
 
     return URLs;
