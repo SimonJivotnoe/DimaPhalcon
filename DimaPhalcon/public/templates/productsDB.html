@@ -2,14 +2,16 @@
         <div class="split-pane-component" id="db-left-component">
             <div id="tabs">
                 <div role="tabpanel">
-                    <ul class="nav nav-tabs" role="tablist" id="myTab">
-                        <li role="presentation" id="dbProductsListTab">
-                            <a href="#dbProductsListList" aria-controls="dbProductsListList" role="tab" data-toggle="tab">
-                                <span class="glyphicon glyphicon-folder-open" aria-hidden="true" style="color:#eb9316;"></span>
-                            </a>
-                        </li>
-                        <li role="presentation" id="addNewTab"><a>+</a></li>
-                    </ul>
+                    <div id="productTabsLiWrapper">
+                        <ul class="nav nav-tabs" role="tablist" id="myTab">
+                            <li role="presentation" id="dbProductsListTab">
+                                <a href="#dbProductsListList" aria-controls="dbProductsListList" role="tab" data-toggle="tab">
+                                    <span class="glyphicon glyphicon-folder-open" aria-hidden="true" style="color:#eb9316;"></span>
+                                </a>
+                            </li>
+                            <!--<li role="presentation" id="addNewTab">&nbsp;</li>-->
+                        </ul>
+                    </div>
                     <div class="tab-content" id="leftTabsContent">
                         <div role="tabpanel" class="tab-pane" id="dbProductsListList">
                             <div class="productsTreeDBWrapper">

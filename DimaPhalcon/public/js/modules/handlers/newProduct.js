@@ -11,46 +11,18 @@ define(['jq', 'methods', 'URLs', 'mustache', 'PRODUCT', 'VALIDATION'], function 
         methods.excel();
     },
     addNewRow = function () {
-        var numbersOfRows = 1,
-            tableContent = {},
-            temp,
-            alwaysInTable,
-            arr = [],
-            max = 0,
-            i;
+        var existingRows = [],
+            max = 1;
         methods.cancelArticleBtn();
-        if (0 === $('#sortable li').size()) {
-            for (i = 0; i < numbersOfRows; i++) {
-                temp = _.clone(_products.tempTable);
-                temp['%ROW_NUMBER%'] = 'A' + (i + 1);
-                temp['%DATA_CELL%'] = 'A' + (i + 1);
-                tableContent[i] = temp;
+        $.map($('#sortable .rowNumber'), function (rowNumber) {
+            if ('' !== $(rowNumber).text()) {
+                existingRows.push(parseInt($(rowNumber).text().substring(1)));
             }
-            alwaysInTable = PRODUCT.getTableContent('#alwaysInTable li');
-            PRODUCT.createTable(tableContent, alwaysInTable);
-        } else {
-            $.map($('#sortable .rowNumber'), function (val) {
-                if ('' !== $(val).text()) {
-                    arr.push(parseInt($(val).text().substring(1)));
-                }
-            });
-            if (0 !== arr.length) {
-                max = Math.max.apply(Math, arr);
-            }
-
-            tableContent = PRODUCT.getTableContent('#sortable li');
-            var row = {};
-            for (var i = 0; i < numbersOfRows; i++) {
-                row = _.clone(PRODUCT.tempTable);
-                row['%ROW_NUMBER%'] = 'A' + (max + 1);
-                row['%DATA_CELL%'] = 'A' + (max + 1);
-                //tableContent[max] = temp;
-                max++;
-            }
-            //alwaysInTable = PRODUCT.getTableContent('#alwaysInTable li');
-            //PRODUCT.createTable(tableContent, alwaysInTable);
-            PRODUCT.addRowToTable(row);
+        });
+        if (0 !== existingRows.length) {
+            max = Math.max.apply(Math, existingRows);
         }
+        $jq.productTableRows.append(Mustache.render($('#productTableRowTemplate').html(), { rowNumber: 'A' + (max + 1) }));
     },
 	article = {
         checkToArticle: function () {
@@ -102,6 +74,7 @@ define(['jq', 'methods', 'URLs', 'mustache', 'PRODUCT', 'VALIDATION'], function 
                 if($this.prop('checked')) {
                     $this.click();
                 };
+                $this.closest('li').find('.removeRow').show();
             });
             $('.checkToArticle, #saveArticle').hide();
             $jq.productArticle.html('');
@@ -362,9 +335,24 @@ define(['jq', 'methods', 'URLs', 'mustache', 'PRODUCT', 'VALIDATION'], function 
                 kim: $jq.addNewProductModal.find('.kimList option:selected').attr('data-id'),
                 metall: $jq.addNewProductModal.find('.metallsList option:selected').attr('data-id'),
 				tableContent: saveProduct.getTableContent('#sortable li'),
-				alwaysInTable: saveProduct.getTableContent('#alwaysInTable li')
+				alwaysInTable: saveProduct.getTableContent('#alwaysInTable li'),
+                formulas: saveProduct.getFormulasList()
             };
             return data;
+        },
+        getFormulasList: function () {
+            var res = [];
+            $.map($('.applyFormula'), function (toggle) {
+                var $toggle = $(toggle),
+                    row = {
+                        formula: $toggle.attr('data-formula')
+                    }
+                if ($toggle.hasClass('appliedFormula')) {
+                    row.applied = true;
+                }
+                res.push(row);
+            });
+            return res;
         },
         getTableContent: function (elem) {
             var tableContent = [],
@@ -412,7 +400,6 @@ define(['jq', 'methods', 'URLs', 'mustache', 'PRODUCT', 'VALIDATION'], function 
                 });
             }
         }
-
     }
 
     var newProductHandler = function () {

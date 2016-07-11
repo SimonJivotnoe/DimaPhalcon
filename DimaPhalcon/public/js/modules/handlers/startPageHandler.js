@@ -92,8 +92,10 @@ define(['jq', 'methods', 'URLs', 'startPage', 'dbHandler', 'mustache'], function
             $productsTreeDB.jstree('destroy');
             $productsTreeDB.jstree(MAIN.productsTreeDB);
             methods.toggleMainButtons($jq.productsTreeDBButtons, $jq.mainIcons);
-            methods.hideLayout();
             methods.blur($('#settingsMetallsWrapper'), true);
+            methods.hideLayout();
+            methods.blur($('#productTabsLiWrapper'), true);
+            methods.hideLayout($('#tabsLiLayout'));
         });
     }
 

@@ -38,7 +38,9 @@ define([], function () {
 		getLeftTabsList: URLs.TABS + 'getLeftTabsList',
 		getLeftTabContent: URLs.TABS + 'getLeftTabContent',
 		getProductsTree: URLs.MENU + 'getProductsTree',
-
+		// TABS
+		changeActiveTab: URLs.TABS + 'changeActiveLeftTab',
+		closeTab: URLs.TABS + 'closeTab',
 		// PRODUCT
 		addBtnToFormulasHelper: URLs.PRODUCT + 'addBtnToFormulasHelper',
 		removeBtnFromFormulasHelper: URLs.PRODUCT + 'removeBtnFromFormulasHelper',

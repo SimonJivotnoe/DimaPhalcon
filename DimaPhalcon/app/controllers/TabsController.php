@@ -192,13 +192,11 @@ class TabsController extends ControllerBase
                 $val->save();
             }
             $id = $this->request->getPost('id');
-            $tabId = $this->request->getPost('tabId');
-            $tabs = Tabs::find(array("id = '$id'", "tab_id = '$tabId'"));
-            foreach ($tabs as $val) {
-                $val->setActive(1);
-                $val->save();
+            $tabs = Tabs::findFirst($id);
+            $tabs->setActive(1)->save();
+            if ($tabs->save()) {
+                $res = true;
             }
-            $res = true;
         }
         $this->response->setJsonContent($res);
 

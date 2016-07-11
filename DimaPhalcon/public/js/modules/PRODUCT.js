@@ -39,7 +39,7 @@ define(['jq', 'methods', 'URLs', 'CATEGORIES', 'KIM', 'METALLS', 'TABS', 'mustac
 				MAIN.prRequested = true;
 				
 				if (response.template) {
-					PRODUCT.addLeftTabsHandler($(Mustache.render($jq.leftTabsTemplate.html(), response))).insertBefore('#addNewTab');
+					PRODUCT.addLeftTabsHandler($(Mustache.render($jq.leftTabsTemplate.html(), response))).insertAfter('#dbProductsListTab');
 				}
 				if (response.activeTabId && response.template) {
 					PRODUCT.getLeftTabContent(response.productId, response.activeTabId);
@@ -138,10 +138,6 @@ define(['jq', 'methods', 'URLs', 'CATEGORIES', 'KIM', 'METALLS', 'TABS', 'mustac
 			return tableContent;
 		},
 
-		addRowToTable: function (tableContent) {
-			$('#sortable').append(Mustache.render($('#productTableRowTemplate').html(), tableContent));
-		},
-
 		createProductFromTemplate: function () {
 			var obj = {prId: MAIN.productId, tab: 'new'};
 			if ('currentTab' === $('#selectCreateproductWay').val()) {
@@ -184,7 +180,7 @@ define(['jq', 'methods', 'URLs', 'CATEGORIES', 'KIM', 'METALLS', 'TABS', 'mustac
 		addLeftTabsHandler: function (html) {
 			html
 				// change current tab
-				.find('[role=tab], #dbProductsListList').click(function(){
+				/*.find('[role=tab], #dbProductsListList').click(function(){
 					if ($(this ).attr('aria-controls') !== MAIN.curTabId) {
 						var tabsCloseRes = TABS.changeActiveTab({
 							scope: this,
@@ -199,17 +195,7 @@ define(['jq', 'methods', 'URLs', 'CATEGORIES', 'KIM', 'METALLS', 'TABS', 'mustac
 							TABS.changeActiveTabBack(tabsCloseRes.tabId, tabsCloseRes.selectedTabId, 'changeActiveLeftTab');
 						}
 					}
-				}).end()
-
-				//close tab
-				.find('.closeTab').click(function (e){
-					e.stopPropagation();
-					e.preventDefault();
-					var currentID = $(this).parent().attr('aria-controls' ),
-						idDb = $(this ).attr('name');
-					$(this ).attr('class', 'glyphicon glyphicon-remove');
-					TABS.closeLeftTab(idDb, currentID);
-				});
+				}).end()*/
 			
 			return html;
 		},
@@ -266,6 +252,8 @@ define(['jq', 'methods', 'URLs', 'CATEGORIES', 'KIM', 'METALLS', 'TABS', 'mustac
                     methods.toggleMainButtons($jq.mainIcons, $jq.productsTreeDBButtons);
                     methods.showLayout($('#settingsMetallsWrapper'));
 					methods.blur($('#settingsMetallsWrapper'));
+                    methods.showLayout($jq.productTabsLiWrapper(), $('#tabsLiLayout'));
+					methods.blur($('#productTabsLiWrapper'));
                 } ).end()
 
                 .find('#addNewTab').on('click', function(){

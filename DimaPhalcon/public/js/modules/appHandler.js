@@ -8,7 +8,6 @@ define([
     'METALLS',
     'CATEGORIES',
     'KIM',
-    'newProductHandler',
     'startPageHandler',
     'calx'
 ], function (
@@ -21,11 +20,9 @@ define([
     METALLS,
     CATEGORIES,
     KIM,
-    newProductHandler,
     startPageHandler
 ) {
     startPageHandler();
-    newProductHandler();
     var appHandler = function () {
         $jq.addCategoryBtn.click(function(){
             var category = VALIDATION.validateInputVal({

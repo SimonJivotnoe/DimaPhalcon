@@ -1,7 +1,9 @@
-define(function (require) {
-	var $jq = require('jq');
-	var methods = require('methods');
-	var URLs = require('URLs');
+define(['jq', 'methods', 'URLs', 'PRODUCT'], function (
+	$jq,
+	methods,
+	URLs,
+	PRODUCT
+) {
 	var TABS = {
 		showPreferences: function (){
 			$('#dbProductsListTab, #dbProductsListList').addClass('active');
@@ -39,7 +41,7 @@ define(function (require) {
 			}
 
 			if (MAIN[curTabId] !== selectedTabId && undefined !== selectedTabId){
-				tabId = $(scope ).find('.glyphicon-remove').attr('name' );
+				tabId = $(scope ).find('.glyphicon-remove').attr('data-tab-id' );
 				prodId = $(scope ).attr('name');
 				MAIN[tabsList][selectedTabId].active = '1';
 				res = {
@@ -68,7 +70,7 @@ define(function (require) {
 			});
 			MAIN[tabsList][id].active = '1';
 			MAIN[curTabId] = id;
-		},
+		}
 	};
 	
 	return TABS;

@@ -37,6 +37,8 @@
     <div id="sectionContent"></div>
     <div id="outBodyElements"></div>
     <div id="backLayout" class="clearer"></div>
+    <div id="tabsLiLayout" class="clearer"></div>
+
     <div class="modal fade" id="addNewCategoryModal" tabindex="-1" role="dialog" aria-labelledby="addNewCategoryModal">
         <div class="modal-dialog" role="document">
             <div class="modal-content">

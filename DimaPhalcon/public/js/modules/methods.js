@@ -65,35 +65,35 @@ define(['jq', 'datatables.net'], function ($jq, DataTable) {
 		activateButton: function () { $(this).addClass('hvr-pulse-grow').removeClass('activeTopIcon'); },
 		deactivateButton: function () { $(this).removeClass('hvr-pulse-grow').addClass('activeTopIcon'); },
 		blur: function ($section, off) {
-		var start = 0,
-				end = 4,
-				opacity = 0.3;
-				if (off) {
-					start = 4;
-					end = 0;
-					opacity = 1;
-				}
-		$({blurRadius: start}).animate({blurRadius: end}, {
-		duration: 500,
-				easing: 'swing',
-				step: function() {
-				$section.css({
-				"-webkit-filter": "blur(" + this.blurRadius + "px)",
-						"filter": "blur(" + this.blurRadius + "px)"
-				});
-				}
-		});
-				$section.animate({opacity: opacity});
+			var start = 0,
+					end = 4,
+					opacity = 0.3;
+					if (off) {
+						start = 4;
+						end = 0;
+						opacity = 1;
+					}
+			$({blurRadius: start}).animate({blurRadius: end}, {
+			duration: 500,
+					easing: 'swing',
+					step: function() {
+					$section.css({
+					"-webkit-filter": "blur(" + this.blurRadius + "px)",
+							"filter": "blur(" + this.blurRadius + "px)"
+					});
+					}
+			});
+			$section.animate({opacity: opacity});
 		},
-		showLayout: function ($section) {
-		$jq.layout
+		showLayout: function ($section, $layout = $jq.layout) {
+			$layout
 				.width($section.width())
 				.height($section.height())
 				.css({left: $section.offset().left})
 				.show();
 		},
-		hideLayout: function () {
-		$jq.layout.width(0).height(0).hide();
+		hideLayout: function ($layout = $jq.layout) {
+			$layout.width(0).height(0).hide();
 		},
 		setOutBodyElem: function () {
 			var tableWrapper = MAIN.focusedElem.find('table').closest('div');

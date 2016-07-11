@@ -993,7 +993,7 @@ table.rc-table-resizing thead,table.rc-table-resizing thead> th,table.rc-table-r
     /*overflow-x: auto;
     overflow-y: auto;*/
 }
-#settingsMetallsWrapper {
+#settingsMetallsWrapper, #productTabsLiWrapper {
     width: 98%;
 }
 #settingsMetallsWrapper .categoriesListTable, #settingsMetallsWrapper .kimListTable, #settingsMetallsWrapper .metallListTable{
@@ -1009,7 +1009,7 @@ table.rc-table-resizing thead,table.rc-table-resizing thead> th,table.rc-table-r
     position: absolute;
     z-index: 600;
 }
-#backLayout, .innerBackLayout {
+#backLayout, .innerBackLayout, #tabsLiLayout {
     display: none;
     z-index: 500;
     position: fixed;

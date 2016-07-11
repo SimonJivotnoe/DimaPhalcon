@@ -48,13 +48,13 @@
 </script>
 <script id="productTableRowTemplate" type="x-tmpl-mustache">
     <li class="">
-        <span class="rowNumber col-md-2">{{%ROW_NUMBER%}}</span>
+        <span class="rowNumber col-md-2">{{rowNumber}}</span>
         <span class="rowName">
-            <input class="rowNameInput" type="text" value="{{%INPUT_VALUE%}}">
+            <input class="rowNameInput" type="text" value="">
         </span>
         <span class="rowValue">
-            <input class="rowValueInput" data-cell="{{%DATA_CELL%}}" data-formula="{{%DATA_FORMULA%}}" data-format="0[.]00"
-                   type="tel" style="width: 5em;" value="{{%INPUT_VALUE%}}">
+            <input class="rowValueInput" data-cell="{{rowNumber}}" data-formula="" data-format="0[.]00"
+                   type="tel" style="width: 5em;" value="">
         </span>
         <label><input class="checkToArticle" type="checkbox"></label>
         <span class="removeRow glyphicon glyphicon-remove" aria-hidden="true"></span></li>
@@ -82,11 +82,11 @@
 </script>
 <script id="leftTabsTemplate" type="x-tmpl-mustache">
     {{#template}}
-        <li role="presentation" class="{{active}}">
+        <li role="presentation" class="{{active}}" data-tab-id="{{id}}">
             <a href="{{tabId}}" aria-controls="{{tabId}}" name="{{productId}}" role="tab" data-toggle="tab"
                aria-expanded="true">
                 <span class="tabName">{{productName}}</span>
-                <span class="closeTab glyphicon glyphicon-remove" name="{{id}}" aria-hidden="true"></span>
+                <span class="closeTab glyphicon glyphicon-remove" data-tab-id="{{id}}" aria-hidden="true"></span>
             </a>
         </li>
     {{/template}}

@@ -1,4 +1,20 @@
-define(['jq', 'methods', 'startPage', 'appHandler'], function ($jq, methods, startPage, appHandler) {var
+define([
+    'jq',
+    'methods',
+    'startPage',
+    'appHandler',
+    'newProductHandler',
+    'startPageHandler',
+    'dbTabsHandler'
+], function (
+    $jq,
+    methods,
+    startPage,
+    appHandler,
+    newProductHandler,
+    startPageHandler,
+    dbTabsHandler
+) {var
    init = function () {
        $(document).on({
            ajaxStart: methods.startWaitAnimation,
@@ -19,6 +35,8 @@ define(['jq', 'methods', 'startPage', 'appHandler'], function ($jq, methods, sta
                    break;
                case 'DB':
                    startPage.runDB();
+                   newProductHandler();
+                   dbTabsHandler();
                    break;
                case 'OR':
                    startPage.runProductCreation();

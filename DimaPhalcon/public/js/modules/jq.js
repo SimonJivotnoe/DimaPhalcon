@@ -99,6 +99,8 @@ define(function () {
 			createArticle: $('#createArticle'),
 			cancelArticleBtn: $('#cancelArticleBtn'),
 
+			productTabsLiWrapper: function () { return $('#productTabsLiWrapper'); },
+			productTableRows: $('#sortable'),
 			formulaBtnGroupPr: $('.formulaBtnGroupPr'),
 				cancelFormulaBtnPr: $('#cancelFormulaBtnPr'),
 				addFormulaBtnPr: $('#addFormulaBtnPr'),

@@ -317,21 +317,17 @@ class ProductsController extends ControllerBase
         $success = 0;
         $msg = 'Вы не создали Артикул или Такой Артикул уже существует!';
         $article = $this->request->getPost('article');
-        $productName = $this->request->getPost('productName');
-        $category = $this->request->getPost('category');
-        $kim = $this->request->getPost('kim');
-        $metall = $this->request->getPost('metall');
-        $tableContent = json_encode($this->request->getPost('tableContent'));
-        $alwaysInTable = json_encode($this->request->getPost('alwaysInTable'));
         if ($article && !Products::findFirst(array("article = '$article'"))) {
             $product = new Products();
             $product->setArticle($article)
-                ->setProductName($productName)
-                ->setCategoryId($category)
-                ->setKim($kim)
-                ->setMetall($metall)
-                ->setTableContent($tableContent)
-                ->setAlwaysInTable($alwaysInTable);
+                ->setProductName($this->request->getPost('productName'))
+                ->setCategoryId($this->request->getPost('category'))
+                ->setKim($this->request->getPost('kim'))
+                ->setMetall($this->request->getPost('metall'))
+                ->setTableContent(json_encode($this->request->getPost('tableContent')))
+                ->setAlwaysInTable(json_encode($this->request->getPost('alwaysInTable')))
+                ->setFormulas(json_encode($this->request->getPost('formulas')))
+                ->setStatus('save');
             if ($product->save()) {
                 $success = 1;
                 $msg = '';
