@@ -39,6 +39,7 @@ define([], function () {
 		getLeftTabContent: URLs.TABS + 'getLeftTabContent',
 		getProductsTree: URLs.MENU + 'getProductsTree',
 		// TABS
+		getTabs: URLs.TABS + 'getTabs',
 		changeActiveTab: URLs.TABS + 'changeActiveLeftTab',
 		closeTab: URLs.TABS + 'closeTab',
 		// PRODUCT

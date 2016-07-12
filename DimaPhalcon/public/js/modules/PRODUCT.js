@@ -25,7 +25,23 @@ define(['jq', 'methods', 'URLs', 'CATEGORIES', 'KIM', 'METALLS', 'TABS', 'mustac
 			KIM.getKIM();
 			METALLS.getMetalls();
 		},
-		
+		getTabs: function () {
+			$.ajax({
+				url: URLs.getTabs,
+				method: 'GET'
+			}).then(function (response) {
+				PRODUCT.createFileManager('PR');
+				if (!response.activeTab) {
+					$('#dbProductsListTab, #dbProductsListList').addClass('active');
+					$('#dbProductsListTab').click();
+				}
+				if (response.data.length) {
+					PRODUCT.addLeftTabsHandler($(Mustache.render($jq.leftTabsTemplate.html(), response))).insertAfter('#dbProductsListTab');
+					$('#leftTabsContent').append($(Mustache.render($jq.tabsContentTemplate.html(), response)));
+					return true;
+				}
+			});
+		},
 		getLeftTabsList: function () {
 			$.ajax({
 				url: URLs.getLeftTabsList,
@@ -226,9 +242,10 @@ define(['jq', 'methods', 'URLs', 'CATEGORIES', 'KIM', 'METALLS', 'TABS', 'mustac
                 }).end()
 
                 .find('#dbProductsListTab').click(function(){
-                    TABS.setActiveDefaultTab('tabsList', 'dbProductsListTab', 'curTabId');
+                    /*TABS.setActiveDefaultTab('tabsList', 'dbProductsListTab', 'curTabId');
                     TABS.changeActiveTabBack('', '', 'changeActiveLeftTab');
-                    PRODUCT.createFileManager('PR');
+                    PRODUCT.createFileManager('PR');*/
+					setTimeout(function () { $('#databaseWrapper .innerBackLayout').css({top: $('#dbProductsListList').offset().top}); }, 1);
                 }).end()
 
                 .find('.categoriesWrapper, .kimWrapper, .metallWrapper' ).click(function(){
@@ -747,13 +764,15 @@ define(['jq', 'methods', 'URLs', 'CATEGORIES', 'KIM', 'METALLS', 'TABS', 'mustac
 				data: {param: param}
 			} ).then( function ( response )
 			{
-				var $productsList = $jq.dbProductsListList();
 				MAIN.productsTreeDB.core.data = response.tree;
 				$jq.productsTreeDB().jstree('destroy').jstree(MAIN.productsTreeDB);
-				$('#databaseWrapper .innerBackLayout')
-					.width($productsList.width())
-					.height('100vh' )
-					.css({top: $productsList.offset().top});
+				$jq.productsTreeDB().on('ready.jstree', function () {
+					var $productsList = $jq.dbProductsListList();
+					$('#databaseWrapper .innerBackLayout')
+						.width($productsList.width())
+						.height('100vh');
+						//.css({top: $productsList.offset().top});
+				});
 			});
 		}
     };

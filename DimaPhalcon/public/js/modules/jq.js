@@ -2,6 +2,7 @@ define(function () {
 	var $jq = {
 		// TEMPLATES
 		leftTabsTemplate: $('#leftTabsTemplate'),
+		tabsContentTemplate: $('#tabsContentTemplate'),
 		categoriesTableTemplate: $('#categoriesTableTemplate'),
 		optionListTemplate: $('#optionListTemplate'),
 		metallsTableTemplate: $('#metallsTableTemplate'),

@@ -2,7 +2,33 @@
 use Phalcon\Db\RawValue;
 
 class TabsController extends ControllerBase
-{    
+{
+    public function getTabsAction () {
+        $this->ajaxGetCheck();
+        $data = [];
+        $activeTab = false;
+        $tabsObj = Tabs::find();
+        if ($tabsObj && count($tabsObj)) {
+            foreach ($tabsObj as $tab) {
+                $active = '';
+                if ($tab->getActive()) {
+                    $activeTab = $tab->getActive();
+                    $active = 'active';
+                }
+                $template = [
+                    'tabId' => $tab->getId(),
+                    'isActiveTab' => $active,
+                    'productId' => $tab->getProductId(),
+                    'productName' => $tab->Products->getProductName(),
+                    'productArticle' => $tab->Products->getArticle()
+                ];
+                array_push($data, $template);
+            }
+        }
+
+        return $this->response->setJsonContent(['data' => $data, 'activeTab' => $activeTab]);
+    }
+
     public function getLeftTabsListAction() {
         $this->ajaxGetCheck();
         $res = ['success' => false];
@@ -192,10 +218,12 @@ class TabsController extends ControllerBase
                 $val->save();
             }
             $id = $this->request->getPost('id');
-            $tabs = Tabs::findFirst($id);
-            $tabs->setActive(1)->save();
-            if ($tabs->save()) {
-                $res = true;
+            if ($id) {
+                $tabs = Tabs::findFirst($id);
+                $tabs->setActive(1)->save();
+                if ($tabs->save()) {
+                    $res = true;
+                }
             }
         }
         $this->response->setJsonContent($res);

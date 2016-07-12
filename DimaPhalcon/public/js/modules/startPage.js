@@ -50,11 +50,14 @@ define(['jq', 'methods', 'URLs', 'PRODUCT'], function ($jq, methods, URLs, PRODU
                     $jq.startPageWrapper.hide();
                     $jq.topIconsWrapper.show();
                     methods.showBody();
-                    $.when(PRODUCT.loadKimSection()).done(function () {
+                    /*$.when(PRODUCT.loadKimSection()).done(function () {
                         if (!MAIN.prRequested) {
                             PRODUCT.getLeftTabsList();
                         }
-                    });
+                    });*/
+                    PRODUCT.loadKimSection();
+                    PRODUCT.getTabs();
+                    $('#myTab, #leftTabsContent').fadeIn('slow');
                 });
             }
         },

@@ -11,12 +11,6 @@ class Tabs extends \Phalcon\Mvc\Model
 
     /**
      *
-     * @var string
-     */
-    protected $tab_id;
-
-    /**
-     *
      * @var integer
      */
     protected $product_id;
@@ -36,19 +30,6 @@ class Tabs extends \Phalcon\Mvc\Model
     public function setId($id)
     {
         $this->id = $id;
-
-        return $this;
-    }
-
-    /**
-     * Method to set the value of field tab_id
-     *
-     * @param string $tab_id
-     * @return $this
-     */
-    public function setTabId($tab_id)
-    {
-        $this->tab_id = $tab_id;
 
         return $this;
     }
@@ -87,16 +68,6 @@ class Tabs extends \Phalcon\Mvc\Model
     public function getId()
     {
         return $this->id;
-    }
-
-    /**
-     * Returns the value of field tab_id
-     *
-     * @return string
-     */
-    public function getTabId()
-    {
-        return $this->tab_id;
     }
 
     /**

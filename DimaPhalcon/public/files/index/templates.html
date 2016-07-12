@@ -81,13 +81,20 @@
     </span>
 </script>
 <script id="leftTabsTemplate" type="x-tmpl-mustache">
-    {{#template}}
-        <li role="presentation" class="{{active}}" data-tab-id="{{id}}">
-            <a href="{{tabId}}" aria-controls="{{tabId}}" name="{{productId}}" role="tab" data-toggle="tab"
+    {{#data}}
+        <li role="presentation" class="{{isActiveTab}}" data-tab-id="{{tabId}}">
+            <a href="#productTab{{tabId}}" aria-controls="productTab{{tabId}}" name="{{productId}}" role="tab" data-toggle="tab"
                aria-expanded="true">
                 <span class="tabName">{{productName}}</span>
-                <span class="closeTab glyphicon glyphicon-remove" data-tab-id="{{id}}" aria-hidden="true"></span>
+                <span class="closeTab glyphicon glyphicon-remove" data-tab-id="{{tabId}}" aria-hidden="true"></span>
             </a>
         </li>
-    {{/template}}
+    {{/data}}
+</script>
+<script id="tabsContentTemplate" type="x-tmpl-mustache">
+    {{#data}}
+        <div role="tabpanel" class="tab-pane {{isActiveTab}}" id="productTab{{tabId}}">
+            {{productName}}
+        </div>
+    {{/data}}
 </script>

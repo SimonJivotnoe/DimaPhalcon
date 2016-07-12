@@ -87,7 +87,8 @@ define(['jq', 'methods', 'URLs', 'mustache', 'PRODUCT', 'VALIDATION'], function 
     dbTabsHandler = function () {
         $jq.sectionContent
             .on('click', '#productTabsLiWrapper .closeTab', closeTab)
-            .on('click', '#productTabsLiWrapper ul li', changeActiveTab);
+            .on('shown.bs.tab', '#productTabsLiWrapper ul li', changeActiveTab)
+            //.on('click', '#productTabsLiWrapper ul li', changeActiveTab);
     };
 
     return dbTabsHandler;
