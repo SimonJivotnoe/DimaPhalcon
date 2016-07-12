@@ -259,15 +259,15 @@
                                     <input type="text" class="form-control productNameInput">
                                 </div>
                                 <div class="form-group">
-                                    <label for="addCategoryInput" class="control-label">Выберите Категорию:</label>
+                                    <label for="addCategoryInput" class="control-label">Категория:</label>
                                     <select class="form-control categoriesList"></select>
                                 </div>
                                 <div class="form-group">
-                                    <label for="addCategoryInput" class="control-label">Выберите КИМ:</label>
+                                    <label for="addCategoryInput" class="control-label">КИМ:</label>
                                     <select class="form-control kimList"></select>
                                 </div>
                                 <div class="form-group">
-                                    <label for="addCategoryInput" class="control-label">Выберите Металл:</label>
+                                    <label for="addCategoryInput" class="control-label">Металл:</label>
                                     <select class="form-control metallsList"></select>
                                 </div>
                             </form>

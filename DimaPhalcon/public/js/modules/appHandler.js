@@ -188,38 +188,10 @@ define([
             function imageIsLoaded(e) {
                 $('#productImgWrapper').html(`<img id="productImg" height="250px" src="${e.target.result}" alt="your image" />`);
             };
-            //$('#uploadImageProduct').hide();
 
             MAIN.formData = new FormData();
             MAIN.formData.append('image_data', file);
-            /*$.ajax({
-                type: 'POST',
-                processData: false,
-                contentType: false,
-                url: URL_PRODUCT + 'uploadImage/' + MAIN.productId,
-                data: formData,
-                dataType: 'json',
-                success: function(data) {
-                    $('.upload-image').hide();
-                    $('#uploadImageProduct, #productPicture').show();
-                    if (data) {
-                        TABS.getLeftTabContent(MAIN.productId, MAIN.curTabId);
-                    }
-                }
-            });*/
         });
-        /*$('.productTableWrapper').on('click', '.removeRow', function () {
-            console.log('here');
-            var rowName = $(this).parent().find('.rowValueInput').attr('data-cell'),
-                checkBinding = $('.list-group-item').find('.glyphicon:contains(' + rowName + ')');
-            checkBinding.length ? checkBinding.remove() : 0;
-            $(this).parent().hide('drop');
-            $(this).parent().find('.rowNumber').text('');
-            $(this).parent().find('.rowValueInput').attr('data-cell', '');
-            setTimeout(function () {
-                $(this).parent().remove();
-            }, 500);
-        });*/
 
         $('#addNewProductIcon').click(function () {
            // $('#productImgWrapper').html('');
@@ -237,6 +209,7 @@ define([
             $.each($('.productsTreeDB li[data-section=product][aria-selected=true]'), function (num, obj) {
                 product.push($(obj).attr('data-productid'));
             });
+            console.log(product);
             $.when(TABS.openSavedProduct(product, 'new', false, false)).done(function(){
                 window.location.href = LOCATION;
             });

@@ -340,35 +340,24 @@ class TabsController extends ControllerBase
         }
     }
     
-    public function closeTabAction() {
-        if ($this->request->isAjax() && $this->request->isPost()) {
-            $id = $this->request->getPost('id');
-            $tabId = $this->request->getPost('tabId');
-            $nextActive = $this->request->getPost('nextActiveTab');
-            $tabs = Tabs::findFirst(array("id = '$id'", "tab_id = '$tabId'"));
-            $productObj = Products::findFirst($tabs->getProductId());
-            $this->response->setContentType('application/json', 'UTF-8');
-            $this->response->setJsonContent(false);
-            if ($tabs != false) {
-                if ($tabs->delete() == false) {
-                    echo "Sorry, we can't delete the robot right now: \n";
-                    $message = $tabs->getMessages();
-                    $this->response->setJsonContent(array($message[0]->__toString()));
-                    return $this->response;
-                } else {
-                    'draft' === $productObj->getStatus() ? $productObj->delete() : true ;
-                    if ('dbProductsListTab' !== $nextActive) {
-                        $changeActiveStatus = Tabs::findFirst(array("tab_id = '$nextActive'"));
-                        $changeActiveStatus->setActive(1)->save();
-                    }
-                    $this->response->setJsonContent(true);
+    public function closeTabAction($id) {
+        $this->ajaxDeleteCheck();
+        $res = false;
+        $msg = 'Ошибка при удалении вкладки';
+        $tabsObj = Tabs::findFirst($id);
+        if ($tabsObj != false) {
+            try {
+                if ($tabsObj->delete()) {
+                    $res = true;
+                    $msg = 'Вкладка успешно удалена';
                 }
-                return $this->response;
+            } catch (\Exception $e) {
+
             }
-            
-        } else {
-            $this->response->redirect('');
         }
+        $this->response->setJsonContent(['success' => $res, 'msg' => $msg]);
+
+        return $this->response;
     }
 
     public function closeRightTabAction() {
