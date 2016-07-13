@@ -34,12 +34,12 @@ define(function () {
 		dbProductsListList: function () { return $('#dbProductsListList'); },
 		productsTreeDB: function () { return $('.productsTreeDB'); },
 		
-		addCategoryBtn: $('#addCategoryBtn'),
 		// Add Category Modal
 		addCategoryModal: $('#addNewCategoryModal'),
 		addCategoryInput: $('#addCategoryInput'),
 		addCategoryArticleInput: $('#addCategoryArticleInput'),
-		
+		addCategoryBtn: $('#addCategoryBtn'),
+
 		// Edit Category Modal
 		editCategoryModal: $('#editCategoryModal'),
 		editCategoryInput: $('#editCategoryInput'),

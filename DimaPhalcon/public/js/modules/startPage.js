@@ -1,4 +1,4 @@
-define(['jq', 'methods', 'URLs', 'PRODUCT'], function ($jq, methods, URLs, PRODUCT) {
+define(['jq', 'methods', 'URLs', 'PRODUCT', 'CATEGORIES'], function ($jq, methods, URLs, PRODUCT, CATEGORIES) {
 	var startPage = {
         runStartPage: function () {
             startPage.activeClassValidation('#backIcon');
@@ -46,6 +46,7 @@ define(['jq', 'methods', 'URLs', 'PRODUCT'], function ($jq, methods, URLs, PRODU
                 $('#backKimIcon, #backDBTreeIcon').removeClass('hvr-pulse-grow');
                 $.get(URLs.loadDBTemplate, function ( data ) {
                     $jq.sectionContent.html(PRODUCT.addProductsDbHandler($(data)));
+                    CATEGORIES.handler();
                     $jq.databaseWrapper().splitPane();
                     $jq.startPageWrapper.hide();
                     $jq.topIconsWrapper.show();

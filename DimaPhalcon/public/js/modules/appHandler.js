@@ -24,39 +24,7 @@ define([
 ) {
     startPageHandler();
     var appHandler = function () {
-        $jq.addCategoryBtn.click(function(){
-            var category = VALIDATION.validateInputVal({
-                    val: $jq.addCategoryInput.val(),
-                    id: '#addCategoryInput',
-                    unique: true
-                }),
-                article = VALIDATION.validateInputVal({
-                    val: $jq.addCategoryArticleInput.val(),
-                    id: '#addCategoryArticleInput',
-                    unique: true
-                });
-            if (category && article) {
-                CATEGORIES.addCategory(category, article);
-            }
-        });
-        $jq.editCategoryBtn.click(function(){
-            var name = VALIDATION.validateInputVal({
-                val: $jq.editCategoryInput.val()
-            });
-            if (name) {
-                $.when(CATEGORIES.editCategory(name)).then(function (response) {
-                    if (true === response.success) {
-                        $.when(CATEGORIES.getCategories(), CATEGORIES.getCategoriesList() ).then(function () {
-                            $jq.editKimIcon.click().click();
-                            $jq.editCategoryModal.modal('hide');
-                            setTimeout(methods.MESSAGES.show.bind(this, response), 300);
-                        });
-                    } else {
-                        methods.MESSAGES.show(response);
-                    }
-                });
-            }
-        });
+
 
         $('#addKIMBtn').click(function(){
             var kim = VALIDATION.validateInputVal({

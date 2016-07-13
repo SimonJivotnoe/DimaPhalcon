@@ -113,7 +113,19 @@ define(['jq', 'datatables.net'], function ($jq, DataTable) {
 				.width(0)
 				.height(0);
 		},
-		
+
+		kimFocus: function () {
+			MAIN.focusedElem = $(this);
+			var scrollTable = MAIN.focusedElem.find('table').attr('data-scroll');
+			MAIN.scrollTables.scrollTop = MAIN.focusedElem.find('.dataTables_scrollBody').scrollTop();
+			if (MAIN.scrollTables[scrollTable]) {
+				MAIN.scrollTables[scrollTable].destroy();
+				MAIN.scrollTables[scrollTable] = false;
+			}
+			$jq.addKimIcon.attr('data-target', MAIN.focusedElem.attr('data-modal-add'))
+			methods.focus(scrollTable);
+		},
+
 		focus: function (scrollable, buttons) {
 			var $section = $('#sectionContent');
 			var $buttons = buttons ? buttons : $jq.kimIcons;

@@ -36,14 +36,6 @@ define(['jq', 'methods', 'URLs', 'startPage', 'dbHandler', 'mustache'], function
             }
         });
 
-        $jq.outBodyElements.on('dblclick', '.categoriesListTable tbody tr', function () {
-            var $this = $(this);
-            var id = $this.attr('data-id');
-            $jq.editCategoryInput.val(MAIN.categoriesTableContent.data[id].name);
-            MAIN.$selectedRow = $this;
-            $jq.editCategoryModal.modal('show');
-        });
-
         $jq.outBodyElements.on('dblclick', '.kimListTable tbody tr', function () {
             var $this = $(this);
             var id = $this.attr('data-id');

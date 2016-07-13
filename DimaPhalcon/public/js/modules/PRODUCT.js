@@ -248,7 +248,7 @@ define(['jq', 'methods', 'URLs', 'CATEGORIES', 'KIM', 'METALLS', 'TABS', 'mustac
 					setTimeout(function () { $('#databaseWrapper .innerBackLayout').css({top: $('#dbProductsListList').offset().top}); }, 1);
                 }).end()
 
-                .find('.categoriesWrapper, .kimWrapper, .metallWrapper' ).click(function(){
+                .find('.kimWrapper, .metallWrapper' ).click(function(){
                     MAIN.focusedElem = $(this);
                     var scrollTable = MAIN.focusedElem.find('table').attr('data-scroll');
                     MAIN.scrollTables.scrollTop = MAIN.focusedElem.find('.dataTables_scrollBody').scrollTop();
