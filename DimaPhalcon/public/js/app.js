@@ -1,19 +1,11 @@
 define([
-    'jq',
     'methods',
     'startPage',
-    'appHandler',
-    'newProductHandler',
-    'startPageHandler',
-    'dbTabsHandler'
+    'appHandler'
 ], function (
-    $jq,
     methods,
     startPage,
-    appHandler,
-    newProductHandler,
-    startPageHandler,
-    dbTabsHandler
+    appHandler
 ) {var
    init = function () {
        $(document).on({
@@ -35,8 +27,6 @@ define([
                    break;
                case 'DB':
                    startPage.runDB();
-                   newProductHandler();
-                   dbTabsHandler();
                    break;
                case 'OR':
                    startPage.runProductCreation();

@@ -1,4 +1,24 @@
-define(['jq', 'methods', 'URLs', 'PRODUCT', 'CATEGORIES'], function ($jq, methods, URLs, PRODUCT, CATEGORIES) {
+define([
+	'jq',
+	'methods',
+	'URLs',
+	'PRODUCT',
+	'DB',
+	'TABS',
+	'TREE',
+	'CATEGORIES',
+    'NEW_PRODUCT'
+], function (
+		$jq,
+		methods,
+		URLs,
+		PRODUCT,
+		DB,
+		TABS,
+		TREE,
+		CATEGORIES,
+		NEW_PRODUCT
+) {
 	var startPage = {
         runStartPage: function () {
             startPage.activeClassValidation('#backIcon');
@@ -44,18 +64,17 @@ define(['jq', 'methods', 'URLs', 'PRODUCT', 'CATEGORIES'], function ($jq, method
             if (startPage.activeClassValidation('#dbIcon')) {
                 localStorage.siteSector = 'DB';
                 $('#backKimIcon, #backDBTreeIcon').removeClass('hvr-pulse-grow');
-                $.get(URLs.loadDBTemplate, function ( data ) {
-                    $jq.sectionContent.html(PRODUCT.addProductsDbHandler($(data)));
+                $.get(URLs.loadDBTemplate, function (html) {
+                    //$jq.sectionContent.html(PRODUCT.addProductsDbHandler($(data)));
+                    $jq.sectionContent.html(html);
+					DB.handler();
+					TABS.handler();
+					TREE.handler();
                     CATEGORIES.handler();
-                    $jq.databaseWrapper().splitPane();
+					NEW_PRODUCT.handler();
                     $jq.startPageWrapper.hide();
                     $jq.topIconsWrapper.show();
                     methods.showBody();
-                    /*$.when(PRODUCT.loadKimSection()).done(function () {
-                        if (!MAIN.prRequested) {
-                            PRODUCT.getLeftTabsList();
-                        }
-                    });*/
                     PRODUCT.loadKimSection();
                     PRODUCT.getTabs();
                     $('#myTab, #leftTabsContent').fadeIn('slow');

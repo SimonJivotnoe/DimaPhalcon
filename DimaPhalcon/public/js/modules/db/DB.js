@@ -33,11 +33,20 @@ define(['jq', 'methods', 'URLs', 'mustache', 'PRODUCT', 'VALIDATION', 'knockout'
             $li.remove();
         }, 900);
     },
-    dbTabsHandler = function () {
-        $jq.sectionContent
-            .on('click', '#productTabsLiWrapper .closeTab', closeTab)
-            .on('shown.bs.tab', '#productTabsLiWrapper ul li', changeActiveTab)
+	
+    DB = {
+		handler: function () {
+			$('#db-left-component').css('width', localStorage['db-split']);
+			$('#db-divider, #db-right-component').css('left', localStorage['db-split']);
+			$('#db-divider').on('mousemove', function(){
+				localStorage['db-split'] = $('#db-divider').css('left');
+			});
+			$jq.databaseWrapper().splitPane();
+			$jq.sectionContent
+				.on('click', '#productTabsLiWrapper .closeTab', closeTab)
+				.on('shown.bs.tab', '#productTabsLiWrapper ul li', changeActiveTab);
+		}
     };
 
-    return dbTabsHandler;
+    return DB;
 });

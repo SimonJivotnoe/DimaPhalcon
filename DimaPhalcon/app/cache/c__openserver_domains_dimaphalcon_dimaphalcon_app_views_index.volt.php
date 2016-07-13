@@ -37,6 +37,8 @@
     <div id="sectionContent"></div>
     <div id="outBodyElements"></div>
     <div id="backLayout" class="clearer"></div>
+    <div id="tabsLiLayout" class="clearer"></div>
+
     <div class="modal fade" id="addNewCategoryModal" tabindex="-1" role="dialog" aria-labelledby="addNewCategoryModal">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
@@ -257,15 +259,15 @@
                                     <input type="text" class="form-control productNameInput">
                                 </div>
                                 <div class="form-group">
-                                    <label for="addCategoryInput" class="control-label">Выберите Категорию:</label>
+                                    <label for="addCategoryInput" class="control-label">Категория:</label>
                                     <select class="form-control categoriesList"></select>
                                 </div>
                                 <div class="form-group">
-                                    <label for="addCategoryInput" class="control-label">Выберите КИМ:</label>
+                                    <label for="addCategoryInput" class="control-label">КИМ:</label>
                                     <select class="form-control kimList"></select>
                                 </div>
                                 <div class="form-group">
-                                    <label for="addCategoryInput" class="control-label">Выберите Металл:</label>
+                                    <label for="addCategoryInput" class="control-label">Металл:</label>
                                     <select class="form-control metallsList"></select>
                                 </div>
                             </form>

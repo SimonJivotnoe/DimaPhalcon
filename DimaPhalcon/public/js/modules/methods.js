@@ -164,7 +164,12 @@ define(['jq', 'datatables.net'], function ($jq, DataTable) {
 				return false;
 			}
 
-		}
+		},
+		expandDivider: function () {
+			localStorage['db-split'] === MAIN.maxScreenSize ? localStorage['db-split'] = MAIN.defaultScreenSize : localStorage['db-split'] = MAIN.maxScreenSize;
+			$('#db-left-component').css('width', localStorage['db-split']);
+			$('#db-divider, #db-right-component').css('left', localStorage['db-split']);
+		},
 	};
 	
 	return methods;

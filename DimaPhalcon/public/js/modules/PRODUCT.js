@@ -38,7 +38,6 @@ define(['jq', 'methods', 'URLs', 'CATEGORIES', 'KIM', 'METALLS', 'TABS', 'mustac
 				if (response.data.length) {
 					PRODUCT.addLeftTabsHandler($(Mustache.render($jq.leftTabsTemplate.html(), response))).insertAfter('#dbProductsListTab');
 					$('#leftTabsContent').append($(Mustache.render($jq.tabsContentTemplate.html(), response)));
-					return true;
 				}
 			});
 		},
@@ -219,34 +218,6 @@ define(['jq', 'methods', 'URLs', 'CATEGORIES', 'KIM', 'METALLS', 'TABS', 'mustac
         addProductsDbHandler: function(html) {
 
             html
-                .find('#db-left-component').css('width', localStorage['db-split']).end()
-
-                .find('#db-divider, #db-right-component').css('left', localStorage['db-split']).end()
-
-                .find('#db-divider').on('mousemove', function(){
-                    localStorage['db-split'] = $('#db-divider').css('left');
-                }).end()
-
-                .find('#dbProductsListList .productsTreeDB' ).on('changed.jstree', function(){
-                    return false;
-                }).end()
-
-                .find('#fileManagerCatogoriesSelect' ).change(function() {
-                    var category = $('option:selected', this ).attr('name' );
-                    $.each($('.prManProductTableCategory'), function(){
-                        $(this ).parent().show();
-                        if ($(this).attr('name') !== category && 'categoriesAll' !== category) {
-                            $(this ).parent().hide();
-                        }
-                    });
-                }).end()
-
-                .find('#dbProductsListTab').click(function(){
-                    /*TABS.setActiveDefaultTab('tabsList', 'dbProductsListTab', 'curTabId');
-                    TABS.changeActiveTabBack('', '', 'changeActiveLeftTab');
-                    PRODUCT.createFileManager('PR');*/
-					setTimeout(function () { $('#databaseWrapper .innerBackLayout').css({top: $('#dbProductsListList').offset().top}); }, 1);
-                }).end()
 
                 .find('.kimWrapper, .metallWrapper' ).click(function(){
                     MAIN.focusedElem = $(this);
@@ -258,36 +229,6 @@ define(['jq', 'methods', 'URLs', 'CATEGORIES', 'KIM', 'METALLS', 'TABS', 'mustac
                     }
                     methods.focus(scrollTable);
                 } ).end()
-
-                .find('#dbProductsListList .innerBackLayout').click(function(){
-                    var $productsTreeDB = $jq.productsTreeDB();
-                    $(this ).hide();
-                    MAIN.productsTreeDB.plugins.push('checkbox');
-                    MAIN.productsTreeDB.plugins = _.uniq(MAIN.productsTreeDB.plugins);
-                    $productsTreeDB.jstree('destroy');
-                    $productsTreeDB.jstree(MAIN.productsTreeDB);
-                    methods.toggleMainButtons($jq.mainIcons, $jq.productsTreeDBButtons);
-                    methods.showLayout($('#settingsMetallsWrapper'));
-					methods.blur($('#settingsMetallsWrapper'));
-                    methods.showLayout($jq.productTabsLiWrapper(), $('#tabsLiLayout'));
-					methods.blur($('#productTabsLiWrapper'));
-                } ).end()
-
-                .find('#addNewTab').on('click', function(){
-                    TABS.getLastLeftTab();
-                }).end()
-
-                .find('#FMsearchInProducts').keyup(function() {
-                    var text = $(this).val(),
-                        rows = $('#fileManagerProductsTable tr:gt(0)');
-                    MENU.searchInTable(rows, text, 'tr');
-                }).end()
-
-                .find('#tabs').on('dblclick', '#myTab li', function(){
-                    localStorage['db-split'] === MAIN.maxScreenSize ? localStorage['db-split'] = MAIN.defaultScreenSize : localStorage['db-split'] = MAIN.maxScreenSize;
-                    $('#db-left-component').css('width', localStorage['db-split']);
-                    $('#db-divider, #db-right-component').css('left', localStorage['db-split']);
-                });
             return html;
         },
 
