@@ -214,23 +214,6 @@ define(['jq', 'methods', 'URLs', 'CATEGORIES', 'KIM', 'METALLS', 'TABS', 'mustac
 			
 			return html;
 		},
-		
-        addProductsDbHandler: function(html) {
-
-            html
-
-                .find('.kimWrapper, .metallWrapper' ).click(function(){
-                    MAIN.focusedElem = $(this);
-                    var scrollTable = MAIN.focusedElem.find('table').attr('data-scroll');
-                    MAIN.scrollTables.scrollTop = MAIN.focusedElem.find('.dataTables_scrollBody').scrollTop();
-                    if (MAIN.scrollTables[scrollTable]) {
-                        MAIN.scrollTables[scrollTable].destroy();
-                        MAIN.scrollTables[scrollTable] = false;
-                    }
-                    methods.focus(scrollTable);
-                } ).end()
-            return html;
-        },
 
 		addLeftTabContentHandler: function(html) {
 			html

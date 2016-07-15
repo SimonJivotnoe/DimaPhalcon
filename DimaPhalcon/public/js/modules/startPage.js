@@ -7,6 +7,8 @@ define([
 	'TABS',
 	'TREE',
 	'CATEGORIES',
+	'KIM',
+	'METALLS',
     'NEW_PRODUCT'
 ], function (
 		$jq,
@@ -17,6 +19,8 @@ define([
 		TABS,
 		TREE,
 		CATEGORIES,
+		KIM,
+		METALLS,
 		NEW_PRODUCT
 ) {
 	var startPage = {
@@ -67,16 +71,20 @@ define([
                 $.get(URLs.loadDBTemplate, function (html) {
                     //$jq.sectionContent.html(PRODUCT.addProductsDbHandler($(data)));
                     $jq.sectionContent.html(html);
+					//$.map([DB, TABS, TREE, CATEGORIES, KIM, METALLS, NEW_PRODUCT], function (MODULE) { MODULE.handler(); });
 					DB.handler();
-					TABS.handler();
+					//TABS.handler();
 					TREE.handler();
                     CATEGORIES.handler();
+                    KIM.handler();
+                    METALLS.handler();
 					NEW_PRODUCT.handler();
                     $jq.startPageWrapper.hide();
                     $jq.topIconsWrapper.show();
                     methods.showBody();
                     PRODUCT.loadKimSection();
                     PRODUCT.getTabs();
+                    //PRODUCT.getLeftTabsList();
                     $('#myTab, #leftTabsContent').fadeIn('slow');
                 });
             }

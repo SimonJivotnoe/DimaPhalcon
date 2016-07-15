@@ -1,18 +1,9 @@
-define([
-    'methods',
-    'startPage',
-    'appHandler'
-], function (
-    methods,
-    startPage,
-    appHandler
-) {var
+define(['methods', 'startPage'], function (methods, startPage) {var
    init = function () {
        $(document).on({
            ajaxStart: methods.startWaitAnimation,
            ajaxStop: methods.stopWaitAnimation
        });
-       appHandler();
        var sector = localStorage.siteSector;
        if (!sector) {
            localStorage.siteSector = 'MENU';

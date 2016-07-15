@@ -28,6 +28,7 @@ define(function () {
         startPageWrapper: $('#startPageWrapper'),
 		layout: $('#backLayout'),
 		//Database Section
+		addNewProductIcon: $('#addNewProductIcon'),
 		databaseWrapper: function () {
 			return $('#databaseWrapper');
 		},
@@ -50,12 +51,15 @@ define(function () {
 		kimHardInput: $('#kimHardInput'),
 		kimInput: $('#kimInput'),
 		kimDescrInput: $('#kimDescrInput'),
+		addKIMBtn: $('#addKIMBtn'),
 			
 		// Edit KIM Modal
 		editKimModal: $('#editKimModal'),
 		editKimHardInput: $('#editKimHardInput'),
 		editKimInput: $('#editKimInput'),
 		editKimDescrInput: $('#editKimDescrInput'),
+		editKimBtn: $('#editKimBtn'),
+		
 		// Add METALL Modal
 		addMetallModal: $('#addNewMetallModal'),
 		metallNameInput: $('#metallNameInput'),
@@ -63,11 +67,15 @@ define(function () {
 		metallMassInput: $('#metallMassInput'),
 		metallOutPriceInput: $('#metallOutPriceInput'),
 		metallArticleInput: $('#metallArticleInput'),
+		addMetallBtn: $('#addMetallBtn'),
+		
 		editMetallModal: $('#editMetallModal'),
 		editMetallNameInput: $('#editMetallNameInput'),
 		editMetallPriceInput: $('#editMetallPriceInput'),
 		editMetallMassInput: $('#editMetallMassInput'),
 		editMetallOutPriceInput: $('#editMetallOutPriceInput'),
+		editMetallBtn: $('#editMetallBtn'),
+		
 		mainIcons: $('#mainIcons'),
 		kimIcons: $('#kimIcons'),
 		productsTreeDBButtons: $('#productsTreeDBButtons'),
@@ -93,6 +101,8 @@ define(function () {
 			categoriesList: $('.categoriesList'),
 			kimList: $('.kimList'),
 			metallsList: $('.metallsList'),
+			
+			uploadImageProduct: $('#uploadImageProduct'),
 		
 			addNewRow: $('#addNewRow'),
 			

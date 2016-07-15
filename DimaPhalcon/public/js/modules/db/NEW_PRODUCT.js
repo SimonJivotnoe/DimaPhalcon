@@ -10,6 +10,43 @@ define(['jq', 'methods', 'URLs', 'mustache', 'PRODUCT', 'VALIDATION'], function 
         $('#addNewProductModal [data-cell="PR2"]').val(metallList.attr('data-outprice'));
         methods.excel();
     },
+	changeFileInput = function () {
+		if(!window.File || !window.FileReader || !window.FileList || !window.Blob){
+			window.alert("Can't upload! Your browser does not support File API!");
+			return;
+		}
+
+		var fileReader = new FileReader();
+		var filter = /^(?:image\/bmp|image\/cis\-cod|image\/gif|image\/ief|image\/jpeg|image\/jpeg|image\/jpeg|image\/pipeg|image\/png|image\/svg\+xml|image\/tiff|image\/x\-cmu\-raster|image\/x\-cmx|image\/x\-icon|image\/x\-portable\-anymap|image\/x\-portable\-bitmap|image\/x\-portable\-graymap|image\/x\-portable\-pixmap|image\/x\-rgb|image\/x\-xbitmap|image\/x\-xpixmap|image\/x\-xwindowdump)$/i;
+		if (this.files.length == 0) {
+			window.alert('Нужно выбрать файл');
+			return;
+		}
+		var file = this.files[0];
+		var size = file.size;
+		var type = file.type;
+
+		if (!filter.test(type)) {
+			window.alert('Формат файла не поддерживается');
+			return;
+		}
+
+		var max = 2000000;
+		if (size > max) {
+			window.alert('Файл больше чем 2 MB');
+			return;
+		}
+
+		$('.upload-image').show();
+		fileReader.onload = imageIsLoaded;
+		fileReader.readAsDataURL(this.files[0]);
+		function imageIsLoaded(e) {
+			$('#productImgWrapper').html(`<img id="productImg" height="250px" src="${e.target.result}" alt="your image" />`);
+		};
+
+		MAIN.formData = new FormData();
+		MAIN.formData.append('image_data', file);
+	},
     addNewRow = function () {
         var existingRows = [],
             max = 1;
@@ -406,7 +443,11 @@ define(['jq', 'methods', 'URLs', 'mustache', 'PRODUCT', 'VALIDATION'], function 
 		handler: function () {
 			$jq.kimList.change(changeKimList);
 			$jq.metallsList.change(changeMetallList);
-
+			
+			$jq.uploadImageProduct.click(function () {
+				$('#input-file-upload').trigger('click');
+			});
+			$('#input-file-upload').change(changeFileInput);
 			$jq.addNewRow.click(addNewRow);
 
 			$jq.productTableWrapper

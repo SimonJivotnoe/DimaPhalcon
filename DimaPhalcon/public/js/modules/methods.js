@@ -1,5 +1,44 @@
 define(['jq', 'datatables.net'], function ($jq, DataTable) {
 	var methods = {
+		/**
+		 * checks if response is an Object
+		 * @param {object} response - ajax response
+		 * return bool || object
+		 */
+		checkResponseOnObj: function (response) {
+			var res = false;
+			try {
+				if (_.isObject(response)) {
+					res = response;
+				} else {
+					res = JSON.parse(response);
+				}
+			} catch (e) {
+				methods.MESSAGES.error('Server Error');
+			}
+
+			return res;
+		},
+		
+		/**
+		 * checks ajax response on success
+		 * @param {object} response - ajax response
+		 * @param {bool} onData - additional param if we expect also data from response
+		 * return bool
+		 */
+		checkResponseOnSuccess: function (response, onData) {
+			if (methods.checkResponseOnObj(response)) {
+				var res = false;
+				if (response && true === response.success && (onData ? response.data : response)) {
+					res = true;
+				}
+				if (response && 0 === response.success) {
+					methods.MESSAGES.show(response);
+				}
+				return res;
+			}
+		},
+		
 		MESSAGES: {
 			show: function (response) {
 				var type = 'success';
@@ -66,13 +105,13 @@ define(['jq', 'datatables.net'], function ($jq, DataTable) {
 		deactivateButton: function () { $(this).removeClass('hvr-pulse-grow').addClass('activeTopIcon'); },
 		blur: function ($section, off) {
 			var start = 0,
-					end = 4,
-					opacity = 0.3;
-					if (off) {
-						start = 4;
-						end = 0;
-						opacity = 1;
-					}
+				end = 4,
+				opacity = 0.3;
+			if (off) {
+				start = 4;
+				end = 0;
+				opacity = 1;
+			}
 			$({blurRadius: start}).animate({blurRadius: end}, {
 			duration: 500,
 					easing: 'swing',

@@ -19,14 +19,12 @@ define(['jq', 'methods', 'URLs', 'mustache', 'VALIDATION'], function ($jq, metho
 					article: article
 				}
 			} ).then( function ( response ) {
-				if (true === response.success) {
+				if (methods.checkResponseOnSuccess(response)) {
 					$('#addCategoryInput, #addCategoryArticleInput').val('');
-					$.when(CATEGORIES.getCategories()/*, CATEGORIES.getCategoriesList()*/).then(function () {
+					$.when(CATEGORIES.getCategories()).then(function () {
 						$jq.addCategoryModal.modal('hide');
 						setTimeout(methods.MESSAGES.show.bind(this, response), 300);
 					});
-				} else {
-					methods.MESSAGES.show(response);
 				}
 			} );
 		}
@@ -36,9 +34,17 @@ define(['jq', 'methods', 'URLs', 'mustache', 'VALIDATION'], function ($jq, metho
 			val: $jq.editCategoryInput.val()
 		});
 		if (name) {
-			$.when(CATEGORIES.editCategory(name)).then(function (response) {
-				if (true === response.success) {
-					$.when(CATEGORIES.getCategories()/*, CATEGORIES.getCategoriesList() */).then(function () {
+			methods.cancelArticleBtn();
+			$.ajax( {
+				url   : URLs.editCategory,
+				method: 'POST',
+				data: {
+					id: MAIN.$selectedRow.attr('data-id'),
+					name: name
+				}
+			} ).then(function (response) {
+				if (methods.checkResponseOnSuccess(response)) {
+					$.when(CATEGORIES.getCategories()).then(function () {
 						$jq.editKimIcon.click().click();
 						$jq.editCategoryModal.modal('hide');
 						setTimeout(methods.MESSAGES.show.bind(this, response), 300);
@@ -69,35 +75,11 @@ define(['jq', 'methods', 'URLs', 'mustache', 'VALIDATION'], function ($jq, metho
 			   MAIN.categoriesTableContent = response.categoriesTableContent;
 			} );
 		},
-		
-		/*getCategoriesList: function () {
-			return $.ajax({
-				url: URLs.getCategoriesList,
-				method: 'GET',
-				data: { prId: MAIN.productId }
-			}).then(function (response) {
-				if (response) {
-					$('.listOfCategories').html(response.html);
-				}
-			});
-		},*/
-		
-		editCategory: function (name) {
-			methods.cancelArticleBtn();
-			return $.ajax( {
-				url   : URLs.editCategory,
-				method: 'POST',
-				data: {
-					id: MAIN.$selectedRow.attr('data-id'),
-					name: name
-				}
-			} );
-		},
 
 		confirmDelete: function ($this, $noty) {
 			$.when(CATEGORIES.removeCategory($this.attr('data-id'))).then(function (response) {
 				if (true === response.success) {
-					$.when(CATEGORIES.getCategories()/*, CATEGORIES.getCategoriesList() */).then(function () {
+					$.when(CATEGORIES.getCategories()).then(function () {
 						$jq.deleteKimIcon.click().click();
 					});
 				}

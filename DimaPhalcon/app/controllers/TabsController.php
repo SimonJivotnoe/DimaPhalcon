@@ -46,7 +46,6 @@ class TabsController extends ControllerBase
                 foreach ($tabs as $val) {
                     $tabTemplate = [];
                     $id = $val->getId();
-                    $tabId = $val->getTabId();
                     $productId = $val->getProductId();
                     $getActive = $val->getActive();
                     $article = $val->Products->getArticle();
@@ -56,7 +55,7 @@ class TabsController extends ControllerBase
                     $tabTemplate['active'] = '';
                     if ($getActive) {
                         $tabTemplate['active'] = 'active';
-                        $active = $tabId;
+                        $active = $id;
                         $prodId = $productId;
                     }
                     $tabTemplate['id'] = $id;
