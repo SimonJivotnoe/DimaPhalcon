@@ -58,7 +58,7 @@ class MenuController extends ControllerBase
         if ($categArr) {
             foreach ($categArr as $catId => $catName) {
                 $catNode = [
-                    'id'       => $i,
+                    'id'       => 'category_productTreeDB' . $i,
                     'icon' => 'glyphicon glyphicon-th-list',
                     'li_attr'  => ['data-section' => 'category','data-categoryId' => $catId],
                     'text'     => $catName,
@@ -67,7 +67,7 @@ class MenuController extends ControllerBase
                 foreach ( $preData[$catId] as $metId => $productsArr) {
                     $i++;
                     $metNode = [
-                        'id'       => $i,
+                        'id'       => 'metall_productTreeDB' . $i,
                         'icon'     => 'glyphicon glyphicon-link',
                         'li_attr'  => ['data-section' => 'metall', 'data-metallId' => $metId],
                         'text'     => $metallsArr[$metId],
@@ -76,7 +76,7 @@ class MenuController extends ControllerBase
                     foreach ($productsArr as $key => $obj) {
                         $i++;
                         array_push($metNode['children'], [
-                            'id'       => $i,
+                            'id'       => 'product_productTreeDB_' . $obj['id'],
                             'icon'     => 'glyphicon glyphicon-list-alt',
                             'li_attr'  => ['data-section' => 'product', 'data-productId' => $obj['id']],
                             'text'     => $obj['name'] . ' | ' . $obj['article'] . ' - ' . $obj['created']

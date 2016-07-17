@@ -27,7 +27,6 @@ define(['jq', 'methods', 'URLs', 'mustache', 'VALIDATION', 'calx'], function ($j
 					$('#kimInput, #kimHardInput, #kimDescrInput').val('');
 					$.when(KIM.getKIM()).then(function () {
 						$jq.addKimModal.modal('hide');
-						setTimeout(methods.MESSAGES.show.bind(this, response), 300);
 					});
 				}
 			});
@@ -58,11 +57,33 @@ define(['jq', 'methods', 'URLs', 'mustache', 'VALIDATION', 'calx'], function ($j
 					$.when(KIM.getKIM()).then(function () {
 						$jq.editKimIcon.click().click();
 						$jq.editKimModal.modal('hide');
-						setTimeout(methods.MESSAGES.show.bind(this, response), 300);
 					});
 				}
 			});
 		}
+	},
+	deleteKim = function () {
+		methods.cancelArticleBtn();
+		$.ajax({
+			url   : URLs.removeKim + '/' + $(this).attr('data-id'),
+			method: 'DELETE'
+		}).then(function (response) {
+			if (methods.checkResponseOnSuccess(response)) {
+				$.when(KIM.getKIM()).then(function () {
+					$jq.deleteKimIcon.click().click();
+					$jq.deleteKIMGroupModal.modal('hide');
+				});
+			}
+		});
+	},
+	prepareDataEditModal = function () {
+		var $this = $(this),
+			id = $this.attr('data-id');
+		$jq.editKimHardInput.val(MAIN.kimTableContent.data[id].name);
+		$jq.editKimInput.val(MAIN.kimTableContent.data[id]['value']);
+		$jq.editKimDescrInput.val(MAIN.kimTableContent.data[id].description);
+		MAIN.$selectedRow = $this;
+		$jq.editKimModal.modal('show');
 	},
 	KIM = {
 		getKIM: function () {
@@ -78,30 +99,12 @@ define(['jq', 'methods', 'URLs', 'mustache', 'VALIDATION', 'calx'], function ($j
 			});
 		},
 
-		confirmDelete: function ($this, $noty) {
-			$.when(KIM.removeKim($this.attr('data-id'))).then(function (response) {
-				if (true === response.success) {
-					$.when(KIM.getKIM()).then(function () {
-						$jq.deleteKimIcon.click().click();
-					});
-				}
-				setTimeout(methods.MESSAGES.show.bind(this, response), 1000);
-				$noty.close();
-			});
-		},
-
-		removeKim: function (id) {
-			methods.cancelArticleBtn();
-			return $.ajax({
-				url   : URLs.removeKim + '/' + id,
-				method: 'DELETE',
-				data: {kimId: id}
-			});
-		},
 		handler: function () {
 			$('.kimWrapper').click(methods.kimFocus);
 			$jq.addKIMBtn.click(addKIM);
 			$jq.editKimBtn.click(editKim);
+			$jq.deleteKimBtn.click(deleteKim);
+			$jq.outBodyElements.on('dblclick', '.kimListTable tbody tr', prepareDataEditModal);
 		}
 	};
 	

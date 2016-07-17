@@ -26,13 +26,13 @@ define(['jq', 'datatables.net'], function ($jq, DataTable) {
 		 * @param {bool} onData - additional param if we expect also data from response
 		 * return bool
 		 */
-		checkResponseOnSuccess: function (response, onData) {
+		checkResponseOnSuccess: function (response, msg = true, onData = false) {
 			if (methods.checkResponseOnObj(response)) {
 				var res = false;
 				if (response && true === response.success && (onData ? response.data : response)) {
 					res = true;
 				}
-				if (response && 0 === response.success) {
+				if ((response && 0 === response.success) || (msg && response.msg)) {
 					methods.MESSAGES.show(response);
 				}
 				return res;
@@ -161,7 +161,7 @@ define(['jq', 'datatables.net'], function ($jq, DataTable) {
 				MAIN.scrollTables[scrollTable].destroy();
 				MAIN.scrollTables[scrollTable] = false;
 			}
-			$jq.addKimIcon.attr('data-target', MAIN.focusedElem.attr('data-modal-add'))
+			$jq.addKimIcon.attr('data-target', MAIN.focusedElem.attr('data-modal-add'));
 			methods.focus(scrollTable);
 		},
 
@@ -181,7 +181,25 @@ define(['jq', 'datatables.net'], function ($jq, DataTable) {
 			MAIN.focusedElem.find('td, th').css({color: $('body').css('backgroundColor')});
 			methods.showLayout($section);
 		},
-
+		unfocus: function ($buttons = $('#kimIcons')) {
+			var $section = $('#sectionContent');
+			var scrollTable = MAIN.focusedElem.find('table').attr('data-scroll');
+			methods.blur($section, true);
+			MAIN.scrollTables.scrollTop = $jq.outBodyElements.find('.dataTables_scrollBody').scrollTop();
+			methods.unsetOutBodyElem();
+			methods.hideLayout();
+			MAIN.focusedElem
+				.removeClass('parentFocused')
+				.find('th').css('color', MAIN.previousThColor).end()
+				.find('td').css('color', MAIN.previousTdColor);
+			if (MAIN.scrollTables[scrollTable]) {
+				MAIN.scrollTables[scrollTable].destroy();
+			}
+			MAIN.scrollTables[scrollTable] = methods.addDataTable(MAIN.focusedElem.find('table'));
+			MAIN.focusedElem.find('.dataTables_scrollBody').scrollTop(MAIN.scrollTables.scrollTop);
+			$('#outBodyElements').html('');
+			methods.toggleMainButtons($buttons, $('#mainIcons'));
+		},
 		cancelArticleBtn: function () {
 			$('#createArticle').show();
 			$('#cancelArticleBtn, #errorArticle' ).hide();

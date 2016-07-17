@@ -151,7 +151,7 @@ body {
 #addToFamily {
     background-color: #6f5499;
 }
-#showItemFromFileManager {
+#showItemFromTreeDB {
     background-color: black;
     color: red;
 }
@@ -415,7 +415,7 @@ h4 {
     margin-right: -4px;
 }
 
-#alwaysInTable li, #prefAlwaysInTable li {
+#alwaysInTable li, #prefAlwaysInTable li, .alwaysInTable{
     background-color: hsl(193, 46%, 41%);
     background-repeat: repeat-x;
     border-color: #388398 #388398 hsl(193, 46%, 37.5%);
@@ -423,7 +423,6 @@ h4 {
     text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.23);
     margin: 1px;
 }
-
 #sortable li, #prefSortable li {
     background-color: hsl(0, 0%, 93%);
     background-repeat: repeat-x;
@@ -644,7 +643,16 @@ ol li:hover {
     text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.56);
     -webkit-font-smoothing: antialiased;
 }
-
+.custom-addToFamilyBtn {
+    background-color: hsl(278, 33%, 30%) !important;
+    background-repeat: repeat-x;
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#a67ebe", endColorstr="#533365");
+    background-image: linear-gradient(#a67ebe, #533365) !important;
+    border-color: #533365 #533365 hsl(278, 33%, 22%);
+    color: #fff !important;
+    text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.52);
+    -webkit-font-smoothing: antialiased;
+}
 .editKimTable, .editMetallTable, .editCategoriesTable {
     border: none !important;
     background-color: white;
@@ -1047,6 +1055,20 @@ table.rc-table-resizing thead,table.rc-table-resizing thead> th,table.rc-table-r
     color: white;
 }
 .editModalHeader .close{
+    color: white;
+}
+.deleteModalHeader {
+    background-color: #d9534f;
+    color: white;
+}
+.deleteModalHeader .close{
+    color: white;
+}
+.addFamilyModalHeader {
+    background-color: #6f5499;
+    color: white;
+}
+.addFamilyModalHeader .close{
     color: white;
 }
 

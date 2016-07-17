@@ -43,7 +43,6 @@ define(['jq', 'methods', 'URLs', 'mustache', 'VALIDATION', 'calx'], function ($j
 					$jq.addMetallModal.find('input').val();
 					$.when(METALLS.getMetalls()).then(function () {
 						$jq.addMetallModal.modal('hide');
-						setTimeout(methods.MESSAGES.show.bind(this, response), 300);
 					});
 				}
 			});
@@ -83,7 +82,6 @@ define(['jq', 'methods', 'URLs', 'mustache', 'VALIDATION', 'calx'], function ($j
 					$.when(METALLS.getMetalls()).then(function () {
 						$jq.editKimIcon.click().click();
 						$jq.editMetallModal.modal('hide');
-						setTimeout(methods.MESSAGES.show.bind(this, response), 300);
 					});
 				}
 				if (MAIN.isArticle && (id === MAIN.metallId)) {
@@ -91,6 +89,30 @@ define(['jq', 'methods', 'URLs', 'mustache', 'VALIDATION', 'calx'], function ($j
 				}
 			});
 		}
+	},
+	deleteMetall = function () {
+		methods.cancelArticleBtn();
+		$.ajax( {
+			url   : URLs.removeMetall + '/' + $(this).attr('data-id'),
+			method: 'DELETE'
+		} ).then(function (response) {
+			if (methods.checkResponseOnSuccess(response)) {
+				$.when(METALLS.getMetalls()).then(function () {
+					$jq.deleteKimIcon.click().click();
+					$jq.deleteKIMGroupModal.modal('hide');
+				});
+			}
+		});
+	},
+	prepareDataEditModal = function () {
+		var $this = $(this),
+			id = $this.attr('data-id');
+		$jq.editMetallNameInput.val(MAIN.metallTableContent.data[id].name);
+		$jq.editMetallPriceInput.val(MAIN.metallTableContent.data[id].price);
+		$jq.editMetallMassInput.val(MAIN.metallTableContent.data[id].mass);
+		$jq.editMetallOutPriceInput.val(MAIN.metallTableContent.data[id]['out_price']);
+		MAIN.$selectedRow = $this;
+		$jq.editMetallModal.modal('show');
 	},
 	METALLS = {
 		getMetalls: function() {
@@ -106,30 +128,12 @@ define(['jq', 'methods', 'URLs', 'mustache', 'VALIDATION', 'calx'], function ($j
 			}); 
 		},
 
-		confirmDelete: function ($this, $noty) {
-			$.when(METALLS.removeMetall($this.attr('data-id'))).then(function (response) {
-				if (true === response.success) {
-					$.when(METALLS.getMetalls()).then(function () {
-						$jq.deleteKimIcon.click().click();
-					});
-				}
-				setTimeout(methods.MESSAGES.show.bind(this, response), 1000);
-				$noty.close();
-			});
-		},
-
-		removeMetall: function(metallId) {
-			methods.cancelArticleBtn();
-			return $.ajax( {
-				url   : URLs.removeMetall + '/' + metallId,
-				method: 'DELETE',
-				data: { metallId: metallId }
-			} );
-		},
 		handler: function () {
 			$('.metallWrapper').click(methods.kimFocus);
 			$jq.addMetallBtn.click(addMetall);
 			$jq.editMetallBtn.click(editMetall);
+			$jq.deleteMetallBtn.click(deleteMetall);
+			$jq.outBodyElements.on('dblclick', '.metallListTable tbody tr', prepareDataEditModal);
 		}
 	};
 	

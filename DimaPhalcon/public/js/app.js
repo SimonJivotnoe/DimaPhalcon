@@ -5,6 +5,7 @@ define(['methods', 'startPage'], function (methods, startPage) {var
            ajaxStop: methods.stopWaitAnimation
        });
        var sector = localStorage.siteSector;
+       startPage.handler();
        if (!sector) {
            localStorage.siteSector = 'MENU';
            startPage.runStartPage();

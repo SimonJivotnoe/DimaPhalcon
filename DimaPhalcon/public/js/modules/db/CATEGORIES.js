@@ -23,7 +23,6 @@ define(['jq', 'methods', 'URLs', 'mustache', 'VALIDATION'], function ($jq, metho
 					$('#addCategoryInput, #addCategoryArticleInput').val('');
 					$.when(CATEGORIES.getCategories()).then(function () {
 						$jq.addCategoryModal.modal('hide');
-						setTimeout(methods.MESSAGES.show.bind(this, response), 300);
 					});
 				}
 			} );
@@ -47,17 +46,28 @@ define(['jq', 'methods', 'URLs', 'mustache', 'VALIDATION'], function ($jq, metho
 					$.when(CATEGORIES.getCategories()).then(function () {
 						$jq.editKimIcon.click().click();
 						$jq.editCategoryModal.modal('hide');
-						setTimeout(methods.MESSAGES.show.bind(this, response), 300);
 					});
-				} else {
-					methods.MESSAGES.show(response);
 				}
 			});
 		}
 	},
-	showEditModal = function () {
-		var $this = $(this);
-		var id = $this.attr('data-id');
+	deleteCategory = function () {
+		methods.cancelArticleBtn();
+		$.ajax({
+			url   : URLs.removeCategory + '/' + $(this).attr('data-id'),
+			method: 'DELETE'
+		}).then(function (response) {
+			if (methods.checkResponseOnSuccess(response)) {
+				$.when(CATEGORIES.getCategories()).then(function () {
+					$jq.deleteKimIcon.click().click();
+					$jq.deleteKIMGroupModal.modal('hide');
+				});
+			}
+		});
+	},
+	prepareDataEditModal = function () {
+		var $this = $(this),
+			id = $this.attr('data-id');
 		$jq.editCategoryInput.val(MAIN.categoriesTableContent.data[id].name);
 		MAIN.$selectedRow = $this;
 		$jq.editCategoryModal.modal('show');
@@ -76,30 +86,12 @@ define(['jq', 'methods', 'URLs', 'mustache', 'VALIDATION'], function ($jq, metho
 			} );
 		},
 
-		confirmDelete: function ($this, $noty) {
-			$.when(CATEGORIES.removeCategory($this.attr('data-id'))).then(function (response) {
-				if (true === response.success) {
-					$.when(CATEGORIES.getCategories()).then(function () {
-						$jq.deleteKimIcon.click().click();
-					});
-				}
-				setTimeout(methods.MESSAGES.show.bind(this, response), 1000);
-				$noty.close();
-			});
-		},
-
-		removeCategory: function (id) {
-			methods.cancelArticleBtn();
-			return $.ajax({
-				url   : URLs.removeCategory + '/' + id,
-				method: 'DELETE'
-			});
-		},
 		handler: function () {
 			$('.categoriesWrapper').click(methods.kimFocus);
 			$jq.addCategoryBtn.click(addCategory);
 			$jq.editCategoryBtn.click(editCategory);
-			$jq.outBodyElements.on('dblclick', '.categoriesListTable tbody tr', showEditModal);
+			$jq.deleteCategoryBtn.click(deleteCategory);
+			$jq.outBodyElements.on('dblclick', '.categoriesListTable tbody tr', prepareDataEditModal);
 		},
 	};
 	

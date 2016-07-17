@@ -9,8 +9,10 @@ class TabsController extends ControllerBase
         $activeTab = false;
         $tabsObj = Tabs::find();
         if ($tabsObj && count($tabsObj)) {
+            $date = new DateTime();
             foreach ($tabsObj as $tab) {
                 $active = '';
+                $product = $tab->Products;
                 if ($tab->getActive()) {
                     $activeTab = $tab->getActive();
                     $active = 'active';
@@ -19,8 +21,17 @@ class TabsController extends ControllerBase
                     'tabId' => $tab->getId(),
                     'isActiveTab' => $active,
                     'productId' => $tab->getProductId(),
-                    'productName' => $tab->Products->getProductName(),
-                    'productArticle' => $tab->Products->getArticle()
+                    'productCreated' => $product->getCreated(),
+                    'productImage' => '<div class="productPicture"><img src="img/' . $tab->Products->getImage() . '?' . $date->getTimestamp() .'" style="max-width: 100%; max-height: 200px;"></div>',
+                    'productName' => $product->getProductName(),
+                    'productArticle' => $product->getArticle(),
+                    'productCategory' => $product->Categories->getCategoryName(),
+                    'productKim' => $product->Kim->getKimHard(),
+                    'productMetall' => $product->Metalls->getName(),
+                    'tableContent' => json_decode($product->getTableContent()),
+                    'alwaysInTable' => json_decode($product->getAlwaysInTable())
+                    /*'tableContentHidden' => $productObj->createTableRes($tab->Products->getTableContent(), 'tableContent.html'),
+                    'alwaysInTableHidden' => $productObj->createTableRes($tab->Products->getAlwaysInTable(), 'alwaysInTable.html'),*/
                 ];
                 array_push($data, $template);
             }
@@ -230,71 +241,22 @@ class TabsController extends ControllerBase
         return $this->response;
     }
 
-    public function addNewLeftTabAction($id) {
-        if ($this->request->isAjax() && $this->request->isPost()) {
-            $tab = new Tabs();
-            $categoryId = Categories::minimum(array("column" => "category_id"));
-            if (empty($categoryId)) {
-                $category = new Categories();
-                $category->setCategoryName('Нераспределенное');
-                $category->save();
-                $categoryId = Categories::minimum(array("column" => "category_id"));
-            }
-            $kimId = Kim::minimum(array("column" => "kim_id"));
-            if (empty($kimId)) {
-                $kim = new Kim();
-                $kim->setKimHard('Прямой участок')
-                        ->setKim('1.1')
-                        ->save();
-                $kimId = Kim::minimum(array("column" => "kim_id"));
-            }
-            $metallId = Metalls::minimum(array("column" => "id"));
-            if (empty($metallId)) {
-                $metall = new Metalls();
-                $metall->setName('металл оц. 0.55')
-                        ->setPrice('185')
-                        ->setMass('8.5')
-                        ->setOutPrice('245')
-                        ->save();
-                $metallId = Metalls::minimum(array("column" => "id"));
-            }
-            $productId = '';
-            $alwaysInTable = file_get_contents('files/alwaysInTable.json');
-            $product = new Products();
-            $product->setProductName('Новое изделие')
-                    ->setArticle(new RawValue('default'))
-                    ->setCategoryId($categoryId)
-                    ->setKim($kimId)
-                    ->setMetall($metallId)
-                    ->setAlwaysintable($alwaysInTable)
-                    ->setCreated(new RawValue('default'))
-                    ->setStatus(new RawValue('default'))
-                    ->setTemplate(new RawValue('default'))
-                    ->setImage(new RawValue('default'));
-            //$product->setTableContent(new RawValue('default'));
-            if ($product->save() == false) {
-                $message = $product->getMessages();
-                $this->response->setJsonContent(array($message[0]->__toString()));
-                return $this->response;
-            } else {
-                $productId = $product->getProductId();
-            }
-            $tabs = Tabs::find("active = 1");
-            foreach ($tabs as $val) {
-                $val->setActive(0);
-                $val->save();
-            }
+    public function addProductDbTabAction() {
+        $this->ajaxPostCheck();
+        $productsId = $this->request->getPost('productsId');
+        if ($productsId) {
+            foreach ($productsId as $productId) {
+                $tabsObj = new Tabs();
+                try {
+                    $tabsObj->setProductId($productId)->save();
+                } catch (\Exception $e) {
 
-            $tab->setTabId('pr' . $id)
-                    ->setProductId($productId)
-                    ->setActive(1)
-                    ->save();
-            $this->response->setContentType('application/json', 'UTF-8');
-            $this->response->setJsonContent('ok');
-            return $this->response;
-        } else {
-            $this->response->redirect('');
+                }
+            }
         }
+        $this->response->setJsonContent(['success' => true]);
+
+        return $this->response;
     }
     
     public function openSavedProductAction() {

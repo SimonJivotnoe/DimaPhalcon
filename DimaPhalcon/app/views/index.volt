@@ -233,7 +233,27 @@
             </div>
         </div>
     </div>
-    
+
+    <div class="modal fade" id="deleteKIMGroupModal" tabindex="-1" role="dialog" aria-labelledby="deleteKIMGroupModal">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header deleteModalHeader">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">Удалить <span class="whatDeleteTitle"></span></h4>
+                </div>
+                <div class="modal-body">
+                    Вы уверены, что хотите удалить <span class="whatDeleteElement"></span> ?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Отмена</button>
+                    <button type="button" class="btn btn-danger deleteBtnModal" id="deleteCategoryBtn">Удалить</button>
+                    <button type="button" class="btn btn-danger deleteBtnModal" id="deleteKimBtn">Удалить</button>
+                    <button type="button" class="btn btn-danger deleteBtnModal" id="deleteMetallBtn">Удалить</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div class="modal fade" id="addNewProductModal" tabindex="-1" role="dialog" aria-labelledby="addNewProductModal">
         <div class="modal-dialog modal-lg" role="document">
             <div class="modal-content">
@@ -419,6 +439,23 @@
                             </table>
                         </div>
                     </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="addFamilyModal" tabindex="-1" role="dialog" aria-labelledby="deleteKIMGroupModal">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header addFamilyModalHeader">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">Создать Семейство</h4>
+                </div>
+                <div class="modal-body">
+                    Вы уверены, что хотите удалить <span class="whatDeleteElement"></span> ?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Отмена</button>
+                    <button type="button" class="btn custom-addToFamilyBtn" id="addFamilyBtn">Добаить</button>
                 </div>
             </div>
         </div>

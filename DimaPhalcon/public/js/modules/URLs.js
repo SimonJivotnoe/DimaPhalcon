@@ -41,6 +41,7 @@ define([], function () {
 		// TABS
 		getTabs: URLs.TABS + 'getTabs',
 		changeActiveTab: URLs.TABS + 'changeActiveLeftTab',
+		addProductDbTab: URLs.TABS + 'addProductDbTab',
 		closeTab: URLs.TABS + 'closeTab',
 		// PRODUCT
 		addBtnToFormulasHelper: URLs.PRODUCT + 'addBtnToFormulasHelper',

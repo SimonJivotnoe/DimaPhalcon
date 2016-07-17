@@ -1,4 +1,4 @@
-define(['jq', 'methods', 'URLs', 'mustache', 'PRODUCT', 'VALIDATION', 'knockout'], function ($jq, methods, URLs, Mustache, PRODUCT, VALIDATION, ko) {var
+define(['jq', 'methods', 'URLs', 'TABS'], function ($jq, methods, URLs, TABS) {var
     prepareNewProductModal = function () {
 		var kimVal = $jq.addNewProductModal.find('.kimList option:selected').attr('data-val'),
 			metallList = $jq.addNewProductModal.find('.metallsList option:selected');
@@ -20,20 +20,75 @@ define(['jq', 'methods', 'URLs', 'mustache', 'PRODUCT', 'VALIDATION', 'knockout'
 			methods.showLayout($jq.productTabsLiWrapper(), $('#tabsLiLayout'));
 			methods.blur($('#productTabsLiWrapper'));
 	},
+	openProductFormTree = function () {
+		var productsId = [];
+		$.map($('.productsTreeDB').jstree('get_selected'), function (id) {
+			var productId = id.split('_')[2];
+			if (productId) {
+				productsId.push(productId);
+			}
+		});
+		$.post(URLs.addProductDbTab, {productsId: productsId}, function () {
+			$('#dbProductsListTab, #dbProductsListList').nextAll().remove();
+			TABS.getTabs();
+			$jq.backDBTreeIcon.click();
+		});
+	},
+	addToFamily = function () {
+		var productsId = [],
+			selectedMetalls = 0;
+		$.map($('.productsTreeDB').jstree('get_selected'), function (id) {
+			var productId = id.split('_')[2];
+			if (productId) {
+				productsId.push(productId);
+			}
+			if ('metall' === id.split('_')[0]) {
+				selectedMetalls++;
+			}
+		});
+		if (1 !== selectedMetalls) {
+			methods.MESSAGES.error('Для создания Семейства нужно выбрать изделия только в рамках ОДНОГО Металла из ОДНОЙ Категории', 4000);
+			return false;
+		}
+		$jq.addFamilyModal.modal('show');
+	},
+	exitFromTreeDB = function () {
+		var $productsTreeDB = $jq.productsTreeDB();
+		$('#dbProductsListList .innerBackLayout').show();
+		MAIN.productsTreeDB.plugins = _.difference(MAIN.productsTreeDB.plugins, ['checkbox']);
+		$productsTreeDB.jstree('destroy');
+		$productsTreeDB.jstree(MAIN.productsTreeDB);
+		methods.toggleMainButtons($jq.productsTreeDBButtons, $jq.mainIcons);
+		methods.blur($('#settingsMetallsWrapper'), true);
+		methods.hideLayout();
+		methods.blur($('#productTabsLiWrapper'), true);
+		methods.hideLayout($('#tabsLiLayout'));
+	},
 	TREE = {
-		handler: function () {
-			$jq.addNewProductIcon.click(prepareNewProductModal);
-			$('#showItemFromFileManager').click(function() {
-				var product = [];
-				$(this).hide();
-				$.each($('.productsTreeDB li[data-section=product][aria-selected=true]'), function (num, obj) {
-					product.push($(obj).attr('data-productid'));
-				});
-				console.log(product);
-				$.when(TABS.openSavedProduct(product, 'new', false, false)).done(function(){
-					window.location.href = LOCATION;
+		getDBTree: function () {
+			$.ajax( {
+				url   : URLs.getProductsTree,
+				method: 'GET',
+				data: {param: 'PR'}
+			} ).then( function ( response )
+			{
+				MAIN.productsTreeDB.core.data = response.tree;
+				$jq.productsTreeDB().jstree('destroy').jstree(MAIN.productsTreeDB);
+				$jq.productsTreeDB().on('ready.jstree', function () {
+					var $productsList = $jq.dbProductsListList();
+					$('#databaseWrapper .innerBackLayout')
+						.width($productsList.width())
+						.height('100vh');
 				});
 			});
+		},
+		handler: function () {
+			$jq.addNewProductIcon.click(prepareNewProductModal);
+			$jq.showItemFromTreeDB.click(openProductFormTree);
+			$jq.addToFamily.click(addToFamily);
+
+			$jq.backDBTreeIcon.click(exitFromTreeDB);
+
 			$('#dbProductsListList .productsTreeDB').on('changed.jstree', function(){
 				return false;
 			});

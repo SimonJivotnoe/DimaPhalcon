@@ -27,12 +27,14 @@
         <div class="split-pane-divider" id="db-divider"></div>
         <div class="split-pane-component" id="db-right-component">
             <div id="settingsMetallsWrapper">
-                <div class="row categoriesWrapper" data-elem="categories" data-modal-add="addNewCategoryModal">
+                <div class="row categoriesWrapper"
+                     data-elem="categories" data-focused-table=".categoriesListTable"
+                     data-modal-add="#addNewCategoryModal" data-modal-edit="#editCategoryModal">
                     <div class="col-md-12">
                         <h4>Категории <span class="glyphicon glyphicon-th-list" aria-hidden="true"></span></h4>
                     </div>
                     <div class="col-md-10 col-md-offset-1 categoriesListTable">
-                        <table class="table table-bordered" data-scroll="categoriesTable">
+                        <table class="table table-bordered" data-scroll="categoriesTable" data-name="Категорию" data-delete-action="#deleteCategoryBtn">
                             <thead>
                             <tr>
                                 <th>Категория</th>
@@ -43,12 +45,13 @@
                         </table>
                     </div>
                 </div>
-                <div class="row kimWrapper" data-elem="kim">
+                <div class="row kimWrapper"
+                     data-elem="kim" data-focused-table=".kimListTable" data-modal-add="#addNewKimModal" data-modal-edit="#editKimModal">
                     <div class="col-md-12">
                         <h4>КИМ <span class="glyphicon glyphicon-fire" aria-hidden="true"></span></h4>
                     </div>
                     <div class="col-md-10 col-md-offset-1 kimListTable">
-                        <table class="table table-bordered" data-scroll="kimTable">
+                        <table class="table table-bordered" data-scroll="kimTable" data-name="КИМ" data-delete-action="#deleteKimBtn">
                             <thead>
                             <tr>
                                 <th>Сложность изделия</th>
@@ -60,12 +63,13 @@
                         </table>
                     </div>
                 </div>
-                <div class="row metallWrapper" data-elem="metalls">
+                <div class="row metallWrapper"
+                     data-elem="metalls" data-focused-table=".metallListTable" data-modal-add="#addNewMetallModal" data-modal-edit="#editMetallModal">
                     <div class="col-md-12">
                         <h4>Металлы <span class="glyphicon glyphicon-link" aria-hidden="true"></span></h4>
                     </div>
                     <div class="col-md-10 col-md-offset-1 metallListTable">
-                        <table class="table table-bordered" data-scroll="metallsTable">
+                        <table class="table table-bordered" data-scroll="metallsTable" data-name="Металл" data-delete-action="#deleteMetallBtn">
                             <thead>
                             <tr>
                                 <th>Металл</th>

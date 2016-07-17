@@ -69,22 +69,16 @@ define([
                 localStorage.siteSector = 'DB';
                 $('#backKimIcon, #backDBTreeIcon').removeClass('hvr-pulse-grow');
                 $.get(URLs.loadDBTemplate, function (html) {
-                    //$jq.sectionContent.html(PRODUCT.addProductsDbHandler($(data)));
                     $jq.sectionContent.html(html);
-					//$.map([DB, TABS, TREE, CATEGORIES, KIM, METALLS, NEW_PRODUCT], function (MODULE) { MODULE.handler(); });
-					DB.handler();
-					//TABS.handler();
-					TREE.handler();
-                    CATEGORIES.handler();
-                    KIM.handler();
-                    METALLS.handler();
-					NEW_PRODUCT.handler();
+					$.each([DB, TABS, TREE, CATEGORIES, KIM, METALLS, NEW_PRODUCT], function () { this.handler(); });
                     $jq.startPageWrapper.hide();
                     $jq.topIconsWrapper.show();
                     methods.showBody();
-                    PRODUCT.loadKimSection();
-                    PRODUCT.getTabs();
-                    //PRODUCT.getLeftTabsList();
+					CATEGORIES.getCategories();
+					KIM.getKIM();
+					METALLS.getMetalls();
+                    TABS.getTabs();
+					TREE.getDBTree('PR');
                     $('#myTab, #leftTabsContent').fadeIn('slow');
                 });
             }
@@ -121,7 +115,43 @@ define([
                 return true;
             }
             return false;
-        }
+        },
+		handler: function () {
+			// TOP BUTTONS
+			$jq.backIcon.click( function () { startPage.runSection(); });
+
+			$jq.prefIcon.click(function () {
+				startPage.runSection('PR');
+			});
+
+			$jq.dbIcon.click(function () {
+				startPage.runSection('DB');
+			});
+
+			$jq.prIcon.click(function () {
+				startPage.runSection('OR');
+			});
+
+			// START PAGE
+			$jq.runPreferences.click(function () {
+				$jq.startPageWrapper.fadeOut();
+				setTimeout(startPage.runPreferences, 300);
+			});
+
+			$jq.runDB.click(function () {
+				$jq.startPageWrapper.fadeOut();
+				setTimeout(startPage.runDB, 300);
+			});
+
+			$jq.runPR.click(function () {
+				$jq.startPageWrapper.fadeOut();
+				if (!MAIN.prRequested) {
+					setTimeout(startPage.runProductCreation, 500);
+				} else {
+					setTimeout(startPage.runProductCreation, 300);
+				}
+			});
+		}
     };
 	
 	return startPage;

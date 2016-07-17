@@ -108,7 +108,7 @@ class MetallsController extends ControllerBase
             try {
                 if ($metallHistory->delete() && $metall->delete()) {
                     $res = true;
-                    $msg = 'Категория успешно удалена';
+                    $msg = 'Металл успешно удален';
                 }
             } catch (\Exception $e) {
 

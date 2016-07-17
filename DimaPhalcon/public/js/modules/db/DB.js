@@ -1,30 +1,32 @@
 define(['jq', 'methods', 'URLs', 'mustache', 'PRODUCT', 'VALIDATION', 'knockout'], function ($jq, methods, URLs, Mustache, PRODUCT, VALIDATION, ko) {var
     topIcons = {
-		kimIconsToDefault: function (arr) {
-            var arr = arr ? arr : ['#editKimIcon', '#deleteKimIcon'];
+		kimIconsToDefault: function (arr = ['#editKimIcon', '#deleteKimIcon']) {
             $jq.kimIcons.find(arr.join(',')).removeClass('activeTopIcon');
-            cases[MAIN.focusedElem.attr('data-elem')].table().removeClass('selectedRow deleteRow').off('click');
-            cases[MAIN.focusedElem.attr('data-elem')].table().find('tr').off('click');
+            $(`#outBodyElements ${MAIN.focusedElem.attr('data-focused-table')} table tbody`)
+                .removeClass('selectedRow deleteRow').off('click')
+                .find('tr').off('click');
         },
-		unfocus: function (buttons) {
-            var $section = $('#sectionContent');
-            var $buttons = buttons ? buttons : $('#kimIcons');
-            var scrollTable = MAIN.focusedElem.find('table').attr('data-scroll');
-            methods.blur($section, true);
-            MAIN.scrollTables.scrollTop = $jq.outBodyElements.find('.dataTables_scrollBody').scrollTop();
-            methods.unsetOutBodyElem();
-            methods.hideLayout();
-            MAIN.focusedElem
-                .removeClass('parentFocused')
-                .find('th').css('color', MAIN.previousThColor).end()
-                .find('td').css('color', MAIN.previousTdColor);
-            if (MAIN.scrollTables[scrollTable]) {
-                MAIN.scrollTables[scrollTable].destroy();
+        actionConstructor: function (cssClass, callback) {
+            var $table = $(`#outBodyElements ${MAIN.focusedElem.attr('data-focused-table')} table tbody`);
+            if ($(this).hasClass('activeTopIcon')) {
+                $table.find('tr').off('click');
+                methods.activateButton.call(this);
+                $table.removeClass(cssClass);
+                return true;
             }
-            MAIN.scrollTables[scrollTable] = methods.addDataTable(MAIN.focusedElem.find('table'));
-            MAIN.focusedElem.find('.dataTables_scrollBody').scrollTop(MAIN.scrollTables.scrollTop);
-            $('#outBodyElements').html('');
-            methods.toggleMainButtons($buttons, $('#mainIcons'));
+            $table.find('tr').on('click', callback);
+            methods.deactivateButton.call(this);
+            $table.addClass(cssClass);
+        },
+        deleteCallback: function () {
+            var $this = $(this),
+                $table = $this.closest('table');
+            $('#deleteKIMGroupModal')
+                .find('.whatDeleteTitle').html($table.attr('data-name')).end()
+                .find('.whatDeleteElement').html($this.text().trim()).end()
+                .find('.deleteBtnModal').hide().end()
+                .find($table.attr('data-delete-action')).attr('data-id', $this.attr('data-id')).show().end()
+                .modal('show');
         }
 	},
     DB = {
@@ -35,10 +37,30 @@ define(['jq', 'methods', 'URLs', 'mustache', 'PRODUCT', 'VALIDATION', 'knockout'
 				localStorage['db-split'] = $('#db-divider').css('left');
 			});
 			$jq.databaseWrapper().splitPane();
+
+            $jq.addKimIcon.click(function () {
+                topIcons.kimIconsToDefault();
+            });
+
+            $jq.editKimIcon.click(function () {
+                topIcons.kimIconsToDefault(['#deleteKimIcon']);
+                topIcons.actionConstructor.call(this, 'selectedRow', function () { $(this).dblclick(); });
+            });
+
+            $jq.deleteKimIcon.click(function () {
+                topIcons.kimIconsToDefault(['#editKimIcon']);
+                topIcons.actionConstructor.call(this, 'deleteRow', topIcons.deleteCallback);
+            });
+
 			$jq.backKimIcon.click(function () {
 				topIcons.kimIconsToDefault();
-				topIcons.unfocus();
+				methods.unfocus();
 			});
+            $('#addNewCategoryModal, #addNewKimModal, #addNewMetallModal').on('show.bs.modal', function () {
+                $(this).find('.modalFooterAdd').show().end()
+                    .find('.modalFooterEdit').hide().end()
+                    .find('input').val('');
+            });
 		}
     };
 

@@ -20,27 +20,6 @@ define(['jq', 'methods', 'URLs', 'CATEGORIES', 'KIM', 'METALLS', 'TABS', 'mustac
 				confirmDelete: METALLS.confirmDelete
 			}
 		},
-		loadKimSection: function () {
-			CATEGORIES.getCategories();
-			KIM.getKIM();
-			METALLS.getMetalls();
-		},
-		getTabs: function () {
-			$.ajax({
-				url: URLs.getTabs,
-				method: 'GET'
-			}).then(function (response) {
-				PRODUCT.createFileManager('PR');
-				if (!response.activeTab) {
-					$('#dbProductsListTab, #dbProductsListList').addClass('active');
-					$('#dbProductsListTab').click();
-				}
-				if (response.data.length) {
-					PRODUCT.addLeftTabsHandler($(Mustache.render($jq.leftTabsTemplate.html(), response))).insertAfter('#dbProductsListTab');
-					$('#leftTabsContent').append($(Mustache.render($jq.tabsContentTemplate.html(), response)));
-				}
-			});
-		},
 		getLeftTabsList: function () {
 			$.ajax({
 				url: URLs.getLeftTabsList,
@@ -190,29 +169,6 @@ define(['jq', 'methods', 'URLs', 'CATEGORIES', 'KIM', 'METALLS', 'TABS', 'mustac
 			{
 				return data;
 			});
-		},
-
-		addLeftTabsHandler: function (html) {
-			html
-				// change current tab
-				/*.find('[role=tab], #dbProductsListList').click(function(){
-					if ($(this ).attr('aria-controls') !== MAIN.curTabId) {
-						var tabsCloseRes = TABS.changeActiveTab({
-							scope: this,
-							curTabId: 'curTabId',
-							tabsList: 'tabsList',
-							getTabContent: 'getLeftTabContent',
-							changeActiveTab: 'changeActiveTab',
-							action: 'changeActiveLeftTab'
-						});
-						if (tabsCloseRes) {
-							PRODUCT.getLeftTabContent(tabsCloseRes.prodId, tabsCloseRes.selectedTabId);
-							TABS.changeActiveTabBack(tabsCloseRes.tabId, tabsCloseRes.selectedTabId, 'changeActiveLeftTab');
-						}
-					}
-				}).end()*/
-			
-			return html;
 		},
 
 		addLeftTabContentHandler: function(html) {
@@ -410,25 +366,6 @@ define(['jq', 'methods', 'URLs', 'CATEGORIES', 'KIM', 'METALLS', 'TABS', 'mustac
 					PRODUCT.createTable(tableContent, alwaysInTable);
 				});
 			return html;
-		},
-
-		createFileManager: function(param) {
-			$.ajax( {
-				url   : URLs.getProductsTree,
-				method: 'GET',
-				data: {param: param}
-			} ).then( function ( response )
-			{
-				MAIN.productsTreeDB.core.data = response.tree;
-				$jq.productsTreeDB().jstree('destroy').jstree(MAIN.productsTreeDB);
-				$jq.productsTreeDB().on('ready.jstree', function () {
-					var $productsList = $jq.dbProductsListList();
-					$('#databaseWrapper .innerBackLayout')
-						.width($productsList.width())
-						.height('100vh');
-						//.css({top: $productsList.offset().top});
-				});
-			});
 		}
     };
 

@@ -1,9 +1,9 @@
-define(['jq', 'methods', 'URLs'], function (
+define(['jq', 'methods', 'URLs', 'mustache'], function (
 	$jq,
 	methods,
-	URLs
-) {
-	var 
+	URLs,
+	Mustache
+) {var
 	changeActiveTab = function () {
 		$.ajax({
 			url: URLs.changeActiveTab,
@@ -18,27 +18,38 @@ define(['jq', 'methods', 'URLs'], function (
 		e.preventDefault();
 		var $this = $(this),
 			$li = $this.closest('li'),
-			isActive = $li.hasClass('active'),
-			tabId = $this.attr('data-tab-id'),
 			$liWrapper = $jq.productTabsLiWrapper(),
 			numberOfLis = $liWrapper.find('ul li').length,
 			currentLiNumber = $li.prevAll().length + 1,
-			nextLiNumber = (currentLiNumber === numberOfLis) ? (numberOfLis - 2) : numberOfLis - 1;
+			nextLiNumber = (currentLiNumber === numberOfLis) ? (numberOfLis - 2) : currentLiNumber;
 
 		$.ajax({
-			url: URLs.closeTab + '/' + tabId,
+			url: URLs.closeTab + '/' + $this.attr('data-tab-id'),
 			method: 'DELETE'
 		});
-
-		if (isActive) {
+		if ($li.hasClass('active')) {
 			$liWrapper.find(`ul li:eq(${nextLiNumber}) [role=tab]`).click();
 		}
 		$li.find('a').hide('highlight');
-		setTimeout(function () {
-			$li.remove();
-		}, 900);
+		$li.remove();
+		$($this.closest('a').attr('href')).remove();
 	},
 	TABS = {
+		getTabs: function () {
+			$.ajax({
+				url: URLs.getTabs,
+				method: 'GET'
+			}).then(function (response) {
+				if (!response.activeTab) {
+					$('#dbProductsListTab, #dbProductsListList').addClass('active');
+					$('#dbProductsListTab').click();
+				}
+				if (response.data.length) {
+					$(Mustache.render($jq.leftTabsTemplate.html(), response)).insertAfter('#dbProductsListTab');
+					$('#leftTabsContent').append($(Mustache.render($jq.tabsContentTemplate.html(), response)));
+				}
+			});
+		},
 		/*showPreferences: function (){
 			$('#dbProductsListTab, #dbProductsListList').addClass('active');
 			TABS.loadPreferences();
@@ -51,58 +62,6 @@ define(['jq', 'methods', 'URLs'], function (
 			});
 			MAIN.tabsList.dbProductsListTab.active = '1';
 			MAIN.curTabId = 'dbProductsListTab';
-		},
-		changeActiveTabBack: function (id, tabId, action) {
-			$.ajax({
-				url: URLs.TABS + action,
-				method: 'POST',
-				data: {
-					id: id,
-					tabId: tabId
-				}
-			})
-		},
-		changeActiveTab: function (obj) {
-			var scope = obj.scope,
-				selectedTabId = $(scope ).attr('aria-controls'),
-				curTabId = obj.curTabId,
-				tabsList = obj.tabsList,
-				tabId, prodId, orderId, res = false;
-
-			if ('' !== MAIN[curTabId]) {
-				MAIN[tabsList][MAIN[curTabId]].active = '0';
-			}
-
-			if (MAIN[curTabId] !== selectedTabId && undefined !== selectedTabId){
-				tabId = $(scope ).find('.glyphicon-remove').attr('data-tab-id' );
-				prodId = $(scope ).attr('name');
-				MAIN[tabsList][selectedTabId].active = '1';
-				res = {
-					prodId: prodId,
-					selectedTabId: selectedTabId,
-					tabId: tabId
-				};
-				if (obj.hasOwnProperty('order')) {
-					orderId = $(scope ).attr('data-order');
-					TABS.getRightTabContentOrderDetails(orderId, selectedTabId);
-					TABS.getRightTabContentTable(orderId, '#orderTableWrapper');
-				} else {
-					TABS[obj.getTabContent](prodId, selectedTabId);
-				}
-
-				TABS[obj.changeActiveTab](tabId, selectedTabId, obj.action);
-
-			}
-
-			return res;
-		},
-		
-		setActiveDefaultTab: function (tabsList, id, curTabId) {
-			$.each(MAIN[tabsList], function (tabId, obj) {
-				obj.active = '0';
-			});
-			MAIN[tabsList][id].active = '1';
-			MAIN[curTabId] = id;
 		},*/
 		handler: function () {
 			$('#tabs').on('dblclick', '#myTab li', methods.expandDivider);
