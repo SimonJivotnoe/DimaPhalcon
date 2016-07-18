@@ -131,6 +131,8 @@ define(function () {
 			addNewProductBtn: $('#addNewProductBtn'),
 
 		addFamilyModal: $('#addFamilyModal'),
+			newFamilyName: $('#newFamilyName'),
+			addFamilyBtn: $('#addFamilyBtn')
 	};
 	
 	return $jq;

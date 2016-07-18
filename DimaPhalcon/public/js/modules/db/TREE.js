@@ -34,7 +34,7 @@ define(['jq', 'methods', 'URLs', 'TABS'], function ($jq, methods, URLs, TABS) {v
 			$jq.backDBTreeIcon.click();
 		});
 	},
-	addToFamily = function () {
+	prepareAddToFamily = function () {
 		var productsId = [],
 			selectedMetalls = 0;
 		$.map($('.productsTreeDB').jstree('get_selected'), function (id) {
@@ -64,6 +64,14 @@ define(['jq', 'methods', 'URLs', 'TABS'], function ($jq, methods, URLs, TABS) {v
 		methods.blur($('#productTabsLiWrapper'), true);
 		methods.hideLayout($('#tabsLiLayout'));
 	},
+	addToFamily = function () {
+		var familyName = $jq.newFamilyName.val();
+		if (familyName) {
+			$.post(URLs.newFamily, {familyName: familyName}, function (response) {
+				
+			});
+		}
+	},
 	TREE = {
 		getDBTree: function () {
 			$.ajax( {
@@ -85,7 +93,8 @@ define(['jq', 'methods', 'URLs', 'TABS'], function ($jq, methods, URLs, TABS) {v
 		handler: function () {
 			$jq.addNewProductIcon.click(prepareNewProductModal);
 			$jq.showItemFromTreeDB.click(openProductFormTree);
-			$jq.addToFamily.click(addToFamily);
+			$jq.addToFamily.click(prepareAddToFamily);
+				$jq.addFamilyBtn.click(addToFamily);
 
 			$jq.backDBTreeIcon.click(exitFromTreeDB);
 

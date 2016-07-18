@@ -11,6 +11,7 @@ define([], function () {
 		CLIENTS:  'clients/',
 		PROJECTS:  'projects/',
 		THEMES:	  'themes/',
+		FAMILY:	  'family/',
 		LOCATION: '/'
     };
 	_.extend(URLs, {
@@ -48,6 +49,8 @@ define([], function () {
 		removeBtnFromFormulasHelper: URLs.PRODUCT + 'removeBtnFromFormulasHelper',
 		saveProduct: URLs.PRODUCT + 'saveProduct',
 		uploadImage: URLs.PRODUCT + 'uploadImage',
+		// TREE
+		newFamily: URLs.FAMILY + 'newFamily'
 	});
 
     return URLs;

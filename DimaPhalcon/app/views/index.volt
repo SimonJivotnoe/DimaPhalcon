@@ -451,7 +451,7 @@
                     <h4 class="modal-title">Создать Семейство</h4>
                 </div>
                 <div class="modal-body">
-                    Вы уверены, что хотите удалить <span class="whatDeleteElement"></span> ?
+                    <input type="text" class="form-control" id="newFamilyName" placeholder="Введите название Семейства">
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">Отмена</button>
