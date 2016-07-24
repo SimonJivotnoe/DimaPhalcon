@@ -213,7 +213,7 @@ class ProductsController extends ControllerBase
                 foreach ($catObj as $val) {
                     $catId = $val->getCategoryId();
                     $catName = $val->getCategoryName();
-                    $node = [
+                    $categoryNode = [
                         'label'    => $catName,
                         'children' => [],
                         'id'       => $i
@@ -224,7 +224,7 @@ class ProductsController extends ControllerBase
                             $i++;
                             $metId = $metVal->getId();
                             $metName = $metVal->getName();
-                            $node2 = [
+                            $metallNode = [
                                 'label'    => $metName,
                                 'children' => [],
                                 'id'       => $i
@@ -235,21 +235,21 @@ class ProductsController extends ControllerBase
                             if (count($pr)) {
                                 foreach ($pr as $prVal) {
                                     $i++;
-                                    $child = [
+                                    $productNode = [
                                         'label' => $prVal->getArticle() . '___' . $prVal->getProductName(),
                                         'productId'    => $prVal->getProductId(),
                                         'id'    => $i
                                     ];
-                                    array_push($node2['children'], (object)$child);
+                                    array_push($metallNode['children'], (object)$productNode);
                                 }
                             }
-                            if (count($node2['children'])) {
-                                array_push($node['children'], (object)$node2);
+                            if (count($metallNode['children'])) {
+                                array_push($categoryNode['children'], (object)$metallNode);
                             }
                         }
                     }
-                    if (count($node['children'])) {
-                        array_push($tree, (object)$node);
+                    if (count($categoryNode['children'])) {
+                        array_push($tree, (object)$categoryNode);
                     }
                     $i++;
                 }

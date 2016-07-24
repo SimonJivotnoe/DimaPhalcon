@@ -48,7 +48,7 @@
 </script>
 <script id="productTableRowTemplate" type="x-tmpl-mustache">
     <li class="">
-        <span class="rowNumber col-md-2">{{rowNumber}}</span>
+        <span class="rowNumber col-md-2" data-element="{{rowNumber}}">{{rowNumber}}</span>
         <span class="rowName">
             <input class="rowNameInput" type="text" value="">
         </span>
@@ -62,15 +62,15 @@
 </script>
 <script id="formulaTemplate" type="x-tmpl-mustache">
     <tr class="formula">
-        <td class="formulaValue">{{{beautyFormula}}}</td>
-        <td><span class="glyphicon glyphicon-remove removeFormula" aria-hidden="true"></span></td>
-        <td><span class="glyphicon glyphicon-pencil editFormula" aria-hidden="true"></span></td>
         <td><span class="checkbox checkbox-slider--b-flat checkbox-slider-success">
 				<label>
 					<input type="checkbox" class="applyFormula" data-formula="{{formula}}"><span>&nbsp;</span>
 				</label>
 			</span>
         </td>
+        <td class="formulaValue">{{{beautyFormula}}}</td>
+        <td><span class="glyphicon glyphicon-pencil editFormula" aria-hidden="true" data-formula="{{formula}}"></span></td>
+        <td><span class="glyphicon glyphicon-remove removeFormula" aria-hidden="true"></span></td>
     </tr>
 </script>
 <script id="justCreatedFormula" type="x-tmpl-mustache">
@@ -91,13 +91,26 @@
         </li>
     {{/data}}
 </script>
+<script id="formulasHelperTemplate" type="x-tmpl-mustache">
+    {{#formulasHelper}}
+        <span>
+            <button type="button" class="btn custom-addRowsToTable btn-xs fhBtn" data-element="{{name}}">{{name}}
+            <span class="glyphicon glyphicon-remove removeFhBtn" data-id="{{id}}" aria-hidden="true"></span>
+            </button>
+        </span>
+    {{/formulasHelper}}
+</script>
 <script id="tabsContentTemplate" type="x-tmpl-mustache">
     {{#data}}
         <div role="tabpanel" class="tab-pane {{isActiveTab}}" id="productTab{{tabId}}">
             <div class="col-md-12 created">
-                <div class="col-md-5">{{{productImage}}}</div>
+                <div class="col-md-5">
+                    <div class="productPicture">
+                        <img src="img/{{productImage}}" style="max-width: 100%; max-height: 200px;">
+                    </div>
+                </div>
                 <div class="col-md-4">Создано: {{productCreated}}</div>
-                <div class="col-md-3 createTableDiv">
+                <div class="col-md-1 col-md-offset-2 createTableDiv copyProduct hvr-pulse-grow" data-product-id="{{productId}}">
                     <span class="glyphicon glyphicon-copy" aria-hidden="true"></span>
                 </div>
             </div>

@@ -74,6 +74,7 @@ define([
                     $jq.startPageWrapper.hide();
                     $jq.topIconsWrapper.show();
                     methods.showBody();
+					NEW_PRODUCT.getFormulasHelper();
 					CATEGORIES.getCategories();
 					KIM.getKIM();
 					METALLS.getMetalls();

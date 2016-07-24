@@ -7,6 +7,7 @@ define([], function () {
 		KIM:	  'kim/',
 		METALLS:  'metalls/',
 		PRODUCT:  'products/',
+		FORMULAS:  'formulas/',
 		MENU:	  'menu/',
 		CLIENTS:  'clients/',
 		PROJECTS:  'projects/',
@@ -45,12 +46,14 @@ define([], function () {
 		addProductDbTab: URLs.TABS + 'addProductDbTab',
 		closeTab: URLs.TABS + 'closeTab',
 		// PRODUCT
+		getFormulasHelper: URLs.FORMULAS + 'getFormulasHelper',
 		addBtnToFormulasHelper: URLs.PRODUCT + 'addBtnToFormulasHelper',
 		removeBtnFromFormulasHelper: URLs.PRODUCT + 'removeBtnFromFormulasHelper',
 		saveProduct: URLs.PRODUCT + 'saveProduct',
 		uploadImage: URLs.PRODUCT + 'uploadImage',
 		// TREE
-		newFamily: URLs.FAMILY + 'newFamily'
+		addToFamily: URLs.FAMILY + 'addToFamily',
+		removeFromFamily: URLs.FAMILY + 'removeFromFamily'
 	});
 
     return URLs;

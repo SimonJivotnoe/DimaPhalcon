@@ -136,7 +136,7 @@ body {
 #editKimIcon {
    background-color: #337ab7;
 }
-#deleteKimIcon {
+#deleteKimIcon, #removeProduct {
    background-color: #d9534f;
 }
 #backKimIcon, #backDBTreeIcon {
@@ -384,14 +384,20 @@ th {
 #addFormulaBtn {
     margin-left: 44%;
 }
+.editFormula {
+    color: blue;
+}
 
 .removeFormula {
-    padding-left: 20px;
-}
-
-.removeFormula:hover {
     color: red;
+   /* padding-left: 20px;*/
 }
+.editFormula, .removeFormula {
+    cursor: pointer;
+}
+/*.removeFormula:hover {
+    color: red;
+}*/
 
 h4 {
     text-align: center;
@@ -500,7 +506,11 @@ h4 {
     /*margin-bottom: 5px;
     margin-top: -25px;*/
 }
-
+.copyProduct {
+    font-size: 20px;
+    color: #3e8f3e;
+    cursor: pointer;
+}
 ol li {
     cursor: pointer;
 }
@@ -543,7 +553,10 @@ ol li:hover {
     color: blue;
     cursor: pointer;
 }
-
+.productsTreeDB .glyphicon-paperclip {
+    color: #6f5499;
+    font-weight: bold;
+}
 #formulasHelper {
     display: none;
     background-color: hsl(60, 2%, 58%);

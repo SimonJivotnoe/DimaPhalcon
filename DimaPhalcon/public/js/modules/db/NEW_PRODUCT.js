@@ -1,4 +1,4 @@
-define(['jq', 'methods', 'URLs', 'mustache', 'PRODUCT', 'VALIDATION'], function ($jq, methods, URLs, Mustache, PRODUCT, VALIDATION) {var
+define(['jq', 'methods', 'URLs', 'mustache', 'PRODUCT', 'VALIDATION', 'TREE'], function ($jq, methods, URLs, Mustache, PRODUCT, VALIDATION, TREE) {var
     changeKimList = function () {
         var kim = $('option:selected', this ).attr('data-val');
         $('#addNewProductModal [data-cell="KIM1"]' ).val(kim);
@@ -218,14 +218,6 @@ define(['jq', 'methods', 'URLs', 'mustache', 'PRODUCT', 'VALIDATION'], function 
         toggleAddFormula: function() {
             '' !== $jq.addFormulaInputPr.val() ? $jq.addFormulaBtnPr.slideDown() : $jq.addFormulaBtnPr.slideUp();
         },
-        addElementToFormulaInput: function() {
-            if (MAIN.clickOnFormulaInput) {
-                var $this = $(this);
-                formulas.addWhereCaret(localStorage.currentCaretPos, $this.text());
-                localStorage.currentCaretPos = parseInt(localStorage.currentCaretPos) + parseInt($this.text().length);
-                formulas.toggleAddFormula();
-            }
-        },
         startCreateNewFormula: function () {
             localStorage.currentCaretPos = document.getElementById('addFormulaInputPr').selectionStart;
             $('#addNewFhBtnInput').val('');
@@ -273,8 +265,8 @@ define(['jq', 'methods', 'URLs', 'mustache', 'PRODUCT', 'VALIDATION'], function 
                     beautyFormula: formulas.beautifyFormula(formula)
                     //availableCellList: addAvailableCellList()
                 }));
-                $('.removeFormula').hide();
-                $('.editFormula').hide();
+                /*$('.removeFormula').hide();
+                $('.editFormula').hide();*/
                 formulas.cancelInputFormula();
                 $jq.addFormulaInputPr.val('');
                // PRODUCT.formulas.addNewFormula(PRODUCT.getFormulasList, true);
@@ -301,6 +293,7 @@ define(['jq', 'methods', 'URLs', 'mustache', 'PRODUCT', 'VALIDATION'], function 
             if (!isChecked) {
                 formula = '';
                 S1.val('');
+                $this.removeClass('appliedFormula');
             } else {
                 $('.applyFormula').removeClass('appliedFormula');
                 $this.addClass('appliedFormula');
@@ -313,7 +306,19 @@ define(['jq', 'methods', 'URLs', 'mustache', 'PRODUCT', 'VALIDATION'], function 
             }
         },
         editFormula: function () {
-    
+            var $this = $(this),
+                formula = $this.attr('data-formula');
+            $this.closest('tr' ).find('.removeFormula' ).click();
+            $('#addFormulaInputPr' ).click().val(formula);
+            formulas.toggleAddFormula();
+        },
+        removeFormula: function () {
+            var $tr = $(this).closest('tr'),
+                checked = $tr.closest('tr').find('.applyFormula').prop('checked');
+            if (checked) {
+                $tr.closest('tr').find('.applyFormula').click();
+            }
+            $tr.remove();
         },
         removeFormulasHelper: function (id) {
             return $.ajax( {
@@ -322,9 +327,10 @@ define(['jq', 'methods', 'URLs', 'mustache', 'PRODUCT', 'VALIDATION'], function 
             });
         },
         addElementToFormulaInput: function() {
-            var $this = $(this);
-            formulas.addWhereCaret(localStorage.currentCaretPos, $this.text());
-            localStorage.currentCaretPos = parseInt(localStorage.currentCaretPos) + parseInt($this.text().length);
+            var $this = $(this),
+                element = $this.attr('data-element');
+            formulas.addWhereCaret(localStorage.currentCaretPos, element);
+            localStorage.currentCaretPos = parseInt(localStorage.currentCaretPos) + parseInt(element.length);
             formulas.toggleAddFormula();
         },
         removeFnBtn: function(e) {
@@ -422,7 +428,7 @@ define(['jq', 'methods', 'URLs', 'mustache', 'PRODUCT', 'VALIDATION'], function 
                     data: saveProduct.getData()
                 }).then(function (response) {
                     if (response.success && response.data.id) {
-                        PRODUCT.createFileManager('PR');
+                        TREE.getDBTree();
                         $.ajax({
                             type: 'POST',
                             processData: false,
@@ -437,9 +443,23 @@ define(['jq', 'methods', 'URLs', 'mustache', 'PRODUCT', 'VALIDATION'], function 
                 });
             }
         }
-    }
+    },
+    copyProduct = function () {
+        var $this = $(this),
+            productId = $this.attr('data-product-id');
+        if (productId && MAIN.productModel && MAIN.productModel[productId]) {
 
-    var NEW_PRODUCT = {
+        }
+    },
+
+    NEW_PRODUCT = {
+        getFormulasHelper: function () {
+            $.get(URLs.getFormulasHelper, function (response) {
+                    if (methods.checkResponseOnSuccess(response)) {
+                        $(Mustache.render($jq.formulasHelperTemplate.html(), response)).insertBefore('#addNewBtnSpan');
+                    }
+            })
+        },
 		handler: function () {
 			$jq.kimList.change(changeKimList);
 			$jq.metallsList.change(changeMetallList);
@@ -500,9 +520,11 @@ define(['jq', 'methods', 'URLs', 'mustache', 'PRODUCT', 'VALIDATION'], function 
 						localStorage.currentCaretPos = document.getElementById('addFormulaInputPr').selectionStart;
 					}
 				})
-				.on('click', '.rowNumber', formulas.addElementToFormulaInput)
-				.on('click', '.applyFormula', formulas.applyFormula)
-				.on('dblclick', '.formulaValue', formulas.editFormula);
+				.on('click', '.rowNumber', formulas.addElementToFormulaInput);
+			$('#formulasList')
+                .on('click', '.applyFormula', formulas.applyFormula)
+				.on('click', '.editFormula', formulas.editFormula)
+				.on('click', '.removeFormula', formulas.removeFormula)
 
 			$jq.formulasHelper
 				.on('click', '.fhBtn', formulas.addElementToFormulaInput)
@@ -522,6 +544,8 @@ define(['jq', 'methods', 'URLs', 'mustache', 'PRODUCT', 'VALIDATION'], function 
 			$jq.addNewFhBtn.click(formulas.addNewFhBtn);
 
 			$jq.addNewProductBtn.click(saveProduct.addNewProductBtn);
+
+            $jq.sectionContent.on('click', '.copyProduct', copyProduct);
 		}
 	}
 

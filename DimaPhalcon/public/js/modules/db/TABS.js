@@ -48,6 +48,9 @@ define(['jq', 'methods', 'URLs', 'mustache'], function (
 					$(Mustache.render($jq.leftTabsTemplate.html(), response)).insertAfter('#dbProductsListTab');
 					$('#leftTabsContent').append($(Mustache.render($jq.tabsContentTemplate.html(), response)));
 				}
+				if (response.productModel) {
+					MAIN.productModel = response.productModel;
+				}
 			});
 		},
 		/*showPreferences: function (){

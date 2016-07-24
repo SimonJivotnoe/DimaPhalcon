@@ -6,38 +6,54 @@ class TabsController extends ControllerBase
     public function getTabsAction () {
         $this->ajaxGetCheck();
         $data = [];
+        $productModel = [];
         $activeTab = false;
         $tabsObj = Tabs::find();
         if ($tabsObj && count($tabsObj)) {
             $date = new DateTime();
             foreach ($tabsObj as $tab) {
                 $active = '';
-                $product = $tab->Products;
+                $product = &$tab->Products;
                 if ($tab->getActive()) {
                     $activeTab = $tab->getActive();
                     $active = 'active';
                 }
+                $productId = $tab->getProductId();
+                $productName = $product->getProductName();
+                $image = $product->getImage();
+                $tableContent = json_decode($product->getTableContent());
+                $alwaysInTable = json_decode($product->getAlwaysInTable());
                 $template = [
                     'tabId' => $tab->getId(),
                     'isActiveTab' => $active,
-                    'productId' => $tab->getProductId(),
+                    'productId' => $productId,
                     'productCreated' => $product->getCreated(),
-                    'productImage' => '<div class="productPicture"><img src="img/' . $tab->Products->getImage() . '?' . $date->getTimestamp() .'" style="max-width: 100%; max-height: 200px;"></div>',
-                    'productName' => $product->getProductName(),
+                    'productImage' => $image . '?' . $date->getTimestamp(),
+                    'productName' => $productName,
                     'productArticle' => $product->getArticle(),
                     'productCategory' => $product->Categories->getCategoryName(),
                     'productKim' => $product->Kim->getKimHard(),
                     'productMetall' => $product->Metalls->getName(),
-                    'tableContent' => json_decode($product->getTableContent()),
-                    'alwaysInTable' => json_decode($product->getAlwaysInTable())
+                    'tableContent' => $tableContent,
+                    'alwaysInTable' => $alwaysInTable
                     /*'tableContentHidden' => $productObj->createTableRes($tab->Products->getTableContent(), 'tableContent.html'),
                     'alwaysInTableHidden' => $productObj->createTableRes($tab->Products->getAlwaysInTable(), 'alwaysInTable.html'),*/
                 ];
                 array_push($data, $template);
+                $productModel[$productId] = [
+                    'productImage' => $image . '?' . $date->getTimestamp(),
+                    'productName' => $productName,
+                    'categoryId' => $product->getCategoryId(),
+                    'kimId' => $tab->Products->getKim(), // otherwise not working
+                    'metallId' => $product->getMetall(),
+                    'tableContent' => $tableContent,
+                    'alwaysInTable' => $alwaysInTable,
+                    'formulas' => json_decode($product->getFormulas())
+                ];
             }
         }
 
-        return $this->response->setJsonContent(['data' => $data, 'activeTab' => $activeTab]);
+        return $this->response->setJsonContent(['data' => $data, 'activeTab' => $activeTab, 'productModel' =>$productModel]);
     }
 
     public function getLeftTabsListAction() {

@@ -11,7 +11,7 @@ class Families extends \Phalcon\Mvc\Model
 
     /**
      *
-     * @var integer
+     * @var string
      */
     protected $name;
 
@@ -37,7 +37,7 @@ class Families extends \Phalcon\Mvc\Model
     /**
      * Method to set the value of field name
      *
-     * @param integer $name
+     * @param string $name
      * @return $this
      */
     public function setName($name)
@@ -73,7 +73,7 @@ class Families extends \Phalcon\Mvc\Model
     /**
      * Returns the value of field name
      *
-     * @return integer
+     * @return string
      */
     public function getName()
     {

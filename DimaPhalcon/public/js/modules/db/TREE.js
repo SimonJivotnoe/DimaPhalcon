@@ -28,29 +28,84 @@ define(['jq', 'methods', 'URLs', 'TABS'], function ($jq, methods, URLs, TABS) {v
 				productsId.push(productId);
 			}
 		});
-		$.post(URLs.addProductDbTab, {productsId: productsId}, function () {
-			$('#dbProductsListTab, #dbProductsListList').nextAll().remove();
-			TABS.getTabs();
-			$jq.backDBTreeIcon.click();
-		});
+		if (productsId.length) {
+			$.post(URLs.addProductDbTab, {productsId: productsId}, function () {
+				$('#dbProductsListTab, #dbProductsListList').nextAll().remove();
+				TABS.getTabs();
+				$jq.backDBTreeIcon.click();
+			});
+		}
 	},
-	prepareAddToFamily = function () {
-		var productsId = [],
-			selectedMetalls = 0;
+	familyName = [],
+	productsAddInFamily = [],
+	productsRemoveFromFamily = [],
+	prepareFamilyAction = function () {
+		var selectedMetalls = [];
+		familyName = [];
+		productsAddInFamily = [];
+		productsRemoveFromFamily = [];
 		$.map($('.productsTreeDB').jstree('get_selected'), function (id) {
-			var productId = id.split('_')[2];
-			if (productId) {
-				productsId.push(productId);
+			if ('product' === id.split('_')[0]) {
+				var productId = id.split('_')[2];
+				if (productId) {
+					if ('inFamily' === id.split('_')[3]) {
+						productsRemoveFromFamily.push(productId);
+					} else {
+						productsAddInFamily.push(productId);
+					}
+				}
+				selectedMetalls.push($('#' + id).closest('[data-section="metall"]').attr('data-metallid'));
 			}
-			if ('metall' === id.split('_')[0]) {
-				selectedMetalls++;
+			if ('family' === id.split('_')[0]) {
+				familyName.push(id.split('_')[2]);
 			}
 		});
-		if (1 !== selectedMetalls) {
+		if (1 !== _.compact(_.uniq(selectedMetalls)).length && !productsRemoveFromFamily.length) {
 			methods.MESSAGES.error('Для создания Семейства нужно выбрать изделия только в рамках ОДНОГО Металла из ОДНОЙ Категории', 4000);
 			return false;
 		}
-		$jq.addFamilyModal.modal('show');
+		if (1 !== _.uniq(familyName).length && _.uniq(familyName).length) {
+			methods.MESSAGES.error('Для добавления в Семейство или удаления из Семейства нужно выбрать только ОДНО Семейство', 7000);
+			return false;
+		}
+		// Create Family
+		if (!familyName.length && productsAddInFamily.length) {
+			$jq.createFamilyModal.modal('show');
+			return true;
+		}
+		// Add to Family
+		if (productsAddInFamily.length && familyName.length) {
+			addToFamily();
+		}
+		// Remove from Family
+		if (productsRemoveFromFamily.length && !productsAddInFamily.length) {
+			removeFromFamily();
+		}
+	},
+	creteFamily = function () {
+		var familyName = $jq.newFamilyName.val();
+		if (familyName) {
+			addToFamily(familyName);
+		}
+	},
+	addToFamily = function (_familyName = familyName[0]) {
+		$.post(URLs.addToFamily, {familyName: _familyName, productsId: productsAddInFamily}, function (response) {
+			if (methods.checkResponseOnSuccess(response)) {
+				TREE.getDBTree();
+				productsAddInFamily = [];
+				familyName = [];
+				$jq.createFamilyModal.modal('hide');
+			}
+		});
+	},
+	removeFromFamily = function () {
+		$.ajax({
+			url   : URLs.removeFromFamily + '/' + JSON.stringify(productsRemoveFromFamily),
+			method: 'DELETE'
+		}).then(function () {
+			TREE.getDBTree();
+			productsRemoveFromFamily = [];
+		});
 	},
 	exitFromTreeDB = function () {
 		var $productsTreeDB = $jq.productsTreeDB();
@@ -63,14 +118,6 @@ define(['jq', 'methods', 'URLs', 'TABS'], function ($jq, methods, URLs, TABS) {v
 		methods.hideLayout();
 		methods.blur($('#productTabsLiWrapper'), true);
 		methods.hideLayout($('#tabsLiLayout'));
-	},
-	addToFamily = function () {
-		var familyName = $jq.newFamilyName.val();
-		if (familyName) {
-			$.post(URLs.newFamily, {familyName: familyName}, function (response) {
-				
-			});
-		}
 	},
 	TREE = {
 		getDBTree: function () {
@@ -93,8 +140,8 @@ define(['jq', 'methods', 'URLs', 'TABS'], function ($jq, methods, URLs, TABS) {v
 		handler: function () {
 			$jq.addNewProductIcon.click(prepareNewProductModal);
 			$jq.showItemFromTreeDB.click(openProductFormTree);
-			$jq.addToFamily.click(prepareAddToFamily);
-				$jq.addFamilyBtn.click(addToFamily);
+			$jq.familyActions.click(prepareFamilyAction);
+				$jq.createFamilyBtn.click(creteFamily);
 
 			$jq.backDBTreeIcon.click(exitFromTreeDB);
 

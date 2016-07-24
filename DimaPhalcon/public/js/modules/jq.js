@@ -6,6 +6,7 @@ define(function () {
 		categoriesTableTemplate: $('#categoriesTableTemplate'),
 		optionListTemplate: $('#optionListTemplate'),
 		metallsTableTemplate: $('#metallsTableTemplate'),
+		formulasHelperTemplate: $('#formulasHelperTemplate'),
 		formulaTemplate: $('#formulaTemplate'),
 		justCreatedFormula: $('#justCreatedFormula'),
 
@@ -30,7 +31,7 @@ define(function () {
 		//Database Section
 		addNewProductIcon: $('#addNewProductIcon'),
 		showItemFromTreeDB: $('#showItemFromTreeDB'),
-		addToFamily: $('#addToFamily'),
+		familyActions: $('#addToFamily'),
 		databaseWrapper: function () {
 			return $('#databaseWrapper');
 		},
@@ -130,9 +131,9 @@ define(function () {
 			addNewFhBtn: $('.addNewFhBtn'),
 			addNewProductBtn: $('#addNewProductBtn'),
 
-		addFamilyModal: $('#addFamilyModal'),
+		createFamilyModal: $('#createFamilyModal'),
 			newFamilyName: $('#newFamilyName'),
-			addFamilyBtn: $('#addFamilyBtn')
+			createFamilyBtn: $('#createFamilyBtn')
 	};
 	
 	return $jq;

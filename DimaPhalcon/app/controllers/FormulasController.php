@@ -1,17 +1,20 @@
 <?php
 
-class FormulasController extends \Phalcon\Mvc\Controller
+class FormulasController extends ControllerBase
 {
 
-    public function createFormulaHelperList()
-    {
-        $formHelpList = '';
-        $formulasHelper = FormulasHelper::find();
-        foreach ( $formulasHelper as $val) {
-            $formHelpList .= '<span><button type="button" class="btn custom-addRowsToTable btn-xs fhBtn">'. $val->getName().
-                '<span class="glyphicon glyphicon-remove removeFhBtn" data-id="' . $val->getId() . '" aria-hidden="true"></span></button></span>';
+    public function getFormulasHelperAction() {
+        $this->ajaxGetCheck();
+        $formulasHelper= [];
+        $formulasHelperObj = FormulasHelper::find();
+        foreach ( $formulasHelperObj as $val) {
+            /*$formHelpList .= '<span><button type="button" class="btn custom-addRowsToTable btn-xs fhBtn">'. $val->getName().
+                '<span class="glyphicon glyphicon-remove removeFhBtn" data-id="' . $val->getId() . '" aria-hidden="true"></span></button></span>';*/
+            array_push($formulasHelper, ['id' => $val->getId(), 'name' => $val->getName()]);
         }
-        return $formHelpList;
+        $this->response->setJsonContent(['success' => true, 'formulasHelper' => $formulasHelper]);
+
+        return $this->response;
     }
 
     public function createFormulasList($formulas){

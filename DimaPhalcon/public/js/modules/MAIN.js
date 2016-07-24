@@ -8,7 +8,7 @@ define(function () {
 
 				},
 				state: {key: 'productsTreeDB'},
-				plugins: ['state', 'sort'/*, 'checkbox'*/]
+				plugins: ['state', 'sort'/*, 'dnd', 'checkbox'*/]
 			},
 			scrollTables: {
 				categoriesTable: false,

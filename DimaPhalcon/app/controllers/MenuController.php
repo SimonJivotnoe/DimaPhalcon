@@ -66,6 +66,7 @@ class MenuController extends ControllerBase
                 ];
                 foreach ( $preData[$catId] as $metId => $productsArr) {
                     $i++;
+                    $familyNodes = [];
                     $metNode = [
                         'id'       => 'metall_productTreeDB' . $i,
                         'icon'     => 'glyphicon glyphicon-link',
@@ -75,12 +76,35 @@ class MenuController extends ControllerBase
                     ];
                     foreach ($productsArr as $key => $obj) {
                         $i++;
-                        array_push($metNode['children'], [
-                            'id'       => 'product_productTreeDB_' . $obj['id'],
+                        $productId = $obj['id'];
+                        $idToPush = 'product_productTreeDB_' . $productId;
+                        $arrToPush = &$metNode['children'];
+                        $familyObj = Families::findFirst(array("product_id = '$productId'"));
+                        if ($familyObj) {
+                            $familyName = $familyObj->getName();
+                            $familyId = 'family_productTreeDB_' . $familyName . '_' . $familyObj->getId();
+                            if (!$familyNodes[$familyName]) {
+                                $familyNodes[$familyName] = [
+                                    'id'       => $familyId,
+                                    'icon'     => 'glyphicon glyphicon-paperclip',
+                                    'text'     => $familyObj->getName(),
+                                    'children' => []
+                                ];
+                            }
+                            $arrToPush = &$familyNodes[$familyName]['children'];
+                            $idToPush .= '_inFamily';
+                        }
+                        array_push($arrToPush, [
+                            'id'       => $idToPush,
                             'icon'     => 'glyphicon glyphicon-list-alt',
-                            'li_attr'  => ['data-section' => 'product', 'data-productId' => $obj['id']],
+                            'li_attr'  => ['data-section' => 'product', 'data-productId' => $productId],
                             'text'     => $obj['name'] . ' | ' . $obj['article'] . ' - ' . $obj['created']
                         ]);
+                    }
+                    if (count($familyNodes)) {
+                        foreach ($familyNodes as $familyId => $familyNode) {
+                            array_push($metNode['children'], $familyNode);
+                        }
                     }
 
                     array_push($catNode['children'], $metNode);
