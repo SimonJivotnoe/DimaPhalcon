@@ -59,7 +59,7 @@ define(['jq', 'methods', 'URLs', 'mustache', 'PRODUCT', 'VALIDATION', 'TREE'], f
         if (0 !== existingRows.length) {
             max = Math.max.apply(Math, existingRows);
         }
-        $jq.productTableRows.append(Mustache.render($('#productTableRowTemplate').html(), { rowNumber: 'A' + (max + 1) }));
+        $jq.productTableRows.append(Mustache.render($jq.productTableRowTemplate.html(), { rowNumber: 'A' + (max + 1) }));
     },
 	article = {
         checkToArticle: function () {
@@ -448,17 +448,37 @@ define(['jq', 'methods', 'URLs', 'mustache', 'PRODUCT', 'VALIDATION', 'TREE'], f
         var $this = $(this),
             productId = $this.attr('data-product-id');
         if (productId && MAIN.productModel && MAIN.productModel[productId]) {
-
+			console.log(MAIN.productModel[productId]);
+			var productModel = MAIN.productModel[productId];
+			$jq.addNewProductModal
+				.find('.productNameInput').val(productModel.productName).end()
+				.find(`.categoriesList [data-id="${productModel.categoryId}"]`).prop('selected', true).end()
+				.find(`.kimList [data-id="${productModel.kimId}"]`).prop('selected', true).end()
+				.find(`.metallsList [data-id="${productModel.metallId}"]`).prop('selected', true).end()
+				.find('#productImgWrapper').html(`<img id="productImg" height="250px" src="img/${productModel.productImage}">`).end()
+				.find('#sortable').html(
+					$.map(productModel.tableContent, function (row) {
+						return Mustache.render($jq.productTableRowTemplate.html(), row)
+					})
+				).end()
+				.find('#formulasList').html(
+					$.map(productModel.formulas, function (tr) {
+						tr.beautyFormula = formulas.beautifyFormula(tr.formula);
+						return Mustache.render($jq.formulaTemplate.html(), tr);
+					})
+				);
+				
+			$jq.addNewProductIcon.click()	
         }
     },
 
     NEW_PRODUCT = {
         getFormulasHelper: function () {
             $.get(URLs.getFormulasHelper, function (response) {
-                    if (methods.checkResponseOnSuccess(response)) {
-                        $(Mustache.render($jq.formulasHelperTemplate.html(), response)).insertBefore('#addNewBtnSpan');
-                    }
-            })
+				if (methods.checkResponseOnSuccess(response)) {
+					$(Mustache.render($jq.formulasHelperTemplate.html(), response)).insertBefore('#addNewBtnSpan');
+				}
+            });
         },
 		handler: function () {
 			$jq.kimList.change(changeKimList);

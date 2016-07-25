@@ -303,8 +303,7 @@
                             </div>
                         </div>
                     </div>
-                    <hr />
-                    <div class="row">
+                    <!--<div class="row">
                         <div class="col-md-12">
                             <table border="1px">
                                 <tr>
@@ -321,7 +320,7 @@
                             </table>
                         </div>
                     </div>
-                    <hr />
+                    <hr />-->
                     <div class="row" style="max-width: 100%;">
                         <form id="newProductTableCalc">
                             <div class="row">
@@ -341,7 +340,7 @@
                                     <div class="col-md-6" id="productTableWrapper">
                                         <ul id="sortable">
                                             <li class="">
-                                                <span class="rowNumber col-md-2">A1</span>
+                                                <span class="rowNumber col-md-2" data-element="A1">A1</span>
                                                 <span class="rowName">
                                                     <input class="rowNameInput" type="text" value="">
                                                 </span>
@@ -356,7 +355,7 @@
                                     <div class="col-md-6">
                                         <ul id="alwaysInTable">
                                             <li>
-                                                <span class="rowNumber col-md-2">KIM1</span>
+                                                <span class="rowNumber col-md-2" data-element="KIM1">KIM1</span>
                                                 <span class="rowName">
                                                     <input class="rowNameInput" type="text" value="KIM1">
                                                 </span>
@@ -366,7 +365,7 @@
                                                 </span>
                                             </li>
                                             <li>
-                                                <span class="rowNumber col-md-2">S1</span>
+                                                <span class="rowNumber col-md-2" data-element="S1">S1</span>
                                                 <span class="rowName">
                                                     <input class="rowNameInput" type="text" value="Площадь, м2">
                                                 </span>
@@ -376,7 +375,7 @@
                                                 </span>
                                             </li>
                                             <li>
-                                                <span class="rowNumber col-md-2">PR1</span>
+                                                <span class="rowNumber col-md-2" data-element="PR1">PR1</span>
                                                 <span class="rowName">
                                                     <input class="rowNameInput" type="text" value="Цена входящая за м2, грн">
                                                 </span>
@@ -386,7 +385,7 @@
                                                 </span>
                                             </li>
                                             <li>
-                                                <span class="rowNumber col-md-2">SUM1</span>
+                                                <span class="rowNumber col-md-2" data-element="SUM1">SUM1</span>
                                                 <span class="rowName">
                                                     <input class="rowNameInput" type="text" value="Цена изделия входящая, грн">
                                                 </span>
@@ -396,7 +395,7 @@
                                                 </span>
                                             </li>
                                             <li>
-                                                <span class="rowNumber col-md-2">PR2</span>
+                                                <span class="rowNumber col-md-2" data-element="PR2">PR2</span>
                                                 <span class="rowName">
                                                     <input class="rowNameInput" type="text" value="Цена исходящая, грн">
                                                 </span>
@@ -406,7 +405,7 @@
                                                 </span>
                                             </li>
                                             <li>
-                                                <span class="rowNumber col-md-2">SUM2</span>
+                                                <span class="rowNumber col-md-2" data-element="SUM2">SUM2</span>
                                                 <span class="rowName">
                                                     <input class="rowNameInput" type="text" value="Цена изделия исходящая, грн">
                                                 </span>
@@ -443,7 +442,7 @@
             </div>
         </div>
     </div>
-    <div class="modal fade" id="addFamilyModal" tabindex="-1" role="dialog" aria-labelledby="deleteKIMGroupModal">
+    <div class="modal fade" id="createFamilyModal" tabindex="-1" role="dialog" aria-labelledby="deleteKIMGroupModal">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header addFamilyModalHeader">
@@ -451,11 +450,11 @@
                     <h4 class="modal-title">Создать Семейство</h4>
                 </div>
                 <div class="modal-body">
-                    <input type="text" class="form-control" id="" placeholder="Введите название Семейства">
+                    <input type="text" class="form-control" id="newFamilyName" placeholder="Введите название Семейства">
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">Отмена</button>
-                    <button type="button" class="btn custom-addToFamilyBtn" id="addFamilyBtn">Добаить</button>
+                    <button type="button" class="btn custom-addToFamilyBtn" id="createFamilyBtn">Добавить</button>
                 </div>
             </div>
         </div>

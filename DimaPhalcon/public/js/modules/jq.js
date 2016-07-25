@@ -6,6 +6,7 @@ define(function () {
 		categoriesTableTemplate: $('#categoriesTableTemplate'),
 		optionListTemplate: $('#optionListTemplate'),
 		metallsTableTemplate: $('#metallsTableTemplate'),
+		productTableRowTemplate: $('#productTableRowTemplate'),
 		formulasHelperTemplate: $('#formulasHelperTemplate'),
 		formulaTemplate: $('#formulaTemplate'),
 		justCreatedFormula: $('#justCreatedFormula'),

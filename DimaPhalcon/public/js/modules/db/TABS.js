@@ -53,19 +53,6 @@ define(['jq', 'methods', 'URLs', 'mustache'], function (
 				}
 			});
 		},
-		/*showPreferences: function (){
-			$('#dbProductsListTab, #dbProductsListList').addClass('active');
-			TABS.loadPreferences();
-			methods.showBody();
-		},
-		
-		loadPreferences: function () {
-			$.each(MAIN.tabsList, function (tabId, obj) {
-				obj.active = '0';
-			});
-			MAIN.tabsList.dbProductsListTab.active = '1';
-			MAIN.curTabId = 'dbProductsListTab';
-		},*/
 		handler: function () {
 			$('#tabs').on('dblclick', '#myTab li', methods.expandDivider);
 			$('#dbProductsListTab').click(function(){
