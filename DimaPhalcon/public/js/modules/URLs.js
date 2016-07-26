@@ -53,7 +53,8 @@ define([], function () {
 		uploadImage: URLs.PRODUCT + 'uploadImage',
 		// TREE
 		addToFamily: URLs.FAMILY + 'addToFamily',
-		removeFromFamily: URLs.FAMILY + 'removeFromFamily'
+		removeFromFamily: URLs.FAMILY + 'removeFromFamily',
+		deleteProduct: URLs.PRODUCT + 'deleteProduct'
 	});
 
     return URLs;

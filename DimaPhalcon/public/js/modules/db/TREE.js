@@ -107,6 +107,22 @@ define(['jq', 'methods', 'URLs', 'TABS'], function ($jq, methods, URLs, TABS) {v
 			productsRemoveFromFamily = [];
 		});
 	},
+
+	removeProduct = function () {
+		var productsId = [];
+		$.map($('.productsTreeDB').jstree('get_selected'), function (id) {
+			if ('product' === id.split('_')[0]) {
+				productsId.push(id.split('_')[2]);
+			}
+		});
+		if (productsId.length) {
+			$.post(URLs.deleteProduct, {productsId: productsId}, function () {
+				TREE.getDBTree();
+				TABS.getTabs();
+			});
+		}
+	},
+
 	exitFromTreeDB = function () {
 		var $productsTreeDB = $jq.productsTreeDB();
 		$('#dbProductsListList .innerBackLayout').show();
@@ -143,6 +159,7 @@ define(['jq', 'methods', 'URLs', 'TABS'], function ($jq, methods, URLs, TABS) {v
 			$jq.familyActions.click(prepareFamilyAction);
 				$jq.createFamilyBtn.click(creteFamily);
 
+			$jq.removeProduct.click(removeProduct);
 			$jq.backDBTreeIcon.click(exitFromTreeDB);
 
 			$('#dbProductsListList .productsTreeDB').on('changed.jstree', function(){

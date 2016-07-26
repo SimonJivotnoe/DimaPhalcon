@@ -40,6 +40,7 @@ define(['jq', 'methods', 'URLs', 'mustache'], function (
 				url: URLs.getTabs,
 				method: 'GET'
 			}).then(function (response) {
+				$('#dbProductsListTab, #dbProductsListList').nextAll().remove();
 				if (!response.activeTab) {
 					$('#dbProductsListTab, #dbProductsListList').addClass('active');
 					$('#dbProductsListTab').click();

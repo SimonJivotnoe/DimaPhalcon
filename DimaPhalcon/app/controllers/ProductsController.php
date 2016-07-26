@@ -32,103 +32,6 @@ class ProductsController extends ControllerBase
 
         return $this->response;
     }
-
-    public function createTableAction()
-    {
-        if ($this->request->isAjax() && $this->request->isPost()) {
-            $prId = $this->request->getPost('prId');
-            var_dump($prId);die();
-            $tableContent = $this->request->getPost('tableContent');
-            $alwaysInTable = $this->request->getPost('alwaysInTable');
-            $product = Products::findFirst($prId);
-            if ($product == false) {
-                echo "Мы не можем сохранить робота прямо сейчас: \n";
-                foreach ($product->getMessages() as $message) {
-                    echo $message, "\n";
-                }
-            } else {
-                $product->setTableContent($tableContent)
-                        ->setAlwaysInTable($alwaysInTable)
-                        ->save();
-                $substObj = new Substitution();
-                $tabContArr = [];
-                $tableRes = '';
-                $table = json_decode($tableContent);
-                foreach ($table as $key => $val) {
-                    foreach ($val as $k => $v) {
-                        $tabContArr[$k] = $v;
-                    }
-                    $tableRes .= $substObj->subHTMLReplace('tableContent.html', $tabContArr);
-                    $tabContArr = [];
-                }
-                $alwaysRes = '';
-                $table = json_decode($alwaysInTable);
-                foreach ($table as $key => $val) {
-                    foreach ($val as $k => $v) {
-                        $tabContArr[$k] = $v;
-                    }
-                    $alwaysRes .= $substObj->subHTMLReplace('alwaysInTable.html', $tabContArr);
-                    $tabContArr = [];
-                }
-                $this->response->setContentType('application/json', 'UTF-8');
-                $this->response->setJsonContent([$tableRes, $alwaysRes]);
-
-                return $this->response;
-            }
-        }
-    }
-
-    public function saveArticleOfProductAction() {
-        if ($this->request->isAjax() && $this->request->isPost()) {
-            $prId = $this->request->getPost('prId');
-            $article = $this->request->getPost('article');
-            $findArticle = Products::findFirst(array("article = '$article'"));
-            $this->response->setContentType('application/json', 'UTF-8');
-            if ($findArticle != false) {
-                $this->response->setJsonContent(['status' => 'already', 'id' => $findArticle->getProductId()]);
-                return $this->response;
-            }
-            $productObj = Products::findFirst($prId);
-            $productObj->setArticle($article);
-            try {
-                $productObj->save();
-            } catch (\Exception $e) {
-                $this->response->setJsonContent(['status' => 'error']);
-                return $this->response;
-            }
-            $this->response->setJsonContent(['status' => true]);
-            return $this->response;
-
-        } else {
-            $this->response->redirect('');
-        }
-    }
-
-    public function changeTableContentAction(){
-        if ($this->request->isAjax() && $this->request->isPost()) {
-            $prId = $this->request->getPost('prId');
-            $tableContent = $this->request->getPost('tableContent');
-            $alwaysInTable = $this->request->getPost('alwaysInTable');
-
-            $product = Products::findFirst(array("product_id = '$prId'"));
-            if ($product == false) {
-                echo "Мы не можем сохранить робота прямо сейчас: \n";
-                foreach ($product->getMessages() as $message) {
-                    echo $message, "\n";
-                }
-            } else {
-                $product->setTableContent($tableContent)
-                        ->setAlwaysInTable($alwaysInTable)
-                        ->save();
-                $this->response->setContentType('application/json', 'UTF-8');
-                $this->response->setJsonContent('ok');
-
-                return $this->response;
-            }
-        } else {
-            $this->response->redirect('');
-        }
-    }
     
     public function addBtnToFormulasHelperAction(){
         $this->ajaxPostCheck();
@@ -165,42 +68,6 @@ class ProductsController extends ControllerBase
         $this->response->setJsonContent(['success' => $res, 'msg' => $msg]);
 
         return $this->response;
-    }
-
-    public function addNewFormulaAction(){
-        if ($this->request->isAjax() && $this->request->isPost()) {
-            $formulas = $this->request->getPost('formulas');
-            $prId = $this->request->getPost('prId');
-            $pr = Products::findFirst(array("product_id = '$prId'"));
-            $this->response->setContentType('application/json', 'UTF-8');
-            $pr->setFormulas($formulas);
-            if ($pr->save() == false) {
-                $this->response->setJsonContent('already');
-            } else {
-                $formulaHelperObj = new FormulasController;
-                $this->response->setJsonContent(['status' => true, 'formulasList' => $formulaHelperObj->createFormulasList(json_decode($pr->getFormulas()))]);
-            }
-            return $this->response;
-        } else {
-            $this->response->redirect('');
-        }
-    }
-
-    public function saveProductInDBAction(){
-        if ($this->request->isAjax() && $this->request->isPost()) {
-            $prId = $this->request->getPost('prId');
-            $pr = Products::findFirst(array("product_id = '$prId'"));
-            $this->response->setContentType('application/json', 'UTF-8');
-            $pr->setStatus('save');
-            if ($pr->save() == false) {
-                $this->response->setJsonContent(false);
-            } else {
-                $this->response->setJsonContent(true);
-            }
-            return $this->response;
-        } else {
-            $this->response->redirect('');
-        }
     }
     
     public function getProductsTreeAction(){
@@ -260,57 +127,6 @@ class ProductsController extends ControllerBase
             $this->response->redirect('');
         }
     }
-    
-    public function createProductFromTemplateAction() {
-        if ($this->request->isAjax() && $this->request->isPost()) {
-            $prId = $this->request->getPost('prId');
-            $tab = $this->request->getPost('tab');
-            $productId = '';
-            $pr = Products::findFirst(array("product_id = '$prId'"));
-            $this->response->setContentType('application/json', 'UTF-8');
-            $product = new Products();
-            $product->setProductName($pr->getProductName())
-                    ->setArticle(new RawValue('default'))
-                    ->setCategoryId($pr->getCategoryId())
-                    ->setKim($pr->getKim())
-                    ->setMetall($pr->getMetall())
-                    ->setTableContent($pr->getTableContent())
-                    ->setAlwaysintable($pr->getAlwaysintable())
-                    ->setFormulas($pr->getFormulas())
-                    ->setCreated(new RawValue('default'))
-                    ->setStatus(new RawValue('default'))
-                    ->setTemplate(new RawValue('default'))
-                    ->setImage(new RawValue('default'));
-            if ($product->save() == false) {
-                $message = $product->getMessages();
-                $this->response->setJsonContent(false);
-                return $this->response;
-            } else {
-                $productId = $product->getProductId();
-            }
-            if ('new' === $tab) {
-                $tabObj = new Tabs();
-                $tabId = Tabs::maximum(array("column" => "id"));
-                $tabs = Tabs::find("active = 1");
-                foreach ($tabs as $val) {
-                    $val->setActive(0);
-                    $val->save();
-                }
-                $tabObj->setTabId('pr' . $tabId)
-                        ->setProductId($productId)
-                        ->setActive(1)
-                        ->save();
-            } else {
-                $tabs = Tabs::findFirst(array("tab_id = '$tab'"));
-                $tabs->setProductId($productId)
-                     ->save();
-            }
-            $this->response->setJsonContent(true);
-            return $this->response;
-        } else {
-            $this->response->redirect('');
-        }
-    }
 
     public function saveProductAction () {
         $this->ajaxPostCheck();
@@ -342,6 +158,49 @@ class ProductsController extends ControllerBase
             }
         }
         $this->response->setJsonContent(['success' => $success, 'msg' => $msg, 'data' => $data]);
+
+        return $this->response;
+    }
+
+    public function deleteProductAction() {
+        $this->ajaxPostCheck();
+        $productsId = $this->request->getPost('productsId');
+        if ($productsId) {
+            foreach ($productsId as $productId) {
+                $productsInOrderObj = Productinorder::findFirst(array("productId = '$productId'"));
+                if (!$productsInOrderObj) {
+                    $tabsObj = Tabs::findFirst(array("product_id = '$productId'"));
+                    if ($tabsObj) {
+                        try {
+                            $tabsObj->delete();
+                        } catch (\Exception $e) {
+
+                        }
+                    }
+
+                    $familiesObj = Families::find(array("product_id = '$productId'"));
+                    if ($familiesObj) {
+                        foreach ($familiesObj as $key => $val) {
+                            try {
+                                $val->delete();
+                            } catch (\Exception $e) {
+
+                            }
+                        }
+                    }
+                    $productObj = Products::findFirst($productId);
+                    if ($productObj) {
+                        try {
+                            $productObj->delete();
+                        } catch (\Exception $e) {
+
+                        }
+                    }
+                }
+            }
+
+        }
+        $this->response->setJsonContent(['success' => true]);
 
         return $this->response;
     }

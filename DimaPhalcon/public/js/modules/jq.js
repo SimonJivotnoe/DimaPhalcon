@@ -33,6 +33,7 @@ define(function () {
 		addNewProductIcon: $('#addNewProductIcon'),
 		showItemFromTreeDB: $('#showItemFromTreeDB'),
 		familyActions: $('#addToFamily'),
+		removeProduct: $('#removeProduct'),
 		databaseWrapper: function () {
 			return $('#databaseWrapper');
 		},

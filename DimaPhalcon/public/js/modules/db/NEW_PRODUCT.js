@@ -1,6 +1,17 @@
 define(['jq', 'methods', 'URLs', 'mustache', 'PRODUCT', 'VALIDATION', 'TREE'], function ($jq, methods, URLs, Mustache, PRODUCT, VALIDATION, TREE) {var
     clearNewProductModal = function () {
 		$jq.productNameInput.val('');
+        $jq.addNewProductModal
+            .find('.categoriesList, .kimList, .metallsList').find('option:eq(0)').prop('selected', true);
+        $jq.addNewProductModal
+            .find('#productImgWrapper').html('').end()
+            .find('#sortable li:gt(0)').remove().end()
+            .find('#sortable li:eq(0) input').val('').end()
+            .find('#formulasList').html('').end()
+            .find('#cancelArticleBtn').click().end()
+            .find('[data-cell="S1"]').attr('data-formula', '').val('');
+        MAIN.formData = false;
+        methods.excel();
 	},
 	changeKimList = function () {
         var kim = $('option:selected', this ).attr('data-val');
@@ -266,13 +277,9 @@ define(['jq', 'methods', 'URLs', 'mustache', 'PRODUCT', 'VALIDATION', 'TREE'], f
                 $jq.formulasList.find('tbody').append(Mustache.render($jq.formulaTemplate.html(), {
                     formula: formula,
                     beautyFormula: formulas.beautifyFormula(formula)
-                    //availableCellList: addAvailableCellList()
                 }));
-                /*$('.removeFormula').hide();
-                $('.editFormula').hide();*/
                 formulas.cancelInputFormula();
                 $jq.addFormulaInputPr.val('');
-               // PRODUCT.formulas.addNewFormula(PRODUCT.getFormulasList, true);
             }
         },
         cancelInputFormula: function() {
