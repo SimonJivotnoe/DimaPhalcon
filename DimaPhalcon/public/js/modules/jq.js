@@ -106,6 +106,7 @@ define(function () {
 		},
         // MODALS
         addNewProductModal: $('#addNewProductModal'),
+			clearNewProductModal: $('#clearNewProductModal'),
 			productNameInput: $('.productNameInput'),
 		    productTableWrapper: $('#productTableWrapper'),
 			categoriesList: $('.categoriesList'),

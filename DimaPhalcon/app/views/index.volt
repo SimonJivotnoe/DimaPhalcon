@@ -261,6 +261,7 @@
                     <div class="row">
                         <div class="col-md-3">
                             <button type="button" class="btn btn-default" data-dismiss="modal">Отмена</button>
+                            <button type="button" class="btn btn-warning" id="clearNewProductModal">Очистить <span class="glyphicon glyphicon-erase" aria-hidden="true"></span></button>
                         </div>
                         <div class="col-md-6">
                             <h4 class="modal-title">Создать Новое Изделие</h4>

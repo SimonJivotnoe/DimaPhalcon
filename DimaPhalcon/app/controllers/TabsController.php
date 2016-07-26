@@ -41,6 +41,7 @@ class TabsController extends ControllerBase
                 ];
                 array_push($data, $template);
                 $productModel[$productId] = [
+                    'image' => $image,
                     'productImage' => $image . '?' . $date->getTimestamp(),
                     'productName' => $productName,
                     'categoryId' => $product->getCategoryId(),

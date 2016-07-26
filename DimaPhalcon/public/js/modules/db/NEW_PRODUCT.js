@@ -1,5 +1,8 @@
 define(['jq', 'methods', 'URLs', 'mustache', 'PRODUCT', 'VALIDATION', 'TREE'], function ($jq, methods, URLs, Mustache, PRODUCT, VALIDATION, TREE) {var
-    changeKimList = function () {
+    clearNewProductModal = function () {
+		$jq.productNameInput.val('');
+	},
+	changeKimList = function () {
         var kim = $('option:selected', this ).attr('data-val');
         $('#addNewProductModal [data-cell="KIM1"]' ).val(kim);
         methods.excel();
@@ -374,6 +377,7 @@ define(['jq', 'methods', 'URLs', 'mustache', 'PRODUCT', 'VALIDATION', 'TREE'], f
                     val: $jq.productNameInput.val(),
                     id: '.productNameInput',
                 }),
+				image: ($('#productImg').attr('data-name')) ? $('#productImg').attr('data-name') : '',
                 category: $jq.addNewProductModal.find('.categoriesList option:selected').attr('data-id'),
                 kim: $jq.addNewProductModal.find('.kimList option:selected').attr('data-id'),
                 metall: $jq.addNewProductModal.find('.metallsList option:selected').attr('data-id'),
@@ -427,8 +431,11 @@ define(['jq', 'methods', 'URLs', 'mustache', 'PRODUCT', 'VALIDATION', 'TREE'], f
                     method: 'POST',
                     data: saveProduct.getData()
                 }).then(function (response) {
-                    if (response.success && response.data.id) {
-                        TREE.getDBTree();
+					if (methods.checkResponseOnSuccess(response)) {
+						TREE.getDBTree();
+						$jq.addNewProductModal.modal('hide');
+					}
+                    if (response.data.id && MAIN.formData) {
                         $.ajax({
                             type: 'POST',
                             processData: false,
@@ -436,8 +443,6 @@ define(['jq', 'methods', 'URLs', 'mustache', 'PRODUCT', 'VALIDATION', 'TREE'], f
                             url: URLs.uploadImage + '/' +response.data.id,
                             data: MAIN.formData,
                             dataType: 'json'
-                        }).then(function () {
-                            $jq.addNewProductModal.modal('hide');
                         });
                     }
                 });
@@ -448,14 +453,14 @@ define(['jq', 'methods', 'URLs', 'mustache', 'PRODUCT', 'VALIDATION', 'TREE'], f
         var $this = $(this),
             productId = $this.attr('data-product-id');
         if (productId && MAIN.productModel && MAIN.productModel[productId]) {
-			console.log(MAIN.productModel[productId]);
-			var productModel = MAIN.productModel[productId];
+			var productModel = MAIN.productModel[productId],
+				appliedFormula = '';	
 			$jq.addNewProductModal
 				.find('.productNameInput').val(productModel.productName).end()
 				.find(`.categoriesList [data-id="${productModel.categoryId}"]`).prop('selected', true).end()
 				.find(`.kimList [data-id="${productModel.kimId}"]`).prop('selected', true).end()
 				.find(`.metallsList [data-id="${productModel.metallId}"]`).prop('selected', true).end()
-				.find('#productImgWrapper').html(`<img id="productImg" height="250px" src="img/${productModel.productImage}">`).end()
+				.find('#productImgWrapper').html(`<img id="productImg" data-name="${productModel.image}" height="250px" src="img/${productModel.productImage}">`).end()
 				.find('#sortable').html(
 					$.map(productModel.tableContent, function (row) {
 						return Mustache.render($jq.productTableRowTemplate.html(), row)
@@ -464,11 +469,15 @@ define(['jq', 'methods', 'URLs', 'mustache', 'PRODUCT', 'VALIDATION', 'TREE'], f
 				.find('#formulasList').html(
 					$.map(productModel.formulas, function (tr) {
 						tr.beautyFormula = formulas.beautifyFormula(tr.formula);
+						if (tr.applied) { appliedFormula = tr.formula }
 						return Mustache.render($jq.formulaTemplate.html(), tr);
 					})
 				);
-				
-			$jq.addNewProductIcon.click()	
+			$('#formulasList').find(`input[data-formula="${appliedFormula}"]`).click();
+			$('#cancelArticleBtn').click();
+			$('#sortable li:eq(0)').find('.removeRow').remove();
+			MAIN.formData = false;
+			$jq.addNewProductIcon.click();	
         }
     },
 
@@ -481,6 +490,7 @@ define(['jq', 'methods', 'URLs', 'mustache', 'PRODUCT', 'VALIDATION', 'TREE'], f
             });
         },
 		handler: function () {
+			$jq.clearNewProductModal.click(clearNewProductModal);
 			$jq.kimList.change(changeKimList);
 			$jq.metallsList.change(changeMetallList);
 			

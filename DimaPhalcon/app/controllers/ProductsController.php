@@ -314,9 +314,11 @@ class ProductsController extends ControllerBase
 
     public function saveProductAction () {
         $this->ajaxPostCheck();
-        $success = 0;
+        $success = false;
         $msg = 'Вы не создали Артикул или Такой Артикул уже существует!';
         $article = $this->request->getPost('article');
+        $image = $this->request->getPost('image');
+        $data = [];
         if ($article && !Products::findFirst(array("article = '$article'"))) {
             $product = new Products();
             $product->setArticle($article)
@@ -328,10 +330,15 @@ class ProductsController extends ControllerBase
                 ->setAlwaysInTable(json_encode($this->request->getPost('alwaysInTable')))
                 ->setFormulas(json_encode($this->request->getPost('formulas')))
                 ->setStatus('save');
+            if ($image) {
+                $product->setImage($image);
+            }
             if ($product->save()) {
-                $success = 1;
-                $msg = '';
-                $data = ['id' => $product->getProductId()];
+                $success = true;
+                $msg = 'Изделие Успешно Создано!';
+                if (!$image) {
+                    $data['id'] = [$product->getProductId()];
+                }
             }
         }
         $this->response->setJsonContent(['success' => $success, 'msg' => $msg, 'data' => $data]);
