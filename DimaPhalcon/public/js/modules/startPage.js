@@ -10,7 +10,8 @@ define([
 	'METALLS',
     'NEW_PRODUCT',
     'OR',
-    'OR_TREE'
+    'PRODUCTS_TREE',
+	'CLIENTS'
 ], function (
 		$jq,
 		methods,
@@ -23,7 +24,8 @@ define([
 		METALLS,
 		NEW_PRODUCT,
 		OR,
-		OR_TREE
+		PRODUCTS_TREE,
+		CLIENTS
 ) {
 	var startPage = {
         runStartPage: function () {
@@ -91,11 +93,11 @@ define([
 				localStorage.siteSector = 'OR';
 				$.get(URLs.loadProductCreationTemplate, function (html) {
 					$jq.sectionContent.html(html);
-					$.each([OR, OR_TREE], function () { this.handler(); });
+					$.each([OR, PRODUCTS_TREE, CLIENTS], function () { this.handler(); });
 					$jq.startPageWrapper.hide();
                     $jq.topIconsWrapper.show();
 					methods.showBody();
-					OR_TREE.getProductsTree();
+					PRODUCTS_TREE.getProductsTree();
 				});
 				/*$.ajax({
 					url: 'templates/creatingOrder.html',

@@ -1,23 +1,8 @@
 define(['jq', 'methods', 'URLs', 'mustache', 'VALIDATION'], function ($jq, methods, URLs, Mustache, VALIDATION) {var
-	toggleTreeDisplay = function (treeWrapper, button) {
-		if ($(treeWrapper).hasClass('hiddenTree')) {
-			$(treeWrapper).removeClass('hiddenTree');
-			$(treeWrapper).show('highlight');
-			$(button)
-				.find('.hideClientsTree').show().end()
-				.find('.showClientsTree').hide();
-		} else {
-			$(treeWrapper).addClass('hiddenTree');
-			$(treeWrapper).hide('highlight');
-			$(button)
-				.find('.hideClientsTree').hide().end()
-				.find('.showClientsTree').show();
-		}
-	},
 	loadCurrentProductFromTree = function () {
 		
 	},
-	OR_TREE = {
+	PRODUCTS_TREE = {
 		getProductsTree: function () {
 			$.ajax( {
 				url   : URLs.getOrProductsTree,
@@ -49,10 +34,10 @@ define(['jq', 'methods', 'URLs', 'mustache', 'VALIDATION'], function ($jq, metho
 		},
 		handler: function () {
 			$('#hideShowProductsTree').click(function() {
-				toggleTreeDisplay('#productsTreeWrapper', '#hideShowProductsTree');
+				methods.toggleTreeDisplay('#productsTreeWrapper', '#hideShowProductsTree');
 			})
 		}
 	};
 	
-	return OR_TREE;
+	return PRODUCTS_TREE;
 });

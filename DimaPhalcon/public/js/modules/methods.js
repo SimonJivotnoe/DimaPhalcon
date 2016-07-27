@@ -227,6 +227,21 @@ define(['jq', 'datatables.net'], function ($jq, DataTable) {
 			$('#db-left-component').css('width', localStorage['db-split']);
 			$('#db-divider, #db-right-component').css('left', localStorage['db-split']);
 		},
+		toggleTreeDisplay: function (treeWrapper, button) {
+			if ($(treeWrapper).hasClass('hiddenTree')) {
+				$(treeWrapper).removeClass('hiddenTree');
+				$(treeWrapper).show('highlight');
+				$(button)
+					.find('.hideClientsTree').show().end()
+					.find('.showClientsTree').hide();
+			} else {
+				$(treeWrapper).addClass('hiddenTree');
+				$(treeWrapper).hide('highlight');
+				$(button)
+					.find('.hideClientsTree').hide().end()
+					.find('.showClientsTree').show();
+			}
+		},
 	};
 	
 	return methods;
