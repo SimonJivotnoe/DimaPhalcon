@@ -190,6 +190,13 @@ class ProductsController extends ControllerBase
                     }
                     $productObj = Products::findFirst($productId);
                     if ($productObj) {
+                        $image = $productObj->getImage();
+                        if ($image) {
+                            $imagesObj = Products::find(array("image = '$image'"));
+                            if (1 == count($imagesObj)) {
+                                unlink('img/' . $image);
+                            }
+                        }
                         try {
                             $productObj->delete();
                         } catch (\Exception $e) {
@@ -198,7 +205,6 @@ class ProductsController extends ControllerBase
                     }
                 }
             }
-
         }
         $this->response->setJsonContent(['success' => true]);
 
