@@ -8,7 +8,7 @@ define([], function () {
 		METALLS:  'metalls/',
 		PRODUCT:  'products/',
 		FORMULAS:  'formulas/',
-		MENU:	  'menu/',
+		TREE:	  'tree/',
 		CLIENTS:  'clients/',
 		PROJECTS:  'projects/',
 		THEMES:	  'themes/',
@@ -17,6 +17,7 @@ define([], function () {
     };
 	_.extend(URLs, {
 		loadDBTemplate: 'templates/productsDB.html',
+		loadProductCreationTemplate: 'templates/creatingOrder.html',
 		// METALLS
 		getMetalls: URLs.METALLS + 'getMetalls',
 		getMetallsList: URLs.METALLS + 'getMetallsList',
@@ -39,7 +40,7 @@ define([], function () {
 		removeCategory: URLs.CATEG + 'removeCategory',
 		getLeftTabsList: URLs.TABS + 'getLeftTabsList',
 		getLeftTabContent: URLs.TABS + 'getLeftTabContent',
-		getProductsTree: URLs.MENU + 'getProductsTree',
+		getDbProductsTree: URLs.TREE + 'getDbProductsTree',
 		// TABS
 		getTabs: URLs.TABS + 'getTabs',
 		changeActiveTab: URLs.TABS + 'changeActiveLeftTab',
@@ -47,14 +48,17 @@ define([], function () {
 		closeTab: URLs.TABS + 'closeTab',
 		// PRODUCT
 		getFormulasHelper: URLs.FORMULAS + 'getFormulasHelper',
-		addBtnToFormulasHelper: URLs.PRODUCT + 'addBtnToFormulasHelper',
-		removeBtnFromFormulasHelper: URLs.PRODUCT + 'removeBtnFromFormulasHelper',
+		addBtnToFormulasHelper: URLs.FORMULAS + 'addBtnToFormulasHelper',
+		removeBtnFromFormulasHelper: URLs.FORMULAS + 'removeBtnFromFormulasHelper',
 		saveProduct: URLs.PRODUCT + 'saveProduct',
 		uploadImage: URLs.PRODUCT + 'uploadImage',
 		// TREE
 		addToFamily: URLs.FAMILY + 'addToFamily',
 		removeFromFamily: URLs.FAMILY + 'removeFromFamily',
-		deleteProduct: URLs.PRODUCT + 'deleteProduct'
+		deleteProduct: URLs.PRODUCT + 'deleteProduct',
+		
+		//OR SECTION
+		getOrProductsTree: URLs.TREE + 'getOrProductsTree'
 	});
 
     return URLs;

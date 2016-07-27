@@ -460,6 +460,25 @@
             </div>
         </div>
     </div>
+    
+    <div class="modal fade" id="deleteProductModal" tabindex="-1" role="dialog" aria-labelledby="deleteProductModal">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header deleteModalHeader">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">Удалить изделия</h4>
+                </div>
+                <div class="modal-body">
+                    Удалить возможно только те изделия, которых нет в ордерах.
+                    Вы уверены, что хотите удалить выбранные изделия?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Отмена</button>
+                    <button type="button" class="btn btn-danger" id="deleteProductBtn">Удалить</button>
+                </div>
+            </div>
+        </div>
+    </div>
     <div class="appSpinner"></div>
     <?php echo $js; ?>
   </body>

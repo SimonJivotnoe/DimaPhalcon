@@ -55,7 +55,6 @@ require.config({
         jq: 'modules/jq',
         MAIN: 'modules/MAIN',
         URLs: 'modules/URLs',
-        PRODUCT: 'modules/PRODUCT',
         // DB
             DB: 'modules/db/DB',
             TABS: 'modules/db/TABS',
@@ -64,6 +63,9 @@ require.config({
             CATEGORIES: 'modules/db/CATEGORIES',
             METALLS: 'modules/db/METALLS',
             KIM: 'modules/db/KIM',
+        //OR
+            OR: 'modules/orders/OR',
+            OR_TREE: 'modules/orders/OR_TREE',
         VALIDATION: 'modules/VALIDATION',
         startPage: 'modules/startPage',
         app: 'app'
@@ -81,13 +83,13 @@ require.config({
         tree: {deps: ['jquery']},
         calx: {deps: ['jquery']},
         jstree: {deps: ['jquery']},
-        PRODUCT: {deps: ['jstree']},
         startPage: {deps: ['split-pane']},
         'split-pane': {deps: ['jquery']},
         mustache: {exports: 'Mustache'},
         app: {deps: [
             'MAIN',
             'jquery',
+            'jstree',
             'underscore',
             'jquery-ui',
             'bootstrap',

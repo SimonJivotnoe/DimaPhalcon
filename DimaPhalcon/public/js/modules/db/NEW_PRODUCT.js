@@ -1,4 +1,4 @@
-define(['jq', 'methods', 'URLs', 'mustache', 'PRODUCT', 'VALIDATION', 'TREE'], function ($jq, methods, URLs, Mustache, PRODUCT, VALIDATION, TREE) {var
+define(['jq', 'methods', 'URLs', 'mustache', 'VALIDATION', 'TREE'], function ($jq, methods, URLs, Mustache, VALIDATION, TREE) {var
     clearNewProductModal = function () {
 		$jq.productNameInput.val('');
         $jq.addNewProductModal

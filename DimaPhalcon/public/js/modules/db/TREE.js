@@ -107,7 +107,13 @@ define(['jq', 'methods', 'URLs', 'TABS'], function ($jq, methods, URLs, TABS) {v
 			productsRemoveFromFamily = [];
 		});
 	},
-
+	prepareRemoveProduct = function () {
+		if ($('.productsTreeDB').jstree('get_selected').length) {
+			$jq.deleteProductModal.modal('show');
+			return true;
+		}
+		methods.MESSAGES.error('Для удаления изделия нужно выбрать хотя бы одно изделие', 2000);
+	},
 	removeProduct = function () {
 		var productsId = [];
 		$.map($('.productsTreeDB').jstree('get_selected'), function (id) {
@@ -119,6 +125,7 @@ define(['jq', 'methods', 'URLs', 'TABS'], function ($jq, methods, URLs, TABS) {v
 			$.post(URLs.deleteProduct, {productsId: productsId}, function () {
 				TREE.getDBTree();
 				TABS.getTabs();
+				$jq.deleteProductModal.modal('hide');
 			});
 		}
 	},
@@ -138,7 +145,7 @@ define(['jq', 'methods', 'URLs', 'TABS'], function ($jq, methods, URLs, TABS) {v
 	TREE = {
 		getDBTree: function () {
 			$.ajax( {
-				url   : URLs.getProductsTree,
+				url   : URLs.getDbProductsTree,
 				method: 'GET',
 				data: {param: 'PR'}
 			} ).then( function ( response )
@@ -159,7 +166,8 @@ define(['jq', 'methods', 'URLs', 'TABS'], function ($jq, methods, URLs, TABS) {v
 			$jq.familyActions.click(prepareFamilyAction);
 				$jq.createFamilyBtn.click(creteFamily);
 
-			$jq.removeProduct.click(removeProduct);
+			$jq.removeProductIcon.click(prepareRemoveProduct);
+				$jq.deleteProductBtn.click(removeProduct);
 			$jq.backDBTreeIcon.click(exitFromTreeDB);
 
 			$('#dbProductsListList .productsTreeDB').on('changed.jstree', function(){

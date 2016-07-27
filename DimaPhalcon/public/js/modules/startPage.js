@@ -2,26 +2,28 @@ define([
 	'jq',
 	'methods',
 	'URLs',
-	'PRODUCT',
 	'DB',
 	'TABS',
 	'TREE',
 	'CATEGORIES',
 	'KIM',
 	'METALLS',
-    'NEW_PRODUCT'
+    'NEW_PRODUCT',
+    'OR',
+    'OR_TREE'
 ], function (
 		$jq,
 		methods,
 		URLs,
-		PRODUCT,
 		DB,
 		TABS,
 		TREE,
 		CATEGORIES,
 		KIM,
 		METALLS,
-		NEW_PRODUCT
+		NEW_PRODUCT,
+		OR,
+		OR_TREE
 ) {
 	var startPage = {
         runStartPage: function () {
@@ -36,12 +38,11 @@ define([
             if (section) {
                 if (section !== localStorage.siteSector) {
                     localStorage.siteSector = section;
-                    window.location.href = '/';
                 }
             } else {
                 delete localStorage.siteSector;
-                window.location.href = '';
             }
+			window.location.href = '';
         },
 		
 		runPreferences: function () {
@@ -79,7 +80,7 @@ define([
 					KIM.getKIM();
 					METALLS.getMetalls();
                     TABS.getTabs();
-					TREE.getDBTree('PR');
+					TREE.getDBTree();
                     $('#myTab, #leftTabsContent').fadeIn('slow');
                 });
             }
@@ -88,7 +89,15 @@ define([
 		runProductCreation: function () {
 			if (startPage.activeClassValidation('#prIcon')) {
 				localStorage.siteSector = 'OR';
-				$.ajax({
+				$.get(URLs.loadProductCreationTemplate, function (html) {
+					$jq.sectionContent.html(html);
+					$.each([OR, OR_TREE], function () { this.handler(); });
+					$jq.startPageWrapper.hide();
+                    $jq.topIconsWrapper.show();
+					methods.showBody();
+					OR_TREE.getProductsTree();
+				});
+				/*$.ajax({
 					url: 'templates/creatingOrder.html',
 					method: 'GET'
 				}).then(function (data)
@@ -103,7 +112,7 @@ define([
 						CLIENTS.getClientsDetails();
 						PRODUCT.getProductsTree();
 					}
-				});
+				});*/
 			}
 		},
 		

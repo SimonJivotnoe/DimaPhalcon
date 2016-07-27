@@ -84,9 +84,6 @@ define(['jq', 'methods', 'URLs', 'mustache', 'VALIDATION', 'calx'], function ($j
 						$jq.editMetallModal.modal('hide');
 					});
 				}
-				if (MAIN.isArticle && (id === MAIN.metallId)) {
-					PRODUCT.getLeftTabContent(MAIN.productId, MAIN.curTabId);
-				}
 			});
 		}
 	},

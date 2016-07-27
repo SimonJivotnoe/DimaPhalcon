@@ -33,101 +33,28 @@ class ProductsController extends ControllerBase
         return $this->response;
     }
     
-    public function addBtnToFormulasHelperAction(){
-        $this->ajaxPostCheck();
-        $success = 0;
-        $msg = 'Ошибка при добавлении шаблона формулы';
-        $newFl = $this->request->getPost('newFl');
-        $fh = new FormulasHelper();
-        $fh->setName($newFl);
-        if ($fh->save()) {
-            $success = 1;
-            $data = ['id' => $fh->getId()];
-        }
-
-        $this->response->setJsonContent(['success' => $success, 'msg' => $msg, 'data' => $data]);
-
-        return $this->response;
-    }
-
-    public function removeBtnFromFormulasHelperAction($id){
-        $this->ajaxDeleteCheck();
+    public function getProductModel ($productId) {
         $res = false;
-        $msg = 'Ошибка при удалении шаблона формулы';
-        $fh = FormulasHelper::findFirst($id);
-        if ($fh != false) {
-            try {
-                if ($fh->delete()) {
-                    $res = true;
-                    $msg = true;
-                }
-            } catch (\Exception $e) {
-
-            }
+        $productObj = Products::findFirst($productId);
+        $metallObj = new MetallsController();
+        $date = new DateTime();
+        if ($productObj) {
+            $res = [
+                'image'         => $productObj->getImage(),
+                'productImage'  => $productObj->getImage() . '?' . $date->getTimestamp(),
+                'productName'   => $productObj->getProductName(),
+                'categoryId'    => $productObj->getCategoryId(),
+                'kimId'         => $productObj->getKim(),
+                'metallId'      => $productObj->getMetall(),
+                'tableContent'  => json_decode($productObj->getTableContent()),
+                'alwaysInTable' => json_decode($productObj->getAlwaysInTable()),
+                'formulas'      => json_decode($productObj->getFormulas()),
+                'metallHistory' => $metallObj->buildMetallHistoryObj($productObj->getMetall()),
+            ];
         }
-        $this->response->setJsonContent(['success' => $res, 'msg' => $msg]);
-
-        return $this->response;
+        return $res;
     }
     
-    public function getProductsTreeAction(){
-        if ($this->request->isAjax() && $this->request->isGet()) {
-            $this->response->setContentType('application/json', 'UTF-8');
-            $tree = [];
-            $i = 1;
-            $catObj = Categories::find();
-            if (count($catObj)) {
-                foreach ($catObj as $val) {
-                    $catId = $val->getCategoryId();
-                    $catName = $val->getCategoryName();
-                    $categoryNode = [
-                        'label'    => $catName,
-                        'children' => [],
-                        'id'       => $i
-                    ];
-                    $metallObj = Metalls::find();
-                    if (count($metallObj)) {
-                        foreach ($metallObj as $metVal) {
-                            $i++;
-                            $metId = $metVal->getId();
-                            $metName = $metVal->getName();
-                            $metallNode = [
-                                'label'    => $metName,
-                                'children' => [],
-                                'id'       => $i
-                            ];
-                            $pr = Products::find(
-                                "category_id = '" . $catId . "' AND metall = '" . $metId . "' AND status = 'save' AND article != 'NULL'"
-                            );
-                            if (count($pr)) {
-                                foreach ($pr as $prVal) {
-                                    $i++;
-                                    $productNode = [
-                                        'label' => $prVal->getArticle() . '___' . $prVal->getProductName(),
-                                        'productId'    => $prVal->getProductId(),
-                                        'id'    => $i
-                                    ];
-                                    array_push($metallNode['children'], (object)$productNode);
-                                }
-                            }
-                            if (count($metallNode['children'])) {
-                                array_push($categoryNode['children'], (object)$metallNode);
-                            }
-                        }
-                    }
-                    if (count($categoryNode['children'])) {
-                        array_push($tree, (object)$categoryNode);
-                    }
-                    $i++;
-                }
-            }
-            $this->response->setJsonContent($tree);
-            return $this->response;
-        } else {
-            $this->response->redirect('');
-        }
-    }
-
     public function saveProductAction () {
         $this->ajaxPostCheck();
         $success = false;
@@ -212,41 +139,32 @@ class ProductsController extends ControllerBase
     }
 
     public function uploadImageAction ($productId) {
-        if ($this->request->isAjax() && $this->request->isPost()) {
-            $prObj = Products::findFirst(array("product_id = '$productId'"));
-            $this->response->setContentType('application/json', 'UTF-8');
-            if ($prObj == false) {
-                $this->response->setJsonContent(false);
-                return $this->response;
-            }
-            if(isset($_POST) && isset($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest'){
-                if(!isset($_FILES['image_data']) || !is_uploaded_file($_FILES['image_data']['tmp_name'])){
-                    $this->response->setJsonContent(false);
-                    return $this->response;
-                }
+        $this->ajaxPostCheck();
+        $res = false;
+        $prObj = Products::findFirst(array("product_id = '$productId'"));
+        if ($prObj) {
+            if(
+                isset($_POST) &&
+                isset($_SERVER['HTTP_X_REQUESTED_WITH']) &&
+                strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest' &&
+                isset($_FILES['image_data']) &&
+                is_uploaded_file($_FILES['image_data']['tmp_name'])    
+            ){
                 $tmp_name = $_FILES['image_data']['tmp_name'];
 
                 //get mime type from valid image
-                if(!getimagesize($tmp_name)){
-                    $this->response->setJsonContent(false);
-                    return $this->response;
+                if(getimagesize($tmp_name)){
+                    move_uploaded_file($tmp_name, 'img/' . $productId . '.jpg');
+                    $prObj->setImage($productId . '.jpg');
+                    if ($prObj->save()) {
+                        $res = true;
+                    }
                 }
-                move_uploaded_file($tmp_name, 'img/' . $productId . '.jpg');
-                $prObj->setImage($productId . '.jpg');
-                if ($prObj->save()) {
-                    $this->response->setJsonContent(true);
-                    return $this->response;
-                } else {
-                    $this->response->setJsonContent(false);
-                    return $this->response;
-                }
-            } else {
-                $this->response->setJsonContent(false);
-                return $this->response;
             }
-        } else {
-            $this->response->redirect('');
         }
+        $this->response->setJsonContent($res);
+
+        return $this->response;
     }
     
     public function createTableRes($table, $template){

@@ -1,4 +1,4 @@
-define(['jq', 'methods', 'URLs', 'mustache', 'PRODUCT', 'VALIDATION', 'knockout'], function ($jq, methods, URLs, Mustache, PRODUCT, VALIDATION, ko) {var
+define(['jq', 'methods', 'URLs', 'mustache', 'VALIDATION', 'knockout'], function ($jq, methods, URLs, Mustache, VALIDATION, ko) {var
     topIcons = {
 		kimIconsToDefault: function (arr = ['#editKimIcon', '#deleteKimIcon']) {
             $jq.kimIcons.find(arr.join(',')).removeClass('activeTopIcon');

@@ -33,7 +33,8 @@ define(function () {
 		addNewProductIcon: $('#addNewProductIcon'),
 		showItemFromTreeDB: $('#showItemFromTreeDB'),
 		familyActions: $('#addToFamily'),
-		removeProduct: $('#removeProduct'),
+		removeProductIcon: $('#removeProductIcon'),
+			deleteProductBtn: $('#deleteProductBtn'),
 		databaseWrapper: function () {
 			return $('#databaseWrapper');
 		},
@@ -136,7 +137,8 @@ define(function () {
 
 		createFamilyModal: $('#createFamilyModal'),
 			newFamilyName: $('#newFamilyName'),
-			createFamilyBtn: $('#createFamilyBtn')
+			createFamilyBtn: $('#createFamilyBtn'),
+		deleteProductModal: $('#deleteProductModal'),
 	};
 	
 	return $jq;

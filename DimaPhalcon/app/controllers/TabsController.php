@@ -9,6 +9,7 @@ class TabsController extends ControllerBase
         $productModel = [];
         $activeTab = false;
         $tabsObj = Tabs::find();
+        $Products = new ProductsController;
         if ($tabsObj && count($tabsObj)) {
             $date = new DateTime();
             foreach ($tabsObj as $tab) {
@@ -40,17 +41,7 @@ class TabsController extends ControllerBase
                     'alwaysInTableHidden' => $productObj->createTableRes($tab->Products->getAlwaysInTable(), 'alwaysInTable.html'),*/
                 ];
                 array_push($data, $template);
-                $productModel[$productId] = [
-                    'image' => $image,
-                    'productImage' => $image . '?' . $date->getTimestamp(),
-                    'productName' => $productName,
-                    'categoryId' => $product->getCategoryId(),
-                    'kimId' => $tab->Products->getKim(), // otherwise not working
-                    'metallId' => $product->getMetall(),
-                    'tableContent' => $tableContent,
-                    'alwaysInTable' => $alwaysInTable,
-                    'formulas' => json_decode($product->getFormulas())
-                ];
+                $productModel[$productId] = $Products->getProductModel($productId);
             }
         }
 

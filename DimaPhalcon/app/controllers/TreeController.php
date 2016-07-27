@@ -1,27 +1,8 @@
 <?php
 
-class MenuController extends ControllerBase
+class TreeController extends ControllerBase
 {
-    public function createFileManagerAction(){
-        if ($this->request->isAjax() && $this->request->isGet()) {
-            $this->response->setContentType('application/json', 'UTF-8');
-            $param = $this->request->get('param');
-            if ('PR' === $param) {
-                $products = $this->getProducts();
-            } else {
-                $orders = $this->getOrders();
-                $products['orders'] = $orders['ordersTable'];
-                $products['orderDescription'] = $orders['orderDescription'];
-            }
-            $this->response->setJsonContent($products);
-
-            return $this->response;
-        } else {
-            $this->response->redirect();
-        }
-    }
-
-    public function getProductsTreeAction() {
+    public function getDbProductsTreeAction() {
         $this->ajaxGetCheck();
         $preData = [];
         $categArr = [];
@@ -113,13 +94,84 @@ class MenuController extends ControllerBase
                 array_push($tree['core']['data'], $catNode);
             }
         }
-        //$tree['state'] = [ 'key' => 'productsTreeDB' ];
-        //$tree['checkbox'] = [ 'keep_selected_style' => true ];
-        //$tree['plugins'] = ['state', 'sort', 'checkbox'];
         $this->response->setJsonContent(['tree' => $tree['core']['data']]);
 
         return $this->response;
     }
+    public function getOrProductsTreeAction(){
+        $this->ajaxGetCheck();
+        $this->response->setContentType('application/json', 'UTF-8');
+        $tree = [];
+        $i = 1;
+        $catObj = Categories::find();
+        if (count($catObj)) {
+            foreach ($catObj as $val) {
+                $catId = $val->getCategoryId();
+                $catName = $val->getCategoryName();
+                $categoryNode = [
+                    'label'    => $catName,
+                    'children' => [],
+                    'id'       => $i
+                ];
+                $metallObj = Metalls::find();
+                if (count($metallObj)) {
+                    foreach ($metallObj as $metVal) {
+                        $i++;
+                        $metId = $metVal->getId();
+                        $metName = $metVal->getName();
+                        $metallNode = [
+                            'label'    => $metName,
+                            'children' => [],
+                            'id'       => $i
+                        ];
+                        $pr = Products::find(
+                            "category_id = '" . $catId . "' AND metall = '" . $metId . "' AND status = 'save' AND article != 'NULL'"
+                        );
+                        if (count($pr)) {
+                            foreach ($pr as $prVal) {
+                                $i++;
+                                $productNode = [
+                                    'label' => $prVal->getArticle() . '___' . $prVal->getProductName(),
+                                    'productId'    => $prVal->getProductId(),
+                                    'id'    => $i
+                                ];
+                                array_push($metallNode['children'], (object)$productNode);
+                            }
+                        }
+                        if (count($metallNode['children'])) {
+                            array_push($categoryNode['children'], (object)$metallNode);
+                        }
+                    }
+                }
+                if (count($categoryNode['children'])) {
+                    array_push($tree, (object)$categoryNode);
+                }
+                $i++;
+            }
+        }
+        $this->response->setJsonContent($tree);
+        return $this->response;
+    }
+    
+    public function createFileManagerAction(){
+        if ($this->request->isAjax() && $this->request->isGet()) {
+            $this->response->setContentType('application/json', 'UTF-8');
+            $param = $this->request->get('param');
+            if ('PR' === $param) {
+                $products = $this->getProducts();
+            } else {
+                $orders = $this->getOrders();
+                $products['orders'] = $orders['ordersTable'];
+                $products['orderDescription'] = $orders['orderDescription'];
+            }
+            $this->response->setJsonContent($products);
+
+            return $this->response;
+        } else {
+            $this->response->redirect();
+        }
+    }
+
 
     private function getProducts() {
         $products = Products::find(array("status = 'save'"));
