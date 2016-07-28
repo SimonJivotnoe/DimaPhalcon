@@ -98,6 +98,7 @@ define([
                     $jq.topIconsWrapper.show();
 					methods.showBody();
 					PRODUCTS_TREE.getProductsTree();
+					CLIENTS.getClientsTree();
 				});
 				/*$.ajax({
 					url: 'templates/creatingOrder.html',

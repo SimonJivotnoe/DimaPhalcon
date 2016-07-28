@@ -458,7 +458,7 @@ class TabsController extends ControllerBase
         }
     }
 
-    public function getRightTabContentOrderDetailsAction() {
+    public function getOrderDetailsAction() {
         if ($this->request->isAjax() && $this->request->isGet()) {
             $orderId = $this->request->get('orderId', 'int');
             $this->response->setContentType('application/json', 'UTF-8');

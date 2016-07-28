@@ -184,7 +184,7 @@ body {
     padding-right: 10px;
 }
 
-#myTab, #rightTabs, #rightTabsContent, #leftTabsContent {
+#myTab, /*#rightTabs, #rightTabsContent, */#leftTabsContent {
     display: none;
 }
 #productsTreeWrapper, #clientsTreeWrapper {

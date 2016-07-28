@@ -58,7 +58,9 @@ define([], function () {
 		deleteProduct: URLs.PRODUCT + 'deleteProduct',
 		
 		//OR SECTION
-		getOrProductsTree: URLs.TREE + 'getOrProductsTree'
+		getOrProductsTree: URLs.TREE + 'getOrProductsTree',
+		getClientsTree: URLs.CLIENTS + 'getClientsTree',
+		getOrderDetails: URLs.TABS + 'getOrderDetails/'
 	});
 
     return URLs;
