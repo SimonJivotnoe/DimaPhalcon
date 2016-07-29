@@ -92,7 +92,7 @@ define(['jq', 'methods', 'URLs', 'mustache', 'VALIDATION'], function ($jq, metho
 		fillFormOfProjectInfo: function (info) {
 			$('#addNewClientForm, .addNewProjectBtnsWrapper, #orderWrapperFromTree' ).hide();
 			if (info) {
-				$.each($('#addNewProjectForm input'), function (num, input) {
+				$.map($('#addNewProjectForm input'), function (input) {
 					var $input = $(input);
 					$input.val(info[$input.attr('name')]);
 				});
@@ -108,7 +108,7 @@ define(['jq', 'methods', 'URLs', 'mustache', 'VALIDATION'], function ($jq, metho
 				$('.addNewProjectBtnsWrapper').hide();
 			}
 			$('#addNewProjectForm').show();
-		},
+		}
 	},
 	orders = {
 		_orderDetails: {},

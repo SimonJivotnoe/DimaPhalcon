@@ -47,26 +47,6 @@ define([
 			window.location.href = '';
         },
 		
-		runPreferences: function () {
-			if (startPage.activeClassValidation('#prefIcon')) {
-				localStorage.siteSector = 'PR';
-				$.ajax( {
-					url   : 'templates/preferences.html',
-					method: 'GET'
-				} ).then( function ( data )
-				{
-					$jq.sectionContent.html(addPreferencesHandler($(data)));
-					PREFERENCES.insertFontSizes(['#globalFontSize'], 'body');
-					PREFERENCES.insertFontSizes(['#fontSizeTabs'], '.nav-tabs');
-					PREFERENCES.applyPreferences(MENU.getPreferencesSettings());
-					THEMES.getThemesList();
-					$('#startPageWrapper').hide();
-					$('#topIconsWrapper').show();
-					showBody();
-				});
-			}
-		},
-		
         runDB: function () {
             if (startPage.activeClassValidation('#dbIcon')) {
                 localStorage.siteSector = 'DB';

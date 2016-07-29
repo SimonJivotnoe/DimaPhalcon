@@ -11,15 +11,15 @@
     <div id="waitSpinner"></div>
     <div id="kimSpinner"></div>
     <div id="leftTabsSpinner"></div>
-    <div id="startPageWrapper" class="col-md-12">
-      <div style="margin-top: 18%;" class="col-md-9 col-md-offset-3">
-        <div id="runPreferences" class="col-md-6 mainMenuIcon hvr-float-shadow btn-primary"><span aria-hidden="true" class="glyphicon glyphicon-cog"></span>
+    <div id="startPageWrapper">
+      <div>
+        <!--<div id="runPreferences" class="col-md-6 mainMenuIcon hvr-float-shadow btn-primary"><span aria-hidden="true" class="glyphicon glyphicon-cog"></span>
           <h4>Найстройки</h4>
-        </div>
-        <div id="runDB" class="col-md-6 mainMenuIcon hvr-float-shadow btn-warning"><span aria-hidden="true" class="glyphicon glyphicon-folder-open"></span>
+        </div>-->
+        <div id="runDB" class="mainMenuIcon hvr-float-shadow btn-warning"><span aria-hidden="true" class="glyphicon glyphicon-folder-open"></span>
           <h4>База Данных</h4>
         </div>
-        <div id="runPR" class="col-md-6 mainMenuIcon hvr-float-shadow btn-success"><span aria-hidden="true" class="glyphicon glyphicon-check"></span>
+        <div id="runPR" class="mainMenuIcon hvr-float-shadow btn-success"><span aria-hidden="true" class="glyphicon glyphicon-check"></span>
           <h4>Создать заказ</h4>
         </div>
       </div>

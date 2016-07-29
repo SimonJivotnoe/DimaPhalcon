@@ -48,10 +48,18 @@ body {
     width: 125px !important;
 }
 #startPageWrapper {
-    height: 100vh;
+    height: 100%;
+    text-align: center;
     background-color: steelblue;
+    position: relative;
 }
-
+#startPageWrapper > div {
+    position: absolute;
+    width: 100%;
+    left: 0;
+    top: 50%;
+    margin-top: -65px;
+}
 .mainMenuIcon {
     height: 130px;
     width: 210px !important;

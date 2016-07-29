@@ -7,7 +7,7 @@ define(['jq', 'methods', 'URLs', 'mustache', 'VALIDATION', 'TREE'], function ($j
             .find('#productImgWrapper').html('').end()
             .find('#sortable li:gt(0)').remove().end()
             .find('#sortable li:eq(0) input').val('').end()
-            .find('#formulasList').html('').end()
+            .find('#formulasList tbody').html('').end()
             .find('#cancelArticleBtn').click().end()
             .find('[data-cell="S1"]').attr('data-formula', '').val('');
         MAIN.formData = false;

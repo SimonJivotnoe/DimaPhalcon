@@ -14,9 +14,6 @@ define(['methods', 'startPage'], function (methods, startPage) {var
                case 'MENU':
                    startPage.runStartPage();
                    break;
-               case 'PR':
-                   startPage.runPreferences();
-                   break;
                case 'DB':
                    startPage.runDB();
                    break;
