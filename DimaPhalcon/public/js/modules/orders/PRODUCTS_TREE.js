@@ -51,6 +51,7 @@ define(['jq', 'methods', 'URLs', 'mustache', 'VALIDATION'], function ($jq, metho
 					}
 				);
 				loadCurrentProductFromTree(tree.tree('getSelectedNode'));
+				$("#productsTreeWrapper").mCustomScrollbar({theme:"3d-dark", autoHideScrollbar:true, axis: "yx"});
 			});
 		},
 		handler: function () {

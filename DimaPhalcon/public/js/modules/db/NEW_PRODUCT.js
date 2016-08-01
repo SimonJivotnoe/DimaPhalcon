@@ -450,7 +450,7 @@ define(['jq', 'methods', 'URLs', 'mustache', 'VALIDATION', 'TREE'], function ($j
 						return Mustache.render($jq.productTableRowTemplate.html(), row)
 					})
 				).end()
-				.find('#formulasList').html(
+				.find('#formulasList tbody').html(
 					$.map(productModel.formulas, function (tr) {
 						tr.beautyFormula = methods.beautifyFormula(tr.formula);
 						if (tr.applied) { appliedFormula = tr.formula }
