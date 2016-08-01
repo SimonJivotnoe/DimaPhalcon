@@ -242,6 +242,29 @@ define(['jq', 'datatables.net'], function ($jq, DataTable) {
 					.find('.showClientsTree').show();
 			}
 		},
+		beautifyFormula: function (formula) {
+            var constRules = {
+                KIM1: '#388398',
+                TAN: '#E817D7',
+                SIN: '#17E828',
+                RADIANS: '#E89117'
+            },
+                //operatorRules = ['+', '-', '*', '=', '(', ')'];
+                operatorRules = ['+'];
+            function escapeRegex(value) {
+                return value.replace( /[\-\[\]{}()*+?.,\\\^$|#\s]/g, "\\$&" );
+            }
+            $.each(constRules, function (elem, color) {
+                formula = formula.replace(new RegExp(elem,"g"), `<span style="color: ${color};">${elem}</span>`);
+            });
+            $.map(operatorRules, function (operator) {
+                formula = formula.replace(new RegExp(escapeRegex(operator),"g"), ` <span class="plusBold">${operator}</span> `);
+            });
+            formula = formula.replace(/\*/g, `<span class="plusBold">*</span>`);
+			formula = formula.replace(/(A\d+)/g, '<span class="Acolor">$1</span>');
+            formula = formula.replace(/>([ ]*\d+\.?\d{0,3}[ ]*)</g, '><span class="likeNumber">$1</span><');
+            return formula;
+        },
 	};
 	
 	return methods;

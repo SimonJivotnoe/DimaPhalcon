@@ -47,13 +47,13 @@ class IndexController extends ControllerBase
              //->addFilter(new \Phalcon\Assets\Filters\Jsmin());
         //$left = file_get_contents('../public/files/tabs.volt');
         $this->view->setVars(array(
-            'css'       => file_get_contents($indexFolder . 'css.html'),
-            'templates' => file_get_contents($indexFolder . 'templates.html'),
-            'mainIcons' => file_get_contents($indexFolder . 'mainIcons.html'),
-            'kimIcons' => file_get_contents($indexFolder . 'kimIcons.html'),
+            'css'                => file_get_contents($indexFolder . 'css.html'),
+            'templates'          => file_get_contents($indexFolder . 'templates.html'),
+            'mainIcons'          => file_get_contents($indexFolder . 'mainIcons.html'),
+            'kimIcons'           => file_get_contents($indexFolder . 'kimIcons.html'),
             'productTreeDBIcons' => file_get_contents($indexFolder . 'productTreeDBIcons.html'),
-            'js'        => file_get_contents($indexFolder . 'js.html')
+            'js'                 => file_get_contents($indexFolder . 'js.html'),
+            'dbModals'           => file_get_contents($indexFolder . 'dbModals.html')
         ));
     }
 }
-

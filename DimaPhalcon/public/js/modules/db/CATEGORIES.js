@@ -92,7 +92,7 @@ define(['jq', 'methods', 'URLs', 'mustache', 'VALIDATION'], function ($jq, metho
 			$jq.editCategoryBtn.click(editCategory);
 			$jq.deleteCategoryBtn.click(deleteCategory);
 			$jq.outBodyElements.on('dblclick', '.categoriesListTable tbody tr', prepareDataEditModal);
-		},
+		}
 	};
 	
 	return CATEGORIES;

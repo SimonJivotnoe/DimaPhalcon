@@ -62,15 +62,32 @@
 </script>
 <script id="formulaTemplate" type="x-tmpl-mustache">
     <tr class="formula">
-        <td><span class="checkbox checkbox-slider--b-flat checkbox-slider-success">
-				<label>
-					<input type="checkbox" class="applyFormula" data-formula="{{formula}}"><span>&nbsp;</span>
-				</label>
-			</span>
+        <td>
+            <span class="checkbox checkbox-slider--b-flat checkbox-slider-success">
+                <label>
+                    <input type="checkbox" class="applyFormula" data-formula="{{formula}}"><span>&nbsp;</span>
+                </label>
+            </span>
         </td>
         <td class="formulaValue">{{{beautyFormula}}}</td>
-        <td><span class="glyphicon glyphicon-pencil editFormula" aria-hidden="true" data-formula="{{formula}}"></span></td>
-        <td><span class="glyphicon glyphicon-remove removeFormula" aria-hidden="true"></span></td>
+        <td>
+            <span class="glyphicon glyphicon-pencil editFormula" aria-hidden="true" data-formula="{{formula}}"></span>\n\
+        </td>
+        <td>
+            <span class="glyphicon glyphicon-remove removeFormula" aria-hidden="true"></span>\n\
+        </td>
+    </tr>
+</script>
+<script id="formulaInCompletedProductTemplate" type="x-tmpl-mustache">
+    <tr class="formula">
+        <td>
+            <span class="checkbox checkbox-slider--b-flat checkbox-slider-success">
+                <label>
+                    <input type="checkbox" class="applyFormula" data-formula="{{formula}}"><span>&nbsp;</span>
+                </label>
+            </span>
+        </td>
+        <td class="formulaValue">{{{beautyFormula}}}</td>
     </tr>
 </script>
 <script id="justCreatedFormula" type="x-tmpl-mustache">
@@ -114,44 +131,147 @@
                     <span class="glyphicon glyphicon-copy" aria-hidden="true"></span>
                 </div>
             </div>
-<div class="col-md-10 col-md-offset-0">
-    <table class="table table-bordered">
-        <tr>
-            <th>Артикул</th>
-            <th>Наименование продукта</th>
-            <th>Категория</th>
-            <th>КИМ</th>
-            <th>Металл</th>
-        </tr>
-        <tr>
-            <td>{{productArticle}}</td>
-            <td>{{productName}}</td>
-            <td>{{productCategory}}</td>
-            <td>{{productKim}}</td>
-            <td>{{productMetall}}</td>
-        </tr>
-    </table>
-</div>
-<div class="col-md-10">
-    <table class="table table-bordered">
-        {{#tableContent}}
-            <tr>
-                <td>{{rowNumber}}</td>
-                <td>{{rowNameInput}}</td>
-                <td>{{rowValueInput}}</td>
-            </tr>
-        {{/tableContent}}
-        {{#alwaysInTable}}
-            <tr class="alwaysInTable">
-                <td>{{rowNumber}}</td>
-                <td>{{rowNameInput}}</td>
-                <td>{{rowValueInput}}</td>
-            </tr>
-        {{/alwaysInTable}}
-    </table>
-</div>
-<div class="clearer"></div>
+            <div class="col-md-10 col-md-offset-0">
+                <table class="table table-bordered">
+                    <tr>
+                        <th>Артикул</th>
+                        <th>Наименование продукта</th>
+                        <th>Категория</th>
+                        <th>КИМ</th>
+                        <th>Металл</th>
+                    </tr>
+                    <tr>
+                        <td>{{productArticle}}</td>
+                        <td>{{productName}}</td>
+                        <td>{{productCategory}}</td>
+                        <td>{{productKim}}</td>
+                        <td>{{productMetall}}</td>
+                    </tr>
+                </table>
+            </div>
+            <div class="col-md-10">
+                <table class="table table-bordered">
+                    {{#tableContent}}
+                        <tr>
+                            <td>{{rowNumber}}</td>
+                            <td>{{rowNameInput}}</td>
+                            <td>{{rowValueInput}}</td>
+                        </tr>
+                    {{/tableContent}}
+                    {{#alwaysInTable}}
+                        <tr class="alwaysInTable">
+                            <td>{{rowNumber}}</td>
+                            <td>{{rowNameInput}}</td>
+                            <td>{{rowValueInput}}</td>
+                        </tr>
+                    {{/alwaysInTable}}
+                </table>
+            </div>
+            <div class="clearer"></div>
         </div>
     {{/data}}
+</script>
+
+<script id="completedProductTemplate" type="x-tmpl-mustache">
+    {{#productModel}}
+        <div role="tabpanel" class="tab-pane {{isActiveTab}}" id="productTab{{tabId}}">
+            <div class="col-md-12 created">
+                <div class="col-md-5">
+                    <div class="productPicture">
+                        <img src="img/{{productImage}}" style="max-width: 100%; max-height: 200px;">
+                    </div>
+                </div>
+                <div class="col-md-7">Создано: {{productCreated}}</div>
+            </div>
+            <div class="col-md-10 col-md-offset-0">
+                <table class="table table-bordered">
+                    <tr>
+                        <th>Артикул</th>
+                        <th>Наименование продукта</th>
+                        <th>Категория</th>
+                        <th>КИМ</th>
+                        <th>Металл</th>
+                        <th>История Цен</th>
+                    </tr>
+                    <tr>
+                        <td>{{productArticle}}</td>
+                        <td>{{productName}}</td>
+                        <td>{{productCategory}}</td>
+                        <td>{{productKim}}</td>
+                        <td>{{productMetall}}</td>
+                        <td>{{{metallHistory}}}</td>
+                    </tr>
+                </table>
+            </div>
+            <div class="col-md-10">
+                <table class="table table-bordered">
+                    {{#tableContent}}
+                        <tr>
+                            <td>{{rowNumber}}</td>
+                            <td>{{rowNameInput}}</td>
+                            <td>{{rowValueInput}}</td>
+                        </tr>
+                    {{/tableContent}}
+                    {{#alwaysInTable}}
+                        <tr class="alwaysInTable">
+                            <td>{{rowNumber}}</td>
+                            <td>{{rowNameInput}}</td>
+                            <td>{{rowValueInput}}</td>
+                        </tr>
+                    {{/alwaysInTable}}
+                </table>
+            </div>
+            <div class="col-md-12">
+                <table class="table table-hover" id="formulasList">
+                    <tbody></tbody>
+                </table>
+            </div>
+            <div style="display:none;">
+                <div class="col-md-8 tableContent" >
+                    <div class="col-md-10 productTableWrapper">
+                        <form id="calx">
+                            <div class="col-md-12">
+                                <ul id="sortable">
+                                    {{#tableContent}}
+                                    <li class="">
+                                        <span class="rowNumber col-md-2" data-element="{{rowNumber}}">{{rowNumber}}</span>
+                                        <span class="rowName">
+                                            <input class="rowNameInput" type="text" value="{{rowNameInput}}">
+                                        </span>
+                                        <span class="rowValue">
+                                            <input class="rowValueInput" data-cell="{{rowNumber}}" data-formula="" data-format="0[.]00"
+                                                   type="tel" style="width: 5em;" value="{{rowValueInput}}">
+                                        </span>
+                                        <label><input class="checkToArticle" type="checkbox"></label>
+                                        <span class="removeRow glyphicon glyphicon-remove" aria-hidden="true"></span></li>
+                                    </li>
+                                    {{/tableContent}}
+                                </ul>
+                            </div>
+                            <div class="col-md-12">
+                                <ul id="alwaysInTable">
+                                    {{#alwaysInTable}}
+                                    <li class="">
+                                        <span class="rowNumber col-md-2" data-element="{{rowNumber}}">{{rowNumber}}</span>
+                                        <span class="rowName">
+                                            <input class="rowNameInput" type="text" value="{{rowNameInput}}">
+                                        </span>
+                                        <span class="rowValue">
+                                            <input class="rowValueInput" data-cell="{{rowNumber}}" data-formula="" data-format="0[.]00"
+                                                   type="tel" style="width: 5em;" value="{{rowValueInput}}">
+                                        </span>
+                                        <label><input class="checkToArticle" type="checkbox"></label>
+                                        <span class="removeRow glyphicon glyphicon-remove" aria-hidden="true"></span></li>
+                                    </li>
+                                    {{/alwaysInTable}}
+                                </ul>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="clearer"></div>
+        </div>
+    {{/productModel}}
 </script>
 

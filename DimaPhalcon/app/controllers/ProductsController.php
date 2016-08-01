@@ -3,34 +3,9 @@ use Phalcon\Db\RawValue;
 
 class ProductsController extends ControllerBase
 {
-    public function getProductInfoAction()
-    {
+    public function getProductInfoAction() {
         $this->ajaxGetCheck();
-        $res = false;
-        $productObj = Products::findFirst($this->request->get('productId'));
-        if ($productObj) {
-            $metallObj = new MetallsController();
-            $metallHistory = $metallObj->buildMetallHistoryObj($productObj->getMetall());
-            $date = new DateTime();
-            $res = [
-                'product' => [
-                    'created'  => $productObj->getCreated(),
-                    'article'  => $productObj->getArticle(),
-                    'name'     => $productObj->getProductName(),
-                    'category' => $productObj->Categories->getCategoryName(),
-                    'kim'      => $productObj->Kim->getKimHard(),
-                    'metall'   => $productObj->Metalls->getName(),
-                    'image'    => $productObj->getImage() . '?' . $date->getTimestamp()
-                ],
-                'metallHistory' => $metallHistory,
-                'tableContent'  => json_decode($productObj->getTableContent(), true),
-                'alwaysInTable' => json_decode($productObj->getAlwaysintable(), true),
-                'formulas'      => json_decode($productObj->getFormulas(), true)
-            ];
-        }
-        $this->response->setJsonContent($res);
-
-        return $this->response;
+        return $this->response->setJsonContent(['productModel' => $this->getProductModel($this->request->get('productId'))]);
     }
     
     public function getProductModel ($productId) {
@@ -40,16 +15,22 @@ class ProductsController extends ControllerBase
         $date = new DateTime();
         if ($productObj) {
             $res = [
-                'image'         => $productObj->getImage(),
-                'productImage'  => $productObj->getImage() . '?' . $date->getTimestamp(),
-                'productName'   => $productObj->getProductName(),
-                'categoryId'    => $productObj->getCategoryId(),
-                'kimId'         => $productObj->getKim(),
-                'metallId'      => $productObj->getMetall(),
-                'tableContent'  => json_decode($productObj->getTableContent()),
-                'alwaysInTable' => json_decode($productObj->getAlwaysInTable()),
-                'formulas'      => json_decode($productObj->getFormulas()),
-                'metallHistory' => $metallObj->buildMetallHistoryObj($productObj->getMetall()),
+                'productId'       => $productId,
+                'productCreated'  => $productObj->getCreated(),
+                'image'           => $productObj->getImage(),
+                'productImage'    => $productObj->getImage() . '?' . $date->getTimestamp(),
+                'productName'     => $productObj->getProductName(),
+                'productArticle'  => $productObj->getArticle(),
+                'categoryId'      => $productObj->getCategoryId(),
+                'productCategory' => $productObj->Categories->getCategoryName(),
+                'kimId'           => $productObj->getKim(),
+                'productKim'      => $productObj->Kim->getKimHard(),
+                'metallId'        => $productObj->getMetall(),
+                'productMetall'   => $productObj->Metalls->getName(),
+                'tableContent'    => json_decode($productObj->getTableContent()),
+                'alwaysInTable'   => json_decode($productObj->getAlwaysInTable()),
+                'formulas'        => json_decode($productObj->getFormulas()),
+                'metallHistory'   => $metallObj->getMetallHistory($productObj->getMetall()),
             ];
         }
         return $res;

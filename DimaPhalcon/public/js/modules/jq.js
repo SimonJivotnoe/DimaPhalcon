@@ -9,7 +9,9 @@ define(function () {
 		productTableRowTemplate: $('#productTableRowTemplate'),
 		formulasHelperTemplate: $('#formulasHelperTemplate'),
 		formulaTemplate: $('#formulaTemplate'),
+		formulaInCompletedProductTemplate: $('#formulaInCompletedProductTemplate'),
 		justCreatedFormula: $('#justCreatedFormula'),
+		completedProductTemplate: $('#completedProductTemplate'),
 
 		body: $('body'),
 		outBodyElements: $('#outBodyElements'),

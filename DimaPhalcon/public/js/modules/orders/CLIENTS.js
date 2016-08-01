@@ -162,8 +162,8 @@ define(['jq', 'methods', 'URLs', 'mustache', 'VALIDATION'], function ($jq, metho
 							if ('order' === node.sector) {
 								if (!node.inTab) {
 									$li.find('.jqtree-element').append(
-										'<span>&nbsp;</span>' +
-										'<span class="glyphicon glyphicon-eye-open openProductTab" data-id="' + node.orderId + '" data-type="order" aria-hidden="true" data-selected=""></span>'
+										`<span>&nbsp;</span>
+										 <span class="glyphicon glyphicon-eye-open openProductTab" data-id="${node.orderId}" data-type="order" aria-hidden="true" data-selected=""></span>`
 									);
 								} else {
 									$li.find('.jqtree-element').append(
@@ -171,7 +171,8 @@ define(['jq', 'methods', 'URLs', 'mustache', 'VALIDATION'], function ($jq, metho
 									);
 								}
 								$li.find('.jqtree-element').append(
-										'<span>&nbsp;</span><span class="glyphicon glyphicon-list-alt consolidateOrder" data-id="' + node.orderId + '" data-type="order" aria-hidden="true" data-selected=""></span>'
+										`<span>&nbsp;</span>
+										 <span class="glyphicon glyphicon-list-alt consolidateOrder" data-id="${node.orderId}" data-type="order" aria-hidden="true" data-selected=""></span>`
 									);
 							}
 							if ('project' === node.sector) {
@@ -186,14 +187,12 @@ define(['jq', 'methods', 'URLs', 'mustache', 'VALIDATION'], function ($jq, metho
 					tree.bind(
 						'tree.click',
 						function (event) {
-							var node = event.node;
 							$('#clientsTree').tree('selectNode');
-							currentClietsTreeSectionAction(node);
+							currentClietsTreeSectionAction(event.node);
 						}
 					);
 				}
-				var selectedNode = tree.tree('getSelectedNode');
-				currentClietsTreeSectionAction(selectedNode);
+				currentClietsTreeSectionAction(tree.tree('getSelectedNode'));
 			});
 		},
 		

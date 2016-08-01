@@ -26,11 +26,11 @@ class TreeController extends ControllerBase
                     $preData[$categoryId][$metallId] = [];
                 }
                 array_push($preData[$categoryId][$metallId], [
-                    'id' => $productId,
-                    'name' => $product->getProductName(),
-                    'article' => $product->getArticle(),
+                    'id'       => $productId,
+                    'name'     => $product->getProductName(),
+                    'article'  => $product->getArticle(),
                     'category' => $categoryId,
-                    'created' => $product->getCreated()
+                    'created'  => $product->getCreated()
                 ]);
                 $categArr[$categoryId] = $product->Categories->getCategoryName();
                 $metallsArr[$metallId] = $product->Metalls->getName();
@@ -40,7 +40,7 @@ class TreeController extends ControllerBase
             foreach ($categArr as $catId => $catName) {
                 $catNode = [
                     'id'       => 'category_productTreeDB' . $i,
-                    'icon' => 'glyphicon glyphicon-th-list',
+                    'icon'     => 'glyphicon glyphicon-th-list',
                     'li_attr'  => ['data-section' => 'category','data-categoryId' => $catId],
                     'text'     => $catName,
                     'children' => []
@@ -100,7 +100,6 @@ class TreeController extends ControllerBase
     }
     public function getOrProductsTreeAction(){
         $this->ajaxGetCheck();
-        $this->response->setContentType('application/json', 'UTF-8');
         $tree = [];
         $i = 1;
         $catObj = Categories::find();
@@ -131,25 +130,26 @@ class TreeController extends ControllerBase
                             foreach ($pr as $prVal) {
                                 $i++;
                                 $productNode = [
-                                    'label' => $prVal->getArticle() . '___' . $prVal->getProductName(),
-                                    'productId'    => $prVal->getProductId(),
-                                    'id'    => $i
+                                    'label'     => $prVal->getArticle() . '___' . $prVal->getProductName(),
+                                    'productId' => $prVal->getProductId(),
+                                    'id'        => $i
                                 ];
-                                array_push($metallNode['children'], (object)$productNode);
+                                array_push($metallNode['children'], $productNode);
                             }
                         }
                         if (count($metallNode['children'])) {
-                            array_push($categoryNode['children'], (object)$metallNode);
+                            array_push($categoryNode['children'], $metallNode);
                         }
                     }
                 }
                 if (count($categoryNode['children'])) {
-                    array_push($tree, (object)$categoryNode);
+                    array_push($tree, $categoryNode);
                 }
                 $i++;
             }
         }
         $this->response->setJsonContent($tree);
+        
         return $this->response;
     }
     

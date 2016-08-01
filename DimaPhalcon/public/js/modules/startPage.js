@@ -28,6 +28,18 @@ define([
 		CLIENTS
 ) {
 	var startPage = {
+        runSection: function (section) {
+            if (section) {
+                if (section !== localStorage.siteSector) {
+                    localStorage.siteSector = section;
+					window.location.href = '';
+                }
+            } else {
+                delete localStorage.siteSector;
+				window.location.href = '';
+            }
+        },
+		
         runStartPage: function () {
             startPage.activeClassValidation('#backIcon');
             localStorage.siteSector = 'MENU';
@@ -36,16 +48,6 @@ define([
             $jq.startPageWrapper.fadeIn();
         },
 
-        runSection: function (section) {
-            if (section) {
-                if (section !== localStorage.siteSector) {
-                    localStorage.siteSector = section;
-                }
-            } else {
-                delete localStorage.siteSector;
-            }
-			window.location.href = '';
-        },
 		
         runDB: function () {
             if (startPage.activeClassValidation('#dbIcon')) {

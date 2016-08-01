@@ -52,13 +52,14 @@ define([], function () {
 		removeBtnFromFormulasHelper: URLs.FORMULAS + 'removeBtnFromFormulasHelper',
 		saveProduct: URLs.PRODUCT + 'saveProduct',
 		uploadImage: URLs.PRODUCT + 'uploadImage',
-		// TREE
+		// DB TREE
 		addToFamily: URLs.FAMILY + 'addToFamily',
 		removeFromFamily: URLs.FAMILY + 'removeFromFamily',
 		deleteProduct: URLs.PRODUCT + 'deleteProduct',
 		
 		//OR SECTION
 		getOrProductsTree: URLs.TREE + 'getOrProductsTree',
+		getProductInfo: URLs.PRODUCT + 'getProductInfo',
 		getClientsTree: URLs.CLIENTS + 'getClientsTree',
 		getOrderDetails: URLs.TABS + 'getOrderDetails/'
 	});

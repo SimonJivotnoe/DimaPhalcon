@@ -11,41 +11,26 @@ class TabsController extends ControllerBase
         $tabsObj = Tabs::find();
         $Products = new ProductsController;
         if ($tabsObj && count($tabsObj)) {
-            $date = new DateTime();
             foreach ($tabsObj as $tab) {
                 $active = '';
-                $product = &$tab->Products;
                 if ($tab->getActive()) {
                     $activeTab = $tab->getActive();
                     $active = 'active';
                 }
                 $productId = $tab->getProductId();
-                $productName = $product->getProductName();
-                $image = $product->getImage();
-                $tableContent = json_decode($product->getTableContent());
-                $alwaysInTable = json_decode($product->getAlwaysInTable());
-                $template = [
-                    'tabId' => $tab->getId(),
-                    'isActiveTab' => $active,
-                    'productId' => $productId,
-                    'productCreated' => $product->getCreated(),
-                    'productImage' => $image . '?' . $date->getTimestamp(),
-                    'productName' => $productName,
-                    'productArticle' => $product->getArticle(),
-                    'productCategory' => $product->Categories->getCategoryName(),
-                    'productKim' => $product->Kim->getKimHard(),
-                    'productMetall' => $product->Metalls->getName(),
-                    'tableContent' => $tableContent,
-                    'alwaysInTable' => $alwaysInTable
-                    /*'tableContentHidden' => $productObj->createTableRes($tab->Products->getTableContent(), 'tableContent.html'),
-                    'alwaysInTableHidden' => $productObj->createTableRes($tab->Products->getAlwaysInTable(), 'alwaysInTable.html'),*/
-                ];
+                $template = $Products->getProductModel($productId);
+                $template['tabId'] = $tab->getId();
+                $template['isActiveTab'] = $active;
                 array_push($data, $template);
-                $productModel[$productId] = $Products->getProductModel($productId);
+                $productModel[$productId] = $template;
             }
         }
 
-        return $this->response->setJsonContent(['data' => $data, 'activeTab' => $activeTab, 'productModel' =>$productModel]);
+        return $this->response->setJsonContent([
+            'data'         => $data,
+            'activeTab'    => $activeTab,
+            'productModel' => $productModel]
+        );
     }
 
     public function getLeftTabsListAction() {
