@@ -216,7 +216,7 @@
                         <tr class="alwaysInTable">
                             <td>{{rowNumber}}</td>
                             <td>{{rowNameInput}}</td>
-                            <td>{{rowValueInput}}</td>
+                            <td data-cell="{{rowNumber}}">{{rowValueInput}}</td>
                         </tr>
                     {{/alwaysInTable}}
                 </table>
@@ -226,10 +226,11 @@
                     <tbody></tbody>
                 </table>
             </div>
-            <div style="display:none;">
+            <!--<div style="display:none;">-->
+            <div>
                 <div class="col-md-8 tableContent" >
                     <div class="col-md-10 productTableWrapper">
-                        <form id="calx">
+                        <form id="hiddenCompletedProductTable">
                             <div class="col-md-12">
                                 <ul id="sortable">
                                     {{#tableContent}}
@@ -242,8 +243,6 @@
                                             <input class="rowValueInput" data-cell="{{rowNumber}}" data-formula="" data-format="0[.]00"
                                                    type="tel" style="width: 5em;" value="{{rowValueInput}}">
                                         </span>
-                                        <label><input class="checkToArticle" type="checkbox"></label>
-                                        <span class="removeRow glyphicon glyphicon-remove" aria-hidden="true"></span></li>
                                     </li>
                                     {{/tableContent}}
                                 </ul>
@@ -257,11 +256,9 @@
                                             <input class="rowNameInput" type="text" value="{{rowNameInput}}">
                                         </span>
                                         <span class="rowValue">
-                                            <input class="rowValueInput" data-cell="{{rowNumber}}" data-formula="" data-format="0[.]00"
+                                            <input class="rowValueInput" data-cell="{{rowNumber}}" data-formula="{{dataFormula}}" data-format="0[.]00"
                                                    type="tel" style="width: 5em;" value="{{rowValueInput}}">
                                         </span>
-                                        <label><input class="checkToArticle" type="checkbox"></label>
-                                        <span class="removeRow glyphicon glyphicon-remove" aria-hidden="true"></span></li>
                                     </li>
                                     {{/alwaysInTable}}
                                 </ul>
