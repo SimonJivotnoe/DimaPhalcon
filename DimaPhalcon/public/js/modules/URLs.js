@@ -61,7 +61,9 @@ define([], function () {
 		getOrProductsTree: URLs.TREE + 'getOrProductsTree',
 		getProductInfo: URLs.PRODUCT + 'getProductInfo',
 		getClientsTree: URLs.CLIENTS + 'getClientsTree',
-		getOrderDetails: URLs.TABS + 'getOrderDetails/'
+		getOrderDetails: URLs.ORDER + 'getOrderDetails/',
+		addProductToOrder: URLs.ORDER + 'addProductToOrder',
+		saveOrderMap: URLs.TREE + 'saveOrderMap'
 	});
 
     return URLs;

@@ -111,17 +111,17 @@ define(['jq', 'methods', 'URLs', 'mustache', 'VALIDATION'], function ($jq, metho
 		}
 	},
 	orders = {
-		_orderDetails: {},
+		orderDetails: {},
 		getOrderDetailsFromTree: function (orderId) {
 			$.ajax( {
 				url   : URLs.getOrderDetails,
 				method: 'GET',
 				data: {orderId: orderId}
-			} ).then( function ( response )
-			{
-				if (true === response.success) {
+			} ).then( function (response) {
+				if (methods.checkResponseOnSuccess(response)) {
 					//$('#orderDetailsWrapperFromTree').html(addRightTabContentOrderHandler($(response.html)));
-					$('#orderDetailsWrapperFromTree').html($(response.html));
+					$('#orderDetailsWrapperFromTree').html(Mustache.render($jq.orderDetailsTemplate.html(), response));
+					$('#orderTableWrapperFromTree').html(response.orderTableContent);
 					if ('TRUE' === response.consolidate) {
 						//store.set('consOrder', 'consAverageTr');
 						localStorage.consOrder = 'consAverageTr';
@@ -129,13 +129,17 @@ define(['jq', 'methods', 'URLs', 'mustache', 'VALIDATION'], function ($jq, metho
 						//store.remove('consOrder');
 						delete localStorage.consOrder;
 					}
-					orders._orderDetails = {};
+					orders.orderDetails = {};
 					if (_.isObject(response.orderDescription)) {
-						orders._orderDetails = response.orderDescription;
+						orders.orderDetails = response.orderDescription;
 					}
-					return this;
+					$(function () {
+						$('[data-toggle="tooltip"]').tooltip({ my: "left+15 center", at: "right center" });
+						setTimeout(function(){ $('#orderTable').resizableColumns({
+							store: window.store
+						}); }, 1);
+					});
 				}
-				log(data.error);
 			});
 		}
 	},

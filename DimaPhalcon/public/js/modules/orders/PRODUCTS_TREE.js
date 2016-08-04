@@ -1,4 +1,4 @@
-define(['jq', 'methods', 'URLs', 'mustache', 'VALIDATION'], function ($jq, methods, URLs, Mustache, VALIDATION) {'use strict'; var
+define(['jq', 'methods', 'URLs', 'mustache'], function ($jq, methods, URLs, Mustache) {'use strict'; var
 	loadCurrentProductFromTree = function (node) {
 		var productId = node.productId;
 		if (productId) {
@@ -17,13 +17,6 @@ define(['jq', 'methods', 'URLs', 'mustache', 'VALIDATION'], function ($jq, metho
 					})
 				);
 				$('#formulasList').find(`input[data-formula="${appliedFormula}"]`).click();
-				/*MAIN.productId = node.productId;
-				$('#completedProduct').html(addLeftTabContentHandler($(data.html)));
-				$('.rowValueInput').removeClass('rowValueInput');
-				$('.cellBind').removeClass('cellBind');
-				$('.glyphicon-retweet').removeClass('glyphicon-retweet');
-				$('.removeFormula, .editFormula').remove();
-				$('#metallHistorySelect option:last-child').prop('selected', true);*/
 			});
 		}
 	},
@@ -42,17 +35,67 @@ define(['jq', 'methods', 'URLs', 'mustache', 'VALIDATION'], function ($jq, metho
 			$('#formulasList .applyFormula').not('.appliedFormula').prop('checked', false);
 		}
 		S1.attr('data-formula', formula);
-		$.map($('#completedProduct #alwaysInTable input[data-cell]'), function (input) {
-			var cell = $(input).attr('data-cell'),
-			    text = $(input).val();
-					console.log(cell);
-					console.log(text);
-				$('#completedProduct .alwaysInTable').find(`tr td[data-cell=${cell}]`).text(text);
-		} );
 		if (!methods.excel('#hiddenCompletedProductTable')) {
 			$this.prop('checked', false);
 			S1.attr('data-formula', '');
 		}
+		bindValues();
+	},
+	bindValues = function () {
+		$.map($('#completedProduct #alwaysInTable input[data-cell]'), function (input) {
+			var $this = $(input);
+			$('#completedProduct .alwaysInTable').find(`td[data-cell=${$this.attr('data-cell')}]`).text($this.val());
+		} );
+	},
+	changeMetallHistory = function () {
+		var selected = $('#metallHistorySelect option:selected');
+		$('#completedProduct #alwaysInTable input[data-cell="PR1"]').val(selected.attr('data-price'));
+		$('#completedProduct #alwaysInTable input[data-cell="PR2"]').val(selected.attr('data-outprice'));
+		methods.excel('#hiddenCompletedProductTable');
+		bindValues();
+	},
+	addToOrder = function () {
+		var map,
+			productId = $(this).attr('data-product-id'),
+			alwaysInTable = JSON.stringify(methods.getTableContent('#completedProduct #alwaysInTable li')),
+			obj = {};
+		if (!MAIN.orderId) {
+			methods.MESSAGES.error('Выберите Ордер', 3000);
+			return false;
+		}
+		$.ajax({
+			url: URLs.addProductToOrder,
+			method: 'POST',
+			data: {
+				orderId: 	   MAIN.orderId,
+				productId: 	   productId,
+				alwaysInTable: alwaysInTable
+			}
+		}).then(function (data)
+		{
+			if ('ok' === data.status) {
+				map = methods.getOrderMap();
+				obj[productId] = 1;
+				map.out.push(obj);
+				saveOrderMap(JSON.stringify(map), true);
+			}
+		});
+	},
+	saveOrderMap = function (map, refresh) {
+		$.ajax( {
+			url   : URLs.saveOrderMap,
+			method: 'POST',
+			data: {map: map, orderId: MAIN.orderId}
+		} ).then( function ( data ) {
+			if (data && refresh) {
+				
+				var elem = '#orderTableWrapper';
+				if ($('#fileManagerOrdersTab').hasClass('active')) {
+					elem = '#orderTableWrapperFromTree';
+				}
+				//TABS.getRightTabContentTable(MAIN.orderId, elem);
+			}
+		} );
 	},
 	PRODUCTS_TREE = {
 		getProductsTree: function () {
@@ -86,7 +129,10 @@ define(['jq', 'methods', 'URLs', 'mustache', 'VALIDATION'], function ($jq, metho
 			$('#hideShowProductsTree').click(function() {
 				methods.toggleTreeDisplay('#productsTreeWrapper', '#hideShowProductsTree');
 			});
-			$('#completedProduct').on('click', '.applyFormula', applyFormula);
+			$('#completedProduct')
+					.on('click', '.applyFormula', applyFormula)
+					.on('change', '#metallHistorySelect', changeMetallHistory)
+					.on('click', '#addToOrder', addToOrder);
 		}
 	};
 	

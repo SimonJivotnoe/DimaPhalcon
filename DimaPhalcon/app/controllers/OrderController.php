@@ -1,7 +1,146 @@
 <?php
 use Phalcon\Db\RawValue;
-class OrderController  extends \Phalcon\Mvc\Controller 
+class OrderController  extends ControllerBase
 {
+    public function getOrderDetailsAction() {
+        $this->ajaxGetCheck();
+        $res = true;
+        $orderId = $this->request->get('orderId', 'int');
+        $order = Orders::findFirst($orderId);
+        if ($order) {
+            $orderDescription = $this->getOrderDescriptionObj($order);
+            $orderTableContent = $this->getOrderTableContent($order);
+            if (!$orderDescription) {
+                $res = false;
+            }
+        }
+        return $this->response->setJsonContent([
+            'success' => $res,
+            //'html' => $res,
+            'orderDescription' => $orderDescription,
+            'orderTableContent' => $orderTableContent
+            //'consolidate' => $order->getConsolidate()
+        ]);
+        /*$orderObj = Orders::findFirst($orderId);
+        if ($orderObj) {
+        }
+        if ($this->request->isAjax() && $this->request->isGet()) {
+            $orderId = $this->request->get('orderId', 'int');
+            $this->response->setContentType('application/json', 'UTF-8');
+            $order = Orders::findFirst($orderId);
+            if ($order == false) {
+                $this->response->setJsonContent(['success' => false, 'error' => __METHOD__ . ':' . $order->getMessages()]);
+                return $this->response;
+            }
+            $substObj = new Substitution();
+
+            $orderObj = new OrderController();
+            $orderDescription = $orderObj->getOrderDescriptionObj();
+            $rows = $orderDescription;
+            $status = $order->getStatus();
+            'draft' === $status
+                ? $rows['%SAVE_ORDER_IN_DB%'] = '<button type="button" class="btn btn-danger btn-sm" id="saveOrderInDB">Сохранить в БД</button>'
+                : $rows['%SAVE_ORDER_IN_DB%'] = 'Сохранено в базе данных';
+            $rows['%ORDER_NAME%'] = $order->getArticle();
+            $rows['%DELETE_ORDER%'] = '<button type="button" class="btn btn-danger btn-sm" id="deleteOrder">Удалить Ордер</button>';
+            if ('TRUE' === $order->getConsolidate()) {
+                $rows['%DELETE_ORDER%'] = '';
+                $rows['%SAVE_ORDER_IN_DB%'] = '';
+            }
+            $discount = $order->getDiscount();
+            $rows['%DISCOUNT%'] = $discount;
+            $res = $substObj->subHTMLReplace('rightTabContent.html', $rows);
+            $this->response->setJsonContent(['success' => true, 'html' => $res, 'orderDescription' => $orderDescription, 'consolidate' => $order->getConsolidate()]);
+
+            return $this->response;
+        } else {
+            $this->response->redirect('');
+        }*/
+    }
+    
+    public function getOrderTableContent($order) {
+        if ($order) {
+            $orderId = $order->getId();
+            $substObj = new Substitution();
+            $consolidateData = false;
+            if ('TRUE' === $order->getConsolidate()) {
+                $consolidateData = [];
+                if (null === $order->getMap()) {
+                    
+                }
+                $consolidateOrdersObj = ConsolidateOrders::find(array("order_id = '$orderId'"));
+                if (false !== $consolidateOrdersObj) {
+                    foreach ($consolidateOrdersObj as $val) {
+                        $consOrderId = $val->getConsOrderId();
+                        $orderObj = Orders::findFirst($consOrderId);
+                        if (false !== $orderObj) {
+                            $consolidateData[$consOrderId] = ['map' => json_decode($orderObj->getMap())];
+                            $consolidateData[$consOrderId]['products'] = [];
+                            $prInOrder = Productinorder::find(array("orderId = '$consOrderId'"));
+                            if (false !== $prInOrder) {
+                                foreach ($prInOrder as $obj) {
+                                    $alwaysInTable = json_decode($obj->getAlwaysInTable());
+                                    $prId = $obj->getProductId();
+                                    $consolidateData[$consOrderId]['products'][$prId] = [
+                                        'inSum' => $alwaysInTable->{'3'}->{'%INPUT_VALUE%'},
+                                        'outSum' => $alwaysInTable->{'5'}->{'%INPUT_VALUE%'},
+                                        'inPrice' => $alwaysInTable->{'2'}->{'%INPUT_VALUE%'},
+                                        'outPrice' => $alwaysInTable->{'4'}->{'%INPUT_VALUE%'}
+                                    ];
+                                    $prDetObj = Products::findFirst(array("product_id = '$prId'"));
+                                    if (false !== $prDetObj) {
+                                        $metallId = $prDetObj->getMetall();
+                                        $metallObj = Metalls::findFirst($metallId);
+                                        $consolidateData[$consOrderId]['products'][$prId]['article'] = $prDetObj->getArticle();
+                                        $consolidateData[$consOrderId]['products'][$prId]['productName'] = $prDetObj->getProductName() . ' из ' . $metallObj->getName();
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            } 
+            $res = array('%SECTIONS%' => '', '%WITHOUT_SECTIONS%' => '');
+            $map = json_decode($order->getMap());
+            $moveTo = array();
+            $productObj = new ProductsController;
+            $currentSection = '';
+            if ('' !== $map && null !== $map) {
+                $orderObj = new OrderController;
+                foreach ($map as $key => $val) {
+                    if ('out' === $key && count($val)) {
+                        $i = 1;
+                        foreach ($val as $num => $obj) {
+                            foreach ($obj as $productId => $quantity) {
+                                $res['%WITHOUT_SECTIONS%'] .= $productObj->createProductInOrder($productId, $quantity, $orderId, $i, 'withoutSectionRow', $map, 'out');
+                            }
+                            $i++;
+                        }
+                    } else if ('out' !== $key) {
+                        if (!count($val)) {
+                            $currentSection = $key;
+                        }
+                        $res['%SECTIONS%'] .= '<tr class="orderTableSectionName" name="' . $key . '">
+                    <th colspan="9"><span class="orderSectionName" contenteditable="true">' . $key . '</span></th><td><span class="glyphicon glyphicon-remove removeRowSection" name="' . $key . '" aria-hidden="true"></span></td></tr>';
+                        if (count($val)) {
+                            $i = 1;
+                            foreach ($val as $num => $obj) {
+                                foreach ($obj as $productId => $quantity) {
+                                    $res['%SECTIONS%'] .= $productObj->createProductInOrder($productId, $quantity, $orderId, $i, 'orderTableSection', $map, $key);
+                                }
+                                $i++;
+                            }
+                        } else if (!count($val)) {
+                            $moveTo[$key] = array();
+                        }
+                    }
+                }
+            }
+        }
+        return $substObj->subHTMLReplace('orderTable.html', $res);
+        //$this->response->setJsonContent(['html' => $substObj->subHTMLReplace('orderTable.html', $res), 'success' => true, 'consolidateData' => $consolidateData]);
+    }
+    
     public function createNewOrderAction() {
         if ($this->request->isAjax() && $this->request->isPost()) {
             $orderMax = Orders::maximum(array("column" => "order_number"));
@@ -45,7 +184,7 @@ class OrderController  extends \Phalcon\Mvc\Controller
         }
     }
 
-    public function addProductToOrderAction(){
+    public function addProductToOrderAction() {
         if ($this->request->isAjax() && $this->request->isPost()) {
             $orderId = $this->request->getPost('orderId');
             $prId = $this->request->getPost('productId');
@@ -316,7 +455,7 @@ class OrderController  extends \Phalcon\Mvc\Controller
         return date('y') . '-' . $zero . strval($number) . '-' . date('d') . date('m') . date('o');
     }
 
-    public function getOrderDescriptionObj($id){
+    /*public function getOrderDescriptionObj($id){
         $order = Orders::findFirst($id);
         if ($order == false) {
             return false;
@@ -334,16 +473,28 @@ class OrderController  extends \Phalcon\Mvc\Controller
             '%DATE%'          => $order->Projects->getDate(),
             '%ORDER_NAME%'    => $order->getArticle()
         ];
-        /*foreach ($orders as $val) {
-            foreach (json_decode($val->getOrderDescription()) as $key => $text) {
-                if (trim($text)) {
-                    if(!in_array($text, $orderDescription[$key], true)){
-                        array_push($orderDescription[$key], $text);
-                    }
-                }
-            }
-            array_push($orderDescription['%ORDER_NAME%'], $val->getArticle());
-        }*/
+        return $orderDescription;
+    }*/
+    public function getOrderDescriptionObj($order){
+        $orderDescription = false;
+        if ($order) {
+            $orderDescription = [
+                'fio'          => $order->Projects->Clients->getFio(),
+                'appeal'       => $order->Projects->Clients->getAppeal(),
+                'companyName'  => $order->Projects->Clients->getCompanyName(),
+                'addres'       => $order->Projects->Clients->getAdress(),
+                'accNumber'    => $order->Projects->Clients->getAccaunt(),
+                'city'         => $order->Projects->Clients->getZip(),
+                'projectName'  => $order->Projects->getName(),
+                'projectDescr' => $order->Projects->getDescription(),
+                'estimate'     => $order->Projects->getEstimate(),
+                'date'         => $order->Projects->getDate(),
+                'orderName'    => $order->getArticle(),
+                'discount'     => $order->getDiscount(),
+                'deleteOrder'  => ('TRUE' === $order->getConsolidate()) ? false : true
+            ];
+        }
+        
         return $orderDescription;
     }
 }

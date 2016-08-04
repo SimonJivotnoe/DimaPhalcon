@@ -265,6 +265,60 @@ define(['jq', 'datatables.net'], function ($jq, DataTable) {
             formula = formula.replace(/>([ ]*\d+\.?\d{0,3}[ ]*)</g, '><span class="likeNumber">$1</span><');
             return formula;
         },
+		getTableContent: function (elem) {
+            var tableContent = [],
+                temp;
+            $.map($(elem), function(row) {
+                temp = {
+                    rowNumber: $('.rowNumber', row ).text(),
+                    rowNameInput: $('.rowNameInput', row ).val(),
+                    rowValueInput: $('.rowValueInput', row ).val(),
+                    dataCell: $('.rowValueInput', row ).attr('data-cell'),
+                    dataFormula: $('.rowValueInput', row ).attr('data-formula')
+                };
+                tableContent.push(temp);
+            });
+
+            return tableContent;
+        },
+		getOrderMap: function () {
+			var res = {};
+			res.out = [];
+			var name;
+			$.each($('#orderTable tr'), function(key, val) {
+				switch ($(val ).attr('class')) {
+					case 'skip':
+						break;
+					case 'orderTableSectionName':
+						name = $(val ).attr('name');
+						res[name] = [];
+						break;
+					case 'orderTableSection orderRow':
+						var productId = $(val ).attr('name' ),
+							obj = {};
+						$.each($('td', val), function(k, v) {
+							if ('quantityInOrderTd' === $(v).attr('class')) {
+								obj[productId] = $('input', v).val();
+								res[name].push(obj);
+							}
+						});
+						break;
+					case 'withoutSectionRow orderRow':
+						var productId = $(val ).attr('name' ),
+							obj = {};
+						$.each($('td', val), function(k, v) {
+							if ('quantityInOrderTd' === $(v).attr('class')) {
+								obj[productId] = $('input', v).val();
+								res.out.push(obj);
+							}
+						});
+						break;
+					default:
+						break;
+				}
+			});
+			return res;
+		}
 	};
 	
 	return methods;

@@ -181,7 +181,8 @@
                         <img src="img/{{productImage}}" style="max-width: 100%; max-height: 200px;">
                     </div>
                 </div>
-                <div class="col-md-7">Создано: {{productCreated}}</div>
+                <div class="col-md-5">Создано: {{productCreated}}</div>
+                <div class="col-md-2"><button type="button" class="btn btn-success btn-sm" data-product-id="{{productId}}" id="addToOrder">Добавить в Ордер</button></div>
             </div>
             <div class="col-md-10 col-md-offset-0">
                 <table class="table table-bordered">
@@ -226,8 +227,7 @@
                     <tbody></tbody>
                 </table>
             </div>
-            <!--<div style="display:none;">-->
-            <div>
+            <div style="display:none;">
                 <div class="col-md-8 tableContent" >
                     <div class="col-md-10 productTableWrapper">
                         <form id="hiddenCompletedProductTable">
@@ -272,3 +272,113 @@
     {{/productModel}}
 </script>
 
+<script id="orderDetailsTemplate" type="x-tmpl-mustache">
+{{#orderDescription}}    
+    <div class="row">
+        <div class="col-md-12">
+            <div class="col-md-6">
+                <button id="orderDetailsButton" class="btn btn-primary btn-sm" type="button" data-toggle="collapse"
+                 data-target="#orderDetailsCollapse" aria-expanded="false" aria-controls="orderDetailsCollapse">
+                    Детали заказа
+                </button>
+            </div>
+            <div class="col-md-6">
+                <span>
+                    <button type="button" class="btn btn-danger btn-sm" id="createPDF" data-order-article="{{orderName}}">
+                        <span class="glyphicon glyphicon-print" aria-hidden="true"></span>  PDF
+                    </button>
+                </span>
+                {{#deleteOrder}}
+                    <button type="button" class="btn btn-danger btn-sm" id="deleteOrder">Удалить Ордер</button>
+                {{/deleteOrder}}        
+            </div>
+        </div>
+    </div>
+
+    <div class="collapse" id="orderDetailsCollapse">
+        <p>Дисконт: <input id="changeDiscount" class="inputWithoutBorders" type="number" value="{{discount}}"/>%</p>
+        <div class="row">
+            <div class="col-md-7 col-md-offset-5">
+                <button class="btn btn-default btn-sm" id="checkAllInOrder">
+                    <span class="glyphicon glyphicon-check" aria-hidden="true"></span>
+                </button>
+                <button class="btn btn-default btn-sm" id="uncheckAllInOrder">
+                    <span class="glyphicon glyphicon-unchecked" aria-hidden="true"></span>
+                </button>
+            </div>
+        </div>
+        <div class="col-md-12" id="orderDetails">
+            <table class="table table-striped table-bordered" id="orderDetailsTable">
+                <tr>
+                    <td><input type="checkbox" name="FIO" data-name="Вниманию(Ф.И.О.):"/></td>
+                    <th>Вниманию(Ф.И.О.):</th>
+                    <td>{{fio}}</td>
+                    <td><input type="checkbox" name="APPEAL" data-name="Обращение:"/></td>
+                    <th>Обращение:</th>
+                    <td>{{appeal}}</td>
+                </tr>
+                <tr>
+                    <td><input type="checkbox" name="COMPANY_NAME" data-name="Название компании:"/></td>
+                    <th>Название компании:</th>
+                    <td>{{companyName}}</td>
+                    <td><input type="checkbox" name="ADDRES" data-name="Почтовый адрес:"/></td>
+                    <th>Почтовый адрес:</th>
+                    <td>{{addres}}</td>
+                </tr>
+                <tr>
+                    <td><input type="checkbox" name="ACC_NUMBER" data-name="Номер счета:"/></td>
+                    <th>Номер счета:</th>
+                    <td>{{accNumber}}</td>
+                    <td><input type="checkbox" name="CITY" data-name="Город, почтовый индекс:"/></td>
+                    <th>Город, почтовый индекс:</th>
+                    <td>{{city}}</td>
+                </tr>
+                <tr>
+                    <td><input type="checkbox" name="PROJECT_NAME" data-name="Название проэкта:"/></td>
+                    <th>Название проэкта:</th>
+                    <td>{{projectName}}</td>
+                    <td><input type="checkbox" name="PROJECT_DESCR" data-name="Описание проэкта:"/></td>
+                    <th>Описание проэкта:</th>
+                    <td>{{projectDescr}}</td>
+                </tr>
+                <tr>
+                    <td><input type="checkbox" name="ESTIMATE" data-name="Срок:"/></td>
+                    <th>Срок:</th>
+                    <td>{{estimate}}</td>
+                    <td><input type="checkbox" name="DATE" data-name="Дата:"/></td>
+                    <th>Дата:</th>
+                    <td>{{date}}</td>
+                </tr>
+            </table>
+        </div>
+    </div>
+    <div class="col-md-12" id="consOrderButtonsWrapper">
+        <div class="col-md-4 col-md-offset-3">
+            <div class="col-md-6">
+                <button type="button" class="btn btn-danger btn-sm" id="consRemoveSections">Убрать разделы</button>
+            </div>
+            <div class="col-md-6">
+                <button type="button" class="btn btn-success btn-sm" id="consAveragePrices">Уникальные цены</button>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-12 navbar navbar-default" id="orderCurrenciesWrapper">
+        <div class="col-md-8 col-md-offset-4">
+            <button type="button" class="btn btn-warning btn-sm activeCurrency" data-currency="грн" data-area="uahSet" id="orderCurrencyUAHToggle">UAH</button>
+            <input data-set="uahSet" type="number" value="1.00" step="0.1" style="display: none;">
+            <button type="button" class="btn btn-success btn-sm" autofocus="true" data-currency="USD" data-area="usdSet" id="orderCurrencyUSDToggle">
+                <span class="glyphicon glyphicon-usd" aria-hidden="true"></span>
+            </button>
+            <input data-set="usdSet" type="number" value="24.00" step="0.1" style="width: 56px;">
+            <button type="button" class="btn btn-info btn-sm" autofocus="true" data-currency="EUR" data-area="eurSet" id="orderCurrencyEURToggle">
+                <span class="glyphicon glyphicon-eur" aria-hidden="true"></span>
+            </button>
+            <input data-set="eurSet" type="number" value="27.00" step="0.1" style="width: 56px;">
+            <button type="button" class="btn btn-warning btn-sm" autofocus="true" data-currency="руб" data-area="rubSet" id="orderCurrencyRUBToggle">
+                <span class="glyphicon glyphicon-rub" aria-hidden="true"></span>
+            </button>
+            <input data-set="rubSet" type="number" value="0.4" step="0.1" style="width: 56px;">
+        </div>
+    </div>
+{{/orderDescription}} 
+</script>

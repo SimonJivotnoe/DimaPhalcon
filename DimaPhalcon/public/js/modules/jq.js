@@ -11,6 +11,7 @@ define(function () {
 		formulaTemplate: $('#formulaTemplate'),
 		formulaInCompletedProductTemplate: $('#formulaInCompletedProductTemplate'),
 		justCreatedFormula: $('#justCreatedFormula'),
+		orderDetailsTemplate: $('#orderDetailsTemplate'),
 		completedProductTemplate: $('#completedProductTemplate'),
 
 		body: $('body'),

@@ -83,7 +83,7 @@ class TabsController extends ControllerBase
             $formulaHelperObj = new FormulasController;
             $res = [
                 'success'        => true,
-                'template'        => $template,
+                'template'       => $template,
                 'activeTabId'    => $active,
                 'productId'      => $prodId,
                 'tabsList'       => /*(object)*/$tabArr,
@@ -193,18 +193,6 @@ class TabsController extends ControllerBase
                 'metallId'          => $productMetall,
                 'image'             => $image
             ];
-        }
-        $this->response->setJsonContent($res);
-        
-        return $this->response;
-    }
-    
-    public function getLastLeftTabAction() {
-        $this->ajaxGetCheck();
-        $res = array();
-        $tabs = Tabs::maximum(array("column" => "id"));
-        if (!empty($tabs)) {
-            $res = $tabs;
         }
         $this->response->setJsonContent($res);
         
@@ -440,41 +428,6 @@ class TabsController extends ControllerBase
             $this->response->setJsonContent(array(false));
 
             return $this->response;
-        }
-    }
-
-    public function getOrderDetailsAction() {
-        if ($this->request->isAjax() && $this->request->isGet()) {
-            $orderId = $this->request->get('orderId', 'int');
-            $this->response->setContentType('application/json', 'UTF-8');
-            $order = Orders::findFirst($orderId);
-            if ($order == false) {
-                $this->response->setJsonContent(['success' => false, 'error' => __METHOD__ . ':' . $order->getMessages()]);
-                return $this->response;
-            }
-            $substObj = new Substitution();
-
-            $orderObj = new OrderController();
-            $orderDescription = $orderObj->getOrderDescriptionObj();
-            $rows = $orderDescription;
-            $status = $order->getStatus();
-            'draft' === $status
-                ? $rows['%SAVE_ORDER_IN_DB%'] = '<button type="button" class="btn btn-danger btn-sm" id="saveOrderInDB">Сохранить в БД</button>'
-                : $rows['%SAVE_ORDER_IN_DB%'] = 'Сохранено в базе данных';
-            $rows['%ORDER_NAME%'] = $order->getArticle();
-            $rows['%DELETE_ORDER%'] = '<button type="button" class="btn btn-danger btn-sm" id="deleteOrder">Удалить Ордер</button>';
-            if ('TRUE' === $order->getConsolidate()) {
-                $rows['%DELETE_ORDER%'] = '';
-                $rows['%SAVE_ORDER_IN_DB%'] = '';
-            }
-            $discount = $order->getDiscount();
-            $rows['%DISCOUNT%'] = $discount;
-            $res = $substObj->subHTMLReplace('rightTabContent.html', $rows);
-            $this->response->setJsonContent(['success' => true, 'html' => $res, 'orderDescription' => $orderDescription, 'consolidate' => $order->getConsolidate()]);
-
-            return $this->response;
-        } else {
-            $this->response->redirect('');
         }
     }
 

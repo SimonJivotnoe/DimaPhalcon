@@ -365,8 +365,8 @@ define(['jq', 'methods', 'URLs', 'mustache', 'VALIDATION', 'TREE'], function ($j
                 category: $jq.addNewProductModal.find('.categoriesList option:selected').attr('data-id'),
                 kim: $jq.addNewProductModal.find('.kimList option:selected').attr('data-id'),
                 metall: $jq.addNewProductModal.find('.metallsList option:selected').attr('data-id'),
-				tableContent: saveProduct.getTableContent('#sortable li'),
-				alwaysInTable: saveProduct.getTableContent('#alwaysInTable li'),
+				tableContent: methods.getTableContent('#sortable li'),
+				alwaysInTable: methods.getTableContent('#alwaysInTable li'),
                 formulas: saveProduct.getFormulasList()
             };
             return data;
@@ -384,22 +384,6 @@ define(['jq', 'methods', 'URLs', 'mustache', 'VALIDATION', 'TREE'], function ($j
                 res.push(row);
             });
             return res;
-        },
-        getTableContent: function (elem) {
-            var tableContent = [],
-                temp;
-            $.map($(elem), function(row) {
-                temp = {
-                    rowNumber: $('.rowNumber', row ).text(),
-                    rowNameInput: $('.rowNameInput', row ).val(),
-                    rowValueInput: $('.rowValueInput', row ).val(),
-                    dataCell: $('.rowValueInput', row ).attr('data-cell'),
-                    dataFormula: $('.rowValueInput', row ).attr('data-formula')
-                };
-                tableContent.push(temp);
-            });
-
-            return tableContent;
         },
         addNewProductBtn: function () {
             var data = saveProduct.getData();
