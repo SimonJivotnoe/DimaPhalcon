@@ -1,5 +1,5 @@
 
-define(['jq', 'methods', 'URLs', 'mustache', 'VALIDATION'], function ($jq, methods, URLs, Mustache, VALIDATION) {var
+define(['jq', 'methods', 'URLs', 'mustache', 'VALIDATION', 'PDF'], function ($jq, methods, URLs, Mustache, VALIDATION, PDF) {'use strict'; var
 	findInClietsTree = function () {
 		var tree = JSON.parse($('#clientsTree').tree('toJson')),
 			text = $(this).val().toLowerCase();
@@ -87,6 +87,27 @@ define(['jq', 'methods', 'URLs', 'mustache', 'VALIDATION'], function ($jq, metho
 				clients.fillFormOfClientsInfo();
 			}
 		},
+		addNewClientBtn: function () {
+			var check = 0, data = {};
+			$.map($('#addNewClientForm input'), function (input) {
+				var $input = $(input);
+				data[$input.attr('name')] = $input.val();
+				if (!VALIDATION.validateInputVal(
+					{
+						val: $input.val(),
+						id: '#' + $input.attr('id')
+					}
+				)) { check++; }
+			});
+			if (!check) {
+				$.post(URLs.addNewClient, data, function (response) {
+					if (response) {
+						$('#addNewClientForm input').val('');
+						CLIENTS_TREE.getClientsTree(true);
+					}
+				});
+			}
+		},
 	},
 	projects = {
 		fillFormOfProjectInfo: function (info) {
@@ -111,7 +132,6 @@ define(['jq', 'methods', 'URLs', 'mustache', 'VALIDATION'], function ($jq, metho
 		}
 	},
 	orders = {
-		orderDetails: {},
 		getOrderDetailsFromTree: function (orderId) {
 			$.ajax( {
 				url   : URLs.getOrderDetails,
@@ -120,8 +140,8 @@ define(['jq', 'methods', 'URLs', 'mustache', 'VALIDATION'], function ($jq, metho
 			} ).then( function (response) {
 				if (methods.checkResponseOnSuccess(response)) {
 					//$('#orderDetailsWrapperFromTree').html(addRightTabContentOrderHandler($(response.html)));
-					$('#orderDetailsWrapperFromTree').html(Mustache.render($jq.orderDetailsTemplate.html(), response));
-					$('#orderTableWrapperFromTree').html(response.orderTableContent);
+					$('#orderWrapperFromTree #orderDetailsWrapperFromTree').html(Mustache.render($jq.orderDetailsTemplate.html(), response));
+					$('#orderWrapperFromTree #orderTableWrapperFromTree').html(response.orderTableContent);
 					if ('TRUE' === response.consolidate) {
 						//store.set('consOrder', 'consAverageTr');
 						localStorage.consOrder = 'consAverageTr';
@@ -129,10 +149,7 @@ define(['jq', 'methods', 'URLs', 'mustache', 'VALIDATION'], function ($jq, metho
 						//store.remove('consOrder');
 						delete localStorage.consOrder;
 					}
-					orders.orderDetails = {};
-					if (_.isObject(response.orderDescription)) {
-						orders.orderDetails = response.orderDescription;
-					}
+					orders.setOrderSum();
 					$(function () {
 						$('[data-toggle="tooltip"]').tooltip({ my: "left+15 center", at: "right center" });
 						setTimeout(function(){ $('#orderTable').resizableColumns({
@@ -141,7 +158,35 @@ define(['jq', 'methods', 'URLs', 'mustache', 'VALIDATION'], function ($jq, metho
 					});
 				}
 			});
-		}
+		},
+		checkAllInOrderDetails: function (param = true, id = '#orderDetailsWrapperFromTree input') {
+			$.map($(`#orderWrapperFromTree ${id}`), function (input) {
+				$(input).prop('checked', param);
+			});
+		},
+		changeDiscount: function () {
+			$.post(URLs.changeDiscount, {discount: $(this).val(), orderId: MAIN.orderId});
+			orders.setOrderSum();
+		},
+		setOrderSum: function () {
+			var orderSum = 0,
+				currency = $('#orderWrapperFromTree .activeCurrency' ).attr('data-currency');
+			$.map($('#orderWrapperFromTree .outputSumInOrder'), function(obj) {
+				orderSum += parseInt($(obj).text());
+			});
+			$('#orderWrapperFromTree #orderSum').text(orderSum + currency);
+			$('#orderWrapperFromTree #orderSumWithDiscount').text(orderSum - orderSum * parseInt($('#orderWrapperFromTree #changeDiscount').val())/100 + currency);
+		},
+		changeCurrency: function () {
+			var $this = $(this),
+				dataArea = $this.attr('data-area');
+			$('#orderWrapperFromTree #orderCurrenciesWrapper .activeCurrency' ).removeClass('activeCurrency');
+			$this.addClass('activeCurrency');
+			$.map($('[data-uah]'), function (td) {
+				$(td).text((parseInt($(td).attr('data-uah')) / parseFloat($('[data-set="' + dataArea + '"]').val())).toFixed(2));
+			});
+			orders.setOrderSum();
+		},
 	},
     CLIENTS_TREE = {
 		getClientsTree: function (refresh) {
@@ -208,6 +253,22 @@ define(['jq', 'methods', 'URLs', 'mustache', 'VALIDATION'], function ($jq, metho
 			$('#findInClietsTree').keyup(findInClietsTree);
 			
 			$('#addNewClient').click(clients.addNewClient);
+			
+			$('#addNewClientBtn').click(clients.addNewClientBtn);
+			$('#orderWrapperFromTree')
+					.on('click', '#checkAllInOrder', orders.checkAllInOrderDetails)
+					.on('click', '#uncheckAllInOrder', function () {
+						orders.checkAllInOrderDetails(false);
+					})
+					.on('change', '#changeDiscount', orders.changeDiscount)
+					.on('click', '#createPDF', PDF.saveOrderToPDF)
+					.on('click', '#orderCurrenciesWrapper button', orders.changeCurrency)
+					.on('click', '#checkAllInMainOrder', function () {
+						orders.checkAllInOrderDetails(true, '#orderHeadChecks input');
+					})
+					.on('click', '#uncheckAllInMainOrder', function () {
+						orders.checkAllInOrderDetails(false, '#orderHeadChecks input');
+					});
         }
     };
 

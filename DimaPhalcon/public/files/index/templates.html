@@ -288,9 +288,9 @@
                         <span class="glyphicon glyphicon-print" aria-hidden="true"></span>  PDF
                     </button>
                 </span>
-                {{#deleteOrder}}
+                <!--{{#deleteOrder}}
                     <button type="button" class="btn btn-danger btn-sm" id="deleteOrder">Удалить Ордер</button>
-                {{/deleteOrder}}        
+                {{/deleteOrder}}-->      
             </div>
         </div>
     </div>
@@ -310,42 +310,42 @@
         <div class="col-md-12" id="orderDetails">
             <table class="table table-striped table-bordered" id="orderDetailsTable">
                 <tr>
-                    <td><input type="checkbox" name="FIO" data-name="Вниманию(Ф.И.О.):"/></td>
+                    <td><input type="checkbox" name="FIO" data-name="Вниманию(Ф.И.О.):" data-val="{{fio}}"/></td>
                     <th>Вниманию(Ф.И.О.):</th>
                     <td>{{fio}}</td>
-                    <td><input type="checkbox" name="APPEAL" data-name="Обращение:"/></td>
+                    <td><input type="checkbox" name="APPEAL" data-name="Обращение:" data-val="{{appeal}}"/></td>
                     <th>Обращение:</th>
                     <td>{{appeal}}</td>
                 </tr>
                 <tr>
-                    <td><input type="checkbox" name="COMPANY_NAME" data-name="Название компании:"/></td>
+                    <td><input type="checkbox" name="COMPANY_NAME" data-name="Название компании:" data-val="{{companyName}}"/></td>
                     <th>Название компании:</th>
                     <td>{{companyName}}</td>
-                    <td><input type="checkbox" name="ADDRES" data-name="Почтовый адрес:"/></td>
+                    <td><input type="checkbox" name="ADDRES" data-name="Почтовый адрес:" data-val="{{addres}}"/></td>
                     <th>Почтовый адрес:</th>
                     <td>{{addres}}</td>
                 </tr>
                 <tr>
-                    <td><input type="checkbox" name="ACC_NUMBER" data-name="Номер счета:"/></td>
+                    <td><input type="checkbox" name="ACC_NUMBER" data-name="Номер счета:" data-val="{{accNumber}}"/></td>
                     <th>Номер счета:</th>
                     <td>{{accNumber}}</td>
-                    <td><input type="checkbox" name="CITY" data-name="Город, почтовый индекс:"/></td>
+                    <td><input type="checkbox" name="CITY" data-name="Город, почтовый индекс:" data-val="{{city}}"/></td>
                     <th>Город, почтовый индекс:</th>
                     <td>{{city}}</td>
                 </tr>
                 <tr>
-                    <td><input type="checkbox" name="PROJECT_NAME" data-name="Название проэкта:"/></td>
+                    <td><input type="checkbox" name="PROJECT_NAME" data-name="Название проэкта:" data-val="{{projectName}}"/></td>
                     <th>Название проэкта:</th>
                     <td>{{projectName}}</td>
-                    <td><input type="checkbox" name="PROJECT_DESCR" data-name="Описание проэкта:"/></td>
+                    <td><input type="checkbox" name="PROJECT_DESCR" data-name="Описание проэкта:" data-val="{{projectDescr}}"/></td>
                     <th>Описание проэкта:</th>
                     <td>{{projectDescr}}</td>
                 </tr>
                 <tr>
-                    <td><input type="checkbox" name="ESTIMATE" data-name="Срок:"/></td>
+                    <td><input type="checkbox" name="ESTIMATE" data-name="Срок:" data-val="{{estimate}}"/></td>
                     <th>Срок:</th>
                     <td>{{estimate}}</td>
-                    <td><input type="checkbox" name="DATE" data-name="Дата:"/></td>
+                    <td><input type="checkbox" name="DATE" data-name="Дата:" data-val="{{date}}"/></td>
                     <th>Дата:</th>
                     <td>{{date}}</td>
                 </tr>

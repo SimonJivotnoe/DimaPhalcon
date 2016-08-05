@@ -211,10 +211,10 @@ class ProductsController extends ControllerBase
         $res['%ORDER_ID%'] = $orderId;
         $res['%PRODUCT_ID%'] = $productId;
         $res['%QUANTITY%'] = $quantity;
-        $res['%PRICE%'] = $alwaysInTable->{'3'}->{'%INPUT_VALUE%'};
-        $res['%SUM%'] = (float)$alwaysInTable->{'3'}->{'%INPUT_VALUE%'} * (int)$quantity;
-        $res['%PRICE_OUT%'] = $alwaysInTable->{'5'}->{'%INPUT_VALUE%'};
-        $res['%SUM_OUT%'] = (float)$alwaysInTable->{'5'}->{'%INPUT_VALUE%'} * (int)$quantity/* - (int)$alwaysInTable->{'5'}->{'%INPUT_VALUE%'} * (int)$discount/100*/;
+        $res['%PRICE%'] = $alwaysInTable[3]->{'rowValueInput'};
+        $res['%SUM%'] = (float)$alwaysInTable[3]->{'rowValueInput'} * (int)$quantity;
+        $res['%PRICE_OUT%'] = $alwaysInTable[5]->{'rowValueInput'};
+        $res['%SUM_OUT%'] = (float)$alwaysInTable[5]->{'rowValueInput'} * (int)$quantity/* - (int)$alwaysInTable->{'5'}->{'%INPUT_VALUE%'} * (int)$discount/100*/;
         
         return $substObj->subHTMLReplace('orderRow.html', $res);
     }
