@@ -2048,15 +2048,15 @@
 			})).end()
 
 			.find('#clientsTree').on('click', '.consolidateOrder', (function(e) {
-			e.stopPropagation();
-			if ('' === $(this).attr('data-selected')) {
-				$(this).addClass('consolidateOrderSelected').attr('data-selected', 'selected');
-			} else if ('selected' === $(this).attr('data-selected')) {
-				$(this).removeClass('consolidateOrderSelected').attr('data-selected', '');
-			}
-			enableDisableButton($('.consolidateOrderSelected'), $('#FMconsolidatedOrdersBtn'));
-			$('#FMconsolidatedOrdersBtn').attr('projectId', $('#clientsTree').tree('getSelectedNode').projectId);
-		})).end()
+				e.stopPropagation();
+				if ('' === $(this).attr('data-selected')) {
+					$(this).addClass('consolidateOrderSelected').attr('data-selected', 'selected');
+				} else if ('selected' === $(this).attr('data-selected')) {
+					$(this).removeClass('consolidateOrderSelected').attr('data-selected', '');
+				}
+				enableDisableButton($('.consolidateOrderSelected'), $('#FMconsolidatedOrdersBtn'));
+				$('#FMconsolidatedOrdersBtn').attr('projectId', $('#clientsTree').tree('getSelectedNode').projectId);
+			})).end()
 		
 			.find('#showItemFromClientsTree').click(function() {
 				var order = [];

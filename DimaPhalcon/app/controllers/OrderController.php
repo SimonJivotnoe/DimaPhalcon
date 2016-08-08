@@ -142,6 +142,7 @@ class OrderController  extends ControllerBase
     }
     
     public function createNewOrderAction() {
+        $this->ajaxPostCheck();
         if ($this->request->isAjax() && $this->request->isPost()) {
             $orderMax = Orders::maximum(array("column" => "order_number"));
             $consolidate = $this->request->getPost('consolidate');

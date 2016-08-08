@@ -101,12 +101,53 @@ define(['jq', 'methods', 'URLs', 'mustache', 'VALIDATION', 'PDF'], function ($jq
 			});
 			if (!check) {
 				$.post(URLs.addNewClient, data, function (response) {
-					if (response) {
+					if (methods.checkResponseOnSuccess(response)) {
 						$('#addNewClientForm input').val('');
 						CLIENTS_TREE.getClientsTree(true);
 					}
 				});
 			}
+		},
+		updateClientBtn: function () {
+			var $tree = $('#clientsTree');
+			if ($tree.tree('getSelectedNode').clientId) {
+				var check = 0, data = {id: $tree.tree('getSelectedNode').clientId};
+				$.map($('#addNewClientForm input'), function (input) {
+					var $input = $(input);
+					data[$input.attr('name')] = $input.val();
+					if (!VALIDATION.validateInputVal(
+						{
+							val: $input.val(),
+							id: '#' + $input.attr('id')
+						}
+					)) {
+						check++;
+					}
+				});
+				if (!check) {
+					$.post(URLs.updateClient, data, function (response) {
+						if (methods.checkResponseOnSuccess(response)) {
+							CLIENTS_TREE.getClientsTree(true);
+						}
+					});
+				}
+			}
+		},
+		deleteClientBtn: function () {
+			$.ajax({
+				url: URLs.deleteClient + '/' + $('#clientsTree').tree('getSelectedNode').clientId,
+				method: 'DELETE'
+			}).then(function (response) {
+				if (methods.checkResponseOnSuccess(response)) {
+					CLIENTS_TREE.getClientsTree(true);
+					$('#deleteClientModal').modal('hide');
+				}
+				/*if (data.orders && data.orders.length) {
+					for (var i = 0; i<=data.orders.length; i++) {
+						$('.closeTabRight[data-order="' + data.orders[i] + '"]' ).click();
+					}
+				}*/
+			});
 		},
 	},
 	projects = {
@@ -129,9 +170,101 @@ define(['jq', 'methods', 'URLs', 'mustache', 'VALIDATION', 'PDF'], function ($jq
 				$('.addNewProjectBtnsWrapper').hide();
 			}
 			$('#addNewProjectForm').show();
-		}
+		},
+		addNewProject: function () {
+			var check = 0,
+				selectedNode = $('#clientsTree').tree('getSelectedNode');
+			if ($('#h3NewProjectInfo').is(':visible')) {
+				check = checkInputsInClientsDetails('#addNewProjectForm input');
+			}
+			if (0 === check && selectedNode) {
+				projects.fillFormOfProjectInfo();
+			} else {
+				methods.MESSAGES.error('Выберите Клиента', 900);
+			}
+		},
+		addNewProjectBtn: function () {
+			var selectedNode = $('#clientsTree').tree('getSelectedNode');
+			if (selectedNode && selectedNode.clientId) {
+				var check = 0, data = {client: selectedNode.clientId};
+				$.map($('#addNewProjectForm input'), function (input) {
+					var $input = $(input);
+					data[$input.attr('name')] = $input.val();
+					if (!VALIDATION.validateInputVal({
+							val: $input.val(),
+							id: '#' + $input.attr('id')
+						}
+					)) {
+						check++;
+					}
+				});
+				if (!check) {
+					$.post(URLs.addNewProject, data, function (response) {
+						if (methods.checkResponseOnSuccess(response)) {
+							$('#addNewProjectForm input').val('');
+							CLIENTS_TREE.getClientsTree(true);
+						}
+					});
+					var $tree = $('#clientsTree');
+					setTimeout(function () {$tree.tree('openNode', $tree.tree('getSelectedNode'));}, 100);
+				}
+			}
+		},
+		updateProjectBtn: function () {
+			var $tree = $('#clientsTree');
+			if ($tree.tree('getSelectedNode').projectId) {
+				var check = 0, data = {id: $tree.tree('getSelectedNode').projectId};
+				$.map($('#addNewProjectForm input'), function (input) {
+					var $input = $(input);
+					data[$input.attr('name')] = $input.val();
+					if (!VALIDATION.validateInputVal({
+							val: $input.val(),
+							id: '#' + $input.attr('id')
+						}
+					)) {
+						check++;
+					}
+				});
+				if (!check) {
+					$.post(URLs.updateProject, data, function (response) {
+						if (methods.checkResponseOnSuccess(response)) {
+							CLIENTS_TREE.getClientsTree(true);
+							CLIENTS_TREE.getClientsDetails();
+						}
+					});
+				}
+			}
+		},
+		deleteProjectBtn: function () {
+			var $tree = $('#clientsTree'),
+				parentNodeId = $tree.tree('getSelectedNode').parent.id;	
+			$.ajax({
+				url: URLs.deleteProject + '/' + $('#clientsTree').tree('getSelectedNode').projectId,
+				method: 'DELETE'
+			}).then(function (response){
+				if (methods.checkResponseOnSuccess(response)) {
+					$tree.tree('selectNode', $tree.tree('getNodeById', parentNodeId));
+					CLIENTS_TREE.getClientsTree(true);
+					$('#deleteProjectModal').modal('hide');
+				}
+			});
+		},
 	},
 	orders = {
+		addNewOrder: function () {
+			var $tree = $('#clientsTree');
+			if ($tree.tree('getSelectedNode').projectId) {
+				$.post(URLs.createNewOrder, {project: $tree.tree('getSelectedNode').projectId}, function (response) {
+					if (methods.checkResponseOnSuccess(response)) {
+						CLIENTS_TREE.getClientsTree(true);
+						var $tree = $('#clientsTree');
+						setTimeout(function () {$tree.tree('openNode', $tree.tree('getSelectedNode'));}, 100);
+					}
+				});
+			} else {
+				methods.MESSAGES.error('Выберите Проэкт', 900);
+			}
+		},
 		getOrderDetailsFromTree: function (orderId) {
 			$.ajax( {
 				url   : URLs.getOrderDetails,
@@ -151,7 +284,6 @@ define(['jq', 'methods', 'URLs', 'mustache', 'VALIDATION', 'PDF'], function ($jq
 					}
 					orders.setOrderSum();
 					$(function () {
-						$('[data-toggle="tooltip"]').tooltip({ my: "left+15 center", at: "right center" });
 						setTimeout(function(){ $('#orderTable').resizableColumns({
 							store: window.store
 						}); }, 1);
@@ -244,31 +376,61 @@ define(['jq', 'methods', 'URLs', 'mustache', 'VALIDATION', 'PDF'], function ($jq
 				currentClietsTreeSectionAction(tree.tree('getSelectedNode'));
 			});
 		},
+		getClientsDetails: function () {
+			$.get(URLs.getClientsDescriptionObj, function (response) {
+				if (response) {
+					$(function () {
+						$.each(response, function(name, arr) {
+							$('#addNewClientForm input, #addNewProjectForm input').filter('[name="' + name + '"]').autocomplete({
+								source: arr,
+								select: function (event, ui) {
+									$('#addNewClientForm input, #addNewProjectForm input').filter('[name="' + name + '"]').attr('value', ui.item.value ).val(ui.item.value);
+								}
+							});
+						});
+					});
+				}
+			});
+		},
 		
         handler: function () {
+			$('[data-toggle="tooltip"]').tooltip({ my: "left+15 center", at: "right center" });
+			
             $('#hideShowClietsTree').click(function() {
                 methods.toggleTreeDisplay('.totalClientsTreeWrapper', '#hideShowClietsTree');
             });
 			
 			$('#findInClietsTree').keyup(findInClietsTree);
 			
-			$('#addNewClient').click(clients.addNewClient);
-			
+			$('#addNewClient').click(clients.addNewClient);			
 			$('#addNewClientBtn').click(clients.addNewClientBtn);
+			$('#updateClientBtn').click(clients.updateClientBtn);
+			$('#deleteClientBtn').click(clients.deleteClientBtn);
+			
+			$('#addNewProject').click(projects.addNewProject);			
+			$('#addNewProjectBtn').click(projects.addNewProjectBtn);
+			$('#updateProjectBtn').click(projects.updateProjectBtn);
+			$('#deleteProjectBtn').click(projects.deleteProjectBtn);
+			
+			$('#addNewOrder').click(orders.addNewOrder);
 			$('#orderWrapperFromTree')
-					.on('click', '#checkAllInOrder', orders.checkAllInOrderDetails)
-					.on('click', '#uncheckAllInOrder', function () {
-						orders.checkAllInOrderDetails(false);
-					})
-					.on('change', '#changeDiscount', orders.changeDiscount)
-					.on('click', '#createPDF', PDF.saveOrderToPDF)
-					.on('click', '#orderCurrenciesWrapper button', orders.changeCurrency)
-					.on('click', '#checkAllInMainOrder', function () {
-						orders.checkAllInOrderDetails(true, '#orderHeadChecks input');
-					})
-					.on('click', '#uncheckAllInMainOrder', function () {
-						orders.checkAllInOrderDetails(false, '#orderHeadChecks input');
-					});
+				.on('click', '#checkAllInOrder', orders.checkAllInOrderDetails)
+				.on('click', '#uncheckAllInOrder', function () {
+					orders.checkAllInOrderDetails(false);
+				})
+				.on('change', '#changeDiscount', orders.changeDiscount)
+				.on('click', '#createPDF', PDF.saveOrderToPDF)
+				.on('click', '#orderCurrenciesWrapper button', orders.changeCurrency)
+				.on('click', '#checkAllInMainOrder', function () {
+					orders.checkAllInOrderDetails(true, '#orderHeadChecks input');
+				})
+				.on('click', '#uncheckAllInMainOrder', function () {
+					orders.checkAllInOrderDetails(false, '#orderHeadChecks input');
+				});
+			
+			$('#deleteClientModal, #deleteProjectModal').on('show.bs.modal', function () {
+				$(this).find('.whatDeleteElement').html($('#clientsTree').tree('getSelectedNode').name);
+			});
         }
     };
 

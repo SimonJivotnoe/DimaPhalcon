@@ -1,142 +1,177 @@
 <div id="creatingOrderWrapper" class="split-pane fixed-left">
-        <div class="split-pane-component" id="left-component">
-            <div class="col-md-12">
-                <div id="productsTreeWrapper" class="col-md-4">
-                    <div id="productsTree">
+    <div class="split-pane-component" id="left-component">
+        <div class="col-md-12">
+            <div id="productsTreeWrapper" class="col-md-4">
+                <div id="productsTree">
 
-                    </div>
                 </div>
-                <div class="col-md-8">
-                    <div class="col-md-12">
-                        <button type="button" class="btn btn-info btn-sm" id="hideShowProductsTree">
-                            <span class="glyphicon glyphicon-menu-left hideClientsTree" aria-hidden="true"></span>
-                            <span class="glyphicon glyphicon-menu-right showClientsTree" style="display: none;" aria-hidden="true"></span>
-                        </button>
-                    </div>
-                    <div class="col-md-12" id="completedProduct">
+            </div>
+            <div class="col-md-8">
+                <div class="col-md-12">
+                    <button type="button" class="btn btn-info btn-sm" id="hideShowProductsTree">
+                        <span class="glyphicon glyphicon-menu-left hideClientsTree" aria-hidden="true"></span>
+                        <span class="glyphicon glyphicon-menu-right showClientsTree" style="display: none;" aria-hidden="true"></span>
+                    </button>
+                </div>
+                <div class="col-md-12" id="completedProduct">
 
-                    </div>
                 </div>
             </div>
         </div>
-        <div class="split-pane-divider" id="divider"></div>
-        <div class="split-pane-component" id="right-component">
-            <div id="tabsRight">
-                <div id="rightTabsSpinner"></div>
-                <div role="rightTabs">
-                    <ul class="nav nav-tabs" role="tablist" id="rightTabs">
-                        <li role="kim" id="fileManagerOrdersTab" class="active">
-                            <a href="#fileManagerOrdersWrapper" aria-controls="kim" role="tab" data-toggle="tab">
-                                <span class="glyphicon glyphicon-tasks" id="kimIconColor" aria-hidden="true"></span></a>
-                        </li>
-                    </ul>
-                </div>
-
-                <div class="tab-content" id="rightTabsContent">
-                    <div role="rightTabs" class="tab-pane active" id="fileManagerOrdersWrapper">
-                        <div class="col-md-4 totalClientsTreeWrapper">
-                            <div class="col-md-12 navbar navbar-inverse" id="clientsTreeActionsWrapper">
-                                <span class="glyphicon glyphicon-user" aria-hidden="true" data-toggle="tooltip" title="Добавить Клиента"  id="addNewClient"><span>+</span></span>
-                                <span class="glyphicon glyphicon-folder-close" aria-hidden="true" data-toggle="tooltip" title="Добавить Проэкт"  id="addNewProject"><span>+</span></span>
-                                <span class="glyphicon glyphicon-duplicate" aria-hidden="true" data-toggle="tooltip" title="Добавить Ордер"  id="addNewOrder"><span>+</span></span>
-                                <button class="btn btn-success btn-sm" id="showItemFromClientsTree" disabled="">
-                                    <span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span>
-                                </button>
-                                <button class="btn btn-info btn-sm" id="FMconsolidatedOrdersBtn" disabled>
-                                    <span class="glyphicon glyphicon-list-alt" aria-hidden="true"></span>
-                                </button>
-                            </div>
-                            <div class="col-md-12">
-                                <input type="text" class="form-control" id="findInClietsTree" placeholder="Поиск">
-                            </div>
-                            <div class="col-md-12" id="clientsTreeWrapper">
-                                <div id="clientsTree"></div>
-                            </div>
-                        </div>
-                        <div class="col-md-8" id="orderFromTree">
-                            <div class="col-md-12">
-                                <button type="button" class="btn btn-info btn-sm" id="hideShowClietsTree">
-                                    <span class="glyphicon glyphicon-menu-left hideClientsTree" aria-hidden="true"></span>
-                                    <span class="glyphicon glyphicon-menu-right showClientsTree" style="display: none;" aria-hidden="true"></span>
-                                </button>
-                            </div>
-                            <div class="col-md-12" id="addNewClientForm">
-                                <h3 id="h3NewClientInfo">Форма создания нового клиента</h3>
-                                <h3 id="h3ClientInfo">Информация о клиенте</h3>
-                                <div class="col-md-12">
-                                    <input required type="text" name="fio" class="form-control" data-toggle="tooltip" title="ФИО Клиента" id="NewClientFio" placeholder="ФИО Клиента">
-                                </div>
-                                <div class="col-md-12">
-                                    <input required type="text" name="appeal" class="form-control" data-toggle="tooltip" title="Обращение" id="NewClientAppeal" placeholder="Обращение">
-                                </div>
-                                <div class="col-md-12">
-                                    <input required type="text" name="company_name" class="form-control" data-toggle="tooltip" title="Название Компании" id="NewClientCompanyName" placeholder="Название Компании">
-                                </div>
-                                <div class="col-md-12">
-                                    <input required type="text" name="adress" class="form-control" data-toggle="tooltip" title="Почтовый Адрес" id="NewClientAdress" placeholder="Почтовый Адрес">
-                                </div>
-                                <div class="col-md-12">
-                                    <input required type="text" name="accaunt" class="form-control" data-toggle="tooltip" title="Номер Счета" id="NewClientAccount" placeholder="Номер Счета">
-                                </div>
-                                <div class="col-md-12">
-                                    <input required type="text" name="zip" class="form-control" data-toggle="tooltip" title="Город, почтовый индекс" id="NewClientZip" placeholder="Город, почтовый индекс">
-                                </div>
-                                <div class="col-md-12 col-md-offset-0">
-                                    <div class="col-md-4 col-md-offset-5">
-                                        <button type="button" class="btn btn-success btn-sm" id="addNewClientBtn">Создать</button>
-                                    </div>
-                                    <div class="addNewClientBtnsWrapper col-md-8 col-md-offset-2">
-                                        <div class="col-md-6">
-                                            <button type="button" class="btn btn-success btn-sm" id="updateClientBtn">Обновить</button>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <button type="button" class="btn btn-danger btn-sm" id="deleteClientBtn">Удалить клиента</button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-12" id="addNewProjectForm">
-                                <h3 id="h3NewProjectInfo">Форма создания нового проекта</h3>
-                                <h3 id="h3ProjectInfo">Информация о проекте</h3>
-                                <div class="col-md-12">
-                                    <input required type="text" name="name" class="form-control" data-toggle="tooltip" title="Название проэкта" id="newProjectName" placeholder="Название проэкта">
-                                </div>
-                                <div class="col-md-12">
-                                    <input required type="text" name="description" class="form-control" data-toggle="tooltip" title="Описание проэкта" id="newProjectDescription" placeholder="Описание проэкта">
-                                </div>
-                                <div class="col-md-12">
-                                    <input required type="date" name="estimate" class="form-control" data-toggle="tooltip" title="Срок" id="newProjectEstimate" placeholder="Срок">
-                                </div>
-                                <div class="col-md-12">
-                                    <input required type="date" name="date" class="form-control" data-toggle="tooltip" title="Дата" id="newProjectDate" placeholder="Дата">
-                                </div>
-                                <div class="col-md-12 col-md-offset-0">
-                                    <div class="col-md-4 col-md-offset-5">
-                                        <button type="button" class="btn btn-success btn-sm" id="addNewProjectBtn">Создать</button>
-                                    </div>
-                                    <div class="addNewProjectBtnsWrapper col-md-8 col-md-offset-2">
-                                        <div class="col-md-6">
-                                            <button type="button" class="btn btn-success btn-sm" id="updateProjectBtn">Обновить</button>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <button type="button" class="btn btn-danger btn-sm" id="deleteProjectBtn">Удалить Проэкт</button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="clearer"></div>
-                            <div id="orderWrapperFromTree">
-                                <div id="orderDetailsWrapperFromTree"></div>
-                                <div class="" id="orderTableWrapperFromTree"></div>
-                            </div>
-                        </div>
-                    </div>
-                    <div role="tabpanel" class="tab-pane currentTabRight" id="">
-                        <div id="orderDetailsWrapper"></div>
-                        <div class="" id="orderTableWrapper"></div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="clearer"></div>
     </div>
+    <div class="split-pane-divider" id="divider"></div>
+    <div class="split-pane-component" id="right-component">
+        <div id="tabsRight">
+            <div id="rightTabsSpinner"></div>
+            <div role="rightTabs">
+                <ul class="nav nav-tabs" role="tablist" id="rightTabs">
+                    <li role="kim" id="fileManagerOrdersTab" class="active">
+                        <a href="#fileManagerOrdersWrapper" aria-controls="kim" role="tab" data-toggle="tab">
+                            <span class="glyphicon glyphicon-tasks" id="kimIconColor" aria-hidden="true"></span></a>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="tab-content" id="rightTabsContent">
+                <div role="rightTabs" class="tab-pane active" id="fileManagerOrdersWrapper">
+                    <div class="col-md-4 totalClientsTreeWrapper">
+                        <div class="col-md-12 navbar navbar-inverse" id="clientsTreeActionsWrapper">
+                            <span class="glyphicon glyphicon-user" aria-hidden="true" data-toggle="tooltip" title="Добавить Клиента"  id="addNewClient"><span>+</span></span>
+                            <span class="glyphicon glyphicon-folder-close" aria-hidden="true" data-toggle="tooltip" title="Добавить Проэкт"  id="addNewProject"><span>+</span></span>
+                            <span class="glyphicon glyphicon-duplicate" aria-hidden="true" data-toggle="tooltip" title="Добавить Ордер"  id="addNewOrder"><span>+</span></span>
+                            <button class="btn btn-success btn-sm" id="showItemFromClientsTree" disabled="">
+                                <span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span>
+                            </button>
+                            <button class="btn btn-info btn-sm" id="FMconsolidatedOrdersBtn" disabled>
+                                <span class="glyphicon glyphicon-list-alt" aria-hidden="true"></span>
+                            </button>
+                        </div>
+                        <div class="col-md-12">
+                            <input type="text" class="form-control" id="findInClietsTree" placeholder="Поиск">
+                        </div>
+                        <div class="col-md-12" id="clientsTreeWrapper">
+                            <div id="clientsTree"></div>
+                        </div>
+                    </div>
+                    <div class="col-md-8" id="orderFromTree">
+                        <div class="col-md-12">
+                            <button type="button" class="btn btn-info btn-sm" id="hideShowClietsTree">
+                                <span class="glyphicon glyphicon-menu-left hideClientsTree" aria-hidden="true"></span>
+                                <span class="glyphicon glyphicon-menu-right showClientsTree" style="display: none;" aria-hidden="true"></span>
+                            </button>
+                        </div>
+                        <div class="col-md-12" id="addNewClientForm">
+                            <h3 id="h3NewClientInfo">Форма создания нового клиента</h3>
+                            <h3 id="h3ClientInfo">Информация о клиенте</h3>
+                            <div class="col-md-12">
+                                <input required type="text" name="fio" class="form-control" data-toggle="tooltip" title="ФИО Клиента" id="NewClientFio" placeholder="ФИО Клиента">
+                            </div>
+                            <div class="col-md-12">
+                                <input required type="text" name="appeal" class="form-control" data-toggle="tooltip" title="Обращение" id="NewClientAppeal" placeholder="Обращение">
+                            </div>
+                            <div class="col-md-12">
+                                <input required type="text" name="company_name" class="form-control" data-toggle="tooltip" title="Название Компании" id="NewClientCompanyName" placeholder="Название Компании">
+                            </div>
+                            <div class="col-md-12">
+                                <input required type="text" name="adress" class="form-control" data-toggle="tooltip" title="Почтовый Адрес" id="NewClientAdress" placeholder="Почтовый Адрес">
+                            </div>
+                            <div class="col-md-12">
+                                <input required type="text" name="accaunt" class="form-control" data-toggle="tooltip" title="Номер Счета" id="NewClientAccount" placeholder="Номер Счета">
+                            </div>
+                            <div class="col-md-12">
+                                <input required type="text" name="zip" class="form-control" data-toggle="tooltip" title="Город, почтовый индекс" id="NewClientZip" placeholder="Город, почтовый индекс">
+                            </div>
+                            <div class="col-md-12 col-md-offset-0">
+                                <div class="col-md-4 col-md-offset-5">
+                                    <button type="button" class="btn btn-success btn-sm" id="addNewClientBtn">Создать</button>
+                                </div>
+                                <div class="addNewClientBtnsWrapper col-md-8 col-md-offset-2">
+                                    <div class="col-md-6">
+                                        <button type="button" class="btn btn-success btn-sm" id="updateClientBtn">Обновить</button>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <button type="button" class="btn btn-danger btn-sm"  data-toggle="modal" data-target="#deleteClientModal">Удалить клиента</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-12" id="addNewProjectForm">
+                            <h3 id="h3NewProjectInfo">Форма создания нового проекта</h3>
+                            <h3 id="h3ProjectInfo">Информация о проекте</h3>
+                            <div class="col-md-12">
+                                <input required type="text" name="name" class="form-control" data-toggle="tooltip" title="Название проэкта" id="newProjectName" placeholder="Название проэкта">
+                            </div>
+                            <div class="col-md-12">
+                                <input required type="text" name="description" class="form-control" data-toggle="tooltip" title="Описание проэкта" id="newProjectDescription" placeholder="Описание проэкта">
+                            </div>
+                            <div class="col-md-12">
+                                <input required type="date" name="estimate" class="form-control" data-toggle="tooltip" title="Срок" id="newProjectEstimate" placeholder="Срок">
+                            </div>
+                            <div class="col-md-12">
+                                <input required type="date" name="date" class="form-control" data-toggle="tooltip" title="Дата" id="newProjectDate" placeholder="Дата">
+                            </div>
+                            <div class="col-md-12 col-md-offset-0">
+                                <div class="col-md-4 col-md-offset-5">
+                                    <button type="button" class="btn btn-success btn-sm" id="addNewProjectBtn">Создать</button>
+                                </div>
+                                <div class="addNewProjectBtnsWrapper col-md-8 col-md-offset-2">
+                                    <div class="col-md-6">
+                                        <button type="button" class="btn btn-success btn-sm" id="updateProjectBtn">Обновить</button>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <button type="button" class="btn btn-danger btn-sm" data-toggle="modal" data-target="#deleteProjectModal">Удалить Проэкт</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="clearer"></div>
+                        <div id="orderWrapperFromTree">
+                            <div id="orderDetailsWrapperFromTree"></div>
+                            <div class="" id="orderTableWrapperFromTree"></div>
+                        </div>
+                    </div>
+                </div>
+                <div role="tabpanel" class="tab-pane currentTabRight" id="">
+                    <div id="orderDetailsWrapper"></div>
+                    <div class="" id="orderTableWrapper"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="clearer"></div>
+</div>
+
+<div class="modal fade" id="deleteClientModal" tabindex="-1" role="dialog" aria-labelledby="deleteClientModal">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header deleteModalHeader">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">Удалить Клиента</h4>
+            </div>
+            <div class="modal-body">
+                Вы уверены, что хотите удалить Клиента <span class="whatDeleteElement"></span> ?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Отмена</button>
+                <button type="button" class="btn btn-danger" id="deleteClientBtn">Удалить</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="deleteProjectModal" tabindex="-1" role="dialog" aria-labelledby="deleteProjectModal">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header deleteModalHeader">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">Удалить Проект</h4>
+            </div>
+            <div class="modal-body">
+                Вы уверены, что хотите удалить Проект <span class="whatDeleteElement"></span> ?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Отмена</button>
+                <button type="button" class="btn btn-danger" id="deleteProjectBtn">Удалить</button>
+            </div>
+        </div>
+    </div>
+</div>

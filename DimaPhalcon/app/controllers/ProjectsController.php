@@ -2,56 +2,49 @@
 
 use Phalcon\Db\RawValue;
 
-class ProjectsController  extends \Phalcon\Mvc\Controller 
+class ProjectsController  extends ControllerBase
 {
     public function addNewProjectAction () {
-        if ($this->request->isAjax() && $this->request->isPost()) {
-            $this->response->setContentType('application/json', 'UTF-8');
-            $client = new Projects();
-            $success = $client->save($this->request->getPost(), array(
-                'name', 'description', 'estimate', 'date', 'client'
-            ));
-
-            if ($success) {
-                $this->response->setJsonContent(true);
-            } else {
-                $this->response->setJsonContent(false);
-            }
-            return $this->response;
-        } else {
-            $this->response->redirect('');
+        $this->ajaxPostCheck();
+        $msg = 'Ощибка при создании Проекта.';
+        $project = new Projects();
+        $success = $project->save($this->request->getPost(), array(
+            'name', 'description', 'estimate', 'date', 'client'
+        ));
+        if ($success) {
+            $msg = 'Проект успешно создан.';
         }
+        
+        return $this->response->setJsonContent(['success' => $success, 'msg' => $msg]);
     }
     
     public function updateProjectAction () {
-        if ($this->request->isAjax() && $this->request->isPost()) {
-            $this->response->setContentType('application/json', 'UTF-8');
-            $client = Projects::findFirst($this->request->getPost('id'));
-            $success = $client->save($this->request->getPost(), array(
+        $this->ajaxPostCheck();
+        $project = Projects::findFirst($this->request->getPost('id'));
+        $msg = 'Ошибка при обновлении Проекта.';
+        if ($project) {
+            $success = $project->save($this->request->getPost(), array(
                 'name', 'description', 'estimate', 'date'
             ));
-            $this->response->setJsonContent($success);
-            
-            return $this->response;
-        } else {
-            $this->response->redirect('');
+            if ($success) {
+                $msg = 'Информация обновлена';
+            }
         }
+        
+        return $this->response->setJsonContent(['success' => $success, 'msg' => $msg]);
     }
     
-    public function deleteProjectAction () {
-        if ($this->request->isAjax() && $this->request->isPost()) {
-            $this->response->setContentType('application/json', 'UTF-8');
-            $project = Projects::findFirst($this->request->getPost('id'));
-            $res = false;
-            if (count($project)) {
-                $res = $this->deleteProject($project)['res'];
-            }
-            $this->response->setJsonContent($res);
-            
-            return $this->response;
-        } else {
-            $this->response->redirect('');
+    public function deleteProjectAction ($projectId) {
+        $this->ajaxDeleteCheck();
+        $success = false;
+        $msg = 'Ошибка при удалении Проекта!';
+        $project = Projects::findFirst($projectId);
+        if (count($project) && $this->deleteProject($project)['res']) {
+            $success = true;
+            $msg = 'Проекта успешно удалён';
         }
+        
+        return $this->response->setJsonContent(['success' => $success, 'msg' => $msg]);
     }
 
     public function deleteProject($project)

@@ -81,6 +81,7 @@ define([
 					methods.showBody();
 					PRODUCTS_TREE.getProductsTree();
 					CLIENTS.getClientsTree();
+					CLIENTS.getClientsDetails();
 				});
 				/*$.ajax({
 					url: 'templates/creatingOrder.html',

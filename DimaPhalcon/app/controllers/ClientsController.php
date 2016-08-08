@@ -2,7 +2,7 @@
 
 use Phalcon\Db\RawValue;
 
-class ClientsController  extends \Phalcon\Mvc\Controller 
+class ClientsController  extends ControllerBase
 {
     public function getClientsTreeAction() {
         if ($this->request->isAjax() && $this->request->isGet()) {
@@ -127,59 +127,60 @@ class ClientsController  extends \Phalcon\Mvc\Controller
     }
     
     public function addNewClientAction () {
-        if ($this->request->isAjax() && $this->request->isPost()) {
-            $this->response->setContentType('application/json', 'UTF-8');
-            $client = new Clients();
-            $success = $client->save($this->request->getPost(), array(
-                'fio', 'appeal', 'company_name', 'adress', 'accaunt', 'zip'
-            ));
+        $this->ajaxPostCheck();
+        $msg = 'Ощибка при создании Клиента.';
+        $client = new Clients();
+        $success = $client->save($this->request->getPost(), array(
+            'fio', 'appeal', 'company_name', 'adress', 'accaunt', 'zip'
+        ));
 
-            if ($success) {
-                $this->response->setJsonContent(true);
-            } else {
-                $this->response->setJsonContent(false);
-            }
-            return $this->response;
-        } else {
-            $this->response->redirect('');
+        if ($success) {
+            $msg = 'Клиент успешно создан.';
         }
+        
+        return $this->response->setJsonContent(['success' => $success, 'msg' => $msg]);
     }
     
     public function updateClientAction () {
-        if ($this->request->isAjax() && $this->request->isPost()) {
-            $this->response->setContentType('application/json', 'UTF-8');
-            $client = Clients::findFirst($this->request->getPost('id'));
+        $this->ajaxPostCheck();
+        $client = Clients::findFirst($this->request->getPost('id'));
+        $msg = 'Ошибка при обновлении Клиента.';
+        if ($client) {
             $success = $client->save($this->request->getPost(), array(
                 'fio', 'appeal', 'company_name', 'adress', 'accaunt', 'zip'
             ));
-            $this->response->setJsonContent($success);
-            
-            return $this->response;
-        } else {
-            $this->response->redirect('');
+            if ($success) {
+                $msg = 'Информация обновлена';
+            }
         }
+        
+        return $this->response->setJsonContent(['success' => $success, 'msg' => $msg]);
     }
     
-    public function deleteClientAction () {
-        if ($this->request->isAjax() && $this->request->isPost()) {
-            $this->response->setContentType('application/json', 'UTF-8');
-            $client = Clients::findFirst($this->request->getPost('id'));
-            $res = false;
-            $ordersArr = [];
-            if (count($client)) {
-                if (count($client->Projects)) {
-                    $projectObj = new ProjectsController();
-                    foreach ($client->Projects as $project) {
-                        array_push($ordersArr, $projectObj->deleteProject($project)['orders']);
-                    }
+    public function deleteClientAction ($clientId) {
+        //$this->response->setJsonContent(array('res' => $res, 'orders' => array_merge(...$ordersArr)));
+        $this->ajaxDeleteCheck();
+        $success = false;
+        $msg = 'Ошибка при удалении Клиента!';
+        $client = Clients::findFirst($clientId);
+        $ordersArr = [];
+        if (count($client)) {
+            if (count($client->Projects)) {
+                $projectObj = new ProjectsController();
+                foreach ($client->Projects as $project) {
+                    array_push($ordersArr, $projectObj->deleteProject($project)['orders']);
                 }
-                $res = $client->delete();
             }
-            $this->response->setJsonContent(array('res' => $res, 'orders' => array_merge(...$ordersArr)));
-            
-            return $this->response;
-        } else {
-            $this->response->redirect('');
+            try {
+                if ($client->delete()) {
+                    $success = true;
+                    $msg = 'клиент успешно удален';
+                }
+            } catch (\Exception $e) {
+
+            }
         }
+
+        return $this->response->setJsonContent(['success' => $success, 'msg' => $msg]);
     }
 }
