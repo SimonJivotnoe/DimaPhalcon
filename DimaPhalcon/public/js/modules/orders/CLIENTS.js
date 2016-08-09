@@ -342,10 +342,10 @@ define(['jq', 'methods', 'URLs', 'mustache', 'VALIDATION', 'PDF'], function ($jq
 						onCreateLi: function (node, $li) {
 							if ('order' === node.sector) {
 								if (!node.inTab) {
-									$li.find('.jqtree-element').append(
+									/*$li.find('.jqtree-element').append(
 										`<span>&nbsp;</span>
 										 <span class="glyphicon glyphicon-eye-open openProductTab" data-id="${node.orderId}" data-type="order" aria-hidden="true" data-selected=""></span>`
-									);
+									);*/
 								} else {
 									$li.find('.jqtree-element').append(
 										'<span>&nbsp;</span><span class="glyphicon glyphicon-none" aria-hidden="true"></span>'
@@ -398,6 +398,11 @@ define(['jq', 'methods', 'URLs', 'mustache', 'VALIDATION', 'PDF'], function ($jq
 			
             $('#hideShowClietsTree').click(function() {
                 methods.toggleTreeDisplay('.totalClientsTreeWrapper', '#hideShowClietsTree');
+				if ($('#fileManagerOrdersWrapper .totalClientsTreeWrapper').hasClass('hiddenTree')) {
+					$('#fileManagerOrdersWrapper #orderFromTree').removeClass('col-md-8').addClass('col-md-12');
+				} else {
+					$('#fileManagerOrdersWrapper #orderFromTree').removeClass('col-md-12').addClass('col-md-8');
+				}
             });
 			
 			$('#findInClietsTree').keyup(findInClietsTree);
@@ -413,6 +418,19 @@ define(['jq', 'methods', 'URLs', 'mustache', 'VALIDATION', 'PDF'], function ($jq
 			$('#deleteProjectBtn').click(projects.deleteProjectBtn);
 			
 			$('#addNewOrder').click(orders.addNewOrder);
+			
+			$('#clientsTreeWrapper').on('click', '.consolidateOrder', (function(e) {
+				e.stopPropagation();
+				var $this = $(this);
+				if ('' === $this.attr('data-selected')) {
+					$this.addClass('consolidateOrderSelected').attr('data-selected', 'selected');
+				} else if ('selected' === $this.attr('data-selected')) {
+					$this.removeClass('consolidateOrderSelected').attr('data-selected', '');
+				}
+				methods.enableDisableButton($('.consolidateOrderSelected'), $('#FMconsolidatedOrdersBtn'));
+				$('#FMconsolidatedOrdersBtn').attr('projectId', $('#clientsTree').tree('getSelectedNode').projectId);
+			}));
+			
 			$('#orderWrapperFromTree')
 				.on('click', '#checkAllInOrder', orders.checkAllInOrderDetails)
 				.on('click', '#uncheckAllInOrder', function () {
@@ -427,10 +445,6 @@ define(['jq', 'methods', 'URLs', 'mustache', 'VALIDATION', 'PDF'], function ($jq
 				.on('click', '#uncheckAllInMainOrder', function () {
 					orders.checkAllInOrderDetails(false, '#orderHeadChecks input');
 				});
-			
-			$('#deleteClientModal, #deleteProjectModal').on('show.bs.modal', function () {
-				$(this).find('.whatDeleteElement').html($('#clientsTree').tree('getSelectedNode').name);
-			});
         }
     };
 

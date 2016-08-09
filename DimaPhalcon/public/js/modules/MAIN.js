@@ -2,6 +2,7 @@ define(function () {
    if (!window.MAIN) {
        window.MAIN = {
            defaultScreenSize: '60em',
+           minscreenSize: '5px',
 		   maxScreenSize: (window.screen.availWidth - 5) + 'px',
 		   productsTreeDB: {
 				core: {

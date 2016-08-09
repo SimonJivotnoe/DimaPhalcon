@@ -222,10 +222,10 @@ define(['jq', 'datatables.net'], function ($jq, DataTable) {
 			}
 
 		},
-		expandDivider: function () {
-			localStorage['db-split'] === MAIN.maxScreenSize ? localStorage['db-split'] = MAIN.defaultScreenSize : localStorage['db-split'] = MAIN.maxScreenSize;
-			$('#db-left-component').css('width', localStorage['db-split']);
-			$('#db-divider, #db-right-component').css('left', localStorage['db-split']);
+		expandDivider: function (lsName = 'db-split', screeSize = 'maxScreenSize', component = '#db-left-component', divider = '#db-divider, #db-right-component') {
+			localStorage[lsName] === MAIN[screeSize] ? localStorage[lsName] = MAIN.defaultScreenSize : localStorage[lsName] = MAIN[screeSize];
+			$(component).css('width', localStorage[lsName]);
+			$(divider).css('left', localStorage[lsName]);
 		},
 		toggleTreeDisplay: function (treeWrapper, button) {
 			if ($(treeWrapper).hasClass('hiddenTree')) {
@@ -318,6 +318,15 @@ define(['jq', 'datatables.net'], function ($jq, DataTable) {
 				}
 			});
 			return res;
+		},
+		enableDisableButton: function  (id, button) {
+			if (0 < id.size()) {
+				if (button.prop('disabled')) {
+					button.prop('disabled', false);
+				}
+			} else {
+				button.prop('disabled', true);
+			}
 		}
 	};
 	

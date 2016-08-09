@@ -1,4 +1,4 @@
-define(['jq', 'methods', 'URLs', 'mustache'], function ($jq, methods, URLs, Mustache) {'use strict'; var
+define(['jq', 'methods', 'URLs', 'mustache', 'CLIENTS'], function ($jq, methods, URLs, Mustache, CLIENTS_TREE) {'use strict'; var
 	loadCurrentProductFromTree = function (node) {
 		var productId = node.productId;
 		if (productId) {
@@ -93,6 +93,7 @@ define(['jq', 'methods', 'URLs', 'mustache'], function ($jq, methods, URLs, Must
 				if ($('#fileManagerOrdersTab').hasClass('active')) {
 					elem = '#orderTableWrapperFromTree';
 				}
+				CLIENTS_TREE.getClientsTree(true);
 				//TABS.getRightTabContentTable(MAIN.orderId, elem);
 			}
 		} );

@@ -266,9 +266,10 @@ class TreeController extends ControllerBase
             $arr['%PRODUCTS%'] .= '</table>';
             $orderTabsObj = TabsRight::findFirst(array("order_id = '$orderId'"));
             if (!$orderTabsObj) {
-                $arr['%ACTIONS%'] = '<span class="glyphicon glyphicon-eye-open openProductTab"'
+                /*$arr['%ACTIONS%'] = '<span class="glyphicon glyphicon-eye-open openProductTab"'
                         . ' data-id="' . $orderId . '" data-type="order" aria-hidden="true" data-selected="">'
-                        . '</span><span class="glyphicon glyphicon-list-alt consolidateOrder" aria-hidden="true" data-id="' . $orderId . '" data-selected=""></span>';
+                        . '</span><span class="glyphicon glyphicon-list-alt consolidateOrder" aria-hidden="true" data-id="' . $orderId . '" data-selected=""></span>';*/
+                $arr['%ACTIONS%'] = '<span class="glyphicon glyphicon-list-alt consolidateOrder" aria-hidden="true" data-id="' . $orderId . '" data-selected=""></span>';
             } else {
                 $arr['%ACTIONS%'] .= '<span class="glyphicon glyphicon-search emptyGlyphSpan" aria-hidden="true"></span><span class="glyphicon glyphicon-list-alt consolidateOrder" aria-hidden="true" data-id="' . $orderId . '" data-selected=""></span>';
             }

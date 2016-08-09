@@ -1,4 +1,4 @@
-define(['jq', 'methods', 'URLs', 'mustache', 'VALIDATION'], function ($jq, methods, URLs, Mustache, VALIDATION) {var
+define(['methods'], function (methods) {'use strict'; var
 	OR = {
 		handler: function () {
 			$('#left-component').css('width', localStorage.split);
@@ -6,7 +6,18 @@ define(['jq', 'methods', 'URLs', 'mustache', 'VALIDATION'], function ($jq, metho
 			$('#divider').on('mousemove', function(){
 				localStorage.split = $('#divider').css('left');
 			});
+			$('#divider').on('mousemove', function(){
+				localStorage.split = $('#divider').css('left');
+			});
+			
 			$('#creatingOrderWrapper').splitPane();
+			
+			$('#deleteClientModal, #deleteProjectModal').on('show.bs.modal', function () {
+				$(this).find('.whatDeleteElement').html($('#clientsTree').tree('getSelectedNode').name);
+			});
+			$('#tabsRight').on('dblclick', '#rightTabs li', function(){
+				methods.expandDivider('split', 'minscreenSize', '#left-component', '#divider, #right-component');
+			});
 		}
 	};
 	
