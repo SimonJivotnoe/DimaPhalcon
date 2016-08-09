@@ -319,6 +319,9 @@ define(['jq', 'methods', 'URLs', 'mustache', 'VALIDATION', 'PDF'], function ($jq
 			});
 			orders.setOrderSum();
 		},
+		delete: function () {
+
+		},
 	},
     CLIENTS_TREE = {
 		getClientsTree: function (refresh) {
@@ -438,6 +441,7 @@ define(['jq', 'methods', 'URLs', 'mustache', 'VALIDATION', 'PDF'], function ($jq
 				})
 				.on('change', '#changeDiscount', orders.changeDiscount)
 				.on('click', '#createPDF', PDF.saveOrderToPDF)
+				.on('click', '#deleteOrder', orders.deleteOrder)
 				.on('click', '#orderCurrenciesWrapper button', orders.changeCurrency)
 				.on('click', '#checkAllInMainOrder', function () {
 					orders.checkAllInOrderDetails(true, '#orderHeadChecks input');
