@@ -1,6 +1,6 @@
 
 define(['jq', 'methods', 'URLs', 'mustache', 'VALIDATION', 'PDF'], function ($jq, methods, URLs, Mustache, VALIDATION, PDF) {'use strict'; var
-	findInClietsTree = function () {
+	findInClientsTree = function () {
 		var tree = JSON.parse($('#clientsTree').tree('toJson')),
 			text = $(this).val().toLowerCase();
 		if (!text) {
@@ -180,7 +180,7 @@ define(['jq', 'methods', 'URLs', 'mustache', 'VALIDATION', 'PDF'], function ($jq
 			if (0 === check && selectedNode) {
 				projects.fillFormOfProjectInfo();
 			} else {
-				methods.MESSAGES.error('Выберите Клиента', 900);
+				methods.MESSAGES.error('Р’С‹Р±РµСЂРёС‚Рµ РљР»РёРµРЅС‚Р°', 900);
 			}
 		},
 		addNewProjectBtn: function () {
@@ -265,7 +265,7 @@ define(['jq', 'methods', 'URLs', 'mustache', 'VALIDATION', 'PDF'], function ($jq
 			if ($tree.tree('getSelectedNode').projectId) {
 				orders.addOrder({project: $tree.tree('getSelectedNode').projectId});
 			} else {
-				methods.MESSAGES.error('Выберите Проэкт', 900);
+				methods.MESSAGES.error('Р’С‹Р±РµСЂРёС‚Рµ РџСЂРѕСЌРєС‚', 900);
 			}
 		},
 		getOrderDetailsFromTree: function (orderId) {
@@ -440,6 +440,29 @@ define(['jq', 'methods', 'URLs', 'mustache', 'VALIDATION', 'PDF'], function ($jq
 				});
 			});
 			return count;
+		},
+		swapRows: function (scope, area, dirr) {
+			var map = methods.getOrderMap(),
+				currentIndex = 	parseInt($(scope).attr('data-number')),
+				swapIndex;
+			switch (dirr) {
+				case 'up':
+					swapIndex = currentIndex - 1;
+					if (0 === currentIndex) {
+						swapIndex = _.size(map[area]) - 1;
+					}
+					break;
+				case 'down':
+					swapIndex = currentIndex + 1;
+					if ((_.size(map[area]) - 1) === currentIndex) {
+						swapIndex = 0;
+					}
+					break;
+			}
+			var temp = map[area][currentIndex];
+			map[area][currentIndex] = map[area][swapIndex];
+			map[area][swapIndex] = temp;
+			return map;
 		},
 	},
 	consolidateOrder = {
@@ -632,7 +655,7 @@ define(['jq', 'methods', 'URLs', 'mustache', 'VALIDATION', 'PDF'], function ($jq
 		buildConsOrderTr: function (trClass, count, article, productName, quantity, inPrice, outPrice) {
 			var tr = $('<tr></tr>' ).addClass(trClass);
 			tr.append('<td class="orderNumberTd">' + count + '</td><td class="orderArticleTd">' + article + '</td><td class="orderProductNameTd">' + productName + '</td>');
-			tr.append('<td class="orderUnitOfMeasureTd">шт</td><td class="quantityInOrderTd">' + quantity + '</td><td class="inputPriceInOrder" data-uah="' + inPrice + '">' + inPrice + '</td>');
+			tr.append('<td class="orderUnitOfMeasureTd">шт.</td><td class="quantityInOrderTd">' + quantity + '</td><td class="inputPriceInOrder" data-uah="' + inPrice + '">' + inPrice + '</td>');
 			tr.append('<td class="inputSumInOrder" data-uah="' + quantity * inPrice + '">' + quantity * inPrice + '</td>');
 			tr.append('<td class="outputPriceInOrder" data-uah="' + outPrice + '">' + outPrice + '</td>');
 			tr.append('<td class="outputSumInOrder" data-uah="' + quantity * outPrice + '">' + quantity * outPrice + '</td>');
@@ -801,7 +824,7 @@ define(['jq', 'methods', 'URLs', 'mustache', 'VALIDATION', 'PDF'], function ($jq
 			
 			$('#FMconsolidatedOrdersBtn').click(consolidateOrder.createConsolidateOrder);
 			
-			$('#findInClietsTree').keyup(findInClietsTree);
+			$('#findInClietsTree').keyup(findInClientsTree);
 			
 			$('#addNewClient').click(clients.addNewClient);			
 			$('#addNewClientBtn').click(clients.addNewClientBtn);
@@ -838,7 +861,19 @@ define(['jq', 'methods', 'URLs', 'mustache', 'VALIDATION', 'PDF'], function ($jq
 				.on('click', '.removeRowSection', orders.removeRowSection)
 				.on('blur', '.orderSectionName', orders.changeSectionName)
 				.on('click', '.moveToCopyTo', orders.moveToCopyTo)
-				.on('click', '.removeOrderRow', orders.removeOrderRow)
+				.on('click', '.removeWithoutOrderRow, .removeOrderRow', orders.removeOrderRow)
+				.on('click', '.moveWithoutOrderUp', function() {
+					CLIENTS_TREE.saveOrderMap(JSON.stringify(orders.swapRows(this, 'out', 'up')), true);
+				})
+				.on('click', '.moveWithoutOrderDown', function() {
+					CLIENTS_TREE.saveOrderMap(JSON.stringify(orders.swapRows(this, 'out', 'down')), true);
+				})
+				.on('click', '.moveOrderUp', function() {
+					CLIENTS_TREE.saveOrderMap(JSON.stringify(orders.swapRows(this, $(this).attr('data-section'), 'up')), true);
+				})
+				.on('click', '.moveOrderDown', function() {
+					CLIENTS_TREE.saveOrderMap(JSON.stringify(orders.swapRows(this, $(this).attr('data-section'), 'down')), true);
+				})
 				.on('click', '#consAveragePrices', consolidateOrder.consAveragePrices)
 				.on('click', '#consRemoveSections', consolidateOrder.consRemoveSections);
         }

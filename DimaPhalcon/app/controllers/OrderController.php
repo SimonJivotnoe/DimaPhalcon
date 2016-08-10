@@ -353,7 +353,6 @@ class OrderController  extends ControllerBase
         } catch (\Exception $e) {
 
         }
-        
         return $this->response->setJsonContent(['success' => $success, 'msg' => $msg]);
     }
 
@@ -361,7 +360,12 @@ class OrderController  extends ControllerBase
     {
         $orObj = Orders::findFirst($id);
         $res = true;
-        if (count($orObj)) {
+        if ($orObj) {
+            $consolidate = $orObj->getConsolidate();
+            if ('TRUE' === $consolidate) {
+                $consolidateObj = ConsolidateOrders::find(array("order_id = '$id'"));
+                $consolidateObj->delete();
+            }
             if (!$orObj->delete()) {
                 $res = false;
             }
@@ -385,7 +389,7 @@ class OrderController  extends ControllerBase
     {
         $orObj = ConsolidateOrders::find(array("cons_order_id = '$id'"));
         $res = true;
-        if (count($orObj)) {
+        if ($orObj) {
             if (!$orObj->delete()) {
                 $res = false;
             }
@@ -397,7 +401,7 @@ class OrderController  extends ControllerBase
     {
         $orObj = TabsRight::find(array("order_id = '$id'"));
         $res = true;
-        if (count($orObj)) {
+        if ($orObj) {
             if (!$orObj->delete()) {
                 $res = false;
             }
@@ -421,26 +425,6 @@ class OrderController  extends ControllerBase
         return date('y') . '-' . $zero . strval($number) . '-' . date('d') . date('m') . date('o');
     }
 
-    /*public function getOrderDescriptionObj($id){
-        $order = Orders::findFirst($id);
-        if ($order == false) {
-            return false;
-        }
-        $orderDescription = [
-            '%FIO%'           => $order->Projects->Clients->getFio(),
-            '%APPEAL%'        => $order->Projects->Clients->getAppeal(),
-            '%COMPANY_NAME%'  => $order->Projects->Clients->getCompanyName(),
-            '%ADDRES%'        => $order->Projects->Clients->getAdress(),
-            '%ACC_NUMBER%'    => $order->Projects->Clients->getAccaunt(),
-            '%CITY%'          => $order->Projects->Clients->getZip(),
-            '%PROJECT_NAME%'  => $order->Projects->getName(),
-            '%PROJECT_DESCR%' => $order->Projects->getDescription(),
-            '%ESTIMATE%'      => $order->Projects->getEstimate(),
-            '%DATE%'          => $order->Projects->getDate(),
-            '%ORDER_NAME%'    => $order->getArticle()
-        ];
-        return $orderDescription;
-    }*/
     public function getOrderDescriptionObj($order){
         $orderDescription = false;
         if ($order) {
