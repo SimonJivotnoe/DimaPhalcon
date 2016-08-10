@@ -73,6 +73,9 @@ define([], function () {
 		deleteProject: URLs.PROJECTS + 'deleteProject',
 		
 		createNewOrder: URLs.ORDER + 'createNewOrder',
+		deleteOrder: URLs.ORDER + 'deleteOrder',
+		removeFromOrder: URLs.ORDER + 'removeFromOrder',
+		addToConsolidateOrder: URLs.ORDER + 'addToConsolidateOrder',
 		
 		changeDiscount: URLs.ORDER + 'changeDiscount',
 		addProductToOrder: URLs.ORDER + 'addProductToOrder',

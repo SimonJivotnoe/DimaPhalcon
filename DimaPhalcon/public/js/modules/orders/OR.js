@@ -12,7 +12,7 @@ define(['methods'], function (methods) {'use strict'; var
 			
 			$('#creatingOrderWrapper').splitPane();
 			
-			$('#deleteClientModal, #deleteProjectModal').on('show.bs.modal', function () {
+			$('#deleteClientModal, #deleteProjectModal, #deleteOrderModal').on('show.bs.modal', function () {
 				$(this).find('.whatDeleteElement').html($('#clientsTree').tree('getSelectedNode').name);
 			});
 			$('#tabsRight').on('dblclick', '#rightTabs li', function(){

@@ -280,27 +280,18 @@ class TreeController extends ControllerBase
     }
 
     public function saveOrderMapAction(){
-        if ($this->request->isAjax() && $this->request->isPost()) {
-            $map = $this->request->getPost('map');
-            $orderId = $this->request->getPost('orderId');
-            $this->response->setContentType('application/json', 'UTF-8');
-            $order = Orders::findFirst(array("id = '$orderId'"));
-            if ($order == false) {
-                echo "Мы не можем сохранить робота прямо сейчас: \n";
-                foreach ($order->getMessages() as $message) {
-                    echo $message, "\n";
-                }
-            } else {
-                $order->setMap($map);
+        $this->ajaxPostCheck();
+        $success = false;
+        $map = $this->request->getPost('map');
+        $orderId = $this->request->getPost('orderId');
+        $order = Orders::findFirst(array("id = '$orderId'"));
+        if ($order) {
+            $order->setMap($map);
                 if($order->save()) {
-                    $this->response->setJsonContent(true);
-
-                    return $this->response;
+                    $success = true;
                 }
-
-            }
-        } else {
-            $this->response->redirect('');
         }
+        
+        return $this->response->setJsonContent(['success' => $success]);
     }
 }

@@ -18,8 +18,8 @@ class OrderController  extends ControllerBase
             'success' => $res,
             //'html' => $res,
             'orderDescription' => $orderDescription,
-            'orderTableContent' => $orderTableContent
-            //'consolidate' => $order->getConsolidate()
+            'orderTableContent' => $orderTableContent['html'],
+            'consolidateData' => $orderTableContent['consolidateData']
         ]);
         /*$orderObj = Orders::findFirst($orderId);
         if ($orderObj) {
@@ -82,10 +82,10 @@ class OrderController  extends ControllerBase
                                     $alwaysInTable = json_decode($obj->getAlwaysInTable());
                                     $prId = $obj->getProductId();
                                     $consolidateData[$consOrderId]['products'][$prId] = [
-                                        'inSum' => $alwaysInTable->{'3'}->{'%INPUT_VALUE%'},
-                                        'outSum' => $alwaysInTable->{'5'}->{'%INPUT_VALUE%'},
-                                        'inPrice' => $alwaysInTable->{'2'}->{'%INPUT_VALUE%'},
-                                        'outPrice' => $alwaysInTable->{'4'}->{'%INPUT_VALUE%'}
+                                        'inSum' => $alwaysInTable['3']->{'rowValueInput'},
+                                        'outSum' => $alwaysInTable['5']->{'rowValueInput'},
+                                        'inPrice' => $alwaysInTable['2']->{'rowValueInput'},
+                                        'outPrice' => $alwaysInTable['4']->{'rowValueInput'}
                                     ];
                                     $prDetObj = Products::findFirst(array("product_id = '$prId'"));
                                     if (false !== $prDetObj) {
@@ -137,52 +137,49 @@ class OrderController  extends ControllerBase
                 }
             }
         }
-        return $substObj->subHTMLReplace('orderTable.html', $res);
+        return ['html' => $substObj->subHTMLReplace('orderTable.html', $res), 'consolidateData' => $consolidateData];
         //$this->response->setJsonContent(['html' => $substObj->subHTMLReplace('orderTable.html', $res), 'success' => true, 'consolidateData' => $consolidateData]);
     }
     
     public function createNewOrderAction() {
         $this->ajaxPostCheck();
-        if ($this->request->isAjax() && $this->request->isPost()) {
-            $orderMax = Orders::maximum(array("column" => "order_number"));
-            $consolidate = $this->request->getPost('consolidate');
-            $project = $this->request->getPost('project');
-            $orderNumber = 1;
-            if ($orderMax) {
-                $orderNumber = (int)($orderMax) + 1;
-            }
-
-            $order = new Orders;
-            $order->setOrderNumber($orderNumber)
-                  ->setArticle($this->generateArticle($orderNumber))
-                  ->setDiscount(new RawValue('default'))
-                  ->setProject($project)
-                  ->setMap(new RawValue('default'))
-                  ->setConsolidate($consolidate);
-            if ('true' === $consolidate) {
-                $order->setStatus('draft');
-            } else {
-                $order->setStatus('save');
-            }
-            $this->response->setContentType('application/json', 'UTF-8');
-
-            if ($order->save() == false) {
-                $this->response->setJsonContent('error');
-                return $this->response;
-            }
-            $order_id = $order->getId();
-            
-            if ('true' === $consolidate) {
-                $tab = new TabsController;
-                $this->response->setJsonContent($tab->addNewRightTab($order_id));
-            } else {
-                $this->response->setJsonContent(true);
-            }
-            
-            return $this->response;
-        } else {
-            $this->response->redirect('');
+        $success = false;
+        $msg = 'Ошибка при создании Ордера';
+        $orderMax = Orders::maximum(array("column" => "order_number"));
+        $consolidate = $this->request->getPost('consolidate');
+        $project = $this->request->getPost('project');
+        $orderNumber = 1;
+        if ($orderMax) {
+            $orderNumber = (int)($orderMax) + 1;
         }
+
+        $order = new Orders;
+        $order->setOrderNumber($orderNumber)
+              ->setArticle($this->generateArticle($orderNumber))
+              ->setDiscount(new RawValue('default'))
+              ->setProject($project)
+              ->setMap(new RawValue('default'))
+              ->setConsolidate($consolidate);
+        if ('true' === $consolidate) {
+            $order->setStatus('draft');
+        } else {
+            $order->setStatus('save');
+        }
+
+        if ($order->save()) {
+            $success = true;
+            $msg = 'Ордер успешно создан';
+        }
+        $order_id = $order->getId();
+
+        /*if ('true' === $consolidate) {
+            $tab = new TabsController;
+            $this->response->setJsonContent($tab->addNewRightTab($order_id));
+        } else {
+            $this->response->setJsonContent(true);
+        }*/
+
+        return $this->response->setJsonContent(['success' => $success, 'msg' => $msg, 'orderId' => $order_id]);
     }
 
     public function addProductToOrderAction() {
@@ -214,26 +211,22 @@ class OrderController  extends ControllerBase
     }
 
     public function addToConsolidateOrderAction() {
-        if ($this->request->isAjax() && $this->request->isPost()) {
-            $orderId = $this->request->getPost('orderId');
-            $arr = $this->request->getPost('arr');
-            $this->response->setContentType('application/json', 'UTF-8');
-            foreach ($arr as $val) {
-                $orObj = ConsolidateOrders::findFirst(
-                    "order_id = '" . $orderId . "' AND cons_order_id = '" . $val . "'"
-                );
-                if (!$orObj) {
-                    $consOrder = new ConsolidateOrders;
-                    $consOrder->setOrderId($orderId)
-                              ->setConsOrderId($val)
-                              ->save();
-                }
+        $this->ajaxPostCheck();
+        $success = true;
+        $orderId = $this->request->getPost('orderId');
+        $arr = $this->request->getPost('arr');
+        foreach ($arr as $val) {
+            $orObj = ConsolidateOrders::findFirst(
+                "order_id = '" . $orderId . "' AND cons_order_id = '" . $val . "'"
+            );
+            if (!$orObj) {
+                $consOrder = new ConsolidateOrders;
+                $consOrder->setOrderId($orderId)
+                          ->setConsOrderId($val)
+                          ->save();
             }
-            $this->response->setJsonContent(true);
-            return $this->response;
-        } else {
-            $this->response->redirect('');
         }
+        return $this->response->setJsonContent(['success' => $success]);
     }
 
     public function saveOrderInDBAction(){
@@ -281,8 +274,7 @@ class OrderController  extends ControllerBase
         }
     }
 
-    public function removeFromOrderAction ()
-    {
+    public function removeFromOrderAction () {
         if ($this->request->isAjax() && $this->request->isPost()) {
             $orderId = $this->request->getPost('orderId');
             $productId = $this->request->getPost('productId');
@@ -345,28 +337,24 @@ class OrderController  extends ControllerBase
        }
     }
 
-    public function deleteOrderAction()
-    {
-        if ($this->request->isAjax() && $this->request->isPost()) {
-            $orderId = $this->request->getPost('orderId');
-            $this->response->setContentType('application/json', 'UTF-8');
-            $res = false;
-            try {
-                if ($this->deleteProductsFromOrder($orderId)    &&
-                    $this->deleteOrderFromTabs($orderId)        &&
-                    $this->deleteFromConsolidateOrder($orderId) &&
-                    $this->deleteOrder($orderId)
-                ) {
-                    $res = true;
-                }
-            } catch (\Exception $e) {
-                    
+    public function deleteOrderAction($orderId) {
+        $this->ajaxDeleteCheck();
+        $success = false;
+        $msg = 'Ошибка при удалении Ордера!';
+        try {
+            if ($this->deleteProductsFromOrder($orderId)    &&
+                $this->deleteOrderFromTabs($orderId)        &&
+                $this->deleteFromConsolidateOrder($orderId) &&
+                $this->deleteOrder($orderId)
+            ) {
+                $success = true;
+                $msg = 'Ордер успешно удалён.';
             }
-            $this->response->setJsonContent($res);
-            return $this->response;
-        } else {
-            $this->response->redirect('');
+        } catch (\Exception $e) {
+
         }
+        
+        return $this->response->setJsonContent(['success' => $success, 'msg' => $msg]);
     }
 
     public function deleteOrder($id)
@@ -385,7 +373,7 @@ class OrderController  extends ControllerBase
     {
         $orObj = Productinorder::find(array("orderId = '$id'"));
         $res = true;
-        if (count($orObj)) {
+        if ($orObj) {
             if (!$orObj->delete()) {
                 $res = false;
             }

@@ -77,26 +77,9 @@ define(['jq', 'methods', 'URLs', 'mustache', 'CLIENTS'], function ($jq, methods,
 				map = methods.getOrderMap();
 				obj[productId] = 1;
 				map.out.push(obj);
-				saveOrderMap(JSON.stringify(map), true);
+				CLIENTS_TREE.saveOrderMap(JSON.stringify(map), true);
 			}
 		});
-	},
-	saveOrderMap = function (map, refresh) {
-		$.ajax( {
-			url   : URLs.saveOrderMap,
-			method: 'POST',
-			data: {map: map, orderId: MAIN.orderId}
-		} ).then( function ( data ) {
-			if (data && refresh) {
-				
-				var elem = '#orderTableWrapper';
-				if ($('#fileManagerOrdersTab').hasClass('active')) {
-					elem = '#orderTableWrapperFromTree';
-				}
-				CLIENTS_TREE.getClientsTree(true);
-				//TABS.getRightTabContentTable(MAIN.orderId, elem);
-			}
-		} );
 	},
 	PRODUCTS_TREE = {
 		getProductsTree: function () {

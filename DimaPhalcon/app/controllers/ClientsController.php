@@ -48,21 +48,24 @@ class ClientsController  extends ControllerBase
                                 ]
                             ];
                             $ordersObj = Orders::find(
-                                            "project = '" . $projectId . "' AND status = 'save' AND consolidate != 'TRUE'"
+                                            //"project = '" . $projectId . "' AND status = 'save' AND consolidate != 'TRUE'"
+                                            "project = '" . $projectId . "'"
                             );
                             if (count($ordersObj)) {
                                 foreach ($ordersObj as $orVal) {
+                                    $consolidate = $orVal->getConsolidate();
                                     $i++;
                                     $orderId = $orVal->getId();
                                     $child = [
-                                        'label'     => $orVal->getArticle(),
-                                        'sector'    => 'order',
-                                        'id'        => $i,
-                                        'clientId'  => $clientId,
-                                        'projectId' => $projectId,
-                                        'orderId'   => $orderId,
-                                        'inTab'     => false,
-                                        'info'      => [
+                                        'label'       => ('TRUE' === $consolidate ? 'K': '') . $orVal->getArticle(),
+                                        'sector'      => 'order',
+                                        'id'          => $i,
+                                        'clientId'    => $clientId,
+                                        'projectId'   => $projectId,
+                                        'orderId'     => $orderId,
+                                        'consolidate' => $consolidate,
+                                        'inTab'       => false,
+                                        'info'        => [
                                             'article' => $orVal->getArticle()
                                         ]
                                     ];

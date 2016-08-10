@@ -118,9 +118,8 @@ class KimController  extends ControllerBase
 
             }
         }
-        $this->response->setJsonContent(['success' => $res, 'msg' => $msg]);
         
-        return $this->response;
+        return $this->response->setJsonContent(['success' => $res, 'msg' => $msg]);
     }
 
     public function createKimList($productKim, $isArticle = false)
