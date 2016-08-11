@@ -66,7 +66,7 @@ class OrderController  extends ControllerBase
             if ('TRUE' === $order->getConsolidate()) {
                 $consolidateData = [];
                 if (null === $order->getMap()) {
-                    
+
                 }
                 $consolidateOrdersObj = ConsolidateOrders::find(array("order_id = '$orderId'"));
                 if (false !== $consolidateOrdersObj) {
@@ -99,7 +99,7 @@ class OrderController  extends ControllerBase
                         }
                     }
                 }
-            } 
+            }
             $res = array('%SECTIONS%' => '', '%WITHOUT_SECTIONS%' => '');
             $map = json_decode($order->getMap());
             $moveTo = array();
@@ -121,7 +121,7 @@ class OrderController  extends ControllerBase
                             $currentSection = $key;
                         }
                         $res['%SECTIONS%'] .= '<tr class="orderTableSectionName" name="' . $key . '">
-                    <th colspan="9"><span class="orderSectionName" contenteditable="true">' . $key . '</span></th><td><span class="glyphicon glyphicon-remove removeRowSection" name="' . $key . '" aria-hidden="true"></span></td></tr>';
+                    <th colspan="8"><span class="orderSectionName" contenteditable="true">' . $key . '</span></th><td><span class="glyphicon glyphicon-remove removeRowSection" name="' . $key . '" aria-hidden="true"></span></td></tr>';
                         if (count($val)) {
                             $i = 1;
                             foreach ($val as $num => $obj) {

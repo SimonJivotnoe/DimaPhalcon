@@ -173,13 +173,13 @@ class ProductsController extends ControllerBase
         );
         $alwaysInTable = json_decode($orObj->getAlwaysInTable());
         $actionArr = array('%ROWCLASS%' => 'Without', '%PRODUCT_ID%' => $productId, '%I%' => $i - 1, '%DROPDOWN_ID%' => 'orderRowDropdown' . $i);
-        $moveCopyDropdown = '';
+        $dataToSection = [];
         if ('orderTableSection' === $map) {
             $actionArr['%ROWCLASS%'] = '';
         }
         foreach ($moveTo as $key => $val) {
             if (!count($val)) {
-                $moveCopyDropdown .= '<li class="list-group-item moveToCopyTo" name="' . $productId . '" data-section="' . $section . '" data-to-section="' . $key . '">' . $key . '</li>';
+                array_push($dataToSection, $key);
             } else {
                 $checkArr = array();
                 foreach ($val as $num => $obj) {
@@ -188,12 +188,13 @@ class ProductsController extends ControllerBase
                     }
                 }
                 if (!in_array($productId, $checkArr)) {
-                    $moveCopyDropdown .= '<li class="list-group-item moveToCopyTo" name="' . $productId . '" data-section="' . $section . '" data-to-section="' . $key . '">' . $key . '</li>';
+                    array_push($dataToSection, $key);
                 }
             }
         }
-        $actionArr['%MOVE_TO%'] = $moveCopyDropdown;
         $actionArr['%SECTION%'] = $section;
+        $actionArr['%DATA_TO_SECTION%'] = join(',', $dataToSection);
+        $actionArr['%QUANTITY%'] = $quantity;
         $actionRow = $substObj->subHTMLReplace('actionsInRow.html', $actionArr);
         $res['%ROW_CLASS%'] = $map;
         $res['%ACTIONS%'] = $actionRow;
@@ -209,7 +210,7 @@ class ProductsController extends ControllerBase
         $res['%SUM%'] = (float)$alwaysInTable[3]->{'rowValueInput'} * (int)$quantity;
         $res['%PRICE_OUT%'] = $alwaysInTable[5]->{'rowValueInput'};
         $res['%SUM_OUT%'] = (float)$alwaysInTable[5]->{'rowValueInput'} * (int)$quantity/* - (int)$alwaysInTable->{'5'}->{'%INPUT_VALUE%'} * (int)$discount/100*/;
-        
+
         return $substObj->subHTMLReplace('orderRow.html', $res);
     }
 }

@@ -254,6 +254,7 @@ a {
 .removeRowSection {
     font-size: 12px;
     cursor: pointer;
+    z-index: 50;
 }
 
 .closeTab, .closeTabRight {

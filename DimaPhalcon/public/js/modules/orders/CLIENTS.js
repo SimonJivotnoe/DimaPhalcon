@@ -400,7 +400,7 @@ define(['jq', 'methods', 'URLs', 'mustache', 'VALIDATION', 'PDF', 'CONSOLIDATE']
 			var $this = $(this),
 				action = $this.closest('ul').attr('data-action'),
 				path = $this.attr('data-to-section'),
-				productId = $this.attr('name'),
+				productId = $this.attr('data-product-id'),
 				map = methods.getOrderMap(),
 				data = {},
 				quantity = 1,
@@ -409,7 +409,7 @@ define(['jq', 'methods', 'URLs', 'mustache', 'VALIDATION', 'PDF', 'CONSOLIDATE']
 				currentPath = 'out';
 			}
 			if ('move' === action) {
-				quantity = $this.closest('tr').find('.quantityInOrder').val();
+				quantity = $this.attr('data-quantity');
 				$.each(map[currentPath], function (num, obj) {
 					if (productId === _.keys(obj)[0]) {
 						map[currentPath].splice(num, 1);
@@ -422,11 +422,13 @@ define(['jq', 'methods', 'URLs', 'mustache', 'VALIDATION', 'PDF', 'CONSOLIDATE']
 		},
 		removeOrderRow: function () {
 			var $this = $(this),
-				productId = $this.attr('name');
+				productId = $this.attr('data-product-id');
+			console.log(orders.countProductInOrder(productId));
 			if (1 >= orders.countProductInOrder(productId)) {
 				orders.removeFromOrder(productId);
 			}
-			$this.closest('tr' ).remove();
+			console.log($(`.rowActionsDropdownClass[data-product-id="${productId}"]`).closest('tr'));
+			$(`.rowActionsDropdownClass[data-product-id="${productId}"]`).closest('tr').remove();
 			CLIENTS_TREE.saveOrderMap(JSON.stringify(methods.getOrderMap()), true);
 		},
 		removeFromOrder: function (productId) {
@@ -443,29 +445,76 @@ define(['jq', 'methods', 'URLs', 'mustache', 'VALIDATION', 'PDF', 'CONSOLIDATE']
 			});
 			return count;
 		},
-		swapRows: function (scope, area, dirr) {
+		swapRows: function () {
+			var $this = $(this),
+				section = $this.attr('data-section');
 			var map = methods.getOrderMap(),
-				currentIndex = 	parseInt($(scope).attr('data-number')),
+				currentIndex = 	parseInt($this.attr('data-number')),
 				swapIndex;
-			switch (dirr) {
+			switch ($this.attr('data-move-action')) {
 				case 'up':
 					swapIndex = currentIndex - 1;
 					if (0 === currentIndex) {
-						swapIndex = _.size(map[area]) - 1;
+						swapIndex = _.size(map[section]) - 1;
 					}
 					break;
 				case 'down':
 					swapIndex = currentIndex + 1;
-					if ((_.size(map[area]) - 1) === currentIndex) {
+					if ((_.size(map[section]) - 1) === currentIndex) {
 						swapIndex = 0;
 					}
 					break;
 			}
-			var temp = map[area][currentIndex];
-			map[area][currentIndex] = map[area][swapIndex];
-			map[area][swapIndex] = temp;
-			return map;
+			var temp = map[section][currentIndex];
+			map[section][currentIndex] = map[section][swapIndex];
+			map[section][swapIndex] = temp;
+			CLIENTS_TREE.saveOrderMap(JSON.stringify(map), true);
 		},
+		buildDropdown: function (e) {
+			e.stopPropagation();
+			e.preventDefault();
+			var $this = $(this),
+				offset = $this.offset(),
+				$rowActionsUl = $('#rowActionsUl'),
+				productId = $this.attr('data-product-id'),
+				section = $this.attr('data-section'),
+				toSectionArr = $this.attr('data-to-section').split(','),
+				toSection = '';
+			if (!$this.hasClass('currentRow')) {
+				$('.rowActionsDropdownClass').removeClass('currentRow');
+				$this.addClass('currentRow');
+				if (toSectionArr.length) {
+					$.map(toSectionArr, function (dataToSection) {
+						toSection += `<li class="list-group-item moveToCopyTo"
+						 data-product-id="${productId}"
+						 data-section="${section}"
+						 data-quantity="${$this.attr('data-quantity')}"
+						 data-to-section="${dataToSection}">${dataToSection}
+					 </li>`;
+					});
+					$rowActionsUl
+						.find('.moveOrderUp, .moveOrderDown').attr({
+							'data-section': section,
+							'data-number': $this.attr('data-number')
+						}).end()
+						.find('.copyRowAction, .moveRowAction').html(toSection).end()
+						.find('.removeOrderRow').attr('data-product-id', productId).end()
+						.css({width: '150px', top: (offset.top + 15), left: (offset.left - $rowActionsUl.width() + $this.width() + 10)})
+						.attr('data-product-id', productId)
+						.show();
+				}
+			} else {
+				$this.removeClass('currentRow');
+				$rowActionsUl.hide();
+			}
+		},
+		/*
+		 '<li class="list-group-item moveToCopyTo" name="' . $productId . '" data-section="' . $section . '" data-to-section="' . $key . '">' . $key . '</li>'
+		$(document).click(function () {
+			if (!$(this).hasClass('currentRow')) {
+				$('#usersTableDropdown, #databasesTableDropdown').hide();
+			}
+		});*/
 	},
 	consolidateOrder = {
 		consolidateOrderCheck: function () {
@@ -582,12 +631,19 @@ define(['jq', 'methods', 'URLs', 'mustache', 'VALIDATION', 'PDF', 'CONSOLIDATE']
 			} ).then( function ( response ) {
 				if (methods.checkResponseOnSuccess(response) && refresh) {
 					CLIENTS_TREE.getClientsTree(true);
+					$('#rowActionsUl').hide();
 				}
 			} );
 		},
         handler: function () {
 			$('[data-toggle="tooltip"]').tooltip({ my: "left+15 center", at: "right center" });
-			
+
+			$('body').click(function () {
+				if (!$(this).hasClass('currentRow')) {
+					$('#rowActionsUl').hide();
+				}
+			});
+
             $('#hideShowClietsTree').click(function() {
                 methods.toggleTreeDisplay('.totalClientsTreeWrapper', '#hideShowClietsTree');
 				if ($('#fileManagerOrdersWrapper .totalClientsTreeWrapper').hasClass('hiddenTree')) {
@@ -597,26 +653,26 @@ define(['jq', 'methods', 'URLs', 'mustache', 'VALIDATION', 'PDF', 'CONSOLIDATE']
 				}
 				methods.resizeGrip();
             });
-			
+
 			$('#FMconsolidatedOrdersBtn').click(consolidateOrder.createConsolidateOrder);
-			
+
 			$('#findInClietsTree').keyup(findInClientsTree);
-			
-			$('#addNewClient').click(clients.addNewClient);			
+			$('#addNewClient').click(clients.addNewClient);
 			$('#addNewClientBtn').click(clients.addNewClientBtn);
 			$('#updateClientBtn').click(clients.updateClientBtn);
+
 			$('#deleteClientBtn').click(clients.deleteClientBtn);
-			
-			$('#addNewProject').click(projects.addNewProject);			
+			$('#addNewProject').click(projects.addNewProject);
 			$('#addNewProjectBtn').click(projects.addNewProjectBtn);
 			$('#updateProjectBtn').click(projects.updateProjectBtn);
+
 			$('#deleteProjectBtn').click(projects.deleteProjectBtn);
-			
 			$('#addNewOrder').click(orders.addNewOrder);
+
 			$('#deleteOrderBtn').click(orders.deleteOrderBtn);
-			
+
 			$('#clientsTreeWrapper').on('click', '.consolidateOrder', consolidateOrder.consolidateOrderCheck);
-			
+
 			$('#orderWrapperFromTree')
 				.on('click', '#checkAllInOrder', orders.checkAllInOrderDetails)
 				.on('click', '#uncheckAllInOrder', function () {
@@ -635,22 +691,15 @@ define(['jq', 'methods', 'URLs', 'mustache', 'VALIDATION', 'PDF', 'CONSOLIDATE']
 				.on('click', '#addNewSection', orders.addNewSection)
 				.on('click', '.removeRowSection', orders.removeRowSection)
 				.on('blur', '.orderSectionName', orders.changeSectionName)
-				.on('click', '.moveToCopyTo', orders.moveToCopyTo)
-				.on('click', '.removeWithoutOrderRow, .removeOrderRow', orders.removeOrderRow)
-				.on('click', '.moveWithoutOrderUp', function() {
-					CLIENTS_TREE.saveOrderMap(JSON.stringify(orders.swapRows(this, 'out', 'up')), true);
-				})
-				.on('click', '.moveWithoutOrderDown', function() {
-					CLIENTS_TREE.saveOrderMap(JSON.stringify(orders.swapRows(this, 'out', 'down')), true);
-				})
-				.on('click', '.moveOrderUp', function() {
-					CLIENTS_TREE.saveOrderMap(JSON.stringify(orders.swapRows(this, $(this).attr('data-section'), 'up')), true);
-				})
-				.on('click', '.moveOrderDown', function() {
-					CLIENTS_TREE.saveOrderMap(JSON.stringify(orders.swapRows(this, $(this).attr('data-section'), 'down')), true);
-				})
 				.on('click', '#consAveragePrices', CONSOLIDATE.consAveragePrices)
-				.on('click', '#consRemoveSections', CONSOLIDATE.consRemoveSections);
+				.on('click', '#consRemoveSections', CONSOLIDATE.consRemoveSections)
+				.on('click', '.rowActionsDropdownClass', orders.buildDropdown);
+
+			$('#rowActionsUl')
+				.click(function () {$(this).toggle()})
+				.on('click', '.moveToCopyTo', orders.moveToCopyTo)
+				.on('click', '.removeOrderRow', orders.removeOrderRow)
+				.on('click', '.moveOrderUp, .moveOrderDown', orders.swapRows);
         }
     };
 

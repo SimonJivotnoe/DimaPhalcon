@@ -193,3 +193,21 @@
     </div>
 </div>
 
+<ul class="dropdown-menu dropdown-menu-right" aria-labelledby="rowActionsDropdown" id="rowActionsUl">
+    <li class="dropdown-header">Передвинуть</li>
+    <li><a class="moveOrderUp" data-move-action="up" data-section="" data-number="">Вверх</a></li>
+    <li><a class="moveOrderDown" data-move-action="down" data-section="" data-number="">Вниз</a></li>
+    <li role="separator" class="divider"></li>
+    <li class="dropdown-header" >Скопировать в</li>
+    <ul class="list-group copyRowAction" data-action="copy">
+        %MOVE_TO%
+    </ul>
+    <li role="separator" class="divider"></li>
+    <li class="dropdown-header">Переместить в</li>
+    <ul class="list-group moveRowAction" data-action="move">
+        %MOVE_TO%
+    </ul>
+    <li role="separator" class="divider"></li>
+    <li><a class="removeOrderRow" data-product-id="">Удалить</a></li>
+</ul>
+

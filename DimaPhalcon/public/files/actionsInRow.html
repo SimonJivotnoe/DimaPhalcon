@@ -1,8 +1,19 @@
 <div class="dropdown">
-  <button class="btn btn-default dropdown-toggle" type="button" id="%DROPDOWN_ID%" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+  <button class="btn btn-default dropdown-toggle rowActionsDropdownClass"
+          type="button"
+          data-toggle="dropdown"
+          aria-haspopup="true"
+          aria-expanded="true"
+          data-section="%SECTION%"
+          data-to-section="%DATA_TO_SECTION%"
+          data-number="%I%"
+          data-product-id="%PRODUCT_ID%"
+          data-row-class="%ROWCLASS%"
+          data-quantity="%QUANTITY%"
+  >
     <span class="glyphicon glyphicon-cog" aria-hidden="true"></span>
   </button>
-  <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="%DROPDOWN_ID%">
+  <!--<ul class="dropdown-menu dropdown-menu-right" aria-labelledby="%DROPDOWN_ID%">
     <li class="dropdown-header">Передвинуть</li>
     <li><a class="move%ROWCLASS%OrderUp" data-section="%SECTION%" data-number="%I%">Вверх</a></li>
     <li><a class="move%ROWCLASS%OrderDown" data-section="%SECTION%" data-number="%I%">Вниз</a></li>
@@ -18,5 +29,5 @@
         </ul>
     <li role="separator" class="divider"></li>
     <li><a class="remove%ROWCLASS%OrderRow" name="%PRODUCT_ID%">Удалить</a></li>
-  </ul>
+  </ul>-->
 </div>
