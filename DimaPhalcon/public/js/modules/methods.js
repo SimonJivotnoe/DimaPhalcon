@@ -327,6 +327,17 @@ define(['jq', 'datatables.net'], function ($jq, DataTable) {
 			} else {
 				button.prop('disabled', true);
 			}
+		},
+		resizeGrip: function (elem = '#orderTable') {
+			$(elem).colResizable({
+				disable: true
+			});
+			$(elem).colResizable({
+				liveDrag: true,
+				gripInnerHtml: '<div class="grip"></div>', 
+				draggingClass: 'dragging',
+				postbackSafe: true
+			});
 		}
 	};
 	

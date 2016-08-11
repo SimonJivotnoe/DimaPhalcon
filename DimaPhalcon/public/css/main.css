@@ -757,9 +757,33 @@ ol li:hover {
     border-radius: 2px
 }
 
-.orderTableActionsWrapper {
+#orderTableWrapperFromTree {
+    margin-top: 20px;
 }
 
+.grip{
+	width:20px;
+	height:15px;
+	margin-top: 22px;
+	background-image:url('../img/grip.png');
+	margin-left:-5px;
+	position:relative;
+	z-index:88;
+	cursor:e-resize;
+}
+
+.grip:hover{
+	background-position-x:-20px;
+}
+
+.JCLRLastGrip .grip{
+    background-position-y:-18px;
+    left:-2px;
+}
+
+.dragging .grip{
+	background-position-x:-40px;
+}
 .rc-handle-container {
     position: relative;
 }
@@ -1000,6 +1024,7 @@ table.rc-table-resizing thead,table.rc-table-resizing thead> th,table.rc-table-r
     margin-top: 8px;
     margin-bottom: 1px;
     min-height: 33px;
+    z-index: 10;
 }
 
 .clearer {

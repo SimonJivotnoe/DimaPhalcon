@@ -172,19 +172,14 @@ class ProductsController extends ControllerBase
             "orderId = '" . $orderId . "' AND productId = '" . $productId . "'"
         );
         $alwaysInTable = json_decode($orObj->getAlwaysInTable());
-        $actionArr = array('%ROWCLASS%' => 'Without', '%PRODUCT_ID%' => $productId, '%I%' => $i - 1);
-        $moveToCopyTo = '<div class="col-md-8" style="margin-right: -64px; margin-left: -32px;">'
-                        . '<select class="moveToAction">'
-                            . '<option value="copy">Скопировать в </option>'
-                            . '<option value="move">Переместить в </option>'
-                        . '</select>';
-        $moveCopyDropdown = '<select class="moveToPath">';
+        $actionArr = array('%ROWCLASS%' => 'Without', '%PRODUCT_ID%' => $productId, '%I%' => $i - 1, '%DROPDOWN_ID%' => 'orderRowDropdown' . $i);
+        $moveCopyDropdown = '';
         if ('orderTableSection' === $map) {
             $actionArr['%ROWCLASS%'] = '';
         }
         foreach ($moveTo as $key => $val) {
             if (!count($val)) {
-                $moveCopyDropdown .= '<option>' . $key . '</option>';
+                $moveCopyDropdown .= '<li class="list-group-item moveToCopyTo" name="' . $productId . '" data-section="' . $section . '" data-to-section="' . $key . '">' . $key . '</li>';
             } else {
                 $checkArr = array();
                 foreach ($val as $num => $obj) {
@@ -193,12 +188,11 @@ class ProductsController extends ControllerBase
                     }
                 }
                 if (!in_array($productId, $checkArr)) {
-                    $moveCopyDropdown .= '<option>' . $key . '</option>';
+                    $moveCopyDropdown .= '<li class="list-group-item moveToCopyTo" name="' . $productId . '" data-section="' . $section . '" data-to-section="' . $key . '">' . $key . '</li>';
                 }
             }
         }
-        $moveCopyDropdown .= '</select><span class="glyphicon glyphicon-circle-arrow-right moveToCopyTo" name="' . $productId . '" data-section="' . $section . '" aria-hidden="true"></span></div>';
-        $actionArr['%MOVE_TO%'] = $moveToCopyTo . $moveCopyDropdown;
+        $actionArr['%MOVE_TO%'] = $moveCopyDropdown;
         $actionArr['%SECTION%'] = $section;
         $actionRow = $substObj->subHTMLReplace('actionsInRow.html', $actionArr);
         $res['%ROW_CLASS%'] = $map;

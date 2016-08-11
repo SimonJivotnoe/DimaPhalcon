@@ -1,5 +1,5 @@
 
-define(['jq', 'methods', 'URLs', 'mustache', 'VALIDATION', 'PDF'], function ($jq, methods, URLs, Mustache, VALIDATION, PDF) {'use strict'; var
+define(['jq', 'methods', 'URLs', 'mustache', 'VALIDATION', 'PDF', 'CONSOLIDATE'], function ($jq, methods, URLs, Mustache, VALIDATION, PDF, CONSOLIDATE) {'use strict'; var
 	findInClientsTree = function () {
 		var tree = JSON.parse($('#clientsTree').tree('toJson')),
 			text = $(this).val().toLowerCase();
@@ -282,17 +282,18 @@ define(['jq', 'methods', 'URLs', 'mustache', 'VALIDATION', 'PDF'], function ($jq
 					if (response.consolidateData) {
 						localStorage.consOrder = 'consAverageTr';
 						$('#orderWrapperFromTree #consOrderButtonsWrapper').show();
-						consolidateOrder.buildConsolidateOrder(response.consolidateData);
+						CONSOLIDATE.buildConsolidateOrder(response.consolidateData);
 					} else {
 						delete localStorage.consOrder;
 					}
 					
 					orders.setOrderSum();
-					$(function () {
+					/*$(function () {
 						setTimeout(function(){ $('#orderTable').resizableColumns({
 							store: window.store
 						}); }, 1);
-					});
+					});*/
+					methods.resizeGrip();
 				}
 			});
 		},
@@ -393,11 +394,12 @@ define(['jq', 'methods', 'URLs', 'mustache', 'VALIDATION', 'PDF'], function ($jq
 				$this.closest('tr').attr('name', currentSection);
 			}
 			CLIENTS_TREE.saveOrderMap(JSON.stringify(methods.getOrderMap()), true);
+			methods.resizeGrip();
 		},
 		moveToCopyTo: function () {
 			var $this = $(this),
-				action = $this.closest('div').find('.moveToAction option:selected').val(),
-				path = $this.closest('div').find('.moveToPath option:selected').text(),
+				action = $this.closest('ul').attr('data-action'),
+				path = $this.attr('data-to-section'),
 				productId = $this.attr('name'),
 				map = methods.getOrderMap(),
 				data = {},
@@ -497,233 +499,6 @@ define(['jq', 'methods', 'URLs', 'mustache', 'VALIDATION', 'PDF'], function ($jq
 				}	
 			});
 		},
-		consolidateObj: {
-			sections: {},
-			withoutSection: {},
-			productsDetails: {}
-		},
-		buildConsolidateOrder: function (consolidateData) {
-			consolidateOrder.consolidateObj = {
-				sections: {},
-				withoutSection: {},
-				productsDetails: {}
-			};
-			$.each(consolidateData, function (orderId, obj) {
-				if ( _.size(obj.map)) {
-					$.each(obj.map, function (section, secObj) {
-						if (_.size(secObj)) {
-							$.map(secObj, function (detSec) {
-								$.each(detSec, function (prId, quantity) {
-									if (!consolidateOrder.consolidateObj.sections[section]) {
-										consolidateOrder.consolidateObj.sections[section] = {};
-									}
-									if (!consolidateOrder.consolidateObj.sections[section][prId]) {
-										consolidateOrder.consolidateObj.sections[section][prId] = {};
-									}
-									if (!consolidateOrder.consolidateObj.sections[section][prId].quantity) {
-										consolidateOrder.consolidateObj.sections[section][prId].quantity = 0;
-									}
-									if (!consolidateOrder.consolidateObj.sections[section][prId].inPrices) {
-										consolidateOrder.consolidateObj.sections[section][prId].inPrices = [];
-									}
-									if (!consolidateOrder.consolidateObj.sections[section][prId].outPrices) {
-										consolidateOrder.consolidateObj.sections[section][prId].outPrices = [];
-									}
-									if (!consolidateOrder.consolidateObj.sections[section][prId].sum) {
-										consolidateOrder.consolidateObj.sections[section][prId].sum = [];
-									}
-									if (!consolidateOrder.consolidateObj.sections[section][prId].inSum) {
-										consolidateOrder.consolidateObj.sections[section][prId].inSum = [];
-									}
-									if (!consolidateOrder.consolidateObj.withoutSection[prId]) {
-										consolidateOrder.consolidateObj.withoutSection[prId] = {};
-									}
-									if (!consolidateOrder.consolidateObj.withoutSection[prId].quantity) {
-										consolidateOrder.consolidateObj.withoutSection[prId].quantity = 0;
-									}
-									if (!consolidateOrder.consolidateObj.withoutSection[prId].inPrices) {
-										consolidateOrder.consolidateObj.withoutSection[prId].inPrices = [];
-									}
-									if (!consolidateOrder.consolidateObj.withoutSection[prId].outPrices) {
-										consolidateOrder.consolidateObj.withoutSection[prId].outPrices = [];
-									}
-									if (!consolidateOrder.consolidateObj.withoutSection[prId].sum) {
-										consolidateOrder.consolidateObj.withoutSection[prId].sum = [];
-									}
-									if (!consolidateOrder.consolidateObj.withoutSection[prId].inSum) {
-										consolidateOrder.consolidateObj.withoutSection[prId].inSum = [];
-									}
-									consolidateOrder.consolidateObj.sections[section][prId].quantity += parseInt(quantity);
-									consolidateOrder.consolidateObj.withoutSection[prId].quantity += parseInt(quantity);
-									for (var i = 1; i <= parseInt(quantity); i++) {
-										var data = {};
-										data[parseInt(consolidateData[orderId].products[prId].inSum)] =  parseInt(consolidateData[orderId].products[prId].outSum);
-										consolidateOrder.consolidateObj.sections[section][prId].inSum.push(parseInt(consolidateData[orderId].products[prId].inSum));
-										consolidateOrder.consolidateObj.sections[section][prId].inPrices.push(parseInt(consolidateData[orderId].products[prId].inPrice));
-										consolidateOrder.consolidateObj.sections[section][prId].outPrices.push(parseInt(consolidateData[orderId].products[prId].outPrice));
-										consolidateOrder.consolidateObj.sections[section][prId].sum.push(data);
-										consolidateOrder.consolidateObj.withoutSection[prId].inPrices.push(parseInt(consolidateData[orderId].products[prId].inPrice));
-										consolidateOrder.consolidateObj.withoutSection[prId].outPrices.push(parseInt(consolidateData[orderId].products[prId].outPrice));
-										data = {};
-										data[parseInt(consolidateData[orderId].products[prId].inSum)] = parseInt(consolidateData[orderId].products[prId].outSum);
-										consolidateOrder.consolidateObj.withoutSection[prId].inSum.push(parseInt(consolidateData[orderId].products[prId].inSum));
-										consolidateOrder.consolidateObj.withoutSection[prId].sum.push(data);
-									}
-								});
-							});
-						}
-					});
-				}
-				$.each(obj.products, function (prId, obj) {
-					if (!consolidateOrder.consolidateObj.productsDetails[prId]) {
-						consolidateOrder.consolidateObj.productsDetails[prId] = {};
-					}
-					consolidateOrder.consolidateObj.productsDetails[prId].article = obj.article;
-					consolidateOrder.consolidateObj.productsDetails[prId].productName = obj.productName;
-				});
-			});
-			if (consolidateOrder.consolidateObj.sections) {
-				$.each(consolidateOrder.consolidateObj.sections, function (name, obj) {
-					if ('out' === name) {
-						$(consolidateOrder.buildConsolidateAverageOrderTr(obj, 'withoutSectionRow orderRow consAverageTr')).insertAfter('#orderWrapperFromTree .withoutSectionInOrderTable');
-						$(consolidateOrder.buildConsolidateOrderTr(obj, 'withoutSectionRow orderRow consTr')).insertAfter('#orderWrapperFromTree .withoutSectionInOrderTable');
-					} else {
-						$('<tr class="orderTableSectionName" name="' + name + '"><th colspan="9">' + name + '</th></tr>').insertBefore('#orderWrapperFromTree .withoutSectionInOrderTable');
-						$(consolidateOrder.buildConsolidateAverageOrderTr(obj, 'orderTableSection orderRow consAverageTr')).insertAfter('[name="' + name + '"]');
-						$(consolidateOrder.buildConsolidateOrderTr(obj, 'orderTableSection orderRow consTr')).insertAfter('[name="' + name + '"]');
-					}
-				});
-				$(consolidateOrder.buildConsolidateAverageOrderTr(consolidateOrder.consolidateObj.withoutSection, 'withoutSectionRow orderRow consWithoutSectionAverageTr')).insertAfter('#orderWrapperFromTree .withoutSectionInOrderTable');
-				$(consolidateOrder.buildConsolidateOrderTr(consolidateOrder.consolidateObj.withoutSection, 'withoutSectionRow orderRow consWithoutSectionTr')).insertAfter('#orderWrapperFromTree .withoutSectionInOrderTable');
-
-			}
-		},
-		buildConsolidateAverageOrderTr: function (obj, trClass) {
-			var count = 1, rows = $();
-			$.each(obj, function (prId, prObj) {
-				var product = consolidateOrder.consolidateObj.productsDetails[prId];
-				var inPricesSum = 0;
-				var outPricesSum = 0;
-				var quantity = prObj.sum.length;
-				$.map(prObj.sum, function(obj) {
-					inPricesSum += parseInt(_.keys(obj)[0]);
-					outPricesSum += parseInt(obj[_.keys(obj)[0]]);
-				});
-				var inPrice = (inPricesSum / quantity).toFixed(2);
-				var outPrice = (outPricesSum / quantity).toFixed(2);
-				rows.push.apply(rows, consolidateOrder.buildConsOrderTr(trClass, count, product.article, product.productName, parseInt(prObj.quantity), inPrice, outPrice));
-				count++;
-			});
-			return rows;
-		},
-		buildConsolidateOrderTr: function (obj, trClass) {
-			var rows = $();
-			var count = 1;
-			$.each(obj, function (prId, prObj) {
-				var product = consolidateOrder.consolidateObj.productsDetails[prId];
-				var sumRes = {};
-				var sum = _.clone(prObj.sum);
-				$.map(sum, function(obj) {
-					var temp = _.clone(sum[0]);
-					var quantity = 1;
-					sum.splice(0, 1);
-					var compare = _.clone(sum);
-					$.map(compare, function(iObj){
-						if (parseInt(_.keys(iObj)[0]) === parseInt(_.keys(temp)[0]) && parseInt(iObj[_.keys(iObj)[0]]) === parseInt(temp[_.keys(temp)[0]])) {
-							quantity++;
-							sum.splice(0, 1);
-						}
-					});
-					if (!sumRes[quantity]) {
-						sumRes[quantity] = [];
-					}
-					if (_.size(temp)) {
-						sumRes[quantity].push(temp);
-					}
-				});
-				$.each(sumRes, function(quantity, arr) {
-					$.map(arr, function(obj) {
-						var inPrice = parseInt(_.keys(obj)[0]);
-						var outPrice = obj[inPrice];
-						rows.push.apply(rows, consolidateOrder.buildConsOrderTr(trClass, count, product.article, product.productName, quantity, inPrice, outPrice));
-						count++;
-					});
-				});
-			});
-			return rows;
-		},
-		buildConsOrderTr: function (trClass, count, article, productName, quantity, inPrice, outPrice) {
-			var tr = $('<tr></tr>' ).addClass(trClass);
-			tr.append('<td class="orderNumberTd">' + count + '</td><td class="orderArticleTd">' + article + '</td><td class="orderProductNameTd">' + productName + '</td>');
-			tr.append('<td class="orderUnitOfMeasureTd">шт.</td><td class="quantityInOrderTd">' + quantity + '</td><td class="inputPriceInOrder" data-uah="' + inPrice + '">' + inPrice + '</td>');
-			tr.append('<td class="inputSumInOrder" data-uah="' + quantity * inPrice + '">' + quantity * inPrice + '</td>');
-			tr.append('<td class="outputPriceInOrder" data-uah="' + outPrice + '">' + outPrice + '</td>');
-			tr.append('<td class="outputSumInOrder" data-uah="' + quantity * outPrice + '">' + quantity * outPrice + '</td>');
-			
-			return tr;
-		},
-		consAveragePrices: function () {
-			var $this = $(this);
-			if ($this.hasClass('uniquePrices')) {
-				$this.removeClass('uniquePrices');
-				$this.text('Уникальные цены');
-				if ($('#consRemoveSections').hasClass('showSections')) {
-					$('.consTr, .consAverageTr, .consWithoutSectionTr').hide();
-					$('.consWithoutSectionAverageTr').show();
-					localStorage.consOrder = 'consWithoutSectionAverageTr';
-				} else {
-					$('.consTr, .consWithoutSectionTr, .consWithoutSectionAverageTr').hide();
-					$('.consAverageTr').show();
-					localStorage.consOrder = 'consAverageTr';
-				}
-			} else {
-				$this.addClass('uniquePrices');
-				$this.text('Средние цены');
-				if ($('#consRemoveSections').hasClass('showSections')) {
-					$('.consTr, .consAverageTr, .consWithoutSectionAverageTr').hide();
-					$('.consWithoutSectionTr').show();
-					localStorage.consOrder = 'consWithoutSectionTr';
-				} else {
-					$('.consAverageTr, .consWithoutSectionTr, .consWithoutSectionAverageTr').hide();
-					$('.consTr').show();
-					localStorage.consOrder = 'consTr';
-				}
-			}
-		},
-		consRemoveSections: function () {
-			var $this = $(this);
-			if ($this.hasClass('showSections')) {
-				$this.removeClass('showSections');
-				$this.text('Убрать разделы');
-				$('.orderTableSectionName' ).show();
-				setTimeout(function () {
-					$('.orderTableSectionName').removeClass('skip');
-				}, 10);
-				if ($('#consAveragePrices').hasClass('uniquePrices')) {
-					$('.consWithoutSectionTr, .consAverageTr, .consWithoutSectionAverageTr').hide();
-					$('.consTr').show();
-					localStorage.consOrder = 'consTr';
-				} else {
-					$('.orderTableSectionName' ).addClass('skip');
-					$('.consWithoutSectionTr, .consTr, .consWithoutSectionAverageTr').hide();
-					$('.consAverageTr').show();
-					localStorage.consOrder = 'consAverageTr';
-				}
-			} else {
-				$this.addClass('showSections');
-				$this.text('Показать разделы');
-				$('.orderTableSectionName' ).addClass('skip').hide();
-				if ($('#consAveragePrices').hasClass('uniquePrices')) {
-					$('.consAverageTr, .consTr, .consWithoutSectionAverageTr').hide();
-					$('.consWithoutSectionTr').show();
-					localStorage.consOrder = 'consWithoutSectionTr';
-				} else {
-					$('.consWithoutSectionTr, .consTr, .consAverageTr').hide();
-					$('.consWithoutSectionAverageTr').show();
-					localStorage.consOrder = 'consWithoutSectionAverageTr';
-				}
-			}
-		},
 	},
     CLIENTS_TREE = {
 		getClientsTree: function (refresh) {
@@ -820,6 +595,7 @@ define(['jq', 'methods', 'URLs', 'mustache', 'VALIDATION', 'PDF'], function ($jq
 				} else {
 					$('#fileManagerOrdersWrapper #orderFromTree').removeClass('col-md-12').addClass('col-md-8');
 				}
+				methods.resizeGrip();
             });
 			
 			$('#FMconsolidatedOrdersBtn').click(consolidateOrder.createConsolidateOrder);
@@ -848,7 +624,6 @@ define(['jq', 'methods', 'URLs', 'mustache', 'VALIDATION', 'PDF'], function ($jq
 				})
 				.on('change', '#changeDiscount', orders.changeDiscount)
 				.on('click', '#createPDF', PDF.saveOrderToPDF)
-				.on('click', '#deleteOrder', orders.deleteOrder)
 				.on('click', '#orderCurrenciesWrapper button', orders.changeCurrency)
 				.on('click', '#checkAllInMainOrder', function () {
 					orders.checkAllInOrderDetails(true, '#orderHeadChecks input');
@@ -874,10 +649,34 @@ define(['jq', 'methods', 'URLs', 'mustache', 'VALIDATION', 'PDF'], function ($jq
 				.on('click', '.moveOrderDown', function() {
 					CLIENTS_TREE.saveOrderMap(JSON.stringify(orders.swapRows(this, $(this).attr('data-section'), 'down')), true);
 				})
-				.on('click', '#consAveragePrices', consolidateOrder.consAveragePrices)
-				.on('click', '#consRemoveSections', consolidateOrder.consRemoveSections);
+				.on('click', '#consAveragePrices', CONSOLIDATE.consAveragePrices)
+				.on('click', '#consRemoveSections', CONSOLIDATE.consRemoveSections);
         }
     };
 
     return CLIENTS_TREE;
 });
+
+/*
+buildDropdown: function () {
+			var currentUser = $(this).attr('data-username');
+			var offset = $(this).offset();
+			if (currentUser !== users.dbUser) {
+				$jq.usersTableDropdown.hide().find('a').show();
+			}
+			users.dbUser = vars.currentRow.attr('data-username');
+			users.dbType = vars.currentRow.attr('data-db-type');
+			if (!users.getNotAssignedDbsForUser().length) {
+				$jq.usersTableDropdown.find('.addToDatabase').hide();
+			}
+			if (!_.compact(vars.allUsersInfo.data[users.dbType][users.dbUser]).length) {
+				$jq.usersTableDropdown.find('.managePrivileges').hide();
+			}
+			$jq.usersTableDropdown.css({top: (offset.top + 15), left: (offset.left - $jq.usersTableDropdown.width() + $(this).width() + 10)}).toggle();
+		},
+					$(document).click(function () {
+			if (!$(this).hasClass('currentRow')) {
+				$('#usersTableDropdown, #databasesTableDropdown').hide();
+			}
+		});
+*/
