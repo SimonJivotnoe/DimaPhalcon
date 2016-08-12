@@ -998,6 +998,7 @@ table.rc-table-resizing thead,table.rc-table-resizing thead> th,table.rc-table-r
     display: none;
     margin-top: 10px;
     margin-bottom: 10px;
+    z-index: 100;
 }
 
 .nameOfProduct {

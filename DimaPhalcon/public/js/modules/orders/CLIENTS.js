@@ -251,6 +251,7 @@ define(['jq', 'methods', 'URLs', 'mustache', 'VALIDATION', 'PDF', 'CONSOLIDATE']
 		},
 	},
 	orders = {
+		currentTr: false,
 		addOrder: function (data) {
 			return $.post(URLs.createNewOrder, data, function (response) {
 				if (methods.checkResponseOnSuccess(response)) {
@@ -423,12 +424,10 @@ define(['jq', 'methods', 'URLs', 'mustache', 'VALIDATION', 'PDF', 'CONSOLIDATE']
 		removeOrderRow: function () {
 			var $this = $(this),
 				productId = $this.attr('data-product-id');
-			console.log(orders.countProductInOrder(productId));
 			if (1 >= orders.countProductInOrder(productId)) {
 				orders.removeFromOrder(productId);
 			}
-			console.log($(`.rowActionsDropdownClass[data-product-id="${productId}"]`).closest('tr'));
-			$(`.rowActionsDropdownClass[data-product-id="${productId}"]`).closest('tr').remove();
+			$(orders.currentTr).closest('tr').remove();
 			CLIENTS_TREE.saveOrderMap(JSON.stringify(methods.getOrderMap()), true);
 		},
 		removeFromOrder: function (productId) {
@@ -473,6 +472,7 @@ define(['jq', 'methods', 'URLs', 'mustache', 'VALIDATION', 'PDF', 'CONSOLIDATE']
 		buildDropdown: function (e) {
 			e.stopPropagation();
 			e.preventDefault();
+			orders.currentTr = this;
 			var $this = $(this),
 				offset = $this.offset(),
 				$rowActionsUl = $('#rowActionsUl'),
@@ -483,7 +483,7 @@ define(['jq', 'methods', 'URLs', 'mustache', 'VALIDATION', 'PDF', 'CONSOLIDATE']
 			if (!$this.hasClass('currentRow')) {
 				$('.rowActionsDropdownClass').removeClass('currentRow');
 				$this.addClass('currentRow');
-				if (toSectionArr.length) {
+				if (_.compact(toSectionArr).length) {
 					$.map(toSectionArr, function (dataToSection) {
 						toSection += `<li class="list-group-item moveToCopyTo"
 						 data-product-id="${productId}"
@@ -492,17 +492,20 @@ define(['jq', 'methods', 'URLs', 'mustache', 'VALIDATION', 'PDF', 'CONSOLIDATE']
 						 data-to-section="${dataToSection}">${dataToSection}
 					 </li>`;
 					});
-					$rowActionsUl
-						.find('.moveOrderUp, .moveOrderDown').attr({
-							'data-section': section,
-							'data-number': $this.attr('data-number')
-						}).end()
-						.find('.copyRowAction, .moveRowAction').html(toSection).end()
-						.find('.removeOrderRow').attr('data-product-id', productId).end()
-						.css({width: '150px', top: (offset.top + 15), left: (offset.left - $rowActionsUl.width() + $this.width() + 10)})
-						.attr('data-product-id', productId)
-						.show();
+					$rowActionsUl.find('.copyRowAction, .moveRowAction').show();
+				} else {
+					$rowActionsUl.find('.copyRowAction, .moveRowAction').hide();
 				}
+				$rowActionsUl
+					.find('.moveOrderUp, .moveOrderDown').attr({
+						'data-section': section,
+						'data-number': $this.attr('data-number')
+					}).end()
+					.find('.copyRowAction, .moveRowAction').html(toSection).end()
+					.find('.removeOrderRow').attr('data-product-id', productId).end()
+					.css({width: '150px', top: (offset.top + 15), left: (offset.left - $rowActionsUl.width() + $this.width() + 10)})
+					.attr('data-product-id', productId)
+					.show();
 			} else {
 				$this.removeClass('currentRow');
 				$rowActionsUl.hide();
@@ -693,7 +696,13 @@ define(['jq', 'methods', 'URLs', 'mustache', 'VALIDATION', 'PDF', 'CONSOLIDATE']
 				.on('blur', '.orderSectionName', orders.changeSectionName)
 				.on('click', '#consAveragePrices', CONSOLIDATE.consAveragePrices)
 				.on('click', '#consRemoveSections', CONSOLIDATE.consRemoveSections)
-				.on('click', '.rowActionsDropdownClass', orders.buildDropdown);
+				.on('click', '.rowActionsDropdownClass', orders.buildDropdown)
+				.on('show.bs.collapse', '#orderDetailsCollapse', function () {
+					$('.grip').hide();
+				})
+				.on('hide.bs.collapse', '#orderDetailsCollapse', function () {
+					$('.grip').show();
+				});
 
 			$('#rowActionsUl')
 				.click(function () {$(this).toggle()})
@@ -705,27 +714,3 @@ define(['jq', 'methods', 'URLs', 'mustache', 'VALIDATION', 'PDF', 'CONSOLIDATE']
 
     return CLIENTS_TREE;
 });
-
-/*
-buildDropdown: function () {
-			var currentUser = $(this).attr('data-username');
-			var offset = $(this).offset();
-			if (currentUser !== users.dbUser) {
-				$jq.usersTableDropdown.hide().find('a').show();
-			}
-			users.dbUser = vars.currentRow.attr('data-username');
-			users.dbType = vars.currentRow.attr('data-db-type');
-			if (!users.getNotAssignedDbsForUser().length) {
-				$jq.usersTableDropdown.find('.addToDatabase').hide();
-			}
-			if (!_.compact(vars.allUsersInfo.data[users.dbType][users.dbUser]).length) {
-				$jq.usersTableDropdown.find('.managePrivileges').hide();
-			}
-			$jq.usersTableDropdown.css({top: (offset.top + 15), left: (offset.left - $jq.usersTableDropdown.width() + $(this).width() + 10)}).toggle();
-		},
-					$(document).click(function () {
-			if (!$(this).hasClass('currentRow')) {
-				$('#usersTableDropdown, #databasesTableDropdown').hide();
-			}
-		});
-*/
