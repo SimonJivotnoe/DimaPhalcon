@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 use Phalcon\Db\RawValue;
 
 class ProductsController extends ControllerBase
@@ -53,6 +53,8 @@ class ProductsController extends ControllerBase
                 ->setTableContent(json_encode($this->request->getPost('tableContent')))
                 ->setAlwaysInTable(json_encode($this->request->getPost('alwaysInTable')))
                 ->setFormulas(json_encode($this->request->getPost('formulas')))
+->setCreated(new RawValue('default'))
+->setTemplate(new RawValue('default'))
                 ->setStatus('save');
             if ($image) {
                 $product->setImage($image);

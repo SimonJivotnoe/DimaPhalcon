@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 use Phalcon\Db\RawValue;
 class OrderController  extends ControllerBase
 {
@@ -147,8 +147,10 @@ class OrderController  extends ControllerBase
         $msg = 'Ошибка при создании Ордера';
         $orderMax = Orders::maximum(array("column" => "order_number"));
         $consolidate = $this->request->getPost('consolidate');
+if (!$consolidate) {$consolidate = 'FALSE';}
         $project = $this->request->getPost('project');
         $orderNumber = 1;
+
         if ($orderMax) {
             $orderNumber = (int)($orderMax) + 1;
         }
@@ -165,7 +167,6 @@ class OrderController  extends ControllerBase
         } else {
             $order->setStatus('save');
         }
-
         if ($order->save()) {
             $success = true;
             $msg = 'Ордер успешно создан';
