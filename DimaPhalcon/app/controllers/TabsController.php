@@ -229,12 +229,13 @@ class TabsController extends ControllerBase
             foreach ($productsId as $productId) {
                 $tabsObj = new Tabs();
                 try {
-                    $tabsObj->setProductId($productId)->save();
+                    $tabsObj->setProductId($productId)->setActive(new RawValue('default'))->save();
                 } catch (\Exception $e) {
 
                 }
             }
         }
+        die();
         $this->response->setJsonContent(['success' => true]);
 
         return $this->response;
